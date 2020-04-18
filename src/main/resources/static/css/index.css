@@ -15,12 +15,86 @@ header {
 	border-radius: 0.4em;
 }
 
-.turnOff {
+.headerGroup1 {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.langSelector{
+	margin-right: 1em;
+}
+
+.shutdownButton {
 	padding: 0.5em;
 	border-radius: 0.2em;
+	border: orangered 0.3em solid;
 	background-color: orangered;
+	font-weight: bolder;
+	transition-duration: 0.5s;
+	transition: all;
+}
+
+.shutdownButton:hover {
+	border: darkred 0.3em solid;
+	cursor: cell;
+}
+
+.shutdownButton:active{
+	box-shadow: inset 0 0 0.3em 0.3em indianred;
 }
 
 main {
 	padding: 2em;
+}
+
+article {
+	margin: 1em;
+	padding: 0.5em;
+	background-color: rgba(10%, 10%, 10%, 0.1);
+	
+}
+
+.loaderForm {
+	margin: 1em;
+}
+
+.loaderForm > input {
+	margin: 0.3em;
+}
+
+.loaderForm > label {
+	margin: 0.3em;
+	font-weight: bold;
+}
+
+/*.loader > label:hover:after {*/
+/*	content: string("lkjlkjlkj");*/
+/*}*/
+
+#prevSize {
+	width: 4em;
+}
+
+#path {
+	width: 35em;
+}
+
+.interrogation {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	border-radius: 50%;
+	border: green solid 0.1em;
+	background-color: lightgreen;
+	text-align: center;
+	vertical-align: center;
+	font-weight: bold;
+	transition-duration: 0.5s;
+	transition: all;
+}
+
+.interrogation:hover {
+	background-color: greenyellow;
+	cursor: help;
 }
