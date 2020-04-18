@@ -1,13 +1,13 @@
-package mrbaxmypka.gmail.com.LosusPOIconverter;
+package mrbaxmypka.gmail.com.LocusPOIconverter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LosusPoiConverterApplication {
+public class LocusPoiConverterApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LosusPoiConverterApplication.class, args);
+		SpringApplication.run(LocusPoiConverterApplication.class, args);
 	}
 
 }

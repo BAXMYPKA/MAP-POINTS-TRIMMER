@@ -1,0 +1,26 @@
+#main {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5em;
+	background-color: lightgoldenrodyellow;
+	border: palegoldenrod 0.3em solid;
+	border-radius: 0.4em;
+}
+
+.turnOff {
+	padding: 0.5em;
+	border-radius: 0.2em;
+	background-color: orangered;
+}
+
+main {
+	padding: 2em;
+}

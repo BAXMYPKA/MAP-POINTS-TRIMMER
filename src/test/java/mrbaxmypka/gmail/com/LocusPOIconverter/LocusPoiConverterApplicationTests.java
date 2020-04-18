@@ -1,10 +1,10 @@
-package mrbaxmypka.gmail.com.LosusPOIconverter;
+package mrbaxmypka.gmail.com.LocusPOIconverter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LosusPoiConverterApplicationTests {
+class LocusPoiConverterApplicationTests {
 
 	@Test
 	void contextLoads() {

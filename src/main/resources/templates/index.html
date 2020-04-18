@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
+	<title>Locus POI converter</title>
+</head>
+<body>
+
+<div id="main">
+	
+	<header>
+		
+		<img src="" title="logo">
+		
+		<h1 th:text="#{h1.header}">Locus POI to Google Earth converter</h1>
+		
+		<div class="turnOff" th:text="#{text.shutdown}">SHUTDOWN</div>
+	
+	</header>
+	
+	
+	
+	<main>
+		
+		<form class="loader" action="/locusToGoogle" method="post">
+			<label for="locusKmz">Load Locus POI file</label>
+			<br>
+			<input id="locusKmz" type="file">
+			<br>
+			<fieldset>
+				<input type="checkbox"> <span>Span one</span>
+				<br>
+				<input type="checkbox"> <span>Span two</span>
+			</fieldset>
+			<br>
+			<input type="submit">
+		</form>
+	
+	</main>
+	
+	<footer>
+		
+		<span>Footer content</span>
+	
+	</footer>
+
+</div>
+
+</body>
+</html>
