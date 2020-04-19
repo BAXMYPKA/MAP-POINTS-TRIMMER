@@ -28,20 +28,25 @@ header {
 .shutdownButton {
 	padding: 0.5em;
 	border-radius: 0.2em;
-	border: orangered 0.3em solid;
-	background-color: orangered;
+	border: greenyellow 0.3em solid;
+	background-color: yellowgreen;
 	font-weight: bolder;
-	transition-duration: 0.5s;
+	transition-duration: 0.8s;
 	transition: all;
 }
 
 .shutdownButton:hover {
-	border: darkred 0.3em solid;
+	/*border: darkred 0.3em solid;*/
+	box-shadow: darkgrey inset 0 0 0.2em 0.2em;
 	cursor: cell;
 }
 
 .shutdownButton:active{
-	box-shadow: inset 0 0 0.3em 0.3em indianred;
+	box-shadow: inset 0 0 0.4em 0.4em grey;
+}
+
+.shutdownButton:focus{
+	background-color: darkgrey;
 }
 
 main {
@@ -51,12 +56,15 @@ main {
 article {
 	margin: 1em;
 	padding: 0.5em;
-	background-color: rgba(10%, 10%, 10%, 0.1);
+	background-color: rgba(166, 155, 19, 0.31);
 	
 }
 
 .loaderForm {
 	margin: 1em;
+	padding: 0.5em;
+	border: goldenrod 0.08em solid;
+	box-shadow: palegoldenrod inset 0 0 0.7em 0.2em;
 }
 
 .loaderForm > input {

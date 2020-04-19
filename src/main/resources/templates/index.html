@@ -7,66 +7,77 @@
 </head>
 <body>
 
-<main id="main">
+<div id="main">
 	
 	<header>
 		
 		<img src="" title="logo">
 		
-		<h1 th:text="#{h1.header}">Locus POI to Google Earth converter</h1>
+		<h1 th:text="#{h1.header}">Locus POI trimmer</h1>
 		
 		<div class="headerGroup1">
 			
 			<select class="langSelector" onchange="location = this.value">
-				<option th:text="#{option.lang}"></option>
+				<option th:text="#{option.lang}">Language...</option>
 				<option th:value="@{/(lang=en)}">EN</option>
 				<option th:value="@{/(lang=ru)}">RU</option>
 			</select>
 			
 			<button class="shutdownButton" th:text="#{text.shutdown}" th:title="#{title.shutdown}">SHUTDOWN</button>
-			
-			<!--		<div class="shutdownButton" th:text="#{text.shutdown}" th:title="#{title.shutdown}">SHUTDOWN</div>-->
 		
 		</div>
 	
 	</header>
+	
+	<main>
+		
+		<h2 th:text="#{h2.howToConvert}">How to properly convert your Locus POIs to Google Earth Windows
+			application</h2>
+		
+		
+		<article>How properly import POIs from Locus to Google Earth application description</article>
+		
+		<form class="loaderForm" action="/locusToGoogle" method="post">
+			<label for="locusKmz">Load Locus POI file</label>
+			<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+			<br>
+			<input id="locusKmz" type="file" accept=".kmz, .kml"
+				   required autofocus>
+			<br><br>
+			<label for="fieldSet" th:text="#{label.additionalParams}">Set additional parameters</label>
+			<fieldset id="fieldSet" class="loaderForm">
+				<label for="prevSize" th:text="#{label.previewSize}">Photos preview size</label>
+				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<br>
+				<input id="prevSize" type="number" placeholder="640" value="640" min="30" max="2440">
+				<br>
+				<input id="clear" type="checkbox" checked>
+				<label for="clear" th:text="#{input.clear}">Clear outdated POIs descriptions</label>
+				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<br>
+				<input id="setPath" type="checkbox" checked>
+				<label for="setPath" th:text="#{input.setPath}">Set local path to .jpg files for photo POIs</label>
+				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<br>
+				<label for="path">Default path to imported photos</label>
+				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<br>
+				<input id="path" type="text" placeholder="%USERPROFILE%\AppData\LocalLow\Google\GoogleEarth\files"
+					   value="%USERPROFILE%\AppData\LocalLow\Google\GoogleEarth\files">
+				<input type="text" list="paths">
+				<datalist id="paths">
+					<option>%USERPROFILE%\AppData\LocalLow\Google\GoogleEarth\files</option>
+					<option>%USERPROFILE%\AppData\LocalLow\Google\GoogleEarth\files</option>
+				</datalist>
+				<br>
+			</fieldset>
+			<input type="submit" th:value="#{input.value.convert}" value="CONVERT">
+		</form>
+	
+	
+	</main>
 
-</main>
-
-<h2 th:text="#{h2.howToConvert}">How to properly convert your Locus POIs to Google Earth Windows application</h2>
-<article>How properly import POIs from Locus to Google Earth application description</article>
-
-<form class="loaderForm" action="/locusToGoogle" method="post">
-	<label for="locusKmz">Load Locus POI file</label>
-	<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
-	<br>
-	<input id="locusKmz" type="file">
-	<br><br>
-	<label for="fieldSet" th:text="#{label.additionalParams}">Set additional parameters</label>
-	<fieldset id="fieldSet" class="loaderForm">
-		<label for="prevSize" th:text="#{label.previewSize}">Photos preview size</label>
-		<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
-		<br>
-		<input id="prevSize" type="number" placeholder="640">
-		<br>
-		<input id="clear" type="checkbox" checked>
-		<label for="clear" th:text="#{input.clear}">Clear outdated POIs descriptions</label>
-		<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
-		<br>
-		<input id="setPath" type="checkbox" checked>
-		<label for="setPath" th:text="#{input.setPath}">Set local path to .jpg files for photo POIs</label>
-		<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
-		<br>
-		<label for="path">Default path to imported photos</label>
-		<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
-		<br>
-		<input id="path" type="text" placeholder="%USERPROFILE%\AppData\LocalLow\Google\GoogleEarth\files">
-		<br>
-	</fieldset>
-	<input type="submit">
-</form>
-
-</main>
+</div>
 
 <footer>
 	
