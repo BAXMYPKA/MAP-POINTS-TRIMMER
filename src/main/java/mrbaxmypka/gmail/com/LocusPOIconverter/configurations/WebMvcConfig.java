@@ -1,6 +1,5 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.configurations;
 
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,6 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import java.util.Locale;
-import java.util.Properties;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {

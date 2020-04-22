@@ -1,38 +1,40 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.controllers.rest;
 
+import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.LocusPOIconverter.services.KmlKmzService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Locale;
 
 @RestController
 public class KmlController {
 	
+	@Autowired
+	private MessageSource messageSource;
+	
+	@Autowired
+	private KmlKmzService kmlKmzService;
+	
+	/**
+	 * @param poiFile Can receive .kml or .kmz files only
+	 * @param locale  For defining a User language
+	 * @return
+	 */
 	@PostMapping(path = "/kml", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<String> postKml(@RequestParam(name = "klm") MultipartFile kml) {
+	public ResponseEntity<String> postKml(@Valid @RequestParam(name = "poiFile") MultipartDto poiFile, Locale locale)
+		throws IOException {
+		//TODO: to treat validation errors in the ControllerAdvice
 		
-		if (kml.isEmpty()) {
-			return ResponseEntity.unprocessableEntity().body("WRONG");
-		}
-		
-		if (kml.getOriginalFilename().endsWith(".kml")) {
-			System.out.println("ITS A KML");
-		} else if (kml.getOriginalFilename().endsWith(".kmz")) {
-			System.out.println("ITS A KMZ");
-		}
-		
-		try {
-			byte[] part = kml.getBytes();
-			InputStream inputStream = kml.getInputStream();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		kmlKmzService.treatMultipartDto(poiFile, locale);
 		
 		return null;
 	}
-	
 }

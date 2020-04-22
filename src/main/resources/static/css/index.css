@@ -106,3 +106,12 @@ article {
 	background-color: greenyellow;
 	cursor: help;
 }
+
+label {
+	transition: all;
+	transition-duration: 0.3s;
+}
+
+label:hover {
+	color: darkgoldenrod;
+}
