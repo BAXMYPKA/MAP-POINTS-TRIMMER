@@ -9,8 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.xml.sax.SAXException;
 
 import javax.validation.Valid;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -30,7 +33,7 @@ public class KmlController {
 	 */
 	@PostMapping(path = "/kml", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<String> postKml(@Valid @RequestParam(name = "poiFile") MultipartDto poiFile, Locale locale)
-		throws IOException {
+		throws IOException, SAXException, ParserConfigurationException, XMLStreamException {
 		//TODO: to treat validation errors in the ControllerAdvice
 		
 		kmlKmzService.treatMultipartDto(poiFile, locale);

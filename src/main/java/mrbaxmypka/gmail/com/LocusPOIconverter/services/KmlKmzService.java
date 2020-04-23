@@ -23,12 +23,11 @@ import java.util.Objects;
 @Service
 public class KmlKmzService {
 	
-	//TODO: Null-interceptor in the ControllerAdvice
-	
-	
 	Locale locale = Locale.ENGLISH;
+	
 	@Autowired
 	private MessageSource messageSource;
+	
 	@Autowired
 	private XmlHandler xmlHandler;
 	
@@ -47,10 +46,9 @@ public class KmlKmzService {
 			messageSource.getMessage("exception.nullFilename", null, locale));
 		
 		if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kml")) {
-			proceedWithKml(multipartDto);
+			xmlHandler.treatXml(multipartDto);
 		} else if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kmz")) {
 			//TODO: to proceed with a .kmz file
-			InputStream inputStream;
 		} else {
 			throw new IllegalArgumentException(messageSource.getMessage(
 				"exception.fileExtensionNotSupported",
@@ -60,14 +58,11 @@ public class KmlKmzService {
 		
 	}
 	
-	private InputStream getInputStream(MultipartFile multipartFile) throws IOException {
-		return multipartFile.getInputStream();
-	}
-	
+/*
 	private void proceedWithKml(MultipartDto multipartDto)
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		
-		InputStream kmlInputStream = getInputStream(multipartDto.getMultipartFile());
+		InputStream kmlInputStream = xmlHandler.getInputStream(multipartDto.getMultipartFile());
 		Document document = xmlHandler.getDocument(kmlInputStream);
 		
 		if (multipartDto.isValidateXml()) {
@@ -77,4 +72,5 @@ public class KmlKmzService {
 			xmlHandler.setPath(kmlInputStream);
 		}
 	}
+*/
 }

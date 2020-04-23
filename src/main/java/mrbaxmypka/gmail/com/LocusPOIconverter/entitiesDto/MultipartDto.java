@@ -21,4 +21,6 @@ public class MultipartDto {
 	private boolean setPath;
 	
 	private String path;
+	
+	private Integer previewSize;
 }
