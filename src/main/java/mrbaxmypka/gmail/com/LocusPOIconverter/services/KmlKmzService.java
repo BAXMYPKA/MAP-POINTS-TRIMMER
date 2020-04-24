@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
@@ -37,7 +38,7 @@ public class KmlKmzService {
 	 * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
 	 */
 	public void treatMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		
 		locale = locale == null ? this.locale : locale;
 		
