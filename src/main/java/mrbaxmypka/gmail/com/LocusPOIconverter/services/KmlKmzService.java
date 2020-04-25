@@ -7,17 +7,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -47,7 +42,7 @@ public class KmlKmzService {
 			messageSource.getMessage("exception.nullFilename", null, locale));
 		
 		if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kml")) {
-			xmlHandler.treatXml(multipartDto);
+			xmlHandler.processKml(multipartDto);
 		} else if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kmz")) {
 			//TODO: to proceed with a .kmz file
 		} else {

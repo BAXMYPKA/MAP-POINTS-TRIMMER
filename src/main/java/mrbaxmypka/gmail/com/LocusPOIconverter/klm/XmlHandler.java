@@ -2,43 +2,47 @@ package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
 
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.*;
+import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 
 @NoArgsConstructor
 @Component
 public class XmlHandler {
 	
-	public void treatXml(MultipartDto multipartDto)
+	/**
+	 * All the additional information for a User (preview size, outdated descriptions etc) are placed inside the
+	 * CDATA[[]]. Which is an HTML document.
+	 * So the main goal for this method is the extracting this data.
+	 */
+	public void processKml(MultipartDto multipartDto)
 		throws XMLStreamException, IOException, ParserConfigurationException, SAXException, TransformerException {
+		
+		StringWriter stringWriter = new StringWriter();
+		
 		XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 		XMLEventReader reader = xmlInputFactory.createXMLEventReader(multipartDto.getMultipartFile().getInputStream());
+		
+		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+		XMLEventWriter eventWriter = outputFactory.createXMLEventWriter(stringWriter);
 		
 		if (multipartDto.isValidateXml()) {
 			Document document = getDocument(multipartDto.getMultipartFile().getInputStream());
@@ -54,13 +58,45 @@ public class XmlHandler {
 			switch (event.getEventType()) {
 				case XMLStreamConstants.CDATA:
 				case XMLStreamConstants.CHARACTERS:
-					System.out.println(event.asCharacters().getData());
+					processCdata(event.asCharacters(), multipartDto);
+					//WRITE BACK
 			}
 		}
 	}
 	
-	public InputStream getInputStream(MultipartFile multipartFile) throws IOException {
-		return multipartFile.getInputStream();
+	private Document getDocument(InputStream kmlInputStream)
+		throws ParserConfigurationException, IOException, SAXException, TransformerException {
+		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		Document kmlDocument = documentBuilder.parse(kmlInputStream);
+		return kmlDocument;
+	}
+	
+	private void processCdata(Characters characters, MultipartDto multipartDto) throws XMLStreamException {
+		
+		org.jsoup.nodes.Document html;
+		
+		if (characters.isWhiteSpace()) return;
+		
+		if (characters.getData().startsWith("<!-- desc_gen:start -->")) { //Obtaining the inner CDATA text
+			html = Jsoup.parse(characters.getData()); //Get CDATA as HTML document for parsing
+		} else {
+			return;
+		}
+		
+		if (multipartDto.isSetPath()) {
+			Elements aElements = html.select("a[href]");
+			setPath(aElements, multipartDto.getPath());
+		}
+		
+	}
+	
+	private void setPath(Elements aElements, String path) {
+		
+		String href = aElements.attr("href");
+		if (aElements.hasAttr("href") && !href.startsWith("www.") && !href.startsWith("http:")) {
+			href = path == null ? "" : path;
+			aElements.attr("href", href);
+		}
 	}
 	
 	private void validateXml(Document document) throws SAXException, IOException {
@@ -71,12 +107,5 @@ public class XmlHandler {
 			new File("src/main/resources/static/xsd/kml-2.2.0/ogckml22.xsd"));
 		Validator validator = schema.newValidator();
 		validator.validate(new DOMSource(document));
-	}
-	
-	private Document getDocument(InputStream kmlInputStream)
-		throws ParserConfigurationException, IOException, SAXException, TransformerException {
-		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document kmlDocument = documentBuilder.parse(kmlInputStream);
-		return kmlDocument;
 	}
 }
