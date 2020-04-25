@@ -27,6 +27,8 @@ import java.io.*;
 @Component
 public class XmlHandler {
 	
+	private StringWriter stringWriter;
+	
 	/**
 	 * All the additional information for a User (preview size, outdated descriptions etc) are placed inside the
 	 * CDATA[[]]. Which is an HTML document.
@@ -35,7 +37,7 @@ public class XmlHandler {
 	public void processKml(MultipartDto multipartDto)
 		throws XMLStreamException, IOException, ParserConfigurationException, SAXException, TransformerException {
 		
-		StringWriter stringWriter = new StringWriter();
+		stringWriter = new StringWriter();
 		
 		XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 		XMLEventReader reader = xmlInputFactory.createXMLEventReader(multipartDto.getMultipartFile().getInputStream());
@@ -56,12 +58,19 @@ public class XmlHandler {
 		while (reader.hasNext()) {
 			XMLEvent event = reader.nextEvent();
 			switch (event.getEventType()) {
-				case XMLStreamConstants.CDATA:
 				case XMLStreamConstants.CHARACTERS:
-					processCdata(event.asCharacters(), multipartDto);
+				case XMLStreamConstants.CDATA:
+					String string = processCdata(event.asCharacters(), multipartDto);
 					//WRITE BACK
+					Characters cdata = eventFactory.createCData("BLA");
+					eventWriter.add(cdata);
+					continue;
 			}
+			eventWriter.add(event);
 		}
+		
+		System.out.println("NNNNNNNNNNNNNNNN");
+		System.out.println(stringWriter);
 	}
 	
 	private Document getDocument(InputStream kmlInputStream)
@@ -71,16 +80,16 @@ public class XmlHandler {
 		return kmlDocument;
 	}
 	
-	private void processCdata(Characters characters, MultipartDto multipartDto) throws XMLStreamException {
+	private String processCdata(Characters characters, MultipartDto multipartDto) throws XMLStreamException {
 		
 		org.jsoup.nodes.Document html;
 		
-		if (characters.isWhiteSpace()) return;
+		if (characters.isWhiteSpace()) return characters.getData();
 		
 		if (characters.getData().startsWith("<!-- desc_gen:start -->")) { //Obtaining the inner CDATA text
 			html = Jsoup.parse(characters.getData()); //Get CDATA as HTML document for parsing
 		} else {
-			return;
+			return characters.getData();
 		}
 		
 		if (multipartDto.isSetPath()) {
@@ -88,6 +97,7 @@ public class XmlHandler {
 			setPath(aElements, multipartDto.getPath());
 		}
 		
+		return html.html();
 	}
 	
 	private void setPath(Elements aElements, String path) {
