@@ -27,7 +27,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"TestTrimmedPois.kml", "TestTrimmedPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, true, true, true, "", 340);
+			multipartFile, true, true, true, true, "", 340);
 		
 	}
 	
@@ -39,7 +39,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, true, false, null, null);
+			multipartFile, false, false, true, false, null, null);
 		
 		//WHEN
 		
@@ -55,7 +55,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, true, newPath, null);
+			multipartFile, false, false, false, true, newPath, null);
 		
 		//WHEN
 		

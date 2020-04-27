@@ -16,6 +16,8 @@ public class MultipartDto {
 	
 	private boolean trimDescriptions;
 	
+	private boolean trim;
+	
 	private boolean validateXml;
 	
 	private boolean setPath;

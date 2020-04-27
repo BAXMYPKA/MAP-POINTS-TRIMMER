@@ -5,7 +5,6 @@ import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -70,11 +69,12 @@ public class XmlHandler {
 			}
 			writeXmlEvent(event);
 		}
+		System.out.println("================ THE RESULT =================================");
 		System.out.println(stringWriter);//TODO: to delete one
 	}
 	
 	private Document getDocument(InputStream kmlInputStream)
-		throws ParserConfigurationException, IOException, SAXException, TransformerException {
+		throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document kmlDocument = documentBuilder.parse(kmlInputStream);
 		return kmlDocument;
@@ -98,7 +98,6 @@ public class XmlHandler {
 		}
 		if (characters.getData().startsWith("<!-- desc_gen:start -->")) { //Obtaining the inner CDATA text
 			parsedHtml = Jsoup.parse(characters.getData()); //Get CDATA as HTML document for parsing
-//			characters = eventFactory.createCharacters(parsedHtml.html());
 		} else {
 			writeXmlEvent(characters);
 			return;
@@ -107,8 +106,8 @@ public class XmlHandler {
 			//TODO: to process
 		}
 		if (multipartDto.isSetPath()) {
-			Elements aElements = parsedHtml.select("a[href]");
-			setPath(aElements, multipartDto.getPath());
+			setPath(parsedHtml, multipartDto.getPath());
+			System.out.println("PARSED HTML =========== \n" + parsedHtml.html()); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		}
 		if (multipartDto.getPreviewSize() != null) {
 			//TODO: to process
@@ -118,13 +117,40 @@ public class XmlHandler {
 		writeXmlEvent(event);
 	}
 	
-	private void setPath(Elements aElements, String path) {
+	//TODO: To treat LocusPOI Images started with 'file://'
+	
+	private void setPath(org.jsoup.nodes.Document parsedHtml, String path) {
+		Elements aElements = parsedHtml.select("a[href]");
+		Elements imgElements = parsedHtml.select("img[src]");
 		
-		String href = aElements.attr("href");
-		if (aElements.hasAttr("href") && !href.startsWith("www.") && !href.startsWith("http:")) {
-			href = path == null ? "" : path;
-			aElements.attr("href", href);
+		final String href = path == null ? "" : path;
+		
+		aElements.stream()
+			.filter(a -> !a.attr("href").startsWith("www.") && !a.attr("href").startsWith("http:"))
+			.forEach((a) -> {
+				String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), href);
+				a.attr("href", newPathWithFilename);
+			});
+		imgElements.stream()
+			.filter(img -> !img.attr("src").startsWith("www.") && !img.attr("src").startsWith("http:"))
+			.forEach((img) -> {
+				String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), href);
+				img.attr("src", newPathWithFilename);
+			});
+	}
+	
+	private String getNewHrefWithOldFilename(String oldHrefWithFilename, String newHrefWithoutFilename) {
+//		Each existing a[href] contains a full path with the filename.
+//		Here we have to replace only the URL and leave the original filename.
+		if (!newHrefWithoutFilename.endsWith("/")) {
+//			Every new href has to end with '/'
+			newHrefWithoutFilename = newHrefWithoutFilename.concat("/");
 		}
+		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/");
+		String filename = oldHrefWithFilename.substring(lastIndexOFSlash + 1, oldHrefWithFilename.length());
+		System.out.println("\n FILENAME = "+ filename+"\n");
+		
+		return newHrefWithoutFilename.concat(filename);
 	}
 	
 	private void validateXml(Document document) throws SAXException, IOException {
