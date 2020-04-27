@@ -27,6 +27,11 @@ import java.io.*;
 @Component
 public class XmlHandler {
 	
+	private XMLInputFactory inputFactory;
+	private XMLEventReader eventReader;
+	private XMLOutputFactory outputFactory;
+	private XMLEventFactory eventFactory;
+	private XMLEventWriter eventWriter;
 	private StringWriter stringWriter;
 	
 	/**
@@ -39,12 +44,12 @@ public class XmlHandler {
 		
 		stringWriter = new StringWriter();
 		
-		XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-		XMLEventReader reader = xmlInputFactory.createXMLEventReader(multipartDto.getMultipartFile().getInputStream());
+		inputFactory = XMLInputFactory.newInstance();
+		eventReader = inputFactory.createXMLEventReader(multipartDto.getMultipartFile().getInputStream());
 		
-		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
-		XMLEventWriter eventWriter = outputFactory.createXMLEventWriter(stringWriter);
+		outputFactory = XMLOutputFactory.newInstance();
+		eventFactory = XMLEventFactory.newInstance();
+		eventWriter = outputFactory.createXMLEventWriter(stringWriter);
 		
 		if (multipartDto.isValidateXml()) {
 			Document document = getDocument(multipartDto.getMultipartFile().getInputStream());
@@ -55,22 +60,17 @@ public class XmlHandler {
 			return; //If no conditions are set not to waste time
 		}
 		
-		while (reader.hasNext()) {
-			XMLEvent event = reader.nextEvent();
+		while (eventReader.hasNext()) {
+			XMLEvent event = eventReader.nextEvent();
 			switch (event.getEventType()) {
-				case XMLStreamConstants.CHARACTERS:
-				case XMLStreamConstants.CDATA:
-					String string = processCdata(event.asCharacters(), multipartDto);
-					//WRITE BACK
-					Characters cdata = eventFactory.createCData("BLA");
-					eventWriter.add(cdata);
+				case XMLEvent.CHARACTERS:
+				case XMLEvent.CDATA:
+					processCdata(event.asCharacters(), multipartDto);
 					continue;
 			}
-			eventWriter.add(event);
+			writeXmlEvent(event);
 		}
-		
-		System.out.println("NNNNNNNNNNNNNNNN");
-		System.out.println(stringWriter);
+		System.out.println(stringWriter);//TODO: to delete one
 	}
 	
 	private Document getDocument(InputStream kmlInputStream)
@@ -80,24 +80,42 @@ public class XmlHandler {
 		return kmlDocument;
 	}
 	
-	private String processCdata(Characters characters, MultipartDto multipartDto) throws XMLStreamException {
+	private void writeXmlEvent(XMLEvent event) throws XMLStreamException {
+		eventWriter.add(event);
+	}
+	
+	private void writeXmlEvent(Characters characters) throws XMLStreamException {
+		eventWriter.add(characters);
+	}
+	
+	private void processCdata(Characters characters, MultipartDto multipartDto) throws XMLStreamException {
 		
-		org.jsoup.nodes.Document html;
+		org.jsoup.nodes.Document parsedHtml = null;
 		
-		if (characters.isWhiteSpace()) return characters.getData();
-		
-		if (characters.getData().startsWith("<!-- desc_gen:start -->")) { //Obtaining the inner CDATA text
-			html = Jsoup.parse(characters.getData()); //Get CDATA as HTML document for parsing
-		} else {
-			return characters.getData();
+		if (characters.isWhiteSpace()) {
+			writeXmlEvent(characters);
+			return;
 		}
-		
+		if (characters.getData().startsWith("<!-- desc_gen:start -->")) { //Obtaining the inner CDATA text
+			parsedHtml = Jsoup.parse(characters.getData()); //Get CDATA as HTML document for parsing
+//			characters = eventFactory.createCharacters(parsedHtml.html());
+		} else {
+			writeXmlEvent(characters);
+			return;
+		}
+		if (multipartDto.isTrimDescriptions()) {
+			//TODO: to process
+		}
 		if (multipartDto.isSetPath()) {
-			Elements aElements = html.select("a[href]");
+			Elements aElements = parsedHtml.select("a[href]");
 			setPath(aElements, multipartDto.getPath());
 		}
+		if (multipartDto.getPreviewSize() != null) {
+			//TODO: to process
+		}
 		
-		return html.html();
+		XMLEvent event = eventFactory.createCData(characters.getData());
+		writeXmlEvent(event);
 	}
 	
 	private void setPath(Elements aElements, String path) {
@@ -111,8 +129,6 @@ public class XmlHandler {
 	
 	private void validateXml(Document document) throws SAXException, IOException {
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-//		Schema schema = schemaFactory.newSchema(
-//			new File(this.getClass().getResource("/static/xsd/kml-2.2.0/ogckml22.xsd").getFile()));
 		Schema schema = schemaFactory.newSchema(
 			new File("src/main/resources/static/xsd/kml-2.2.0/ogckml22.xsd"));
 		Validator validator = schema.newValidator();
