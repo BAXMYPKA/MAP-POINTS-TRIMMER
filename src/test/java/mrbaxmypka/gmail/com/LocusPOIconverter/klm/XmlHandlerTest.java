@@ -26,7 +26,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, true, false, null, null);
+			multipartFile, false, false, false, true, "", false, null);
 		
 		//WHEN
 		
@@ -43,7 +43,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, false, true, newPath, null);
+			multipartFile, false, false, false, true, newPath, false, null);
 		
 		//WHEN
 		
@@ -68,7 +68,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, false, true, newPath, null);
+			multipartFile, false, false, false, true, newPath, false, null);
 		
 		//WHEN
 		
@@ -85,6 +85,75 @@ class XmlHandlerTest {
 		Assertions.assertTrue(processedKml.contains("img src=\"files:/a new path/p__20200409_150847.jpg\""));
 		Assertions.assertTrue(processedKml.contains("href=\"files:/a new path/p__20180523_123601.jpg\""));
 		Assertions.assertTrue(processedKml.contains("img src=\"files:/a new path/p__20180523_123601.jpg\""));
+	}
+	
+	@Test
+	public void setPreviewSize_Should_Set_All_Img_Widths_Attributes()
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+		//GIVEN
+		
+		inputStream = new FileInputStream("src/test/java/resources/LocusTestPois.kml");
+		multipartFile = new MockMultipartFile(
+			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
+		multipartDto = new MultipartDto(
+			multipartFile, false, false, false, false, null, true, 800);
+		
+		//WHEN
+		
+		String processedKml = xmlHandler.processKml(multipartDto);
+		
+		//THEN
+		
+		Assertions.assertFalse(processedKml.contains("width=\"330px\""));
+		Assertions.assertFalse(processedKml.contains("width=\"60px\""));
+		
+		Assertions.assertTrue(processedKml.contains("width=\"800px\""));
+	}
+	
+	@Test
+	public void setPreviewSize_With_Null_Integer_Should_Set_All_Img_Widths_Attributes_To_0()
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+		//GIVEN
+		
+		inputStream = new FileInputStream("src/test/java/resources/LocusTestPois.kml");
+		multipartFile = new MockMultipartFile(
+			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
+		multipartDto = new MultipartDto(
+			multipartFile, false, false, false, false, null, true, null);
+		
+		//WHEN
+		
+		String processedKml = xmlHandler.processKml(multipartDto);
+		
+		//THEN
+		
+		Assertions.assertFalse(processedKml.contains("width=\"330px\""));
+		Assertions.assertFalse(processedKml.contains("width=\"60px\""));
+		
+		Assertions.assertTrue(processedKml.contains("width=\"0px\""));
+	}
+	
+	@Test
+	public void setTrimXml()
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+		//GIVEN
+		
+		inputStream = new FileInputStream("src/test/java/resources/LocusTestPois.kml");
+		multipartFile = new MockMultipartFile(
+			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
+		multipartDto = new MultipartDto(
+			multipartFile, false, true, false, false, null, true, null);
+		
+		//WHEN
+		
+		String processedKml = xmlHandler.processKml(multipartDto);
+		
+		//THEN
+		
+		Assertions.assertFalse(processedKml.contains("width=\"330px\""));
+		Assertions.assertFalse(processedKml.contains("width=\"60px\""));
+		
+		Assertions.assertTrue(processedKml.contains("width=\"0px\""));
 	}
 	
 }

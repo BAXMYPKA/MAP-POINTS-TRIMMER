@@ -16,13 +16,15 @@ public class MultipartDto {
 	
 	private boolean trimDescriptions;
 	
-	private boolean trim;
+	private boolean trimXml;
 	
 	private boolean validateXml;
 	
 	private boolean setPath;
 	
 	private String path;
+	
+	private boolean setPreviewSize;
 	
 	private Integer previewSize;
 }

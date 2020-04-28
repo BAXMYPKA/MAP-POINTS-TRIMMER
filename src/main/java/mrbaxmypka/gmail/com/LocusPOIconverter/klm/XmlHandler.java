@@ -4,8 +4,12 @@ import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Entities;
 import org.jsoup.parser.Parser;
+import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
+import org.jsoup.select.Evaluator;
+import org.jsoup.select.NodeFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -58,7 +62,7 @@ public class XmlHandler {
 			validateXml(document);
 		}
 		
-		if (!multipartDto.isSetPath() && !multipartDto.isTrimDescriptions() && multipartDto.getPreviewSize() == null) {
+		if (!multipartDto.isSetPath() && !multipartDto.isTrimDescriptions() && !multipartDto.isSetPreviewSize() && !multipartDto.isTrimXml()) {
 			return new String(multipartDto.getMultipartFile().getBytes()); //If no conditions are set not to waste time
 		}
 		
@@ -100,9 +104,8 @@ public class XmlHandler {
 			writeXmlEvent(characters);
 			return;
 		}
-		if (characters.getData().startsWith("<!-- desc_gen:start -->")) { //Obtaining the inner CDATA text
-			parsedHtmlFragment = Jsoup.parseBodyFragment(characters.getData()).body(); //Get CDATA as HTML document for parsing
-			System.out.println("BEFORE BEING PARSED =======================================\n" + parsedHtmlFragment.html()); //!!!!!!!!!!!!!!!!!!!
+		if (characters.getData().startsWith("<!-- desc_gen:start -->")) { //Obtain an inner CDATA text as HTML elements
+			parsedHtmlFragment = Jsoup.parseBodyFragment(characters.getData()).body();
 		} else {
 			writeXmlEvent(characters);
 			return;
@@ -114,8 +117,25 @@ public class XmlHandler {
 			setPath(parsedHtmlFragment, multipartDto.getPath());
 			System.out.println("PARSED HTML ========================== \n" + parsedHtmlFragment.html()); //!!!!!!!!!!!!!!!!!!!
 		}
-		if (multipartDto.getPreviewSize() != null) {
-			//TODO: to process
+		if (multipartDto.isSetPreviewSize()) {
+			Integer previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
+			setPreviewSize(parsedHtmlFragment, previewSize);
+		}
+		if (multipartDto.isTrimXml()) {
+			Elements select = parsedHtmlFragment.select(new Evaluator.IsEmpty());
+			select.forEach(e -> System.out.println("ELEMENT = " + e.html()));
+			Evaluator eval = new Evaluator.IsEmpty();
+			Elements notEmpty = parsedHtmlFragment.getAllElements();
+			notEmpty.stream()
+				.map(e -> e.select(eval));
+/*
+			org.jsoup.nodes.Document doc = null;
+//				parsedHtmlFragment.ownerDocument();
+			doc = Jsoup.parse(parsedHtmlFragment.html(), "", Parser.xmlParser());
+			doc.outputSettings().prettyPrint(false).indentAmount(0);
+*/
+//			System.out.println("\n\n +++++++++++++++++++++++++++++++++++++++\n\n" + doc.html());
+			//
 		}
 		
 		XMLEvent event = eventFactory.createCData(parsedHtmlFragment.html());
@@ -156,6 +176,11 @@ public class XmlHandler {
 		System.out.println("\n FILENAME = "+ filename+"\n");
 		
 		return newHrefWithoutFilename.concat(filename);
+	}
+	
+	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize) {
+		Elements imgElements = parsedHtmlFragment.select("img[width]");
+		imgElements.forEach(img -> img.attr("width", previewSize.toString()+"px"));
 	}
 	
 	private void validateXml(Document document) throws SAXException, IOException {
