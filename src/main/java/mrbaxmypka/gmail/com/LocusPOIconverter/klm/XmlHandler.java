@@ -3,8 +3,11 @@ package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -38,7 +41,7 @@ public class XmlHandler {
 	 * CDATA[[]]. Which is an HTML document.
 	 * So the main goal for this method is the extracting this data.
 	 */
-	public void processKml(MultipartDto multipartDto)
+	public String processKml(MultipartDto multipartDto)
 		throws XMLStreamException, IOException, ParserConfigurationException, SAXException, TransformerException {
 		
 		stringWriter = new StringWriter();
@@ -56,7 +59,7 @@ public class XmlHandler {
 		}
 		
 		if (!multipartDto.isSetPath() && !multipartDto.isTrimDescriptions() && multipartDto.getPreviewSize() == null) {
-			return; //If no conditions are set not to waste time
+			return new String(multipartDto.getMultipartFile().getBytes()); //If no conditions are set not to waste time
 		}
 		
 		while (eventReader.hasNext()) {
@@ -71,6 +74,7 @@ public class XmlHandler {
 		}
 		System.out.println("================ THE RESULT =================================");
 		System.out.println(stringWriter);//TODO: to delete one
+		return stringWriter.toString();
 	}
 	
 	private Document getDocument(InputStream kmlInputStream)
@@ -90,14 +94,15 @@ public class XmlHandler {
 	
 	private void processCdata(Characters characters, MultipartDto multipartDto) throws XMLStreamException {
 		
-		org.jsoup.nodes.Document parsedHtml = null;
+		Element parsedHtmlFragment;
 		
 		if (characters.isWhiteSpace()) {
 			writeXmlEvent(characters);
 			return;
 		}
 		if (characters.getData().startsWith("<!-- desc_gen:start -->")) { //Obtaining the inner CDATA text
-			parsedHtml = Jsoup.parse(characters.getData()); //Get CDATA as HTML document for parsing
+			parsedHtmlFragment = Jsoup.parseBodyFragment(characters.getData()).body(); //Get CDATA as HTML document for parsing
+			System.out.println("BEFORE BEING PARSED =======================================\n" + parsedHtmlFragment.html()); //!!!!!!!!!!!!!!!!!!!
 		} else {
 			writeXmlEvent(characters);
 			return;
@@ -106,22 +111,22 @@ public class XmlHandler {
 			//TODO: to process
 		}
 		if (multipartDto.isSetPath()) {
-			setPath(parsedHtml, multipartDto.getPath());
-			System.out.println("PARSED HTML =========== \n" + parsedHtml.html()); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			setPath(parsedHtmlFragment, multipartDto.getPath());
+			System.out.println("PARSED HTML ========================== \n" + parsedHtmlFragment.html()); //!!!!!!!!!!!!!!!!!!!
 		}
 		if (multipartDto.getPreviewSize() != null) {
 			//TODO: to process
 		}
 		
-		XMLEvent event = eventFactory.createCData(characters.getData());
+		XMLEvent event = eventFactory.createCData(parsedHtmlFragment.html());
 		writeXmlEvent(event);
 	}
 	
 	//TODO: To treat LocusPOI Images started with 'file://'
 	
-	private void setPath(org.jsoup.nodes.Document parsedHtml, String path) {
-		Elements aElements = parsedHtml.select("a[href]");
-		Elements imgElements = parsedHtml.select("img[src]");
+	private void setPath(Element parsedHtmlFragment, String path) {
+		Elements aElements = parsedHtmlFragment.select("a[href]");
+		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		
 		final String href = path == null ? "" : path;
 		
@@ -140,7 +145,7 @@ public class XmlHandler {
 	}
 	
 	private String getNewHrefWithOldFilename(String oldHrefWithFilename, String newHrefWithoutFilename) {
-//		Each existing a[href] contains a full path with the filename.
+//		Each existing a[href] contains a full path with the filename as the last text element.
 //		Here we have to replace only the URL and leave the original filename.
 		if (!newHrefWithoutFilename.endsWith("/")) {
 //			Every new href has to end with '/'

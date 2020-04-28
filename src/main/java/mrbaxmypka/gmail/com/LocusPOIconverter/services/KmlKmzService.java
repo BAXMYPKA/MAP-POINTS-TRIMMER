@@ -42,7 +42,7 @@ public class KmlKmzService {
 			messageSource.getMessage("exception.nullFilename", null, locale));
 		
 		if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kml")) {
-			xmlHandler.processKml(multipartDto);
+			String processedKml = xmlHandler.processKml(multipartDto);
 		} else if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kmz")) {
 			//TODO: to proceed with a .kmz file
 		} else {
