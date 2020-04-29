@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(of = {"multipartFile"})
 @Getter
 public class MultipartDto {
 	
@@ -14,9 +15,17 @@ public class MultipartDto {
 	@NotNull
 	private MultipartFile multipartFile;
 	
+	/**
+	 * To trim whitespaces only in presented CDATA[[]] user descriptions
+	 */
 	private boolean trimDescriptions;
 	
+	/**
+	 * To trim the whole .kml document
+	 */
 	private boolean trimXml;
+	
+	private boolean clearDescriptions;
 	
 	private boolean validateXml;
 	

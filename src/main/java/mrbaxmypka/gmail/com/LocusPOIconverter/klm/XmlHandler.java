@@ -33,12 +33,8 @@ import java.io.*;
 @Component
 public class XmlHandler {
 	
-	private XMLInputFactory inputFactory;
-	private XMLEventReader eventReader;
-	private XMLOutputFactory outputFactory;
 	private XMLEventFactory eventFactory;
 	private XMLEventWriter eventWriter;
-	private StringWriter stringWriter;
 	
 	/**
 	 * All the additional information for a User (preview size, outdated descriptions etc) are placed inside the
@@ -48,12 +44,12 @@ public class XmlHandler {
 	public String processKml(MultipartDto multipartDto)
 		throws XMLStreamException, IOException, ParserConfigurationException, SAXException, TransformerException {
 		
-		stringWriter = new StringWriter();
+		StringWriter stringWriter = new StringWriter();
 		
-		inputFactory = XMLInputFactory.newInstance();
-		eventReader = inputFactory.createXMLEventReader(multipartDto.getMultipartFile().getInputStream());
+		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+		XMLEventReader eventReader = inputFactory.createXMLEventReader(multipartDto.getMultipartFile().getInputStream());
 		
-		outputFactory = XMLOutputFactory.newInstance();
+		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		eventFactory = XMLEventFactory.newInstance();
 		eventWriter = outputFactory.createXMLEventWriter(stringWriter);
 		
@@ -71,12 +67,11 @@ public class XmlHandler {
 			switch (event.getEventType()) {
 				case XMLEvent.CHARACTERS:
 				case XMLEvent.CDATA:
-					processCdata(event.asCharacters(), multipartDto);
-					continue;
+					event = processCdata(event.asCharacters(), multipartDto);
 			}
 			writeXmlEvent(event);
 		}
-		System.out.println("================ THE RESULT =================================");
+		System.out.println("\n================ THE RESULT =================================\n");
 		System.out.println(stringWriter);//TODO: to delete one
 		return stringWriter.toString();
 	}
@@ -96,50 +91,36 @@ public class XmlHandler {
 		eventWriter.add(characters);
 	}
 	
-	private void processCdata(Characters characters, MultipartDto multipartDto) throws XMLStreamException {
+	private XMLEvent processCdata(Characters characters, MultipartDto multipartDto) throws XMLStreamException {
 		
 		Element parsedHtmlFragment;
 		
 		if (characters.isWhiteSpace()) {
-			writeXmlEvent(characters);
-			return;
+//			writeXmlEvent(characters);
+			return eventFactory.createCharacters(characters.getData());
 		}
 		if (characters.getData().startsWith("<!-- desc_gen:start -->")) { //Obtain an inner CDATA text as HTML elements
 			parsedHtmlFragment = Jsoup.parseBodyFragment(characters.getData()).body();
 		} else {
-			writeXmlEvent(characters);
-			return;
+//			writeXmlEvent(characters);
+			return eventFactory.createCharacters(characters.getData());
 		}
-		if (multipartDto.isTrimDescriptions()) {
+		if (multipartDto.isClearDescriptions()) {
 			//TODO: to process
 		}
 		if (multipartDto.isSetPath()) {
 			setPath(parsedHtmlFragment, multipartDto.getPath());
-			System.out.println("PARSED HTML ========================== \n" + parsedHtmlFragment.html()); //!!!!!!!!!!!!!!!!!!!
 		}
 		if (multipartDto.isSetPreviewSize()) {
 			Integer previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
 			setPreviewSize(parsedHtmlFragment, previewSize);
 		}
-		if (multipartDto.isTrimXml()) {
-			Elements select = parsedHtmlFragment.select(new Evaluator.IsEmpty());
-			select.forEach(e -> System.out.println("ELEMENT = " + e.html()));
-			Evaluator eval = new Evaluator.IsEmpty();
-			Elements notEmpty = parsedHtmlFragment.getAllElements();
-			notEmpty.stream()
-				.map(e -> e.select(eval));
-/*
-			org.jsoup.nodes.Document doc = null;
-//				parsedHtmlFragment.ownerDocument();
-			doc = Jsoup.parse(parsedHtmlFragment.html(), "", Parser.xmlParser());
-			doc.outputSettings().prettyPrint(false).indentAmount(0);
-*/
-//			System.out.println("\n\n +++++++++++++++++++++++++++++++++++++++\n\n" + doc.html());
-			//
+		if (multipartDto.isTrimDescriptions()) { // MUST be the last part of the code
+			String trimmedString = parsedHtmlFragment.html().replaceAll("\\s{2,}", "").trim();
+			return eventFactory.createCData(trimmedString);
+			
 		}
-		
-		XMLEvent event = eventFactory.createCData(parsedHtmlFragment.html());
-		writeXmlEvent(event);
+		return eventFactory.createCData(parsedHtmlFragment.html());
 	}
 	
 	//TODO: To treat LocusPOI Images started with 'file://'
@@ -173,14 +154,13 @@ public class XmlHandler {
 		}
 		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/");
 		String filename = oldHrefWithFilename.substring(lastIndexOFSlash + 1, oldHrefWithFilename.length());
-		System.out.println("\n FILENAME = "+ filename+"\n");
 		
 		return newHrefWithoutFilename.concat(filename);
 	}
 	
 	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize) {
 		Elements imgElements = parsedHtmlFragment.select("img[width]");
-		imgElements.forEach(img -> img.attr("width", previewSize.toString()+"px"));
+		imgElements.forEach(img -> img.attr("width", previewSize.toString() + "px"));
 	}
 	
 	private void validateXml(Document document) throws SAXException, IOException {

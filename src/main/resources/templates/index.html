@@ -46,12 +46,18 @@
 			<br><br>
 			<label for="fieldSet" th:text="#{label.additionalParams}">Set additional parameters</label>
 			<fieldset id="fieldSet" class="loaderForm">
-				<input id="validateXml" name="validateXml" type="checkbox" checked>
+				<input id="validateXml" name="validateXml" type="checkbox">
 				<label for="validateXml" th:text="#{input.clear}">Severe validation check</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
-				<input id="trim" name="trim" type="checkbox" checked>
-				<label for="trim" th:text="#{input.clear}">Trim whitespaces to compress</label>
+				<input id="trimXml" name="trimXml" type="checkbox">
+				<label for="trimXml" th:text="#{input.clear}">Trim whitespaces in the whole file to compress</label>
+				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<br>
+				<input id="trimDescriptions" name="trimDescriptions" type="checkbox">
+				<label for="trimDescriptions" th:text="#{input.clear}">
+					Trim whitespaces only in user descriptions to compress
+				</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
 				<input id="setPreviewSize" name="setPreviewSize" type="checkbox"
@@ -64,8 +70,8 @@
 					   min="0" max="2440" disabled>
 				<span th:text="#{}">px</span>
 				<br>
-				<input id="trimDescriptions" name="trimDescriptions" type="checkbox" checked>
-				<label for="trimDescriptions" th:text="#{input.clear}">Clear outdated POIs descriptions</label>
+				<input id="clearDescriptions" name="clearDescriptions" type="checkbox" checked>
+				<label for="clearDescriptions" th:text="#{input.clear}">Clear outdated POIs descriptions</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
 				<input id="setPath" name="setPath" type="checkbox"
