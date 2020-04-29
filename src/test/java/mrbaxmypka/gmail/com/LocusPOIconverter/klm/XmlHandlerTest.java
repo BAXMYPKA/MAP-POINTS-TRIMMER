@@ -10,6 +10,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class XmlHandlerTest {
 	
@@ -150,10 +152,29 @@ class XmlHandlerTest {
 		
 		//THEN
 		
-		Assertions.assertFalse(processedKml.contains("width=\"330px\""));
-		Assertions.assertFalse(processedKml.contains("width=\"60px\""));
+		//Is contains new strings
+		Assertions.assertFalse(Pattern.matches(".*\\n.*", processedKml));
+		//Is contains 2 or more whitespaces in a row
+		Assertions.assertFalse(Pattern.matches(".*\\s{2,}.*", processedKml));
+	}
+	
+	@Test
+	public void clearDescriptions_Should()
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+		//GIVEN
 		
-		Assertions.assertTrue(processedKml.contains("width=\"0px\""));
+		inputStream = new FileInputStream("src/test/java/resources/LocusTestPois.kml");
+		multipartFile = new MockMultipartFile(
+			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
+		multipartDto = new MultipartDto(
+			multipartFile, false, false, true, false, false, null, false, null);
+		
+		//WHEN
+		
+		String processedKml = xmlHandler.processKml(multipartDto);
+		
+		//THEN
+		Assertions.assertFalse(processedKml.isBlank());
 	}
 	
 }

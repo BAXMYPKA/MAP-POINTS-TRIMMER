@@ -58,7 +58,11 @@ public class XmlHandler {
 			validateXml(document);
 		}
 		
-		if (!multipartDto.isSetPath() && !multipartDto.isTrimDescriptions() && !multipartDto.isSetPreviewSize() && !multipartDto.isTrimXml()) {
+		if (!multipartDto.isSetPath() &&
+			!multipartDto.isTrimDescriptions() &&
+			!multipartDto.isSetPreviewSize() &&
+			!multipartDto.isClearDescriptions() &&
+			!multipartDto.isTrimXml()) {
 			return new String(multipartDto.getMultipartFile().getBytes()); //If no conditions are set not to waste time
 		}
 		
@@ -105,8 +109,8 @@ public class XmlHandler {
 //			writeXmlEvent(characters);
 			return eventFactory.createCharacters(characters.getData());
 		}
-		if (multipartDto.isClearDescriptions()) {
-			//TODO: to process
+		if (multipartDto.isClearDescriptions()) { //Should be the first treatment
+			clearDescriptions(parsedHtmlFragment);
 		}
 		if (multipartDto.isSetPath()) {
 			setPath(parsedHtmlFragment, multipartDto.getPath());
@@ -115,10 +119,9 @@ public class XmlHandler {
 			Integer previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
 			setPreviewSize(parsedHtmlFragment, previewSize);
 		}
-		if (multipartDto.isTrimDescriptions()) { // MUST be the last part of the code
-			String trimmedString = parsedHtmlFragment.html().replaceAll("\\s{2,}", "").trim();
+		if (multipartDto.isTrimDescriptions()) { // MUST be the last treatment in all the conditions
+			String trimmedString = trimDescriptions(parsedHtmlFragment);
 			return eventFactory.createCData(trimmedString);
-			
 		}
 		return eventFactory.createCData(parsedHtmlFragment.html());
 	}
@@ -161,6 +164,28 @@ public class XmlHandler {
 	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize) {
 		Elements imgElements = parsedHtmlFragment.select("img[width]");
 		imgElements.forEach(img -> img.attr("width", previewSize.toString() + "px"));
+	}
+	
+	private String trimDescriptions(Element parsedHtmlFragment) {
+		//Deletes 2 or more whitespaces in a row
+		String trimmedString = parsedHtmlFragment.html().replaceAll("\\s{2,}", "").trim();
+		return trimmedString;
+	}
+	
+	private void clearDescriptions(Element parsedHtmlFragment) {
+		Elements allElements = parsedHtmlFragment.getAllElements();
+		Elements fonts = allElements.select("font");
+		System.out.println(fonts.size());
+//		fonts.forEach(e -> System.out.println("\nBEFORE = " + e.html()));
+		fonts.stream()
+			.filter(e -> {
+				Elements font = e.select("font");
+				return font.isEmpty();
+			})
+			.forEach(e -> System.out.println("\nAFTER = " + e.html()));
+//		tables.removeIf(element ->
+//			element.select("table").select("table").size() == 0);
+//		tables.forEach(e -> System.out.println("\nAFTER = " + e.html()));
 	}
 	
 	private void validateXml(Document document) throws SAXException, IOException {

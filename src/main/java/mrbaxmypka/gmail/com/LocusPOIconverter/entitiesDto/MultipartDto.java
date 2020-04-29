@@ -25,6 +25,9 @@ public class MultipartDto {
 	 */
 	private boolean trimXml;
 	
+	/**
+	 * To clear all the unused date stamps after every POIs exporting
+	 */
 	private boolean clearDescriptions;
 	
 	private boolean validateXml;
