@@ -4,14 +4,8 @@ import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Entities;
-import org.jsoup.parser.Parser;
-import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
-import org.jsoup.select.Evaluator;
-import org.jsoup.select.NodeFilter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -28,6 +22,9 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @NoArgsConstructor
 @Component
@@ -173,19 +170,86 @@ public class XmlHandler {
 	}
 	
 	private void clearDescriptions(Element parsedHtmlFragment) {
-		Elements allElements = parsedHtmlFragment.getAllElements();
-		Elements fonts = allElements.select("font");
-		System.out.println(fonts.size());
-//		fonts.forEach(e -> System.out.println("\nBEFORE = " + e.html()));
-		fonts.stream()
+		Elements allHtmlElements = parsedHtmlFragment.getAllElements();
+		Elements aElements = allHtmlElements.select("a[href]"); //Those <a> also include <img> or whatever else
+		
+		Elements newHtmlDescription = createNewHtmlDescription();
+		
+		if (!aElements.isEmpty()) {
+			//It is a description of a photo or another included attachment
+			String parentText = aElements.first().parent().ownText() != null ? aElements.first().parent().ownText() : "";
+			
+			Element tr = new Element("tr");
+			Element td = new Element("td").appendText(parentText)
+				.attr("width", "100%").attr("align", "center");
+			td.insertChildren(0, aElements);
+			tr.appendChild(td);
+			newHtmlDescription.select("tbody").first().appendChild(tr);
+			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
+		}
+		
+		Elements tableRowWithDescAndDateTime = getTableRowsWithDescAndDateTime(allHtmlElements);
+		tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
+		newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
+		
+		parsedHtmlFragment.html(newHtmlDescription.html());
+	}
+	
+	private Elements createNewHtmlDescription() {
+		Element font = new Element("font");
+		font.attr("color", "black");
+		Element table = new Element("table");
+		table.attr("width", "100%");
+		Element tBody = new Element("tbody");
+		
+		font.appendChild(table);
+		table.appendChild(tBody);
+		
+		return new Elements(font);
+	}
+	
+	/**
+	 * Filters td Elements with DateTime, gets the earliest, gets its Parent Node with all the table rows which contain
+	 * the whole description of a POI.
+	 *
+	 * @return {@code new Elements("<tr>")} with the whole POI description for the earliest DateTime.
+	 */
+	private Elements getTableRowsWithDescAndDateTime(Elements htmlElements) {
+		Elements tdElementsWithDescription = htmlElements.select("td[align],[valign]");
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		Element tdElementWithMinimumDateTime = tdElementsWithDescription.stream()
+			.filter(Element::hasText)
 			.filter(e -> {
-				Elements font = e.select("font");
-				return font.isEmpty();
+				try {
+					LocalDateTime.parse(e.text(), dateTimeFormatter);
+					return true;
+				} catch (DateTimeParseException ex) {
+					return false;
+				}
 			})
-			.forEach(e -> System.out.println("\nAFTER = " + e.html()));
-//		tables.removeIf(element ->
-//			element.select("table").select("table").size() == 0);
-//		tables.forEach(e -> System.out.println("\nAFTER = " + e.html()));
+			.min((e1, e2) -> {
+				LocalDateTime dateTime1 =
+					LocalDateTime.parse(e1.text(), dateTimeFormatter);
+				LocalDateTime dateTime2 =
+					LocalDateTime.parse(e2.text(), dateTimeFormatter);
+				return dateTime1.compareTo(dateTime2);
+			})
+			.orElse(new Element("td").text(LocalDateTime.now().format(dateTimeFormatter)));
+		
+		if (tdElementWithMinimumDateTime.hasParent()) {
+			//<tr> is the first parent, <tbody> or <table> is the second which contains all the <tr> with descriptions
+			return tdElementWithMinimumDateTime.parent().parent().children();
+		} else {
+			return new Elements(new Element("tr").appendChild(tdElementWithMinimumDateTime));
+		}
+	}
+	
+	private Element getTableRowWithSeparator() {
+		Element tr = new Element("tr");
+		Element td = new Element("td").attr("colspan", "1");
+		td.appendChild(new Element("hr"));
+		tr.appendChild(td);
+		return tr; //Returns just <tr> with <td> with <hr> inside as a table rows separator
 	}
 	
 	private void validateXml(Document document) throws SAXException, IOException {

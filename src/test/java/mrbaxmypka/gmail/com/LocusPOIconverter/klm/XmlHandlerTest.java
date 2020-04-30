@@ -1,7 +1,9 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
 
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
@@ -9,8 +11,9 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
-import java.io.*;
-import java.util.regex.Matcher;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.regex.Pattern;
 
 class XmlHandlerTest {
@@ -159,7 +162,7 @@ class XmlHandlerTest {
 	}
 	
 	@Test
-	public void clearDescriptions_Should()
+	public void clearDescriptions_Should_Return_Single_Table_With_Earliest_DateTimes_And_Full_Descriptions()
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		//GIVEN
 		
@@ -174,7 +177,18 @@ class XmlHandlerTest {
 		String processedKml = xmlHandler.processKml(multipartDto);
 		
 		//THEN
-		Assertions.assertFalse(processedKml.isBlank());
+		Assertions.assertFalse(processedKml.contains("2014-07-18 17:23:20"));
+		Assertions.assertFalse(processedKml.contains("2014-09-18 16:16:44"));
+		Assertions.assertFalse(processedKml.contains("2014-11-21 00:27:31"));
+		
+		Assertions.assertTrue(processedKml.contains(
+			"2014-05-10 16:33:59"));
+		Assertions.assertTrue(processedKml.contains(
+			"<td align=\"center\" valign=\"center\">177 m</td>"));
+		Assertions.assertTrue(processedKml.contains(
+			"<td align=\"center\" valign=\"center\">120°</td>"));
+		Assertions.assertTrue(processedKml.contains(
+			"<td align=\"center\" valign=\"center\">222 m</td>"));
 	}
 	
 }
