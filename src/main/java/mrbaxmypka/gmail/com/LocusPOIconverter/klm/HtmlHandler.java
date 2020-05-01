@@ -38,14 +38,21 @@ public class HtmlHandler {
 			Integer previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
 			setPreviewSize(parsedHtmlFragment, previewSize);
 		}
-		if (multipartDto.isTrimDescriptions()) { // MUST be the last treatment in all the conditions
-			parsedHtmlFragment.html(trimDescriptions(parsedHtmlFragment));
-		}
 		addStartEndComments(parsedHtmlFragment);
+		
+		// MUST be the last treatment in all the conditions chain
+		if (multipartDto.isTrimDescriptions()) {
+			return trimDescriptions(parsedHtmlFragment);
+		}
 		return parsedHtmlFragment.html();
 	}
 	
 	
+	/**
+	 * Sets new local or remote paths instead old ones.
+	 * I.e. old path {@code <a href="files:/_1404638472855.jpg"></>}
+	 * can be replaced with {@code <a href="C:/files:/a new path/_1404638472855.jpg"></>}
+	 */
 	private void setPath(Element parsedHtmlFragment, String path) {
 		Elements aElements = parsedHtmlFragment.select("a[href]");
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
@@ -66,6 +73,10 @@ public class HtmlHandler {
 			});
 	}
 	
+	/**
+	 * Each existing a[href] contains a full path with the filename as the last text element.
+	 * Here we have to replace only the URL and leave the original filename.
+	 */
 	private String getNewHrefWithOldFilename(String oldHrefWithFilename, String newHrefWithoutFilename) {
 //		Each existing a[href] contains a full path with the filename as the last text element.
 //		Here we have to replace only the URL and leave the original filename.
@@ -84,14 +95,19 @@ public class HtmlHandler {
 		imgElements.forEach(img -> img.attr("width", previewSize.toString() + "px"));
 	}
 	
+	/**
+	 * @return Trimmed String inline without redundant whitespaces and line breaks.
+	 */
 	private String trimDescriptions(Element parsedHtmlFragment) {
 		//Deletes 2 or more whitespaces in a row
-		String trimmedString = parsedHtmlFragment.html().replaceAll("\\s{2,}", "").trim();
+		String trimmedString = parsedHtmlFragment.html()
+			.replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
 		return trimmedString;
 	}
 	
 	/**
-	 * MUST be the last method in a chain
+	 * Removes all the unnecessary HTML nodes and data duplicates.
+	 * MUST be the last method in a chain.
 	 */
 	private void clearDescriptions(Element parsedHtmlFragment) {
 		Elements aElements = parsedHtmlFragment.select("a[href]"); //Those <a> also include <img> or whatever else
@@ -117,6 +133,9 @@ public class HtmlHandler {
 		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
 	}
 	
+	/**
+	 * @return Just a new table with tbody for a future description
+	 */
 	private Element createNewHtmlDescription() {
 		Element table = new Element("table")
 			.attr("width", "100%").attr("style", "color:black");
@@ -160,6 +179,9 @@ public class HtmlHandler {
 		}
 	}
 	
+	/**
+	 * @return Just a tr with td with a hr )))
+	 */
 	private Element getTableRowWithSeparator() {
 		Element tr = new Element("tr");
 		Element td = new Element("td").attr("colspan", "1");
@@ -168,7 +190,7 @@ public class HtmlHandler {
 		return tr; //Returns just <tr> with <td> with <hr> inside as a table rows separator
 	}
 	
-	private Element addStartEndComments(Element parsedHtmlFragment) {
+	private void addStartEndComments(Element parsedHtmlFragment) {
 		Comment desc_gen_start = new Comment("desc_gen:start");
 		Comment desc_gen_end = new Comment("desc_gen:end");
 		
@@ -178,6 +200,5 @@ public class HtmlHandler {
 		if (!parsedHtmlFragment.html().endsWith(desc_gen_end.getData())) {
 			parsedHtmlFragment.appendChild(new Comment("desc_gen:end"));
 		}
-		return parsedHtmlFragment;
 	}
 }

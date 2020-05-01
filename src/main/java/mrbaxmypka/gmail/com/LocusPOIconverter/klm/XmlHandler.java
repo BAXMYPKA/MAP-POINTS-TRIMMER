@@ -69,7 +69,6 @@ public class XmlHandler {
 			!multipartDto.isTrimXml()) {
 			return new String(multipartDto.getMultipartFile().getBytes());
 		}
-		
 		while (eventReader.hasNext()) {
 			XMLEvent event = eventReader.nextEvent();
 			switch (event.getEventType()) {
@@ -79,8 +78,8 @@ public class XmlHandler {
 			}
 			writeXmlEvent(event);
 		}
-		System.out.println("\n================ THE RESULT =================================\n");
-		System.out.println(stringWriter);//TODO: to delete one
+//		System.out.println("\n================ THE RESULT =================================\n");
+//		System.out.println(stringWriter);//TODO: to delete one
 		return stringWriter.toString();
 	}
 	
@@ -95,9 +94,22 @@ public class XmlHandler {
 		eventWriter.add(event);
 	}
 	
+	/**
+	 * Temporary the first condition checks {@code '\\s*>\\s*'} regexp as Locus may spread those signs occasionally
+	 * (especially after {@code <ExtendedData> tag}). So
+	 */
 	private XMLEvent processCdata(Characters characters, MultipartDto multipartDto) {
 		
-		if (characters.isWhiteSpace() || !characters.getData().startsWith("<!-- desc_gen:start -->")) {
+		if (characters.getData().matches("\\s*>\\s*")) {
+			return eventFactory.createIgnorableSpace("");
+		}
+		
+		if (characters.isWhiteSpace() || characters.getData().matches("\\s*>\\s*")) {
+			return multipartDto.isTrimXml() ?
+				eventFactory.createIgnorableSpace("") :
+				eventFactory.createCharacters(characters.getData());
+		}
+		if (!characters.getData().startsWith("<!-- desc_gen:start -->")) {
 			return eventFactory.createCharacters(characters.getData());
 		}
 		//Obtain an inner CDATA text to treat as HTML elements

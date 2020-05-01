@@ -12,7 +12,13 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -32,7 +38,7 @@ public class KmlKmzService {
 	 * @param locale
 	 * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
 	 */
-	public void processMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
+	public Path processMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		
 		locale = locale == null ? this.locale : locale;
@@ -43,6 +49,8 @@ public class KmlKmzService {
 		
 		if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kml")) {
 			String processedKml = xmlHandler.processKml(multipartDto);
+			Path tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
+			return tempKmlFile;
 		} else if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kmz")) {
 			//TODO: to proceed with a .kmz file
 		} else {
@@ -51,22 +59,16 @@ public class KmlKmzService {
 				new Object[]{multipartDto.getMultipartFile().getOriginalFilename()},
 				locale));
 		}
-		
+		return Paths.get("file://");
 	}
 	
-/*
-	private void proceedWithKml(MultipartDto multipartDto)
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+	private Path writeTempKmlFile(String kmlDoc, MultipartDto multipartDto) throws IOException {
 		
-		InputStream kmlInputStream = xmlHandler.getInputStream(multipartDto.getMultipartFile());
-		Document document = xmlHandler.getDocument(kmlInputStream);
-		
-		if (multipartDto.isValidateXml()) {
-			xmlHandler.validateXml(document);
-		}
-		if (multipartDto.isSetPath()) {
-			xmlHandler.setPath(kmlInputStream);
+		Path tempFilePath = Paths.get(System.getProperty("java.io.tmpdir")
+				.concat(multipartDto.getMultipartFile().getOriginalFilename()));
+		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFilePath, StandardCharsets.UTF_8)){
+			bufferedWriter.write(kmlDoc);
+			return tempFilePath;
 		}
 	}
-*/
 }
