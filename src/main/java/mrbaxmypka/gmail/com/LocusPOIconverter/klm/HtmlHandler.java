@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
@@ -19,15 +20,13 @@ import java.time.format.DateTimeParseException;
 public class HtmlHandler {
 	
 	/**
-	 * @param htmlCdata Only {@link String} with inner HTML markup
+	 * @param htmlCdata    Only {@link String} with inner HTML markup
 	 * @param multipartDto To determine all other conditions to be processed on CDATA HTML
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
 	public String processCdata(String htmlCdata, MultipartDto multipartDto) {
-		
-		//TODO: to start and end with <!-- desc_gen:start -->
-		
-		Element parsedHtmlFragment = Jsoup.parseBodyFragment(htmlCdata).body();
+		//Gets HTML <body> then all the included children and then the first one as a children's parent container
+		Element parsedHtmlFragment = Jsoup.parseBodyFragment(htmlCdata).body().children().first();
 		
 		if (multipartDto.isClearDescriptions()) { //Should be the first treatment
 			clearDescriptions(parsedHtmlFragment);
@@ -42,6 +41,7 @@ public class HtmlHandler {
 		if (multipartDto.isTrimDescriptions()) { // MUST be the last treatment in all the conditions
 			parsedHtmlFragment.html(trimDescriptions(parsedHtmlFragment));
 		}
+		addStartEndComments(parsedHtmlFragment);
 		return parsedHtmlFragment.html();
 	}
 	
@@ -90,14 +90,16 @@ public class HtmlHandler {
 		return trimmedString;
 	}
 	
+	/**
+	 * MUST be the last method in a chain
+	 */
 	private void clearDescriptions(Element parsedHtmlFragment) {
-		Elements allHtmlElements = parsedHtmlFragment.getAllElements();
-		Elements aElements = allHtmlElements.select("a[href]"); //Those <a> also include <img> or whatever else
+		Elements aElements = parsedHtmlFragment.select("a[href]"); //Those <a> also include <img> or whatever else
 		
-		Elements newHtmlDescription = createNewHtmlDescription();
+		Element newHtmlDescription = createNewHtmlDescription();
 		
 		if (!aElements.isEmpty()) {
-			//It is a description of a photo or another included attachment
+			//These are the descriptions set of a photos or another included attachments as table rows
 			String parentText = aElements.first().parent().ownText() != null ? aElements.first().parent().ownText() : "";
 			
 			Element tr = new Element("tr");
@@ -108,25 +110,18 @@ public class HtmlHandler {
 			newHtmlDescription.select("tbody").first().appendChild(tr);
 			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
 		}
-		
-		Elements tableRowWithDescAndDateTime = getTableRowsWithDescAndDateTime(allHtmlElements);
+		Elements tableRowWithDescAndDateTime = getTableRowsWithDescAndDateTime(parsedHtmlFragment.getAllElements());
 		tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
 		newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
 		
-		parsedHtmlFragment.html(newHtmlDescription.html());
+		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
 	}
 	
-	private Elements createNewHtmlDescription() {
-		Element font = new Element("font");
-		font.attr("color", "black");
-		Element table = new Element("table");
-		table.attr("width", "100%");
-		Element tBody = new Element("tbody");
-		
-		font.appendChild(table);
-		table.appendChild(tBody);
-		
-		return new Elements(font);
+	private Element createNewHtmlDescription() {
+		Element table = new Element("table")
+			.attr("width", "100%").attr("style", "color:black");
+		table.appendChild(new Element("tbody"));
+		return table;
 	}
 	
 	/**
@@ -173,4 +168,16 @@ public class HtmlHandler {
 		return tr; //Returns just <tr> with <td> with <hr> inside as a table rows separator
 	}
 	
+	private Element addStartEndComments(Element parsedHtmlFragment) {
+		Comment desc_gen_start = new Comment("desc_gen:start");
+		Comment desc_gen_end = new Comment("desc_gen:end");
+		
+		if (!parsedHtmlFragment.html().startsWith(desc_gen_start.getData())) {
+			parsedHtmlFragment.prependChild(new Comment("desc_gen:start"));
+		}
+		if (!parsedHtmlFragment.html().endsWith(desc_gen_end.getData())) {
+			parsedHtmlFragment.appendChild(new Comment("desc_gen:end"));
+		}
+		return parsedHtmlFragment;
+	}
 }

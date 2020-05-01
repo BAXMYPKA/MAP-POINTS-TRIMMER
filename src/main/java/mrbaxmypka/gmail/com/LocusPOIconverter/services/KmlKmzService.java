@@ -32,7 +32,7 @@ public class KmlKmzService {
 	 * @param locale
 	 * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
 	 */
-	public void treatMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
+	public void processMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		
 		locale = locale == null ? this.locale : locale;

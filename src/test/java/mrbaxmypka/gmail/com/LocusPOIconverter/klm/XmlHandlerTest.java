@@ -21,7 +21,8 @@ class XmlHandlerTest {
 	private static InputStream inputStream;
 	private static MultipartDto multipartDto;
 	private static MultipartFile multipartFile;
-	private XmlHandler xmlHandler = new XmlHandler();
+	private HtmlHandler htmlHandler = new HtmlHandler();
+	private XmlHandler xmlHandler = new XmlHandler(htmlHandler);
 	
 	@Test
 	@Disabled

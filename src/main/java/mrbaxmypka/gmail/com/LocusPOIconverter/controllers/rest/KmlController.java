@@ -37,7 +37,7 @@ public class KmlController {
 		throws IOException, SAXException, ParserConfigurationException, XMLStreamException, TransformerException {
 		//TODO: to treat validation errors in the ControllerAdvice
 		
-		kmlKmzService.treatMultipartDto(poiFile, locale);
+		kmlKmzService.processMultipartDto(poiFile, locale);
 		
 		return null;
 	}
