@@ -1,16 +1,23 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.util.Locale;
 
 @ControllerAdvice
 public class ExceptionsController {
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	//TODO: to make logging
 	
@@ -42,6 +49,18 @@ public class ExceptionsController {
 	public ResponseEntity<String> xmlParsingException(SAXException sae) {
 		//code 422
 		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(sae.getMessage());
+	}
+	
+	/**
+	 * @param ie Occurs only in case of {@link ShutdownController#shutdownApp(Model, Locale)} cant shut the
+	 *              application down.
+	 * @return {@link HttpStatus#INTERNAL_SERVER_ERROR} with the information how a User can shut the application down
+	 * manually.
+	 */
+	@ExceptionHandler(InterruptedException.class)
+	public ResponseEntity<String> interruptedException(InterruptedException ie, Locale locale) {
+		String shutdownFailureMessage = messageSource.getMessage("exception.shutdownFaulire", null, locale);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(shutdownFailureMessage);
 	}
 	
 	/**

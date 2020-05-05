@@ -1,5 +1,6 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.services;
 
+import lombok.Getter;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.LocusPOIconverter.klm.XmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,13 +25,20 @@ import java.util.Objects;
 @Service
 public class KmlKmzService {
 	
-	Locale locale = Locale.ENGLISH;
+	private Locale locale = Locale.ENGLISH;
 	
-	@Autowired
 	private MessageSource messageSource;
 	
-	@Autowired
 	private XmlHandler xmlHandler;
+	
+	@Getter
+	private Path tempKmlFile;
+	
+	@Autowired
+	public KmlKmzService(XmlHandler xmlHandler, MessageSource messageSource) {
+		this.xmlHandler = xmlHandler;
+		this.messageSource = messageSource;
+	}
 	
 	/**
 	 * @param multipartDto
@@ -42,14 +49,14 @@ public class KmlKmzService {
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		
 		locale = locale == null ? this.locale : locale;
-		
+		//Checks MultipartFile.getOriginalFilename for being null
 		Objects.requireNonNull(
 			multipartDto.getMultipartFile().getOriginalFilename(),
 			messageSource.getMessage("exception.nullFilename", null, locale));
 		
 		if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kml")) {
 			String processedKml = xmlHandler.processKml(multipartDto);
-			Path tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
+			tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
 			return tempKmlFile;
 		} else if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kmz")) {
 			//TODO: to proceed with a .kmz file
@@ -63,7 +70,6 @@ public class KmlKmzService {
 	}
 	
 	private Path writeTempKmlFile(String kmlDoc, MultipartDto multipartDto) throws IOException {
-		
 		Path tempFilePath = Paths.get(System.getProperty("java.io.tmpdir")
 				.concat(multipartDto.getMultipartFile().getOriginalFilename()));
 		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFilePath, StandardCharsets.UTF_8)){

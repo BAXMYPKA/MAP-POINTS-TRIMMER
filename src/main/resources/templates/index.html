@@ -13,7 +13,9 @@
 		
 		<img src="" title="logo">
 		
-		<h1 th:text="#{h1.header}">Locus POI trimmer</h1>
+		<a href="/" th:href="@{/}">
+			<h1 class="applicationName" th:text="#{h1.header}">Locus POI trimmer</h1>
+		</a>
 		
 		<div class="headerGroup1">
 			
@@ -23,7 +25,10 @@
 				<option th:value="@{/(lang=ru)}">RU</option>
 			</select>
 			
-			<button class="shutdownButton" th:text="#{text.shutdown}" th:title="#{title.shutdown}">SHUTDOWN</button>
+			<button class="shutdownButton" th:text="#{text.shutdown}" th:title="#{title.shutdown}"
+					onclick="{window.location.href = window.location.href.concat('shutdown');}">
+				SHUTDOWN
+			</button>
 		
 		</div>
 	
@@ -36,6 +41,8 @@
 		
 		
 		<article>How properly import POIs from Locus to Google Earth application description</article>
+		
+		<div class="userMessage"></div>
 		
 		<form class="loaderForm" name="poiFile" action="/locusToGoogle" method="post" enctype="multipart/form-data">
 			<label for="locusKmz">Load Locus POI file</label>
@@ -68,7 +75,7 @@
 				<br>
 				<input id="previewSize" name="previewSize" type="number" placeholder="640" value="640"
 					   min="0" max="2440" disabled>
-				<span th:text="#{}">px</span>
+				<span th:text="#{span.px}">px</span>
 				<br>
 				<input id="clearDescriptions" name="clearDescriptions" type="checkbox" checked>
 				<label for="clearDescriptions" th:text="#{input.clear}">Clear outdated POIs descriptions</label>
@@ -80,11 +87,6 @@
 				<label for="setPath" th:text="#{input.setPath}">Set local path to .jpg files for photo POIs</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
-				<!--				<input id="path" name="path" type="checkbox"-->
-				<!--					   onclick="const sizeInput = document.getElementById('path'); if(this.checked) {-->
-				<!--					   sizeInput.disabled = false} else { sizeInput.disabled = true}">-->
-				<!--				<label for="setPath">Set path to imported photos</label>-->
-				<!--				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>-->
 				<input id="path" name="path" type="text" disabled
 					   th:title="#{title.defaultPath}"
 					   title="Windows 7/10 default path to the installed Google Earth Pro's saved places"
@@ -99,7 +101,11 @@
 				</datalist>
 				<br>
 			</fieldset>
-			<input type="submit" th:value="#{input.value.convert}" value="CONVERT">
+			<input type="submit" th:value="#{input.value.convert}" value="CONVERT" onsubmit="{
+				document.querySelector('.downloadMessage').hidden = false;
+				document.querySelector('.loaderForm').submit();
+			}">
+			<span class="downloadMessage" th:text="${downloadMessage}" hidden></span>
 		</form>
 	
 	
