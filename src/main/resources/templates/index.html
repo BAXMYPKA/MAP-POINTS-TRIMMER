@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
+	<script src="../static/scripts/index.js" th:src="@{/scripts/index.js}" defer></script>
 	<title>Locus POI converter</title>
 </head>
 <body>
@@ -11,9 +12,9 @@
 	
 	<header>
 		
-		<img src="" title="logo">
+		<img src="../static/img/unnamed.png" title="logo" class="logo">
 		
-		<a href="/" th:href="@{/}">
+		<a href="/" th:href="@{/}" class="applicationName">
 			<h1 class="applicationName" th:text="#{h1.header}">Locus POI trimmer</h1>
 		</a>
 		
@@ -30,6 +31,8 @@
 				SHUTDOWN
 			</button>
 		
+<!--			<img src="../static/img/offBtn.png" class="shutdownButtonPng" alt="" style="background-color: aqua">-->
+			
 		</div>
 	
 	</header>
@@ -48,7 +51,7 @@
 			<label for="locusKmz">Load Locus POI file</label>
 			<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 			<br>
-			<input id="locusKmz" type="file" accept=".kmz, .kml"
+			<input id="locusKmz" type="file" accept=".kmz, .kml" class="inputButton"
 				   required autofocus>
 			<br><br>
 			<label for="fieldSet" th:text="#{label.additionalParams}">Set additional parameters</label>
@@ -101,7 +104,8 @@
 				</datalist>
 				<br>
 			</fieldset>
-			<input type="submit" th:value="#{input.value.convert}" value="CONVERT" onsubmit="{
+			<input type="submit" th:value="#{input.value.convert}" value="CONVERT" class="inputButton"
+				   onsubmit="{
 				document.querySelector('.downloadMessage').hidden = false;
 				document.querySelector('.loaderForm').submit();
 			}">

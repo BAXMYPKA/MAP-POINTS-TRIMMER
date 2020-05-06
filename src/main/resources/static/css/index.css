@@ -11,7 +11,7 @@ header {
 	align-items: center;
 	padding: 0.5em;
 	background-color: lightgoldenrodyellow;
-	border: palegoldenrod 0.3em solid;
+	border: goldenrod 0.1em solid;
 	border-radius: 0.4em;
 }
 
@@ -21,32 +21,71 @@ header {
 	justify-content: space-between;
 }
 
-.langSelector{
+.langSelector {
 	margin-right: 1em;
+	border: goldenrod 0.2em solid;
+	border-radius: 0.3em;
+	font-family: Tahoma, sans-serif;
+	font-size: 0.7em;
+	background-color: lightyellow;
+	/*opacity: 0.3;*/
 }
+
+.langSelector:hover {
+	background-color: lightgoldenrodyellow;
+}
+
+.logo {
+	height: 5%;
+	width: 5%;
+	border-radius: 60%;
+}
+
+/*
+.shutdownButtonPng {
+	!*width: 10%;*!
+	!*height: 10%;*!
+	background-color: springgreen;
+}
+*/
 
 .shutdownButton {
 	padding: 0.5em;
-	border-radius: 0.2em;
-	border: greenyellow 0.3em solid;
-	background-color: yellowgreen;
-	font-weight: bolder;
-	transition-duration: 0.8s;
+	border-radius: 0.3em;
+	/*border-radius: 50%;*/
+	/*border: greenyellow 0.3em solid;*/
+	background-color: lightyellow;
+	font-weight: bold;
+	font-size: small;
+	font-family: "Arial Black", sans-serif;
+	color: green;
 	transition: all;
+	transition-duration: 0.3s;
+	/*transition-timing-function: ease-in;*/
 }
 
 .shutdownButton:hover {
 	/*border: darkred 0.3em solid;*/
-	box-shadow: darkgrey inset 0 0 0.2em 0.2em;
+	box-shadow: lightgrey  0.1em 0.1em 0.3em 0.2em;
 	cursor: cell;
+	color: lightgreen;
 }
 
-.shutdownButton:active{
+.shutdownButton:active {
 	box-shadow: inset 0 0 0.4em 0.4em grey;
 }
 
-.shutdownButton:focus{
+.shutdownButton:focus {
 	background-color: darkgrey;
+}
+
+.applicationName {
+	text-decoration: none;
+	text-transform: uppercase;
+	font-family: Arial, sans-serif;
+	font-size: 1.5em;
+	font-weight: bolder;
+	color: saddlebrown;
 }
 
 main {
@@ -63,7 +102,7 @@ article {
 .loaderForm {
 	margin: 1em;
 	padding: 0.5em;
-	border: goldenrod 0.08em solid;
+	border: goldenrod 0.05em solid;
 	box-shadow: palegoldenrod inset 0 0 0.7em 0.2em;
 }
 
@@ -76,9 +115,9 @@ article {
 	font-weight: bold;
 }
 
-/*.loader > label:hover:after {*/
-/*	content: string("lkjlkjlkj");*/
-/*}*/
+.inputButton {
+	font-weight: bold;
+}
 
 #prevSize {
 	width: 4em;
@@ -96,7 +135,7 @@ article {
 	border: green solid 0.1em;
 	background-color: lightgreen;
 	text-align: center;
-	vertical-align: center;
+	vertical-align: middle;
 	font-weight: bold;
 	transition-duration: 0.5s;
 	transition: all;
