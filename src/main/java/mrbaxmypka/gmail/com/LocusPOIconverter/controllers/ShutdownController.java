@@ -24,6 +24,11 @@ public class ShutdownController {
 	@Autowired
 	private KmlKmzService kmlKmzService;
 	
+	/**
+	 * Attribute for index.html to apply this css className to make the 'Shutdown' button grey.
+	 */
+	private final String SHUTDOWN_BTN_CLASS = "shutdownButtonOff";
+	
 	@GetMapping(path = "/shutdown")
 	public String shutdownApp(Model model, Locale locale) throws Exception {
 		try {
@@ -42,6 +47,7 @@ public class ShutdownController {
 			
 			String shutdownMessage = messageSource.getMessage("userMessage.shutdownSuccess", null, locale);
 			model.addAttribute("userMessage", shutdownMessage);
+			model.addAttribute("shutdownBtnClass", SHUTDOWN_BTN_CLASS);
 			return "redirect:/";
 		}
 	}

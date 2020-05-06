@@ -5,6 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.xml.sax.SAXException;
@@ -61,6 +62,13 @@ public class ExceptionsController {
 	public ResponseEntity<String> interruptedException(InterruptedException ie, Locale locale) {
 		String shutdownFailureMessage = messageSource.getMessage("exception.shutdownFaulire", null, locale);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(shutdownFailureMessage);
+	}
+	
+	@ExceptionHandler(BindException.class)
+	public ResponseEntity<String> validationException(BindException be, Locale locale) {
+		System.out.println("BIND ERROR");
+		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(be.getAllErrors().get(0).getDefaultMessage());
+		
 	}
 	
 	/**

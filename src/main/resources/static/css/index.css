@@ -49,7 +49,7 @@ header {
 }
 */
 
-.shutdownButton {
+.shutdownButtonOn {
 	padding: 0.5em;
 	border-radius: 0.3em;
 	/*border-radius: 50%;*/
@@ -64,19 +64,32 @@ header {
 	/*transition-timing-function: ease-in;*/
 }
 
-.shutdownButton:hover {
+.shutdownButtonOn:hover {
 	/*border: darkred 0.3em solid;*/
 	box-shadow: lightgrey  0.1em 0.1em 0.3em 0.2em;
 	cursor: cell;
-	color: lightgreen;
+	color: limegreen;
 }
 
-.shutdownButton:active {
+.shutdownButtonOn:active {
 	box-shadow: inset 0 0 0.4em 0.4em grey;
 }
 
-.shutdownButton:focus {
+.shutdownButtonOn:focus {
 	background-color: darkgrey;
+}
+
+.shutdownButtonOff {
+	padding: 0.5em;
+	border-radius: 0.3em;
+	background-color: lightgray;
+	font-weight: bold;
+	font-size: small;
+	font-family: "Arial Black", sans-serif;
+	color: green;
+	transition: all;
+	transition-duration: 0.3s;
+	/*transition-timing-function: ease-in;*/
 }
 
 .applicationName {
@@ -117,6 +130,21 @@ article {
 
 .inputButton {
 	font-weight: bold;
+	border: goldenrod 0.1em solid;
+	border-radius: 0.2em;
+}
+
+.awaitGif {
+	width: 1.3em;
+	height: 1.3em;
+	margin-left: 1.2em;
+}
+
+.bottomFieldset {
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-content: center;
 }
 
 #prevSize {

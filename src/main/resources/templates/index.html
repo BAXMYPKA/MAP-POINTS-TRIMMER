@@ -12,7 +12,7 @@
 	
 	<header>
 		
-		<img src="../static/img/unnamed.png" title="logo" class="logo">
+		<img src="../static/img/unnamed.png" th:src="@{/img/unnamed.png}" atl="logo" class="logo">
 		
 		<a href="/" th:href="@{/}" class="applicationName">
 			<h1 class="applicationName" th:text="#{h1.header}">Locus POI trimmer</h1>
@@ -26,13 +26,13 @@
 				<option th:value="@{/(lang=ru)}">RU</option>
 			</select>
 			
-			<button class="shutdownButton" th:text="#{text.shutdown}" th:title="#{title.shutdown}"
+			<button class="shutdownButtonOn"
+					th:class="${shutdownBtnClass} ?: 'shutdownButtonOn'"
+					th:text="#{text.shutdown}" th:title="#{title.shutdown}"
 					onclick="{window.location.href = window.location.href.concat('shutdown');}">
 				SHUTDOWN
 			</button>
 		
-<!--			<img src="../static/img/offBtn.png" class="shutdownButtonPng" alt="" style="background-color: aqua">-->
-			
 		</div>
 	
 	</header>
@@ -47,25 +47,26 @@
 		
 		<div class="userMessage"></div>
 		
-		<form class="loaderForm" name="poiFile" action="/locusToGoogle" method="post" enctype="multipart/form-data">
-			<label for="locusKmz">Load Locus POI file</label>
+		<form class="loaderForm" action="/kml" method="post" enctype="multipart/form-data"
+			  th:action="@{/kml}" name="poiFile" id="poiFile">
+			<label for="locusFile">Load Locus POI file</label>
 			<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 			<br>
-			<input id="locusKmz" type="file" accept=".kmz, .kml" class="inputButton"
+			<input id="locusFile" type="file" accept=".kmz, .kml" class="inputButton" name="multipartFile"
 				   required autofocus>
 			<br><br>
 			<label for="fieldSet" th:text="#{label.additionalParams}">Set additional parameters</label>
 			<fieldset id="fieldSet" class="loaderForm">
 				<input id="validateXml" name="validateXml" type="checkbox">
-				<label for="validateXml" th:text="#{input.clear}">Severe validation check</label>
+				<label for="validateXml" th:text="#{label.validateXml}">Severe validation check</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
 				<input id="trimXml" name="trimXml" type="checkbox">
-				<label for="trimXml" th:text="#{input.clear}">Trim whitespaces in the whole file to compress</label>
+				<label for="trimXml" th:text="#{label.trimXml}">Trim whitespaces in the whole file to compress</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
 				<input id="trimDescriptions" name="trimDescriptions" type="checkbox">
-				<label for="trimDescriptions" th:text="#{input.clear}">
+				<label for="trimDescriptions" th:text="#{label.trimDescriptions}">
 					Trim whitespaces only in user descriptions to compress
 				</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
@@ -81,7 +82,8 @@
 				<span th:text="#{span.px}">px</span>
 				<br>
 				<input id="clearDescriptions" name="clearDescriptions" type="checkbox" checked>
-				<label for="clearDescriptions" th:text="#{input.clear}">Clear outdated POIs descriptions</label>
+				<label for="clearDescriptions" th:text="#{label.clearDescriptions}">Clear outdated POIs
+					descriptions</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
 				<input id="setPath" name="setPath" type="checkbox"
@@ -104,14 +106,15 @@
 				</datalist>
 				<br>
 			</fieldset>
-			<input type="submit" th:value="#{input.value.convert}" value="CONVERT" class="inputButton"
-				   onsubmit="{
-				document.querySelector('.downloadMessage').hidden = false;
-				document.querySelector('.loaderForm').submit();
-			}">
-			<span class="downloadMessage" th:text="${downloadMessage}" hidden></span>
+			
+			<div class="bottomFieldset">
+				<input type="submit" th:value="#{input.value.convert}" value="CONVERT" class="inputButton"
+					   onsubmit="{document.querySelector('.loaderForm').submit()}">
+				<img src="../static/img/await.gif" th:src="@{/img/await.gif}" class="awaitGif" alt="waiting...">
+				<div class="downloadMessage" th:text="${downloadMessage}" hidden>Download</div>
+			</div>
+		
 		</form>
-	
 	
 	</main>
 

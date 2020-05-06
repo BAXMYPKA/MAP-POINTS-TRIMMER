@@ -7,10 +7,12 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = {"multipartFile"})
 @Getter
+@Setter
 public class MultipartDto implements Serializable {
 	
 	static final long serialVersionUID = 3L;
