@@ -18,10 +18,13 @@
 		
 		document.getElementById("setPath").addEventListener('change', ev => {
 			const path = document.getElementById("path");
+			const pathTypes = document.querySelectorAll("input[name='pathType']");
 			if (ev.target.checked) {
 				path.disabled = false;
+				pathTypes.forEach(value => value.disabled = false)
 			} else {
 				path.disabled = true;
+				pathTypes.forEach(value => value.disabled = true)
 			}
 		});
 		

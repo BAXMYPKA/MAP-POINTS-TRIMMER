@@ -42,6 +42,9 @@ public class MultipartDto implements Serializable {
 	 * Enables or disables using of {@link #path}
 	 */
 	private boolean setPath;
+	
+	//TODO: to complete path types
+	private Enum pathType;
 	/**
 	 * Local or Http path to all the attachments inside HTML descriptions
 	 */
