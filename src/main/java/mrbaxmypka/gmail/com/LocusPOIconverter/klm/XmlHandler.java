@@ -114,7 +114,22 @@ public class XmlHandler {
 		}
 		//Obtain an inner CDATA text to treat as HTML elements
 		String processedHtmlCdata = htmlHandler.processCdata(characters.getData(), multipartDto);
+		
+		processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartDto);
+		
 		return eventFactory.createCData(processedHtmlCdata);
+	}
+	
+	/**
+	 * Just for pretty printing and mark out CDATA descriptions.
+	 * If the whole XML document is inline except CDATA so as to emphasize that CDATA among XML this method add start
+	 * and end lineBreaks.
+	 */
+	private String prettyPrintCdataXml(String processedHtmlCdata, MultipartDto multipartDto) {
+		if (multipartDto.isTrimXml() && !multipartDto.isTrimDescriptions()) {
+			processedHtmlCdata = "\n" + processedHtmlCdata.concat("\n");
+		}
+		return processedHtmlCdata;
 	}
 	
 	//TODO: To treat LocusPOI Images started with 'file://'

@@ -17,9 +17,9 @@ public class IndexController {
 	
 	@GetMapping(path = {"/", "/converter"})
 	public String getIndex(Model model, Locale locale) {
-		String downloadMessage = messageSource.getMessage("userMessage.downloadMessageAwait", null, locale);
+//		String downloadMessage = messageSource.getMessage("userMessage.downloadMessageAwait", null, locale);
 		model.addAttribute("poiFile", new MultipartDto());
-		model.addAttribute("downloadMessage", downloadMessage);
+//		model.addAttribute("downloadMessage", downloadMessage);
 		return "index";
 	}
 	

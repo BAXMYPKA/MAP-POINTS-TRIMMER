@@ -27,7 +27,7 @@ public class MultipartDto implements Serializable {
 	private boolean trimDescriptions;
 	
 	/**
-	 * To trim the whole .kml document
+	 * To trim the whole .kml document to a single line without breaks and whitespaces
 	 */
 	private boolean trimXml;
 	

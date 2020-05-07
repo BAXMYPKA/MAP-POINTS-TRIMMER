@@ -28,8 +28,7 @@
 			
 			<button class="shutdownButtonOn"
 					th:class="${shutdownBtnClass} ?: 'shutdownButtonOn'"
-					th:text="#{text.shutdown}" th:title="#{title.shutdown}"
-					onclick="{window.location.href = window.location.href.concat('shutdown');}">
+					th:text="#{text.shutdown}" th:title="#{title.shutdown}">
 				SHUTDOWN
 			</button>
 		
@@ -57,23 +56,21 @@
 			<br><br>
 			<label for="fieldSet" th:text="#{label.additionalParams}">Set additional parameters</label>
 			<fieldset id="fieldSet" class="loaderForm">
-				<input id="validateXml" name="validateXml" type="checkbox">
-				<label for="validateXml" th:text="#{label.validateXml}">Severe validation check</label>
-				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
-				<br>
+<!--				<input id="validateXml" name="validateXml" type="checkbox">-->
+<!--				<label for="validateXml" th:text="#{label.validateXml}">Severe validation check</label>-->
+<!--				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>-->
+<!--				<br>-->
 				<input id="trimXml" name="trimXml" type="checkbox">
-				<label for="trimXml" th:text="#{label.trimXml}">Trim whitespaces in the whole file to compress</label>
+				<label for="trimXml" th:text="#{label.trimXml}">Trim whitespaces in xml markup to compress</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
 				<input id="trimDescriptions" name="trimDescriptions" type="checkbox">
 				<label for="trimDescriptions" th:text="#{label.trimDescriptions}">
-					Trim whitespaces only in user descriptions to compress
+					Trim whitespaces in user descriptions to compress
 				</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
-				<input id="setPreviewSize" name="setPreviewSize" type="checkbox"
-					   onclick="const sizeInput = document.getElementById('previewSize'); if(this.checked) {
-					   sizeInput.disabled = false} else { sizeInput.disabled = true}">
+				<input id="setPreviewSize" name="setPreviewSize" type="checkbox">
 				<label for="setPreviewSize" th:text="#{label.previewSize}">Set photos preview size</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
@@ -86,9 +83,7 @@
 					descriptions</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
-				<input id="setPath" name="setPath" type="checkbox"
-					   onclick="const sizeInput = document.getElementById('path');
-					   if(this.checked) {sizeInput.disabled = false} else { sizeInput.disabled = true}">
+				<input id="setPath" name="setPath" type="checkbox">
 				<label for="setPath" th:text="#{input.setPath}">Set local path to .jpg files for photo POIs</label>
 				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
 				<br>
@@ -108,10 +103,11 @@
 			</fieldset>
 			
 			<div class="bottomFieldset">
-				<input type="submit" th:value="#{input.value.convert}" value="CONVERT" class="inputButton"
-					   onsubmit="{document.querySelector('.loaderForm').submit()}">
-				<img src="../static/img/await.gif" th:src="@{/img/await.gif}" class="awaitGif" alt="waiting...">
-				<div class="downloadMessage" th:text="${downloadMessage}" hidden>Download</div>
+				<input type="submit" th:value="#{input.value.convert}" value="CONVERT" id="convert" class="inputButton">
+<!--				<img src="../static/img/await.gif" th:src="@{/img/await.gif}" class="awaitGif" alt="waiting..." hidden>-->
+				<span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
+					Download
+				</span>
 			</div>
 		
 		</form>
