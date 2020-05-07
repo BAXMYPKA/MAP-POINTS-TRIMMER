@@ -15,20 +15,20 @@
 		<img src="../static/img/unnamed.png" th:src="@{/img/unnamed.png}" atl="logo" class="logo">
 		
 		<a href="/" th:href="@{/}" class="applicationName">
-			<h1 class="applicationName" th:text="#{h1.header}">Locus POI trimmer</h1>
+			<h1 class="applicationName" th:text="#{html.h1.header}">Locus POI trimmer</h1>
 		</a>
 		
 		<div class="headerGroup1">
 			
 			<select class="langSelector" onchange="location = this.value">
-				<option th:text="#{option.lang}">Language...</option>
+				<option th:text="#{html.option.lang}">Language...</option>
 				<option th:value="@{/(lang=en)}">EN</option>
 				<option th:value="@{/(lang=ru)}">RU</option>
 			</select>
 			
 			<button class="shutdownButtonOn"
 					th:class="${shutdownBtnClass} ?: 'shutdownButtonOn'"
-					th:text="#{text.shutdown}" th:title="#{title.shutdown}">
+					th:text="#{html.text.shutdown}" th:title="#{html.title.shutdown}">
 				SHUTDOWN
 			</button>
 		
@@ -38,7 +38,7 @@
 	
 	<main>
 		
-		<h2 th:text="#{h2.howToConvert}">How to properly convert your Locus POIs to Google Earth Windows
+		<h2 th:text="#{html.h2.howToConvert}">How to properly convert your Locus POIs to Google Earth Windows
 			application</h2>
 		
 		
@@ -49,62 +49,64 @@
 		<form class="loaderForm" action="/kml" method="post" enctype="multipart/form-data"
 			  th:action="@{/kml}" name="poiFile" id="poiFile">
 			<label for="locusFile">Load Locus POI file</label>
-			<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+			<div class="interrogation" title="Description" th:title="#{html.title.interrogation.locusFile}">?</div>
 			<br>
 			<input id="locusFile" type="file" accept=".kmz, .kml" class="inputButton" name="multipartFile"
 				   required autofocus>
 			<br><br>
-			<label for="fieldSet" th:text="#{label.additionalParams}">Set additional parameters</label>
+			<label for="fieldSet" th:text="#{html.label.additionalParams}">Set additional parameters</label>
 			<fieldset id="fieldSet" class="loaderForm">
-<!--				<input id="validateXml" name="validateXml" type="checkbox">-->
-<!--				<label for="validateXml" th:text="#{label.validateXml}">Severe validation check</label>-->
-<!--				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>-->
-<!--				<br>-->
+				<!--				<input id="validateXml" name="validateXml" type="checkbox">-->
+				<!--				<label for="validateXml" th:text="#{html.label.validateXml}">Severe validation check</label>-->
+				<!--				<div class="interrogation" title="Description" th:title="#{html.title.photoPreviewDescription}">?</div>-->
+				<!--				<br>-->
 				<input id="trimXml" name="trimXml" type="checkbox">
-				<label for="trimXml" th:text="#{label.trimXml}">Trim whitespaces in xml markup to compress</label>
-				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<label for="trimXml" th:text="#{html.label.trimXml}">Trim whitespaces in xml markup to compress</label>
+				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.trimXml}">?</div>
 				<br>
 				<input id="trimDescriptions" name="trimDescriptions" type="checkbox">
-				<label for="trimDescriptions" th:text="#{label.trimDescriptions}">
+				<label for="trimDescriptions" th:text="#{html.label.trimDescriptions}">
 					Trim whitespaces in user descriptions to compress
 				</label>
-				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.trimDescription}">
+					?
+				</div>
 				<br>
 				<input id="setPreviewSize" name="setPreviewSize" type="checkbox">
-				<label for="setPreviewSize" th:text="#{label.previewSize}">Set photos preview size</label>
-				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<label for="setPreviewSize" th:text="#{html.label.previewSize}">Set photos preview size</label>
+				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPhotosPreview}">
+					?
+				</div>
 				<br>
 				<input id="previewSize" name="previewSize" type="number" placeholder="640" value="640"
 					   min="0" max="2440" disabled>
-				<span th:text="#{span.px}">px</span>
+				<span th:text="#{html.span.px}">px</span>
 				<br>
 				<input id="clearDescriptions" name="clearDescriptions" type="checkbox" checked>
-				<label for="clearDescriptions" th:text="#{label.clearDescriptions}">Clear outdated POIs
+				<label for="clearDescriptions" th:text="#{html.label.clearDescriptions}">Clear outdated POIs
 					descriptions</label>
-				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<div class="interrogation" title="Description"
+					 th:title="#{html.title.interrogation.trimOutdatedPoiDesc}">?
+				</div>
 				<br>
 				<input id="setPath" name="setPath" type="checkbox">
-				<label for="setPath" th:text="#{input.setPath}">Set local path to .jpg files for photo POIs</label>
-				<div class="interrogation" title="Description" th:title="#{title.photoPreviewDescription}">?</div>
+				<label for="setPath" th:text="#{html.input.setPath}">Set local path to .jpg files for photo POIs</label>
+				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPath}">?</div>
 				<br>
 				<input id="path" name="path" type="text" disabled
-					   th:title="#{title.defaultPath}"
+					   th:title="#{html.title.defaultPath}"
 					   title="Windows 7/10 default path to the installed Google Earth Pro's saved places"
-					   th:placeholder="#{placeholder.input.defaultPath}"
+					   th:placeholder="#{html.placeholder.input.defaultPath}"
 					   placeholder="C:\Users\%username%\AppData\LocalLow\Google\GoogleEarth\files"
-					   th:value="#{placeholder.input.defaultPath}"
+					   th:value="#{html.placeholder.input.defaultPath}"
 					   value="C:\Users\%username%\AppData\LocalLow\Google\GoogleEarth\files">
-				<input type="text" list="paths">
-				<datalist id="paths">
-					<option>%USERPROFILE%\AppData\LocalLow\Google\GoogleEarth\files</option>
-					<option>%USERPROFILE%\AppData\LocalLow\Google\GoogleEarth\files</option>
-				</datalist>
+				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.path}">?</div>
 				<br>
 			</fieldset>
 			
 			<div class="bottomFieldset">
-				<input type="submit" th:value="#{input.value.convert}" value="CONVERT" id="convert" class="inputButton">
-<!--				<img src="../static/img/await.gif" th:src="@{/img/await.gif}" class="awaitGif" alt="waiting..." hidden>-->
+				<input type="submit" th:value="#{html.input.value.convert}" value="CONVERT" id="convert"
+					   class="inputButton">
 				<span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					Download
 				</span>

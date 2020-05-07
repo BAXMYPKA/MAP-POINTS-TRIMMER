@@ -78,8 +78,6 @@ public class XmlHandler {
 			}
 			writeXmlEvent(event);
 		}
-//		System.out.println("\n================ THE RESULT =================================\n");
-//		System.out.println(stringWriter);//TODO: to delete one
 		return stringWriter.toString();
 	}
 	

@@ -41,13 +41,6 @@ public class KmlController {
 		
 		Path tmpFile = kmlKmzService.processMultipartDto(poiFile, locale);
 		FileSystemResource resource = new FileSystemResource(tmpFile);
-		//TODO: to delete
-		System.out.println(resource.getFilename());
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		return ResponseEntity.ok()
 			.header("Content-Disposition", "attachment; filename=" + tmpFile.getFileName()).body(resource);
 	}

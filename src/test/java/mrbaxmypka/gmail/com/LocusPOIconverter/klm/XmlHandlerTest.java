@@ -12,13 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class XmlHandlerTest {
@@ -257,7 +251,7 @@ class XmlHandlerTest {
 			"</Document>\n" +
 			"</kml>\n";
 		
-		inputStream = new ByteArrayInputStream(testKml.getBytes());
+		inputStream = new ByteArrayInputStream(testKml.getBytes(StandardCharsets.UTF_8));
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
@@ -269,7 +263,6 @@ class XmlHandlerTest {
 		
 		//THEN xml tags are without whitespaces but CDATA starts and ends with them
 		
-		System.out.println(processedKml);
 		Assertions.assertAll(
 			() -> Assertions.assertTrue(processedKml.contains("<description><![CDATA[\n")),
 			() -> Assertions.assertTrue(processedKml.contains("\n<!--desc_gen:start-->")),
@@ -281,7 +274,6 @@ class XmlHandlerTest {
 			() -> Assertions.assertFalse(processedKml.contains("<Document>\n")),
 			() -> Assertions.assertFalse(processedKml.contains("\t<name>Избранное_Locus17.04.2020</name>\n"))
 		);
-		
 	}
 	
 	
@@ -351,28 +343,5 @@ class XmlHandlerTest {
 			() -> Assertions.assertFalse(patternNewString.matcher(processedKml).find())
 		);
 */
-	}
-	
-	@Test
-	@Disabled
-	public void testing() throws IOException {
-		String kml = "<xml></xml>";
-//		System.getProperties().entrySet().forEach(p -> System.out.println(p.getKey()+" = "+p.getValue()));
-		String tempFolder = "java.io.tmpdir = C:\\Users\\Sersus\\AppData\\Local\\Temp\\";
-		File temp = new File(System.getProperty("java.io.tmpdir", kml).concat("kml.xml"));
-//		FileOutputStream fio = new FileOutputStream(temp);
-		
-		Path path = Paths.get(System.getProperty("java.io.tmpdir").concat("xml.xml"));
-		URI uri = path.toUri();
-		File tmp = File.createTempFile("pref", "suff");
-		temp.deleteOnExit();
-		System.out.println(uri);
-		try (BufferedWriter writer = Files.newBufferedWriter(tmp.toPath(), StandardCharsets.UTF_8)) {
-			writer.write(kml);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println(uri);
 	}
 }
