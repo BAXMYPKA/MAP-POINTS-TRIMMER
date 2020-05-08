@@ -12,7 +12,7 @@
 	
 	<header>
 		
-		<img src="../static/img/unnamed.png" th:src="@{/img/unnamed.png}" atl="logo" class="logo">
+		<img src="../static/img/unnamed.png" th:src="@{/img/unnamed.png}" alt="logo" class="logo">
 		
 		<a href="/" th:href="@{/}" class="applicationName">
 			<h1 class="applicationName" th:text="#{html.h1.header}">Locus POI trimmer</h1>
@@ -44,7 +44,7 @@
 		
 		<article>How properly import POIs from Locus to Google Earth application description</article>
 		
-		<div class="userMessage"></div>
+		<div class="userMessage" th:utext="${userMessage} != null ? ${userMessage} : ''"></div>
 		
 		<form class="loaderForm" action="/kml" method="post" enctype="multipart/form-data"
 			  th:action="@{/kml}" name="poiFile" id="poiFile">
@@ -93,21 +93,21 @@
 				<label for="setPath" th:text="#{html.input.setPath}">Set paths to all image files for photo POIs</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPath}">?</div>
 				<br>
-				<input type="radio" name="pathType" value="relativePath" disabled>
+				<input type="radio" name="pathType" value="relative" checked disabled>
 				<span th:text="#{html.text.relativePath}"><i>Relative path</i></span>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPhotosPreview}">
+				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.relativePath}">
 					?
 				</div>
 				<br>
-				<input type="radio" name="pathType" value="absolutePath" disabled>
+				<input type="radio" name="pathType" value="absolute" disabled>
 				<span th:text="#{html.text.absolutePath}"><i>Absolute path</i></span>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPhotosPreview}">
+				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.absolutePath}">
 					?
 				</div>
 				<br>
-				<input type="radio" name="pathType" value="webPath" disabled>
+				<input type="radio" name="pathType" value="web" disabled>
 				<span th:text="#{html.text.webPath}"><i>Web path</i></span>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPhotosPreview}">
+				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.webPath}">
 					?
 				</div>
 				<br>
@@ -134,14 +134,12 @@
 		</form>
 	
 	</main>
-
-</div>
-
-<footer>
 	
-	<span>Footer content</span>
-
-</footer>
+	<footer>
+		
+		<span>Footer content</span>
+	
+	</footer>
 
 </div>
 

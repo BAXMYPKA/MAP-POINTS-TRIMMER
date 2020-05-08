@@ -1,9 +1,11 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.configurations;
 
+import mrbaxmypka.gmail.com.LocusPOIconverter.utils.StringToPathTypesConverter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -37,6 +39,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
 		localeChangeInterceptor.setParamName("lang");
 		return localeChangeInterceptor;
+	}
+	
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addConverter(new StringToPathTypesConverter());
 	}
 	
 	@Override

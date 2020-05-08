@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto;
 
 import lombok.*;
+import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,8 +44,9 @@ public class MultipartDto implements Serializable {
 	 */
 	private boolean setPath;
 	
-	//TODO: to complete path types
-	private Enum pathType;
+	@Nullable
+	private PathTypes pathType;
+	
 	/**
 	 * Local or Http path to all the attachments inside HTML descriptions
 	 */
@@ -61,4 +63,8 @@ public class MultipartDto implements Serializable {
 	 */
 	@Nullable
 	private Integer previewSize;
+	
+	public void setPathType(@Nullable String pathType) {
+		this.pathType = PathTypes.getByValue(pathType);
+	}
 }

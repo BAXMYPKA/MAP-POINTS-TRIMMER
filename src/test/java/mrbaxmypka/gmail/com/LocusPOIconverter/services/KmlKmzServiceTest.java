@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.LocusPOIconverter.services;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.LocusPOIconverter.klm.HtmlHandler;
 import mrbaxmypka.gmail.com.LocusPOIconverter.klm.XmlHandler;
+import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,7 @@ class KmlKmzServiceTest {
 			false,
 			false,
 			true,
+			PathTypes.RELATIVE,
 			"new path",
 			false,
 			null);

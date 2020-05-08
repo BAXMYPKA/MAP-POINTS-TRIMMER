@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.xml.sax.SAXException;
 
+import javax.validation.Valid;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
@@ -36,7 +37,7 @@ public class KmlController {
 	@PostMapping(path = "/kml",
 				 consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
 				 produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<FileSystemResource> postKml(@ModelAttribute MultipartDto poiFile, Locale locale)
+	public ResponseEntity<FileSystemResource> postKml(@Valid @ModelAttribute MultipartDto poiFile, Locale locale)
 		throws IOException, SAXException, ParserConfigurationException, XMLStreamException, TransformerException {
 		
 		Path tmpFile = kmlKmzService.processMultipartDto(poiFile, locale);

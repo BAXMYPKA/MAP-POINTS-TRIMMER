@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
-import java.util.Objects;
 
 @Service
 public class KmlKmzService {
@@ -49,10 +48,6 @@ public class KmlKmzService {
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		
 		locale = locale == null ? this.locale : locale;
-		//Checks MultipartFile.getOriginalFilename for being null
-		Objects.requireNonNull(
-			multipartDto.getMultipartFile().getOriginalFilename(),
-			messageSource.getMessage("exception.nullFilename", null, locale));
 		
 		if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kml")) {
 			String processedKml = xmlHandler.processKml(multipartDto);

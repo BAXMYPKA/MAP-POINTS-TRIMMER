@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
 
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Element;
@@ -20,7 +21,7 @@ import java.time.format.DateTimeParseException;
 public class HtmlHandler {
 	
 	/**
-	 * @param htmlCdata    Only {@link String} with inner HTML markup
+	 * @param htmlCdata    Receives inner text from CDATA which in fact is the HTML markup
 	 * @param multipartDto To determine all other conditions to be processed on CDATA HTML
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
@@ -32,7 +33,7 @@ public class HtmlHandler {
 			clearDescriptions(parsedHtmlFragment);
 		}
 		if (multipartDto.isSetPath()) {
-			setPath(parsedHtmlFragment, multipartDto.getPath());
+			setPath(parsedHtmlFragment, multipartDto.getPathType(), multipartDto.getPath());
 		}
 		if (multipartDto.isSetPreviewSize()) {
 			Integer previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
@@ -53,7 +54,7 @@ public class HtmlHandler {
 	 * I.e. old path {@code <a href="files:/_1404638472855.jpg"></>}
 	 * can be replaced with {@code <a href="C:/files:/a new path/_1404638472855.jpg"></>}
 	 */
-	private void setPath(Element parsedHtmlFragment, String path) {
+	private void setPath(Element parsedHtmlFragment, PathTypes pathType, String path) {
 		Elements aElements = parsedHtmlFragment.select("a[href]");
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		
@@ -62,13 +63,13 @@ public class HtmlHandler {
 		aElements.stream()
 			.filter(a -> !a.attr("href").startsWith("www.") && !a.attr("href").startsWith("http:"))
 			.forEach((a) -> {
-				String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), href);
+				String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), pathType, href);
 				a.attr("href", newPathWithFilename);
 			});
 		imgElements.stream()
 			.filter(img -> !img.attr("src").startsWith("www.") && !img.attr("src").startsWith("http:"))
 			.forEach((img) -> {
-				String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), href);
+				String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), pathType, href);
 				img.attr("src", newPathWithFilename);
 			});
 	}
@@ -77,17 +78,63 @@ public class HtmlHandler {
 	 * Each existing a[href] contains a full path with the filename as the last text element.
 	 * Here we have to replace only the URL and leave the original filename.
 	 */
-	private String getNewHrefWithOldFilename(String oldHrefWithFilename, String newHrefWithoutFilename) {
-//		Each existing a[href] contains a full path with the filename as the last text element.
-//		Here we have to replace only the URL and leave the original filename.
-		if (!newHrefWithoutFilename.endsWith("/")) {
-//			Every new href has to end with '/'
-			newHrefWithoutFilename = newHrefWithoutFilename.concat("/");
+	private String getNewHrefWithOldFilename(
+		String oldHrefWithFilename, PathTypes pathType, String newHrefWithoutFilename) {
+		
+		String newHrefWithOldFilename;
+		
+		if (pathType.equals(PathTypes.RELATIVE)) {
+			newHrefWithOldFilename = getNewRelativeHref(oldHrefWithFilename, newHrefWithoutFilename);
+		} else if (pathType.equals(PathTypes.ABSOLUTE)) {
+			newHrefWithOldFilename = getNewAbsoluteHref(oldHrefWithFilename, newHrefWithoutFilename);
+		} else if (pathType.equals(PathTypes.WEB)) {
+			newHrefWithOldFilename = getNewWebHref(oldHrefWithFilename, newHrefWithoutFilename);
+		} else {
+			throw new IllegalArgumentException("The PathTypes.getType cannot be recognized!");
 		}
-		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/");
-		String filename = oldHrefWithFilename.substring(lastIndexOFSlash + 1, oldHrefWithFilename.length());
+		return newHrefWithOldFilename;
+	}
+	
+	private String getNewRelativeHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
+		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
+		String filename = getFileName(oldHrefWithFilename);
 		
 		return newHrefWithoutFilename.concat(filename);
+	}
+	
+	private String getNewAbsoluteHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
+		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
+		newHrefWithoutFilename = newHrefWithoutFilename.replaceAll("\\\\", "/");
+		String filename = getFileName(oldHrefWithFilename);
+		
+		return "file:///" + newHrefWithoutFilename + filename;
+	}
+	
+	private String getNewWebHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
+		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
+		String filename = getFileName(oldHrefWithFilename);
+		
+		return newHrefWithoutFilename + filename;
+	}
+	
+	private String getFileName(String oldHrefWithFilename) {
+		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/") != -1 ?
+			oldHrefWithFilename.lastIndexOf("/") :
+			oldHrefWithFilename.lastIndexOf("\\");
+		return oldHrefWithFilename.substring(lastIndexOFSlash + 1);
+	}
+	
+	private String trimNewHrefWithoutFilename(String newHrefWithoutFilename) {
+		newHrefWithoutFilename = newHrefWithoutFilename.trim();
+		// Each existing a[href] contains a full path with the filename as the last text element.
+		// Here we have to replace only the URL and leave the original filename.
+		if (!newHrefWithoutFilename.endsWith("/")) {
+			// Every new href has to end with '/'
+			newHrefWithoutFilename = newHrefWithoutFilename.concat("/");
+		}
+		newHrefWithoutFilename = newHrefWithoutFilename.replaceAll("\\s", "%20");
+		
+		return newHrefWithoutFilename;
 	}
 	
 	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize) {
@@ -120,7 +167,8 @@ public class HtmlHandler {
 			
 			Element tr = new Element("tr");
 			Element td = new Element("td").appendText(parentText)
-				.attr("width", "100%").attr("align", "center");
+//				.attr("width", "100%")
+				.attr("align", "center");
 			td.insertChildren(0, aElements);
 			tr.appendChild(td);
 			newHtmlDescription.select("tbody").first().appendChild(tr);
@@ -184,7 +232,7 @@ public class HtmlHandler {
 	 */
 	private Element getTableRowWithSeparator() {
 		Element tr = new Element("tr");
-		Element td = new Element("td").attr("colspan", "1");
+		Element td = new Element("td").attr("colspan", "2");
 		td.appendChild(new Element("hr"));
 		tr.appendChild(td);
 		return tr; //Returns just <tr> with <td> with <hr> inside as a table rows separator

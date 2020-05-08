@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
 
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, false, true, false, null, false, null);
+			multipartFile, false, false, false, true, false, null, null, false, null);
 		
 		//WHEN
 		
@@ -48,7 +49,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, false, false, true, newPath, false, null);
+			multipartFile, false, false, false, false, true, PathTypes.RELATIVE, newPath, false, null);
 		
 		//WHEN
 		
@@ -73,7 +74,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, false, false, true, newPath, false, null);
+			multipartFile, false, false, false, false, true, PathTypes.RELATIVE, newPath, false, null);
 		
 		//WHEN
 		
@@ -101,7 +102,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, false, false, true, null, true, 800);
+			multipartFile, false, false, false, false, true, null, null, true, 800);
 		
 		//WHEN
 		
@@ -124,7 +125,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, false, false, false, null, true, null);
+			multipartFile, false, false, false, false, false, null, null, true, null);
 		
 		//WHEN
 		
@@ -147,7 +148,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, true, false, false, false, false, null, true, null);
+			multipartFile, true, false, false, false, false, null, null, true, null);
 		
 		//WHEN
 		
@@ -170,7 +171,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, false, true, false, false, null, false, null);
+			multipartFile, false, false, true, false, false, null, null, false, null);
 		
 		//WHEN
 		
@@ -255,7 +256,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, false, true, false, false, false, null, false, null);
+			multipartFile, false, true, false, false, false, null, null, false, null);
 		
 		//WHEN
 		
@@ -288,7 +289,7 @@ class XmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
 		multipartDto = new MultipartDto(
-			multipartFile, true, true, true, false, true, newPath, true, 800);
+			multipartFile, true, true, true, false, true, PathTypes.RELATIVE, newPath, true, 800);
 		
 		//WHEN
 		
