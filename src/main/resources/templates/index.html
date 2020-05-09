@@ -46,8 +46,8 @@
 		
 		<div class="userMessage" th:utext="${userMessage} != null ? ${userMessage} : ''"></div>
 		
-		<form class="loaderForm" action="/kml" method="post" enctype="multipart/form-data"
-			  th:action="@{/kml}" name="poiFile" id="poiFile">
+		<form class="loaderForm" action="/poi" method="post" enctype="multipart/form-data"
+			  th:action="@{/poi}" name="poiFile" id="poiFile">
 			<label for="locusFile">Load Locus POI file</label>
 			<div class="interrogation" title="Description" th:title="#{html.title.interrogation.locusFile}">?</div>
 			<br>
@@ -93,20 +93,26 @@
 				<label for="setPath" th:text="#{html.input.setPath}">Set paths to all image files for photo POIs</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPath}">?</div>
 				<br>
-				<input type="radio" name="pathType" value="relative" checked disabled>
-				<span th:text="#{html.text.relativePath}"><i>Relative path</i></span>
+				<input type="radio" name="pathType" id="relativePath" value="relative" checked disabled>
+				<label for="relativePath" th:text="#{html.text.relativePath}" class="selectLabel">
+					Relative path
+				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.relativePath}">
 					?
 				</div>
 				<br>
-				<input type="radio" name="pathType" value="absolute" disabled>
-				<span th:text="#{html.text.absolutePath}"><i>Absolute path</i></span>
+				<input type="radio" name="pathType" value="absolute" id="absolutePath" disabled>
+				<label for="absolutePath" th:text="#{html.text.absolutePath}" class="selectLabel">
+					Absolute path
+				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.absolutePath}">
 					?
 				</div>
 				<br>
-				<input type="radio" name="pathType" value="web" disabled>
-				<span th:text="#{html.text.webPath}"><i>Web path</i></span>
+				<input type="radio" name="pathType" value="web" id="webPath" disabled>
+				<label for="webPath" th:text="#{html.text.webPath}" class="selectLabel">
+					WEB path
+				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.webPath}">
 					?
 				</div>
@@ -124,8 +130,8 @@
 			</fieldset>
 			
 			<div class="bottomFieldset">
-				<input type="submit" th:value="#{html.input.value.convert}" value="CONVERT" id="convert"
-					   class="inputButton">
+				<input type="submit" th:value="#{html.input.value.convert}" value="PROCESS" id="trim"
+					   class="inputButton processButton">
 				<span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					Download
 				</span>

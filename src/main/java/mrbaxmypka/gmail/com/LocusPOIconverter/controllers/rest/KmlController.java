@@ -34,7 +34,7 @@ public class KmlController {
 	 * @param locale  For defining a User language
 	 * @return
 	 */
-	@PostMapping(path = "/kml",
+	@PostMapping(path = "/poi",
 				 consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
 				 produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<FileSystemResource> postKml(@Valid @ModelAttribute MultipartDto poiFile, Locale locale)

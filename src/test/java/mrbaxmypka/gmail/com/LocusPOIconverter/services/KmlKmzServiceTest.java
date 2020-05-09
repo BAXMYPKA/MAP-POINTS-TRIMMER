@@ -3,7 +3,6 @@ package mrbaxmypka.gmail.com.LocusPOIconverter.services;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.LocusPOIconverter.klm.HtmlHandler;
 import mrbaxmypka.gmail.com.LocusPOIconverter.klm.XmlHandler;
-import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,10 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,27 +42,12 @@ class KmlKmzServiceTest {
 		messageSource = Mockito.mock(MessageSource.class);
 		Mockito.when(messageSource.getMessage("exception.nullFilename", null, null))
 			.thenReturn("Filename cannot be null!");
-		
 		xmlHandler = Mockito.mock(XmlHandler.class);
 		kmlKmzService = new KmlKmzService(xmlHandler, messageSource);
-		
 		testKml = "<kml>test</kml>";
-		
 		multipartFile = new MockMultipartFile(
 			"MockKml.kml", "MockKml.kml", null, testKml.getBytes());
-		
-		multipartDto = new MultipartDto(
-			multipartFile,
-			false,
-			false,
-			false,
-			false,
-			true,
-			PathTypes.RELATIVE,
-			"new path",
-			false,
-			null);
-		
+		multipartDto = new MultipartDto(multipartFile);
 	}
 	
 	@AfterEach
@@ -104,5 +91,16 @@ class KmlKmzServiceTest {
 		
 		//THEN
 		assertEquals(testKml, Files.readString(tmpKmlFile, StandardCharsets.UTF_8));
+	}
+	
+	@Test
+	public void test_Kmz() throws IOException, ParserConfigurationException, TransformerException, SAXException, XMLStreamException {
+		//GIVEN
+		InputStream kmzInputStream = new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz"));
+		MultipartFile multipartFile = new MockMultipartFile("LocusTestKmz", "LocusTestKmz.kmz", null, kmzInputStream);
+		multipartDto = new MultipartDto(multipartFile);
+		
+		//WHEN
+		Path path = kmlKmzService.processMultipartDto(multipartDto, null);
 	}
 }
