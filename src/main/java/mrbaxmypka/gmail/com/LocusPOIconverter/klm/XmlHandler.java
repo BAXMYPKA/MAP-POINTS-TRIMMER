@@ -46,7 +46,7 @@ public class XmlHandler {
 	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
 	 */
 	public String processKml(MultipartDto multipartDto)
-		throws XMLStreamException, IOException, ParserConfigurationException, SAXException, TransformerException {
+		throws XMLStreamException, IOException, ParserConfigurationException, SAXException {
 		
 		StringWriter stringWriter = new StringWriter();
 		

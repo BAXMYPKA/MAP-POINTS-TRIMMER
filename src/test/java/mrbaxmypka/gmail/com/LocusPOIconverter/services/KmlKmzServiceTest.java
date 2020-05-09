@@ -62,7 +62,7 @@ class KmlKmzServiceTest {
 	 * in same manner.
 	 */
 	@Test
-	public void test_Kml_File_Should_Be_Saved_Temporarily_then_Deleted()
+	public void kml_File_Should_Be_Saved_Temporarily_then_Deleted()
 		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
 		// GIVEN
 		Mockito.when(xmlHandler.processKml(multipartDto)).thenReturn(testKml);
@@ -81,7 +81,7 @@ class KmlKmzServiceTest {
 	}
 	
 	@Test
-	public void test_Kml_File_Should_Be_Returned_Same()
+	public void kml_File_Should_Be_Returned_Same()
 		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
 		// GIVEN
 		Mockito.when(xmlHandler.processKml(multipartDto)).thenReturn(testKml);
@@ -94,13 +94,46 @@ class KmlKmzServiceTest {
 	}
 	
 	@Test
-	public void test_Kmz() throws IOException, ParserConfigurationException, TransformerException, SAXException, XMLStreamException {
+	public void kmz_File_Should_Be_Recognized_And_Extracted()
+		throws IOException, ParserConfigurationException, TransformerException, SAXException, XMLStreamException {
 		//GIVEN
 		InputStream kmzInputStream = new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz"));
-		MultipartFile multipartFile = new MockMultipartFile("LocusTestKmz", "LocusTestKmz.kmz", null, kmzInputStream);
-		multipartDto = new MultipartDto(multipartFile);
+		MultipartFile multipartFileWIthKmz = new MockMultipartFile(
+			"LocusTestKmz", "LocusTestKmz.kmz", null, kmzInputStream);
+		multipartDto = new MultipartDto(multipartFileWIthKmz);
+		
+		String kmlTest = "<kml>success</kml>";
+		Mockito.when(xmlHandler.processKml(multipartDto)).thenReturn(kmlTest);
 		
 		//WHEN
-		Path path = kmlKmzService.processMultipartDto(multipartDto, null);
+		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
+		String kmlResult = Files.readString(tmpKmlFile, StandardCharsets.UTF_8);
+		
+		//THEN
+		assertAll(
+			() -> assertEquals(kmlTest, kmlResult)
+		);
+	}
+	
+	@Test
+	public void kmz_File_Should_Be_Recognized_and_Extracted_as_Kml_And_Processed()
+		throws IOException, ParserConfigurationException, TransformerException, SAXException, XMLStreamException {
+		//GIVEN
+		InputStream kmzInputStream = new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz"));
+		MultipartFile multipartFileWIthKmz = new MockMultipartFile(
+			"LocusTestKmz", "LocusTestKmz.kmz", null, kmzInputStream);
+		multipartDto = new MultipartDto(multipartFileWIthKmz);
+		xmlHandler = new XmlHandler(new HtmlHandler());
+		kmlKmzService = new KmlKmzService(xmlHandler, messageSource);
+		
+		//WHEN
+		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
+		String kmlResult = Files.readString(tmpKmlFile, StandardCharsets.UTF_8);
+		
+		//THEN
+		System.out.println(kmlResult);
+//		assertAll(
+//			() -> assertEquals(kmlTest, kmlResult)
+//		);
 	}
 }
