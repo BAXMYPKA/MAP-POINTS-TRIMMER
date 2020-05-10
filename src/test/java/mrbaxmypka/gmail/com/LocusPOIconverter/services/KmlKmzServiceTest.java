@@ -115,8 +115,11 @@ class KmlKmzServiceTest {
 		);
 	}
 	
+	/**
+	 * The given 'LocusTestKmz.kmz' contains 'doc.kml'
+	 */
 	@Test
-	public void kmz_File_Should_Be_Recognized_and_Extracted_as_Kml_And_Processed()
+	public void kmz_File_Should_Be_Extracted_as_Kml_And_Processed()
 		throws IOException, ParserConfigurationException, TransformerException, SAXException, XMLStreamException {
 		//GIVEN
 		InputStream kmzInputStream = new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz"));
@@ -126,14 +129,16 @@ class KmlKmzServiceTest {
 		xmlHandler = new XmlHandler(new HtmlHandler());
 		kmlKmzService = new KmlKmzService(xmlHandler, messageSource);
 		
-		//WHEN
+		//WHEN .kmz is fully processed without Mocks and additional conditions
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
 		String kmlResult = Files.readString(tmpKmlFile, StandardCharsets.UTF_8);
 		
-		//THEN
-		System.out.println(kmlResult);
-//		assertAll(
-//			() -> assertEquals(kmlTest, kmlResult)
-//		);
+		//THEN The resulting 'doc.kml' should be the same
+		assertAll(
+			() -> assertTrue(kmlResult.startsWith("<?xml version=\"1.0\" encoding=\"utf-8\"?>")),
+			() -> assertTrue(kmlResult.endsWith("</Placemark>\n" +
+				"</Document>\n" +
+				"</kml>"))
+		);
 	}
 }

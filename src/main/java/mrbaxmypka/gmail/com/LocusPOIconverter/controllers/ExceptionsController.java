@@ -95,7 +95,7 @@ public class ExceptionsController {
 	@ExceptionHandler(value = Exception.class)
 	public ModelAndView internalExceptions(Exception exception) {
 		//code 500
-		//TODO: to log a real message and substitute it for a localized one
+		//TODO: to log a real maxFileSizeMb and substitute it for a localized one
 		return returnIndexPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
 //		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
 	}

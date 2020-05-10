@@ -4,6 +4,11 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
 	<script src="../static/scripts/index.js" th:src="@{/scripts/index.js}" defer></script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		const maxFileSizeMb = [[${maxFileSizeMb}]];
+		/*]]>*/
+	</script>
 	<title>Locus POI converter</title>
 </head>
 <body>
@@ -15,7 +20,9 @@
 		<img src="../static/img/unnamed.png" th:src="@{/img/unnamed.png}" alt="logo" class="logo">
 		
 		<a href="/" th:href="@{/}" class="applicationName">
-			<h1 class="applicationName" th:text="#{html.h1.header}">Locus POI trimmer</h1>
+			<h1 class="applicationName" th:utext="#{html.h1.header}">
+				Locus<span style="font-size: smaller">&copy;</span> POI trimmer
+			</h1>
 		</a>
 		
 		<div class="headerGroup1">

@@ -159,6 +159,7 @@ article {
 	width: 35em;
 }
 
+/*
 .interrogation {
 	display: inline-block;
 	width: 0.9em;
@@ -174,10 +175,34 @@ article {
 	transition-duration: 0.5s;
 	transition: all;
 }
+*/
+
+.interrogation {
+	display: inline-flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	width: 0.8em;
+	height: 0.8em;
+	padding: 0.1em;
+	border-radius: 50%;
+	border: green solid 0.1em;
+	background-color: lightgreen;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 0.7em;
+	font-weight: bold;
+	transition-duration: 0.5s;
+	transition: all;
+}
 
 .interrogation:hover {
 	background-color: greenyellow;
 	cursor: help;
+}
+
+.interrogation:active {
+	background-color: forestgreen;
 }
 
 .downloadMessage {

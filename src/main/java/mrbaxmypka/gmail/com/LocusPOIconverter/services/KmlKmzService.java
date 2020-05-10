@@ -75,8 +75,8 @@ public class KmlKmzService {
 	
 	/**
 	 * Extracts a .kml file from a given .kmz archive and inserts it into a new {@link MultipartFile} to return.
-	 * @param multipartFileWithKmz With .kmz inside it.
-	 * @param locale To return a localized message to a User in case of error.
+	 * @param multipartFileWithKmz Receives {@link MultipartFile} with .kmz file inside it.
+	 * @param locale To return a localized maxFileSizeMb to a User in case of error.
 	 * @return New {@link MultipartFile} with only .kml file in it.
 	 */
 	private MultipartFile getMultipartFileWithKml(MultipartFile multipartFileWithKmz, Locale locale) throws IOException {
