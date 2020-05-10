@@ -81,7 +81,8 @@ header {
 .applicationName {
 	text-decoration: none;
 	text-transform: uppercase;
-	font-family: Arial, sans-serif;
+	/*font-family: Arial, sans-serif;*/
+	font-family: Tahoma, Geneva, sans-serif;
 	font-size: 1.5em;
 	font-weight: bolder;
 	color: saddlebrown;
@@ -92,14 +93,26 @@ main {
 }
 
 article {
-	margin: 1em;
+	/*margin: 1em;*/
+	margin-bottom: 0.5em;
 	padding: 0.5em;
 	background-color: rgba(166, 155, 19, 0.31);
 	
 }
 
+.userMessage {
+	margin-bottom: 0.5em;
+	padding: 0.5em;
+	border: sandybrown 0.1em dashed;
+	border-radius: 1em;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-size: 0.8em;
+	transition-property: all;
+	transition-duration: 0.5s;
+}
+
 .loaderForm {
-	margin: 1em;
+	/*margin: 1em;*/
 	padding: 0.5em;
 	border: goldenrod 0.05em solid;
 	box-shadow: palegoldenrod inset 0 0 0.7em 0.2em;
@@ -149,6 +162,7 @@ article {
 	flex-direction: row;
 	justify-content: left;
 	align-content: center;
+	margin-top: 1em;
 }
 
 #prevSize {
@@ -188,6 +202,7 @@ article {
 	border-radius: 50%;
 	border: green solid 0.1em;
 	background-color: lightgreen;
+	/*background-color: mediumseagreen;*/
 	text-align: center;
 	vertical-align: middle;
 	font-size: 0.7em;

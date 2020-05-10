@@ -9,7 +9,7 @@
 		const maxFileSizeMb = [[${maxFileSizeMb}]];
 		/*]]>*/
 	</script>
-	<title>Locus POI converter</title>
+	<title>Locus POI trimmer</title>
 </head>
 <body>
 
@@ -51,7 +51,10 @@
 		
 		<article>How properly import POIs from Locus to Google Earth application description</article>
 		
-		<div class="userMessage" th:utext="${userMessage} != null ? ${userMessage} : ''"></div>
+		<div class="userMessage" th:utext="${userMessage} != null ? ${userMessage} : ''"
+			 th:hidden="${userMessage} != null ? false : true">
+		
+		</div>
 		
 		<form class="loaderForm" action="/poi" method="post" enctype="multipart/form-data"
 			  th:action="@{/poi}" name="poiFile" id="poiFile">

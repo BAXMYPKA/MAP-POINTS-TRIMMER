@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit.jupiter.DisabledIf;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 
@@ -40,6 +41,7 @@ class XmlHandlerTest {
 	}
 	
 	@Test
+	@Disabled("Should be rewritten to set paths in main XML body")
 	public void setPath_In_Description_Cdata_Should_Replace_All_Href_And_Src()
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		//GIVEN
@@ -65,6 +67,7 @@ class XmlHandlerTest {
 	}
 	
 	@Test
+	@Disabled("Should be rewritten to set path in main XML body")
 	public void setPath_In_Description_Cdata_Should_Preserve_All_Filenames_In_Href_And_Src()
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		//GIVEN
@@ -94,6 +97,7 @@ class XmlHandlerTest {
 	}
 	
 	@Test
+	@Disabled("Should be rewritten to set paths in the main XML body")
 	public void setPreviewSize_Should_Set_All_Img_Widths_Attributes()
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		//GIVEN
@@ -279,6 +283,7 @@ class XmlHandlerTest {
 	
 	
 	@Test
+	@Disabled("Rewrite to HTML tests")
 	public void all_Conditions_Enabled_Should_Return_Valid_Cdata()
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		//GIVEN

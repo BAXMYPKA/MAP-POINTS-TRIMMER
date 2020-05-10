@@ -20,12 +20,27 @@
 		
 		document.querySelectorAll(".interrogation").forEach(value => {
 			value.addEventListener('click', evt => {
-				userMessage.innerHTML = evt.target.getAttribute("title");
+				if (userMessage.innerHTML === evt.target.getAttribute("title")) {
+					userMessage.innerHTML = "";
+					userMessage.hidden = true;
+					document.querySelectorAll(".interrogation").forEach(interrogation => {
+						interrogation.style.backgroundColor = "lightgreen";
+					});
+				} else {
+					userMessage.innerHTML = evt.target.getAttribute("title");
+					userMessage.hidden = false;
+					evt.target.style.backgroundColor = "mediumseagreen";
+					document.querySelectorAll(".interrogation").forEach(interrogation => {
+						if (interrogation !== evt.target) {
+							interrogation.style.backgroundColor = "lightgreen";
+						}
+					});
+				}
 			})
 		});
 		
 		document.getElementById("locusFile").addEventListener('change', ev => {
-			if (ev.target.files[0].size/1024/1024 > maxFileSizeMb) {
+			if (ev.target.files[0].size / 1024 / 1024 > maxFileSizeMb) {
 				userMessage.innerHTML = "Max file size = " + maxFileSizeMb + "Mb!";
 			} else {
 				userMessage.innerHTML = "";

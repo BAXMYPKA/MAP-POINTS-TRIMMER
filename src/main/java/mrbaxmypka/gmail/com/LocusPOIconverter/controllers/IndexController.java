@@ -19,7 +19,7 @@ public class IndexController {
 	@Value("${kml.maxFileSizeMb}")
 	private Integer maxFileSizeMb;
 	
-	@GetMapping(path = {"/", "index", "/converter"})
+	@GetMapping(path = {"/", "index", "/trimmer"})
 	public String getIndex(Model model) {
 		model.addAttribute("poiFile", new MultipartDto());
 		model.addAttribute("maxFileSizeMb", maxFileSizeMb);
