@@ -49,7 +49,7 @@
 			application</h2>
 		
 		
-		<article>How properly import POIs from Locus to Google Earth application description</article>
+		<article th:utext="#{}">How properly import POIs from Locus to Google Earth application description</article>
 		
 		<div class="userMessage" th:utext="${userMessage} != null ? ${userMessage} : ''"
 			 th:hidden="${userMessage} != null ? false : true">
@@ -81,6 +81,15 @@
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.trimDescription}">
 					?
 				</div>
+				<br>
+				<input id="locusAsAttachment" name="locusAsAttachment" type="checkbox">
+				<label for="locusAsAttachment" th:text="#{html.label.locusAsAttachments}">
+					Add as attachments in Locus Pro
+				</label>
+				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.locusAsAttachments}">
+					?
+				</div>
+				
 				<br>
 				<input id="setPreviewSize" name="setPreviewSize" type="checkbox">
 				<label for="setPreviewSize" th:text="#{html.label.previewSize}">Set photos preview size</label>

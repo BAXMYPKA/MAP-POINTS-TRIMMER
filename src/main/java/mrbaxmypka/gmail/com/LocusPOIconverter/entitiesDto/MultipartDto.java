@@ -35,7 +35,7 @@ public class MultipartDto implements Serializable {
 	/**
 	 * To clear all the unused date stamps after every POIs exporting
 	 */
-	private boolean clearDescriptions;
+	private boolean clearOutdatedDescriptions;
 	
 	private boolean validateXml;
 	

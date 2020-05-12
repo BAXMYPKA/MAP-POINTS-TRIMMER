@@ -14,7 +14,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.*;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -65,7 +64,7 @@ public class XmlHandler {
 		if (!multipartDto.isSetPath() &&
 			!multipartDto.isTrimDescriptions() &&
 			!multipartDto.isSetPreviewSize() &&
-			!multipartDto.isClearDescriptions() &&
+			!multipartDto.isClearOutdatedDescriptions() &&
 			!multipartDto.isTrimXml()) {
 			return new String(multipartDto.getMultipartFile().getBytes());
 		}

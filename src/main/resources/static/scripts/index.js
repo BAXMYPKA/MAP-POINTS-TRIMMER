@@ -21,18 +21,20 @@
 		document.querySelectorAll(".interrogation").forEach(value => {
 			value.addEventListener('click', evt => {
 				if (userMessage.innerHTML === evt.target.getAttribute("title")) {
+					//To hide the description if same interrogation is clicked
 					userMessage.innerHTML = "";
 					userMessage.hidden = true;
 					document.querySelectorAll(".interrogation").forEach(interrogation => {
-						interrogation.style.backgroundColor = "lightgreen";
+						interrogation.style.backgroundColor = "limegreen";
 					});
 				} else {
+					//To show the interrogation description in userMessage innerHtml
 					userMessage.innerHTML = evt.target.getAttribute("title");
 					userMessage.hidden = false;
-					evt.target.style.backgroundColor = "mediumseagreen";
+					evt.target.style.backgroundColor = "greenyellow";
 					document.querySelectorAll(".interrogation").forEach(interrogation => {
 						if (interrogation !== evt.target) {
-							interrogation.style.backgroundColor = "lightgreen";
+							interrogation.style.backgroundColor = "limegreen";
 						}
 					});
 				}

@@ -6,12 +6,17 @@ import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * HTML processing class based on {@link org.jsoup.Jsoup} library to parse CDATA as HTML.
@@ -29,8 +34,8 @@ public class HtmlHandler {
 		//Gets HTML <body> then all the included children and then the first one as a children's parent container
 		Element parsedHtmlFragment = Jsoup.parseBodyFragment(htmlCdata).body().children().first();
 		
-		if (multipartDto.isClearDescriptions()) { //Should be the first treatment
-			clearDescriptions(parsedHtmlFragment);
+		if (multipartDto.isClearOutdatedDescriptions()) { //Should be the first treatment
+			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
 		}
 		if (multipartDto.isSetPath()) {
 			setPath(parsedHtmlFragment, multipartDto.getPathType(), multipartDto.getPath());
@@ -61,17 +66,17 @@ public class HtmlHandler {
 		final String href = path == null ? "" : path;
 		
 		aElements.stream()
-			.filter(a -> !a.attr("href").startsWith("www.") && !a.attr("href").startsWith("http:"))
-			.forEach((a) -> {
-				String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), pathType, href);
-				a.attr("href", newPathWithFilename);
-			});
+			  .filter(a -> !a.attr("href").startsWith("www.") && !a.attr("href").startsWith("http:"))
+			  .forEach((a) -> {
+				  String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), pathType, href);
+				  a.attr("href", newPathWithFilename);
+			  });
 		imgElements.stream()
-			.filter(img -> !img.attr("src").startsWith("www.") && !img.attr("src").startsWith("http:"))
-			.forEach((img) -> {
-				String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), pathType, href);
-				img.attr("src", newPathWithFilename);
-			});
+			  .filter(img -> !img.attr("src").startsWith("www.") && !img.attr("src").startsWith("http:"))
+			  .forEach((img) -> {
+				  String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), pathType, href);
+				  img.attr("src", newPathWithFilename);
+			  });
 	}
 	
 	/**
@@ -79,7 +84,7 @@ public class HtmlHandler {
 	 * Here we have to replace only the URL and leave the original filename.
 	 */
 	private String getNewHrefWithOldFilename(
-		String oldHrefWithFilename, PathTypes pathType, String newHrefWithoutFilename) {
+		  String oldHrefWithFilename, PathTypes pathType, String newHrefWithoutFilename) {
 		
 		String newHrefWithOldFilename;
 		
@@ -119,8 +124,8 @@ public class HtmlHandler {
 	
 	private String getFileName(String oldHrefWithFilename) {
 		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/") != -1 ?
-			oldHrefWithFilename.lastIndexOf("/") :
-			oldHrefWithFilename.lastIndexOf("\\");
+			  oldHrefWithFilename.lastIndexOf("/") :
+			  oldHrefWithFilename.lastIndexOf("\\");
 		return oldHrefWithFilename.substring(lastIndexOFSlash + 1);
 	}
 	
@@ -148,7 +153,7 @@ public class HtmlHandler {
 	private String trimDescriptions(Element parsedHtmlFragment) {
 		//Deletes 2 or more whitespaces in a row
 		String trimmedString = parsedHtmlFragment.html()
-			.replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
+			  .replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
 		return trimmedString;
 	}
 	
@@ -156,11 +161,23 @@ public class HtmlHandler {
 	 * Removes all the unnecessary HTML nodes and data duplicates.
 	 * MUST be the last method in a chain.
 	 */
-	private void clearDescriptions(Element parsedHtmlFragment) {
-		Elements aElements = parsedHtmlFragment.select("a[href]"); //Those <a> also include <img> or whatever else
+	private void clearOutdatedDescriptions(Element parsedHtmlFragment, MultipartDto multipartDto) {
+//		Elements aElements = parsedHtmlFragment.select("a[href]"); //Those <a> also include <img> or whatever else
+		Elements imgElements = parsedHtmlFragment.select("img[src]");
+		String userDescriptionText = getUserDescriptionText(parsedHtmlFragment).trim();
 		
-		Element newHtmlDescription = createNewHtmlDescription();
+		Element newHtmlDescription = createNewHtmlDescription(userDescriptionText, multipartDto);
 		
+		if (!imgElements.isEmpty()) {
+			Element tr = new Element("tr");
+			Element td = new Element("td").attr("align", "center");
+			td.insertChildren(0, getAElementsWithInnerImgElement(imgElements));
+			tr.appendChild(td);
+			newHtmlDescription.select("tbody").first().appendChild(tr);
+			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
+		}
+
+/*
 		if (!aElements.isEmpty()) {
 			//These are the descriptions set of a photos or another included attachments as table rows
 			String parentText = aElements.first().parent().ownText() != null ? aElements.first().parent().ownText() : "";
@@ -174,6 +191,7 @@ public class HtmlHandler {
 			newHtmlDescription.select("tbody").first().appendChild(tr);
 			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
 		}
+*/
 		Elements tableRowWithDescAndDateTime = getTableRowsWithDescAndDateTime(parsedHtmlFragment.getAllElements());
 		tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
 		newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
@@ -181,14 +199,70 @@ public class HtmlHandler {
 		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
 	}
 	
+	private Elements getAElementsWithInnerImgElement(Elements imgElements) {
+		return imgElements.stream()
+			  .map(element -> {
+				  String src = element.attr("src");
+				  return new Element("a").appendChild(element)
+						.attr("href", src).attr("target", "_blank");
+			  })
+			  .collect(Collectors.toCollection(Elements::new));
+	}
+	
 	/**
-	 * @return Just a new table with tbody for a future description
+	 * For Locus Pro {@code <!-- desc_user:start -->} and {@code <!-- desc_user:end -->} are the markers
+	 * for displaying all inner data and text on POI screen (description text, photo, photo data etc).
+	 * So when {@link MultipartDto#isSetPreviewSize() = true} to display it on the screen these comments
+	 * have to embrace all the description.
+	 * Otherwise only description text will be visible.
+	 *
+	 * @return A {@code <div></div>} Element with a new table with tbody embraced with comments
+	 * or just a new table with tbody for a data.
 	 */
-	private Element createNewHtmlDescription() {
+	private Element createNewHtmlDescription(String userDescription, MultipartDto multipartDto) {
 		Element table = new Element("table")
-			.attr("width", "100%").attr("style", "color:black");
+			  .attr("width", "100%").attr("style", "color:black");
 		table.appendChild(new Element("tbody"));
+		
+		if (multipartDto.isSetPath() || !userDescription.isBlank()) {
+			String descUserStart = "desc_user:start";
+			String descUserEnd = "desc_user:end";
+			Element divElement = new Element("div");
+			if (!userDescription.isBlank()) divElement.appendText(userDescription);
+			return divElement
+				  .appendChild(new Comment(descUserStart)).appendChild(table).appendChild(new Comment(descUserEnd));
+		}
 		return table;
+	}
+	
+	/**
+	 * In Locus a simple text with User's descriptions is placed between
+	 * {@code <!-- desc_user:start -->} and {@code <!-- desc_user:end -->} xml comments (if any).
+	 * In older versions it may contain HTML elements, so this method is intended to derive only text
+	 * among all elements between these comments.
+	 *
+	 * @return Derived text between xml tags or empty String if nothing found.
+	 */
+	private String getUserDescriptionText(Element parsedHtmlFragment) {
+		List<Node> nodes = parsedHtmlFragment.childNodes(); //Nodes are only for convenient finding for Comments elements
+		StringBuilder textUserDescription = new StringBuilder("");
+		for (int i = 0; i < nodes.size(); i++) {
+			if (nodes.get(i) instanceof Comment && ((Comment) nodes.get(i)).getData().contains("desc_user:start")) {
+				//From here we iterate over further Elements...
+				for (int j = i; j < nodes.size(); j++) {
+					if (nodes.get(j) instanceof TextNode && !((TextNode) nodes.get(j)).getWholeText().isBlank()) {
+						//Write out all non-blank text data
+						textUserDescription.append(((TextNode) nodes.get(j)).getWholeText());
+						continue;
+					}
+					//... Until find the end marker
+					if (nodes.get(j) instanceof Comment && ((Comment) nodes.get(i)).getData().contains("desc_user:end")) {
+						return textUserDescription.toString();
+					}
+				}
+			}
+		}
+		return "";
 	}
 	
 	/**
@@ -201,23 +275,23 @@ public class HtmlHandler {
 		Elements tdElementsWithDescription = htmlElements.select("td[align],[valign]");
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		Element tdElementWithMinimumDateTime = tdElementsWithDescription.stream()
-			.filter(Element::hasText)
-			.filter(e -> {
-				try {
-					LocalDateTime.parse(e.text(), dateTimeFormatter);
-					return true;
-				} catch (DateTimeParseException ex) {
-					return false;
-				}
-			})
-			.min((e1, e2) -> {
-				LocalDateTime dateTime1 =
-					LocalDateTime.parse(e1.text(), dateTimeFormatter);
-				LocalDateTime dateTime2 =
-					LocalDateTime.parse(e2.text(), dateTimeFormatter);
-				return dateTime1.compareTo(dateTime2);
-			})
-			.orElse(new Element("td").text(LocalDateTime.now().format(dateTimeFormatter)));
+			  .filter(Element::hasText)
+			  .filter(e -> {
+				  try {
+					  LocalDateTime.parse(e.text(), dateTimeFormatter);
+					  return true;
+				  } catch (DateTimeParseException ex) {
+					  return false;
+				  }
+			  })
+			  .min((e1, e2) -> {
+				  LocalDateTime dateTime1 =
+						LocalDateTime.parse(e1.text(), dateTimeFormatter);
+				  LocalDateTime dateTime2 =
+						LocalDateTime.parse(e2.text(), dateTimeFormatter);
+				  return dateTime1.compareTo(dateTime2);
+			  })
+			  .orElse(new Element("td").text(LocalDateTime.now().format(dateTimeFormatter)));
 		
 		if (tdElementWithMinimumDateTime.hasParent()) {
 			//<tr> is the first parent, <tbody> or <table> is the second which contains all the <tr> with descriptions
@@ -238,6 +312,9 @@ public class HtmlHandler {
 		return tr; //Returns just <tr> with <td> with <hr> inside as a table rows separator
 	}
 	
+	/**
+	 * Safe comments that make sense for only Locus Pro. Other programs will ignore it.
+	 */
 	private void addStartEndComments(Element parsedHtmlFragment) {
 		Comment desc_gen_start = new Comment("desc_gen:start");
 		Comment desc_gen_end = new Comment("desc_gen:end");
