@@ -15,17 +15,23 @@ class HtmlHandlerTest {
 	static String html = "<!-- desc_gen:start -->\n" +
 		  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
 		  "<!-- desc_user:start -->\n" +
+		  "User description within comments\n" +
 		  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
 		  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
-		  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg\" width=\"330px\" align=\"center\" ></a></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">175 m</td></tr>\n" +
+		  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+		  "<a href=\"/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg\" width=\"330px\" align=\"center\" >User description within 'a' tag</a>" +
+		  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">175 m</td></tr>\n" +
 		  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">160°</td></tr>\n" +
 		  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3.0 m</td></tr>\n" +
 		  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-07-06 13:20:39</td></tr>\n" +
-		  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">175 m</td></tr>\n" +
+		  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td>" +
+		  "</tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">175 m</td></tr>\n" +
 		  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-07-18 17:23:20</td></tr>\n" +
-		  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">175 m</td></tr>\n" +
+		  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr>" +
+		  "<tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">175 m</td></tr>\n" +
 		  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-08-10 13:33:17</td></tr>\n" +
-		  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">175 m</td></tr>\n" +
+		  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr>" +
+		  "<tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">175 m</td></tr>\n" +
 		  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-09-18 16:16:45</td></tr>\n" +
 		  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 		  "<!-- desc_user:end -->\n" +
@@ -42,8 +48,8 @@ class HtmlHandlerTest {
 	}
 	
 	@Test
-	public void setPath_Should_Embrace_Images_And_Data_With_DescUserStart_And_DescUserEnd_Comments() {
-		//GIVEN
+	public void setPath_Should_Embrace_Images_And_Data_Within_DescUserStart_And_DescUserEnd_Comments_Without_Them_Initially() {
+		//GIVEN CDATA with image but without user descriptions within <!-- desc_user:start --> and <!-- desc_user:end -->
 		String withoutDescUserComments = "<!-- desc_gen:start -->\n" +
 			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
 			  "<a href=\"files/p__20180514_153338.jpg\" target=\"_blank\"><img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"></a>" +
@@ -66,6 +72,36 @@ class HtmlHandlerTest {
 		assertAll(
 			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
 			  () -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
+		);
+		
+		assertAll(
+			  () -> assertFalse(processedHtml.contains(
+					"<a href=\"/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg")),
+			  () -> assertFalse(processedHtml.contains(
+					"<img src=\"/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg"))
+		);
+		
+	}
+	
+	@Test
+	public void setPath_and_ClearDescription_for_Old_Style_Placemarks_Should_Embrace_Images_And_Data_Within_DescUserStart_And_DescUserEnd_Comments_With_them_Initially() {
+		//GIVEN CDATA with image and user descriptions within <!-- desc_user:start --> and <!-- desc_user:end -->
+		multipartDto.setSetPath(true);
+		multipartDto.setPathType("relative");
+		multipartDto.setPath("../myFiles");
+		
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		System.out.println(processedHtml);
+		//THEN
+		assertAll(
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
+		);
+		assertAll(
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->User description within comments")),
+			  () -> assertTrue(processedHtml.contains("User description within 'a' tag"))
 		);
 		
 		assertAll(

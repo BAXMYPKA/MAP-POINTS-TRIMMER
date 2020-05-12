@@ -60,6 +60,9 @@ public class HtmlHandler {
 	 * can be replaced with {@code <a href="C:/files:/a new path/_1404638472855.jpg"></>}
 	 */
 	private void setPath(Element parsedHtmlFragment, PathTypes pathType, String path) {
+		
+		//TODO: to redesign to automatically remake <img> to <a><img/></a>
+		
 		Elements aElements = parsedHtmlFragment.select("a[href]");
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		
@@ -201,10 +204,10 @@ public class HtmlHandler {
 	
 	private Elements getAElementsWithInnerImgElement(Elements imgElements) {
 		return imgElements.stream()
-			  .map(element -> {
-				  String src = element.attr("src");
-				  return new Element("a").appendChild(element)
-						.attr("href", src).attr("target", "_blank");
+			  .map(imgElement -> {
+				  String src = imgElement.attr("src");
+				  return new Element("a").attr("href", src).attr("target", "_blank")
+						.appendChild(imgElement);
 			  })
 			  .collect(Collectors.toCollection(Elements::new));
 	}
@@ -223,14 +226,13 @@ public class HtmlHandler {
 		Element table = new Element("table")
 			  .attr("width", "100%").attr("style", "color:black");
 		table.appendChild(new Element("tbody"));
-		
+		//'setPath' option for photos and any user description texts in Locus have to be within special comments
 		if (multipartDto.isSetPath() || !userDescription.isBlank()) {
 			String descUserStart = "desc_user:start";
 			String descUserEnd = "desc_user:end";
-			Element divElement = new Element("div");
+			Element divElement = new Element("div").appendChild(new Comment(descUserStart));
 			if (!userDescription.isBlank()) divElement.appendText(userDescription);
-			return divElement
-				  .appendChild(new Comment(descUserStart)).appendChild(table).appendChild(new Comment(descUserEnd));
+			return divElement.appendChild(table).appendChild(new Comment(descUserEnd));
 		}
 		return table;
 	}
