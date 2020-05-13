@@ -2,10 +2,12 @@ package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
 
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,8 +43,8 @@ class HtmlHandlerTest {
 		  "<!-- desc_gen:end -->";
 	static MultipartDto multipartDto;
 	
-	@BeforeAll
-	public static void beforeAll() {
+	@BeforeEach
+	public void beforeEach() {
 		MultipartFile multipartFile = new MockMultipartFile("html", html.getBytes());
 		multipartDto = new MultipartDto(multipartFile);
 	}
@@ -51,7 +53,7 @@ class HtmlHandlerTest {
 	 * Google Earth images for POI may contain only <img></img>. So we need to set them into <a><img></img></a>
 	 */
 	@Test
-	public void setPath_for_Pure_Img_Should_Transform_Imgs_Into_A_Links() {
+	public void setPreviewSize_for_Pure_Img_Should_Transform_Img_Into_A_Links() {
 		//GIVEN CDATA with 2 imgs with inline styles to be replaces with new width
 		String twoPureImgs = "<!-- desc_gen:start -->\n" +
 			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
@@ -70,7 +72,7 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processCdata(twoPureImgs, multipartDto);
-		System.out.println(processedHtml);
+		
 		//THEN
 		assertAll(
 			  () -> assertTrue(processedHtml.contains("<a href=\"files/p__20200511_130745.jpg\" target=\"_blank\"><img ")),
@@ -98,20 +100,84 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processCdata(withoutDescUserComments, multipartDto);
-		System.out.println(processedHtml);
+		
+		//THEN
+		assertAll(
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
+		);
+	}
+	
+	@Test
+	public void setPreviewSize_Should_Embrace_All_Users_Texts_Within_DescUserStart_And_DescUserEnd_Comments() {
+		//GIVEN CDATA with image and user description within <!-- desc_user:start --> and <!-- desc_user:end -->
+		String withDescUserCommentsAndText = "<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><img src=\"files/p__20200511_131742.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"><br /><br />\n" +
+			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">165 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2020-05-12 08:50:23</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table>\n" +
+			  "<!-- desc_user:start -->\n" +
+			  "Test user description\n" +
+			  "<!-- desc_user:end -->\n" +
+			  "</font>\n" +
+			  "<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", withDescUserCommentsAndText.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(400);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(withDescUserCommentsAndText, multipartDto);
+		
 		//THEN
 		assertAll(
 			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
 			  () -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
 		);
 		
+		assertTrue(processedHtml.contains(" <!-- desc_user:start -->Test user description"));
+	}
+	
+	@Test
+	public void setPreviewSize_Should_Embrace_All_Users_Texts_Within_DescUserStart_And_DescUserEnd_Comments_For_Complicated_Cdata() {
+		//GIVEN CDATA with image and old style user description within <!-- desc_user:start --> and <!-- desc_user:end -->
+		String oldStyleCdata = "<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
+			  "<!-- desc_user:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">230 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-05-10 16:33:59</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">230 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-03 14:39:11</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">230 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-07 17:25:15</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">230 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-07-18 17:23:19</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">230 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-08-10 13:33:15</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">230 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-09-18 16:16:44</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "Test user description" +
+			  "<!-- desc_user:end -->\n" +
+			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">230 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", oldStyleCdata.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(400);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(oldStyleCdata, multipartDto);
+		
+		//THEN
 		assertAll(
-			  () -> assertFalse(processedHtml.contains(
-					"<a href=\"/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg")),
-			  () -> assertFalse(processedHtml.contains(
-					"<img src=\"/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg"))
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
 		);
 		
+		assertTrue(processedHtml.contains(" <!-- desc_user:start -->Test user description"));
 	}
 	
 	@Test
@@ -124,14 +190,14 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processCdata(html, multipartDto);
-		System.out.println(processedHtml);
+		
 		//THEN
 		assertAll(
 			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
 			  () -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
 		);
 		assertAll(
-			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->User description within comments")),
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start --> User description within comments")),
 			  () -> assertTrue(processedHtml.contains("User description within 'a' tag"))
 		);
 		
@@ -177,6 +243,22 @@ class HtmlHandlerTest {
 			  () -> assertFalse(processedHtml.contains("max-width:300%"))
 		);
 		
+	}
+	
+	@Test
+	public void setPreviewSize_With_Null_Integer_Should_Set_All_Img_Widths_Attributes_To_0() {
+		//GIVEN
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(null);
+		
+		//WHEN
+		
+		String processedKml = htmlHandler.processCdata(html, multipartDto);
+		
+		//THEN
+		
+		Assertions.assertFalse(processedKml.contains("width=\"330px\""));
+		Assertions.assertTrue(processedKml.contains("width=\"0px\""));
 	}
 	
 	
@@ -276,6 +358,49 @@ class HtmlHandlerTest {
 		);
 	}
 	
+	@Test
+	public void setTrimDescriptions_Should_Trim_All_Whitespaces_And_Write_Only_Descriptions_Inline() {
+		//GIVEN
+		multipartDto.setTrimDescriptions(true);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		
+		//THEN
+		//Doesn't contain new strings
+		Assertions.assertFalse(Pattern.matches(".*\\n.*", processedHtml));
+		//Doesn't contain 2 or more whitespaces in a row
+		Assertions.assertFalse(Pattern.matches(".*\\s{2,}.*", processedHtml));
+	}
+	
+	@Test
+	public void clearDescriptions_Should_Return_Single_Table_With_Earliest_DateTimes_And_Full_Descriptions() {
+		//GIVEN
+		multipartDto.setClearOutdatedDescriptions(true);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+
+		//THEN contains only the earliest date of creation
+		assertAll(
+			  () -> assertFalse(processedHtml.contains("2014-07-18 17:23:20")),
+			  () -> assertFalse(processedHtml.contains("2014-08-10 13:33:17")),
+			  () -> assertFalse(processedHtml.contains("2014-09-18 16:16:45")),
+			  () -> assertFalse(processedHtml.contains("2014-11-21 00:27:31"))
+		);
+		
+		Assertions.assertTrue(processedHtml.contains("2014-07-06 13:20:39"));
+		
+		Assertions.assertTrue(processedHtml.contains("<td align=\"center\" valign=\"center\">175 m</td>"));
+		
+		assertAll(
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
+		);
+		assertTrue(processedHtml.contains("<!-- desc_user:start -->User description within comments"));
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////
 	@Test
 	public void all_Conditions_Enabled_Should_Return_Valid_Cdata() {
 		//GIVEN

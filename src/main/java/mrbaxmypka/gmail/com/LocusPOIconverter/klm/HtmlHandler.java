@@ -4,11 +4,10 @@ import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Comment;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
+import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -41,7 +40,7 @@ public class HtmlHandler {
 		}
 		if (multipartDto.isSetPreviewSize()) {
 			Integer previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
-			setPreviewSize(parsedHtmlFragment, previewSize);
+			setPreviewSize(parsedHtmlFragment, previewSize, multipartDto);
 		}
 		addStartEndComments(parsedHtmlFragment);
 		
@@ -142,8 +141,14 @@ public class HtmlHandler {
 	 * 1) Sets preview size in pixels for all <img> Elements.
 	 * 2) Checks if the given <img> Elements are presented as links within <a></a>. If not, wrap images with <a></a>
 	 * to create links.
+	 * 3) Creates a new description within Locus Pro <!-- desc_user:start --> ... <!-- desc_user:end -->
+	 * with User's text and images.
+	 * For Locus Pro {@code <!-- desc_user:start -->} and {@code <!-- desc_user:end -->} are the markers
+	 * for displaying all inner data and text on POI screen (description text, photo, photo data etc).
+	 * So when {@link MultipartDto#isSetPreviewSize() = true} to display it on the screen these comments
+	 * have to embrace all the description.
 	 */
-	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize) {
+	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize, MultipartDto multipartDto) {
 		Elements imgElements = parsedHtmlFragment.select("img");
 		String previewSizeAttr = previewSize.toString() + "px";
 		imgElements.forEach(imgElement -> {
@@ -158,6 +163,9 @@ public class HtmlHandler {
 		imgElements.stream()
 			  .filter(element -> !element.parent().tagName().equalsIgnoreCase("a"))
 			  .forEach(element -> element.replaceWith(getAElementWithInnerImgElement(element)));
+		//Finally creates a new User description within <!-- desc_user:start --> ... <!-- desc_user:end -->
+		// with User's text and images inside it.
+		clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
 	}
 	
 	/**
@@ -204,7 +212,6 @@ public class HtmlHandler {
 	 * MUST be the last method in a chain.
 	 */
 	private void clearOutdatedDescriptions(Element parsedHtmlFragment, MultipartDto multipartDto) {
-//		Elements aElements = parsedHtmlFragment.select("a[href]"); //Those <a> also include <img> or whatever else
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		String userDescriptionText = getUserDescriptionText(parsedHtmlFragment).trim();
 		
@@ -218,22 +225,7 @@ public class HtmlHandler {
 			newHtmlDescription.select("tbody").first().appendChild(tr);
 			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
 		}
-
-/*
-		if (!aElements.isEmpty()) {
-			//These are the descriptions set of a photos or another included attachments as table rows
-			String parentText = aElements.first().parent().ownText() != null ? aElements.first().parent().ownText() : "";
-			
-			Element tr = new Element("tr");
-			Element td = new Element("td").appendText(parentText)
-//				.attr("width", "100%")
-				.attr("align", "center");
-			td.insertChildren(0, aElements);
-			tr.appendChild(td);
-			newHtmlDescription.select("tbody").first().appendChild(tr);
-			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
-		}
-*/
+		
 		Elements tableRowWithDescAndDateTime = getTableRowsWithDescAndDateTime(parsedHtmlFragment.getAllElements());
 		tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
 		newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
@@ -270,23 +262,24 @@ public class HtmlHandler {
 	 * have to embrace all the description.
 	 * Otherwise only description text will be visible.
 	 *
-	 * @return A {@code <div></div>} Element with a new table with tbody embraced with comments
-	 * or just a new table with tbody for a data.
+	 * @return A {@code <div></div>} Element with a new table with tbody embraced with "desc_user" comments
+	 * or just a new table with tbody for a data if {@link MultipartDto#isSetPreviewSize()} not set.
 	 */
 	private Element createNewHtmlDescription(String userDescription, MultipartDto multipartDto) {
 		Element table = new Element("table")
 			  .attr("width", "100%").attr("style", "color:black");
 		table.appendChild(new Element("tbody"));
 		//'setPath' option for photos and any user description texts in Locus have to be within special comments
-		if (multipartDto.isSetPath() || !userDescription.isBlank()) {
-			String descUserStart = "desc_user:start";
-			String descUserEnd = "desc_user:end";
+		if (multipartDto.isSetPreviewSize() || !userDescription.isBlank()) {
+			String descUserStart = " desc_user:start ";
+			String descUserEnd = " desc_user:end ";
 			Element divElement = new Element("div").appendChild(new Comment(descUserStart));
 			if (!userDescription.isBlank()) divElement.appendText(userDescription);
 			return divElement.appendChild(table).appendChild(new Comment(descUserEnd));
 		}
 		return table;
 	}
+	
 	
 	/**
 	 * In Locus a simple text with User's descriptions is placed between
@@ -297,19 +290,62 @@ public class HtmlHandler {
 	 * @return Derived text between xml tags or empty String if nothing found.
 	 */
 	private String getUserDescriptionText(Element parsedHtmlFragment) {
-		List<Node> nodes = parsedHtmlFragment.childNodes(); //Nodes are only for convenient finding for Comments elements
+/*
 		StringBuilder textUserDescription = new StringBuilder("");
-		for (int i = 0; i < nodes.size(); i++) {
-			if (nodes.get(i) instanceof Comment && ((Comment) nodes.get(i)).getData().contains("desc_user:start")) {
+		Elements allElements = parsedHtmlFragment.getAllElements();
+		for (int i = 0; i < allElements.size(); i++){
+			if (allElements.get(i).ownText().contains("desc_user:start")) {
 				//From here we iterate over further Elements...
-				for (int j = i; j < nodes.size(); j++) {
-					if (nodes.get(j) instanceof TextNode && !((TextNode) nodes.get(j)).getWholeText().isBlank()) {
+				for (int j = i; j < allElements.size(); j++) {
+					if (allElements.get(j).hasText()) {
 						//Write out all non-blank text data
-						textUserDescription.append(((TextNode) nodes.get(j)).getWholeText());
+						textUserDescription.append(allElements.get(j).ownText());
 						continue;
 					}
 					//... Until find the end marker
-					if (nodes.get(j) instanceof Comment && ((Comment) nodes.get(i)).getData().contains("desc_user:end")) {
+					if (allElements.get(j).ownText().contains("desc_user:end")) {
+						return textUserDescription.toString();
+					}
+				}
+			}
+			
+		}
+*/
+		//This Comment has Parent with all the children for extracting text with User's descriptions
+		final Comment[] commentNode = new Comment[1];//To be modified from within anonymous class or lambda
+		parsedHtmlFragment.traverse(new NodeVisitor() {
+			@Override
+			public void head(Node node, int i) {
+				if (node instanceof Comment && ((Comment) node).getData().contains("desc_user:start")) {
+					commentNode[0] = (Comment) node;
+				}
+			}
+			
+			@Override
+			public void tail(Node node, int i) {
+			}
+		});
+
+		if (commentNode[0] == null) return "";
+		
+		List<Node> nodesWithinUserDescComments = commentNode[0].parent().childNodes();
+		
+		StringBuilder textUserDescription = new StringBuilder("");
+		
+		for (int i = 0; i < nodesWithinUserDescComments.size(); i++) {
+			if (nodesWithinUserDescComments.get(i) instanceof Comment &&
+				  ((Comment) nodesWithinUserDescComments.get(i)).getData().contains("desc_user:start")) {
+				//From here we iterate over further Elements...
+				for (int j = i; j < nodesWithinUserDescComments.size(); j++) {
+					if (nodesWithinUserDescComments.get(j) instanceof TextNode &&
+						  !((TextNode) nodesWithinUserDescComments.get(j)).getWholeText().isBlank()) {
+						//Write out all non-blank text data
+						textUserDescription.append(((TextNode) nodesWithinUserDescComments.get(j)).getWholeText());
+						continue;
+					}
+					//... Until find the end marker
+					if (nodesWithinUserDescComments.get(j) instanceof Comment &&
+						  ((Comment) nodesWithinUserDescComments.get(j)).getData().contains("desc_user:end")) {
 						return textUserDescription.toString();
 					}
 				}
@@ -369,14 +405,14 @@ public class HtmlHandler {
 	 * Safe comments that make sense for only Locus Pro. Other programs will ignore it.
 	 */
 	private void addStartEndComments(Element parsedHtmlFragment) {
-		Comment desc_gen_start = new Comment("desc_gen:start");
-		Comment desc_gen_end = new Comment("desc_gen:end");
+		Comment desc_gen_start = new Comment(" desc_gen:start ");
+		Comment desc_gen_end = new Comment(" desc_gen:end ");
 		
 		if (!parsedHtmlFragment.html().startsWith(desc_gen_start.getData())) {
-			parsedHtmlFragment.prependChild(new Comment("desc_gen:start"));
+			parsedHtmlFragment.prependChild(desc_gen_start);
 		}
 		if (!parsedHtmlFragment.html().endsWith(desc_gen_end.getData())) {
-			parsedHtmlFragment.appendChild(new Comment("desc_gen:end"));
+			parsedHtmlFragment.appendChild(desc_gen_end);
 		}
 	}
 }

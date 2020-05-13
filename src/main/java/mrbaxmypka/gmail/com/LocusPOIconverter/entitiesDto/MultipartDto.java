@@ -64,6 +64,11 @@ public class MultipartDto implements Serializable {
 	@Nullable
 	private Integer previewSize;
 	
+	/**
+	 * A given images will be displayed in "Attachments" tab exclusively in Locus Pro
+	 */
+	private boolean asAttachmentInLocus;
+	
 	public void setPathType(@Nullable String pathType) {
 		this.pathType = PathTypes.getByValue(pathType);
 	}
