@@ -14,12 +14,11 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * HTML processing class based on {@link org.jsoup.Jsoup} library to parse CDATA as HTML.
+ * HTML processing class based on {@link org.jsoup.Jsoup} library to parse only CDATA as HTML.
  */
 @NoArgsConstructor
 @Component
@@ -61,25 +60,19 @@ public class HtmlHandler {
 	 */
 	private void setPath(Element parsedHtmlFragment, PathTypes pathType, String path) {
 		
-		//TODO: to redesign to automatically remake <img> to <a><img/></a>
-		
 		Elements aElements = parsedHtmlFragment.select("a[href]");
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		
 		final String href = path == null ? "" : path;
 		
-		aElements.stream()
-			  .filter(a -> !a.attr("href").startsWith("www.") && !a.attr("href").startsWith("http:"))
-			  .forEach((a) -> {
-				  String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), pathType, href);
-				  a.attr("href", newPathWithFilename);
-			  });
-		imgElements.stream()
-			  .filter(img -> !img.attr("src").startsWith("www.") && !img.attr("src").startsWith("http:"))
-			  .forEach((img) -> {
-				  String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), pathType, href);
-				  img.attr("src", newPathWithFilename);
-			  });
+		aElements.forEach((a) -> {
+			String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), pathType, href);
+			a.attr("href", newPathWithFilename);
+		});
+		imgElements.forEach((img) -> {
+			String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), pathType, href);
+			img.attr("src", newPathWithFilename);
+		});
 	}
 	
 	/**
@@ -145,9 +138,55 @@ public class HtmlHandler {
 		return newHrefWithoutFilename;
 	}
 	
+	/**
+	 * 1) Sets preview size in pixels for all <img> Elements.
+	 * 2) Checks if the given <img> Elements are presented as links within <a></a>. If not, wrap images with <a></a>
+	 * to create links.
+	 */
 	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize) {
-		Elements imgElements = parsedHtmlFragment.select("img[width]");
-		imgElements.forEach(img -> img.attr("width", previewSize.toString() + "px"));
+		Elements imgElements = parsedHtmlFragment.select("img");
+		String previewSizeAttr = previewSize.toString() + "px";
+		imgElements.forEach(imgElement -> {
+			if (imgElement.hasAttr("width")) {
+				imgElement.attr("width", previewSizeAttr);
+			}
+			if (imgElement.hasAttr("style")) {
+				setPreviewSizeInStyles(imgElement, previewSizeAttr);
+			}
+		});
+		//Remake imgs into a links if they aren't.
+		imgElements.stream()
+			  .filter(element -> !element.parent().tagName().equalsIgnoreCase("a"))
+			  .forEach(element -> element.replaceWith(getAElementWithInnerImgElement(element)));
+	}
+	
+	/**
+	 * Sets the new preview size into inline "Style" attributes as "width", "max-width"
+	 *
+	 * @param imgElementWithStyles With obligatory "style" attribute
+	 * @param previewSize          Ready to use value, eg. "640px".
+	 */
+	private void setPreviewSizeInStyles(Element imgElementWithStyles, String previewSize) {
+		Map<String, String> stylesKeyMap = new LinkedHashMap<>();
+		String[] keys = imgElementWithStyles.attr("style").split(":|;");
+		
+		if (keys.length > 0) {
+			for (int i = 0; i < keys.length; i += 2) {
+				stylesKeyMap.put(keys[i].trim(), keys[i + 1].trim());
+			}
+		}
+		stylesKeyMap.entrySet().forEach(entry -> {
+			if (entry.getKey().equalsIgnoreCase("width")) {
+				entry.setValue(previewSize);
+			}
+			if (entry.getKey().equalsIgnoreCase("max-width")) {
+				entry.setValue(previewSize);
+			}
+		});
+		String newStyles = stylesKeyMap.entrySet().stream()
+			  .map(entry -> entry.getKey() + ":" + entry.getValue() + ";")
+			  .collect(Collectors.joining());
+		imgElementWithStyles.attr("style", newStyles);
 	}
 	
 	/**
@@ -200,6 +239,18 @@ public class HtmlHandler {
 		newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
 		
 		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
+	}
+	
+	/**
+	 * @param imgElement To be copied and inserted into <a></a>
+	 * @return New <a></a> Element with the copy of given <img></img> Element
+	 */
+	private Element getAElementWithInnerImgElement(Element imgElement) {
+		String src = imgElement.attr("src");
+		Element newImgElement = new Element(imgElement.tagName());
+		newImgElement.attributes().addAll(imgElement.attributes());
+		return new Element("a").attr("href", src).attr("target", "_blank")
+			  .appendChild(newImgElement);
 	}
 	
 	private Elements getAElementsWithInnerImgElement(Elements imgElements) {

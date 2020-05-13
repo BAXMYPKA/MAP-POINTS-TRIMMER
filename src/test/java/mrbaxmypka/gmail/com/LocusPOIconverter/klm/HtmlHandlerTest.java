@@ -47,8 +47,40 @@ class HtmlHandlerTest {
 		multipartDto = new MultipartDto(multipartFile);
 	}
 	
+	/**
+	 * Google Earth images for POI may contain only <img></img>. So we need to set them into <a><img></img></a>
+	 */
 	@Test
-	public void setPath_Should_Embrace_Images_And_Data_Within_DescUserStart_And_DescUserEnd_Comments_Without_Them_Initially() {
+	public void setPath_for_Pure_Img_Should_Transform_Imgs_Into_A_Links() {
+		//GIVEN CDATA with 2 imgs with inline styles to be replaces with new width
+		String twoPureImgs = "<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+			  "<img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\">" +
+			  "<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
+			  "<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", twoPureImgs.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(750);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(twoPureImgs, multipartDto);
+		System.out.println(processedHtml);
+		//THEN
+		assertAll(
+			  () -> assertTrue(processedHtml.contains("<a href=\"files/p__20200511_130745.jpg\" target=\"_blank\"><img ")),
+			  () -> assertTrue(processedHtml.contains("<a href=\"files/p__20180514_153338.jpg\" target=\"_blank\"><img ")),
+			  () -> assertTrue(processedHtml.contains("></a>"))
+		);
+	}
+	
+	@Test
+	public void setPreviewSize_Should_Embrace_Images_And_Data_Within_DescUserStart_And_DescUserEnd_Comments_Without_Them_Initially() {
 		//GIVEN CDATA with image but without user descriptions within <!-- desc_user:start --> and <!-- desc_user:end -->
 		String withoutDescUserComments = "<!-- desc_gen:start -->\n" +
 			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
@@ -61,9 +93,8 @@ class HtmlHandlerTest {
 			  "<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", withoutDescUserComments.getBytes());
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPath(true);
-		multipartDto.setPathType("relative");
-		multipartDto.setPath("../myFiles");
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(400);
 		
 		//WHEN
 		String processedHtml = htmlHandler.processCdata(withoutDescUserComments, multipartDto);
@@ -112,6 +143,42 @@ class HtmlHandlerTest {
 		);
 		
 	}
+	
+	@Test
+	public void setPreviewSize_for_Imgs_With_Inline_Styles_Should_Set_New_Widths() {
+		//GIVEN CDATA with 2 imgs with inline styles to be replaces with new width
+		String twoImgsWithStyles = "<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+			  "<img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\">" +
+			  "<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
+			  "<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(750);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(twoImgsWithStyles, multipartDto);
+		
+		//THEN
+		assertAll(
+			  () -> assertTrue(processedHtml.contains("style=\"width:750px;border:3px white solid;\"")),
+			  () -> assertTrue(processedHtml.contains("style=\"border:3px white solid;color:black;max-width:750px;\""))
+		);
+		
+		assertAll(
+			  () -> assertFalse(processedHtml.contains("width:500px")),
+			  () -> assertFalse(processedHtml.contains("max-width: 300%")),
+			  () -> assertFalse(processedHtml.contains("max-width:300%"))
+		);
+		
+	}
+	
 	
 	@Test
 	public void set_Relative_Path_Should_Set_Relative_Path_Type() {
