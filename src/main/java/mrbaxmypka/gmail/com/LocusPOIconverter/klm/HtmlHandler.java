@@ -6,6 +6,7 @@ import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
+import org.jsoup.select.NodeFilter;
 import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
 import org.springframework.stereotype.Component;
@@ -24,13 +25,19 @@ import java.util.stream.Collectors;
 public class HtmlHandler {
 	
 	/**
-	 * @param htmlCdata    Receives inner text from CDATA which in fact is the HTML markup
+	 * @param cdata    Receives inner text from CDATA which in fact is the HTML markup
 	 * @param multipartDto To determine all other conditions to be processed on CDATA HTML
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
-	public String processCdata(String htmlCdata, MultipartDto multipartDto) {
+	public String processCdata(String cdata, MultipartDto multipartDto) {
 		//Gets HTML <body> then all the included children and then the first one as a children's parent container
-		Element parsedHtmlFragment = Jsoup.parseBodyFragment(htmlCdata).body().children().first();
+		Element parsedHtmlFragment = Jsoup.parseBodyFragment(cdata).body().children().first();
+		
+		if (parsedHtmlFragment == null) { //No html markup found, cdata is a plain text
+			return cdata;
+		}
+		
+		String plainTextDescription = extractPlainTextDescriptions(parsedHtmlFragment);
 		
 		if (multipartDto.isClearOutdatedDescriptions()) { //Should be the first treatment
 			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
@@ -48,9 +55,22 @@ public class HtmlHandler {
 		if (multipartDto.isTrimDescriptions()) {
 			return trimDescriptions(parsedHtmlFragment);
 		}
+		parsedHtmlFragment.prependText(plainTextDescription);
 		return parsedHtmlFragment.html();
 	}
 	
+	/**
+	 * The given CDATA may contain a plain texts before or after HTML markup.
+	 * So here we extract a possible text (as {@link TextNode}) to append it back to the processed HTML
+	 * @return Extracted plain text or empty string.
+	 */
+	private String extractPlainTextDescriptions(Element parsedHtmlFragment) {
+		//TextNodes are siblings for the parsedHtmlFragments
+		return parsedHtmlFragment.parent().childNodes().stream()
+			.filter(node -> node instanceof TextNode)
+			.map(node -> ((TextNode) node).getWholeText())
+			.collect(Collectors.joining("\n"));
+	}
 	
 	/**
 	 * Sets new local or remote paths instead old ones.

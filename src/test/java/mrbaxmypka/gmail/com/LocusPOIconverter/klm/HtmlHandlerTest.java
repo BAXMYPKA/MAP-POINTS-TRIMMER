@@ -400,7 +400,24 @@ class HtmlHandlerTest {
 		assertTrue(processedHtml.contains("<!-- desc_user:start -->User description within comments"));
 	}
 	
+	@Test
+	public void cdata_As_Plain_Description_Text() {
+		//GIVEN Plain text from <description>...</description>
+		String plainTextDescription = "<img></img>Plain text description";
+		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(750);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(plainTextDescription, multipartDto);
+		
+		//THEN
+		System.out.println(processedHtml);
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////
+	
 	@Test
 	public void all_Conditions_Enabled_Should_Return_Valid_Cdata() {
 		//GIVEN

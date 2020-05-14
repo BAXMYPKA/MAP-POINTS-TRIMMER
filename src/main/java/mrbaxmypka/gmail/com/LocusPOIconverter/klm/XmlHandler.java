@@ -92,7 +92,7 @@ public class XmlHandler {
 	}
 	
 	/**
-	 * Temporary the first condition checks {@code '\\s*>\\s*'} regexp as Locus may spread those signs occasionally
+	 * The first temporary condition checks {@code '\\s*>\\s*'} regexp as Locus may spread those signs occasionally
 	 * (especially after {@code <ExtendedData> tag}). So
 	 */
 	private XMLEvent processCdata(Characters characters, MultipartDto multipartDto) {
@@ -106,10 +106,12 @@ public class XmlHandler {
 				eventFactory.createIgnorableSpace("") :
 				eventFactory.createCharacters(characters.getData());
 		}
+/*
 		if (!characters.getData().startsWith("<!-- desc_gen:start -->")) {
 			return eventFactory.createCharacters(characters.getData());
 		}
-		//Obtain an inner CDATA text to treat as HTML elements
+*/
+		//Obtain an inner CDATA text to treat as HTML elements or plain text
 		String processedHtmlCdata = htmlHandler.processCdata(characters.getData(), multipartDto);
 		
 		processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartDto);
