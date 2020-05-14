@@ -4,17 +4,21 @@ import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.*;
+import org.jsoup.nodes.Comment;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
-import org.jsoup.select.NodeFilter;
-import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -25,7 +29,7 @@ import java.util.stream.Collectors;
 public class HtmlHandler {
 	
 	/**
-	 * @param cdata    Receives inner text from CDATA which in fact is the HTML markup
+	 * @param cdata        Receives inner text from CDATA which in fact is the HTML markup
 	 * @param multipartDto To determine all other conditions to be processed on CDATA HTML
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
@@ -36,8 +40,8 @@ public class HtmlHandler {
 		if (parsedHtmlFragment == null) { //No html markup found, cdata is a plain text
 			return cdata;
 		}
-		
-		String plainTextDescription = extractPlainTextDescriptions(parsedHtmlFragment);
+		//A possible plain text outside html markup
+		String plainTextDescription = extractPlainTextDescriptions(parsedHtmlFragment).trim();
 		
 		if (multipartDto.isClearOutdatedDescriptions()) { //Should be the first treatment
 			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
@@ -50,7 +54,6 @@ public class HtmlHandler {
 			setPreviewSize(parsedHtmlFragment, previewSize, multipartDto);
 		}
 		addStartEndComments(parsedHtmlFragment);
-		
 		// MUST be the last treatment in all the conditions chain
 		if (multipartDto.isTrimDescriptions()) {
 			return trimDescriptions(parsedHtmlFragment);
@@ -62,6 +65,7 @@ public class HtmlHandler {
 	/**
 	 * The given CDATA may contain a plain texts before or after HTML markup.
 	 * So here we extract a possible text (as {@link TextNode}) to append it back to the processed HTML
+	 *
 	 * @return Extracted plain text or empty string.
 	 */
 	private String extractPlainTextDescriptions(Element parsedHtmlFragment) {
@@ -77,19 +81,20 @@ public class HtmlHandler {
 	 * I.e. old path {@code <a href="files:/_1404638472855.jpg"></>}
 	 * can be replaced with {@code <a href="C:/files:/a new path/_1404638472855.jpg"></>}
 	 */
-	private void setPath(Element parsedHtmlFragment, PathTypes pathType, String path) {
+	private void setPath(Element parsedHtmlFragment, @Nullable PathTypes pathType, @Nullable String path) {
 		
 		Elements aElements = parsedHtmlFragment.select("a[href]");
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		
-		final String href = path == null ? "" : path;
+		final PathTypes type = pathType == null ? PathTypes.RELATIVE : pathType;
+		final String hrefPath = path == null ? "" : path;
 		
 		aElements.forEach((a) -> {
-			String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), pathType, href);
+			String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), type, hrefPath);
 			a.attr("href", newPathWithFilename);
 		});
 		imgElements.forEach((img) -> {
-			String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), pathType, href);
+			String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), type, hrefPath);
 			img.attr("src", newPathWithFilename);
 		});
 	}
@@ -99,7 +104,7 @@ public class HtmlHandler {
 	 * Here we have to replace only the URL and leave the original filename.
 	 */
 	private String getNewHrefWithOldFilename(
-		  String oldHrefWithFilename, PathTypes pathType, String newHrefWithoutFilename) {
+		String oldHrefWithFilename, PathTypes pathType, String newHrefWithoutFilename) {
 		
 		String newHrefWithOldFilename;
 		
@@ -139,8 +144,8 @@ public class HtmlHandler {
 	
 	private String getFileName(String oldHrefWithFilename) {
 		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/") != -1 ?
-			  oldHrefWithFilename.lastIndexOf("/") :
-			  oldHrefWithFilename.lastIndexOf("\\");
+			oldHrefWithFilename.lastIndexOf("/") :
+			oldHrefWithFilename.lastIndexOf("\\");
 		return oldHrefWithFilename.substring(lastIndexOFSlash + 1);
 	}
 	
@@ -169,20 +174,42 @@ public class HtmlHandler {
 	 * have to embrace all the description.
 	 */
 	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize, MultipartDto multipartDto) {
-		Elements imgElements = parsedHtmlFragment.select("img");
+		Elements imgElements = parsedHtmlFragment.select("img[src]");
+//		Elements imgElements = parsedHtmlFragment.select("img");
+		if (imgElements.size() == 0) return;
+		
 		String previewSizeAttr = previewSize.toString() + "px";
-		imgElements.forEach(imgElement -> {
-			if (imgElement.hasAttr("width")) {
-				imgElement.attr("width", previewSizeAttr);
+		imgElements.forEach(img -> {
+			if (img.hasAttr("width")) {
+				img.attr("width", previewSizeAttr);
 			}
-			if (imgElement.hasAttr("style")) {
-				setPreviewSizeInStyles(imgElement, previewSizeAttr);
+			if (img.hasAttr("style")) {
+				setPreviewSizeInStyles(img, previewSizeAttr);
 			}
 		});
+/*
+		for (int i = 0; i < imgElements.size(); i++) {
+			Element img = imgElements.get(i);
+			//First eliminate all malformed <img> without [src] attribute
+			if (!img.hasAttr("src")) {
+				img.remove();
+				imgElements.remove(img);
+				continue;
+			}
+			if (img.hasAttr("width")) {
+				img.attr("width", previewSizeAttr);
+			}
+			if (img.hasAttr("style")) {
+				setPreviewSizeInStyles(img, previewSizeAttr);
+			}
+		}
+*/
+		//No <img> with [src] attribures
 		//Remake imgs into a links if they aren't.
 		imgElements.stream()
-			  .filter(element -> !element.parent().tagName().equalsIgnoreCase("a"))
-			  .forEach(element -> element.replaceWith(getAElementWithInnerImgElement(element)));
+			.filter(element -> element.hasParent())
+			.filter(element -> !element.parent().tagName().equalsIgnoreCase("a"))
+			.forEach(element -> element.replaceWith(getAElementWithInnerImgElement(element)));
 		//Finally creates a new User description within <!-- desc_user:start --> ... <!-- desc_user:end -->
 		// with User's text and images inside it.
 		clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
@@ -212,8 +239,8 @@ public class HtmlHandler {
 			}
 		});
 		String newStyles = stylesKeyMap.entrySet().stream()
-			  .map(entry -> entry.getKey() + ":" + entry.getValue() + ";")
-			  .collect(Collectors.joining());
+			.map(entry -> entry.getKey() + ":" + entry.getValue() + ";")
+			.collect(Collectors.joining());
 		imgElementWithStyles.attr("style", newStyles);
 	}
 	
@@ -223,7 +250,7 @@ public class HtmlHandler {
 	private String trimDescriptions(Element parsedHtmlFragment) {
 		//Deletes 2 or more whitespaces in a row
 		String trimmedString = parsedHtmlFragment.html()
-			  .replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
+			.replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
 		return trimmedString;
 	}
 	
@@ -234,7 +261,6 @@ public class HtmlHandler {
 	private void clearOutdatedDescriptions(Element parsedHtmlFragment, MultipartDto multipartDto) {
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		String userDescriptionText = getUserDescriptionText(parsedHtmlFragment).trim();
-		
 		Element newHtmlDescription = createNewHtmlDescription(userDescriptionText, multipartDto);
 		
 		if (!imgElements.isEmpty()) {
@@ -247,8 +273,10 @@ public class HtmlHandler {
 		}
 		
 		Elements tableRowWithDescAndDateTime = getTableRowsWithDescAndDateTime(parsedHtmlFragment.getAllElements());
-		tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
-		newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
+		if (!tableRowWithDescAndDateTime.isEmpty()) {
+			tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
+			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
+		}
 		
 		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
 	}
@@ -262,17 +290,17 @@ public class HtmlHandler {
 		Element newImgElement = new Element(imgElement.tagName());
 		newImgElement.attributes().addAll(imgElement.attributes());
 		return new Element("a").attr("href", src).attr("target", "_blank")
-			  .appendChild(newImgElement);
+			.appendChild(newImgElement);
 	}
 	
 	private Elements getAElementsWithInnerImgElement(Elements imgElements) {
 		return imgElements.stream()
-			  .map(imgElement -> {
-				  String src = imgElement.attr("src");
-				  return new Element("a").attr("href", src).attr("target", "_blank")
-						.appendChild(imgElement);
-			  })
-			  .collect(Collectors.toCollection(Elements::new));
+			.map(imgElement -> {
+				String src = imgElement.attr("src");
+				return new Element("a").attr("href", src).attr("target", "_blank")
+					.appendChild(imgElement);
+			})
+			.collect(Collectors.toCollection(Elements::new));
 	}
 	
 	/**
@@ -287,7 +315,7 @@ public class HtmlHandler {
 	 */
 	private Element createNewHtmlDescription(String userDescription, MultipartDto multipartDto) {
 		Element table = new Element("table")
-			  .attr("width", "100%").attr("style", "color:black");
+			.attr("width", "100%").attr("style", "color:black");
 		table.appendChild(new Element("tbody"));
 		//'setPath' option for photos and any user description texts in Locus have to be within special comments
 		if (multipartDto.isSetPreviewSize() || !userDescription.isBlank()) {
@@ -345,7 +373,7 @@ public class HtmlHandler {
 			public void tail(Node node, int i) {
 			}
 		});
-
+		
 		if (commentNode[0] == null) return "";
 		
 		List<Node> nodesWithinUserDescComments = commentNode[0].parent().childNodes();
@@ -354,18 +382,18 @@ public class HtmlHandler {
 		
 		for (int i = 0; i < nodesWithinUserDescComments.size(); i++) {
 			if (nodesWithinUserDescComments.get(i) instanceof Comment &&
-				  ((Comment) nodesWithinUserDescComments.get(i)).getData().contains("desc_user:start")) {
+				((Comment) nodesWithinUserDescComments.get(i)).getData().contains("desc_user:start")) {
 				//From here we iterate over further Elements...
 				for (int j = i; j < nodesWithinUserDescComments.size(); j++) {
 					if (nodesWithinUserDescComments.get(j) instanceof TextNode &&
-						  !((TextNode) nodesWithinUserDescComments.get(j)).getWholeText().isBlank()) {
+						!((TextNode) nodesWithinUserDescComments.get(j)).getWholeText().isBlank()) {
 						//Write out all non-blank text data
 						textUserDescription.append(((TextNode) nodesWithinUserDescComments.get(j)).getWholeText());
 						continue;
 					}
 					//... Until find the end marker
 					if (nodesWithinUserDescComments.get(j) instanceof Comment &&
-						  ((Comment) nodesWithinUserDescComments.get(j)).getData().contains("desc_user:end")) {
+						((Comment) nodesWithinUserDescComments.get(j)).getData().contains("desc_user:end")) {
 						return textUserDescription.toString();
 					}
 				}
@@ -378,35 +406,36 @@ public class HtmlHandler {
 	 * Filters td Elements with DateTime, gets the earliest, gets its Parent Node with all the table rows which contain
 	 * the whole description of a POI.
 	 *
-	 * @return {@code new Elements("<tr>")} with the whole POI description for the earliest DateTime.
+	 * @return {@code new Elements("<tr>")} with the whole POI description for the earliest DateTime
+	 * or empty {@link Elements} collection (.size() == 0)
 	 */
 	private Elements getTableRowsWithDescAndDateTime(Elements htmlElements) {
-		Elements tdElementsWithDescription = htmlElements.select("td[align],[valign]");
+		Elements tdElementsWithDescription = htmlElements.select("td");
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		Element tdElementWithMinimumDateTime = tdElementsWithDescription.stream()
-			  .filter(Element::hasText)
-			  .filter(e -> {
-				  try {
-					  LocalDateTime.parse(e.text(), dateTimeFormatter);
-					  return true;
-				  } catch (DateTimeParseException ex) {
-					  return false;
-				  }
-			  })
-			  .min((e1, e2) -> {
-				  LocalDateTime dateTime1 =
-						LocalDateTime.parse(e1.text(), dateTimeFormatter);
-				  LocalDateTime dateTime2 =
-						LocalDateTime.parse(e2.text(), dateTimeFormatter);
-				  return dateTime1.compareTo(dateTime2);
-			  })
-			  .orElse(new Element("td").text(LocalDateTime.now().format(dateTimeFormatter)));
-		
+			.filter(Element::hasText)
+			.filter(e -> {
+				try {
+					LocalDateTime.parse(e.text(), dateTimeFormatter);
+					return true;
+				} catch (DateTimeParseException ex) {
+					return false;
+				}
+			})
+			.min((e1, e2) -> {
+				LocalDateTime dateTime1 =
+					LocalDateTime.parse(e1.text(), dateTimeFormatter);
+				LocalDateTime dateTime2 =
+					LocalDateTime.parse(e2.text(), dateTimeFormatter);
+				return dateTime1.compareTo(dateTime2);
+			})
+			.orElse(new Element("empty"));
 		if (tdElementWithMinimumDateTime.hasParent()) {
 			//<tr> is the first parent, <tbody> or <table> is the second which contains all the <tr> with descriptions
 			return tdElementWithMinimumDateTime.parent().parent().children();
 		} else {
-			return new Elements(new Element("tr").appendChild(tdElementWithMinimumDateTime));
+			//No dateTime's found, return empty tag
+			return new Elements();
 		}
 	}
 	
@@ -427,7 +456,6 @@ public class HtmlHandler {
 	private void addStartEndComments(Element parsedHtmlFragment) {
 		Comment desc_gen_start = new Comment(" desc_gen:start ");
 		Comment desc_gen_end = new Comment(" desc_gen:end ");
-		
 		if (!parsedHtmlFragment.html().startsWith(desc_gen_start.getData())) {
 			parsedHtmlFragment.prependChild(desc_gen_start);
 		}
