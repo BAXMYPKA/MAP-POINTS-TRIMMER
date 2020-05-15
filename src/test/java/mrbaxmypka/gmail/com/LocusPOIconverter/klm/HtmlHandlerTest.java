@@ -54,6 +54,60 @@ class HtmlHandlerTest {
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
 	@Test
+	public void any_Modification_Should_Enclose_Description_With_DescGenStart_DescGenEnd_With_Them_Initially() {
+		//GIVEN
+		String twoImgsWithStyles = "<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+			  "<img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\">" +
+			  "<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
+			  "<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(750);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(twoImgsWithStyles, multipartDto);
+
+		//THEN
+		assertAll(
+			  () -> assertTrue(processedHtml.startsWith("<!-- desc_gen:start -->")),
+			  () -> assertTrue(processedHtml.endsWith("<!-- desc_gen:end -->"))
+		);
+	}
+	
+	@Test
+	public void any_Modification_Should_Enclose_Description_With_DescGenStart_DescGenEnd_Without_Them_Initially() {
+		//GIVEN
+		String twoImgsWithStyles = "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+			  "<img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\">" +
+			  "<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
+			  "<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>";
+		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(750);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(twoImgsWithStyles, multipartDto);
+		
+		//THEN
+		assertAll(
+			  () -> assertTrue(processedHtml.startsWith("<!-- desc_gen:start -->")),
+			  () -> assertTrue(processedHtml.endsWith("<!-- desc_gen:end -->"))
+		);
+	}
+	
+	@Test
 	public void setPreviewSize_Should_Embrace_Images_And_Data_Within_DescUserStart_And_DescUserEnd_Comments_Without_Them_Initially() {
 		//GIVEN CDATA with image but without user descriptions within <!-- desc_user:start --> and <!-- desc_user:end -->
 		String withoutDescUserComments = "<!-- desc_gen:start -->\n" +
@@ -285,9 +339,10 @@ class HtmlHandlerTest {
 	@Test
 	public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded() {
 		//GIVEN
+		String pathWithWhitespaces = "D:\\My Folder\\My POI";
 		multipartDto.setSetPath(true);
 		multipartDto.setPathType("Absolute");
-		multipartDto.setPath("D:\\My Folder\\My POI");
+		multipartDto.setPath(pathWithWhitespaces);
 		
 		//WHEN
 		String processedHtml = htmlHandler.processCdata(html, multipartDto);
@@ -389,7 +444,7 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processCdata(plainTextDescription, multipartDto);
-		
+
 		//THEN
 		assertAll(
 			() -> assertTrue(processedHtml.startsWith("Plain text description")),
@@ -414,7 +469,7 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processCdata(plainTextDescription, multipartDto);
-		
+		System.out.println(processedHtml);
 		//THEN
 		assertTrue(processedHtml.contentEquals("Plain text description"));
 	}

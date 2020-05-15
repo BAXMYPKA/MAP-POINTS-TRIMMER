@@ -1,6 +1,5 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
 
-import javafx.event.Event;
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class XmlHandler {
 	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
 	 */
 	public String processKml(MultipartDto multipartDto)
-		throws XMLStreamException, IOException, ParserConfigurationException, SAXException {
+		  throws XMLStreamException, IOException, ParserConfigurationException, SAXException {
 		
 		StringWriter stringWriter = new StringWriter();
 		
@@ -63,22 +62,17 @@ public class XmlHandler {
 */
 		//To skip the whole processing if nothing is set
 		if (!multipartDto.isSetPath() &&
-			!multipartDto.isTrimDescriptions() &&
-			!multipartDto.isSetPreviewSize() &&
-			!multipartDto.isClearOutdatedDescriptions() &&
-			!multipartDto.isTrimXml() &&
-			!multipartDto.isAsAttachmentInLocus()) {
+			  !multipartDto.isTrimDescriptions() &&
+			  !multipartDto.isSetPreviewSize() &&
+			  !multipartDto.isClearOutdatedDescriptions() &&
+			  !multipartDto.isTrimXml() &&
+			  !multipartDto.isAsAttachmentInLocus()) {
 			return new String(multipartDto.getMultipartFile().getBytes());
 		}
 		while (eventReader.hasNext()) {
 			XMLEvent event = eventReader.nextEvent();
 			switch (event.getEventType()) {
-				case XMLEvent.CHARACTERS:
-				case XMLEvent.CDATA:
-					event = processCdata(event.asCharacters(), multipartDto);
-					writeXmlEvent(event);
-					break;
-				case XMLStreamConstants.START_ELEMENT:
+				case XMLEvent.START_ELEMENT:
 					StartElement startElement = event.asStartElement();
 					if (startElement.getName().getLocalPart().equals("href")) {
 						writeXmlEvent(event);
@@ -86,16 +80,22 @@ public class XmlHandler {
 						writeXmlEvent(newHrefTextEvent);
 						break;
 					}
+					if (startElement.getName().getLocalPart().equals("description")) {
+						writeXmlEvent(event);
+						XMLEvent descriptionTextEvent =
+							  processDescriptionText(eventReader.nextEvent().asCharacters(), multipartDto);
+						writeXmlEvent(descriptionTextEvent);
+						break;
+					}
 				default:
 					writeXmlEvent(event);
 			}
-//			writeXmlEvent(event);
 		}
 		return stringWriter.toString();
 	}
 	
 	private Document getDocument(InputStream kmlInputStream)
-		throws ParserConfigurationException, IOException, SAXException {
+		  throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document kmlDocument = documentBuilder.parse(kmlInputStream);
 		return kmlDocument;
@@ -109,7 +109,7 @@ public class XmlHandler {
 	 * The first temporary condition checks {@code '\\s*>\\s*'} regexp as Locus may spread those signs occasionally
 	 * (especially after {@code <ExtendedData> tag}). So
 	 */
-	private XMLEvent processCdata(Characters characters, MultipartDto multipartDto) {
+	private XMLEvent processDescriptionText(Characters characters, MultipartDto multipartDto) {
 		
 		if (characters.getData().matches("\\s*>\\s*")) {
 			return eventFactory.createIgnorableSpace("");
@@ -117,14 +117,9 @@ public class XmlHandler {
 		
 		if (characters.isWhiteSpace() || characters.getData().matches("\\s*>\\s*")) {
 			return multipartDto.isTrimXml() ?
-				eventFactory.createIgnorableSpace("") :
-				eventFactory.createCharacters(characters.getData());
+				  eventFactory.createIgnorableSpace("") :
+				  eventFactory.createCharacters(characters.getData());
 		}
-/*
-		if (!characters.getData().startsWith("<!-- desc_gen:start -->")) {
-			return eventFactory.createCharacters(characters.getData());
-		}
-*/
 		//Obtain an inner CDATA text to treat as HTML elements or plain text
 		String processedHtmlCdata = htmlHandler.processCdata(characters.getData(), multipartDto);
 		
@@ -142,9 +137,23 @@ public class XmlHandler {
 	 */
 	private XMLEvent processHref(XMLEvent textEventHrefWithFilename, MultipartDto multipartDto) {
 		String oldHrefWithFilename = textEventHrefWithFilename.asCharacters().getData();
+		if (!isChangeable(oldHrefWithFilename)) {
+			return eventFactory.createCharacters(oldHrefWithFilename);
+		}
 		String newHrefWithOldFilename = htmlHandler.getNewHrefWithOldFilename(
-			oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
+			  oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
 		return eventFactory.createCharacters(newHrefWithOldFilename);
+	}
+	
+	/**
+	 * Some programs as Google Earth has special href they internally redirect to their local image store.
+	 * It is not recommended to change those type of hrefs.
+	 * @param oldHrefWithFilename The existing <href>path to image</href> to be verified.
+	 * @return 'True' if existing href is not recommended to change. Otherwise 'false'.
+	 */
+	private boolean isChangeable(String oldHrefWithFilename) {
+		String googleMapSpecialUrl = "http://maps.google.com/";
+		return !oldHrefWithFilename.startsWith(googleMapSpecialUrl);
 	}
 	
 	/**
@@ -159,12 +168,10 @@ public class XmlHandler {
 		return processedHtmlCdata;
 	}
 	
-	//TODO: To treat LocusPOI Images started with 'file://'
-	
 	private void validateXml(Document document) throws SAXException, IOException {
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema = schemaFactory.newSchema(
-			new File("src/main/resources/static/xsd/kml-2.2.0/ogckml22.xsd"));
+			  new File("src/main/resources/static/xsd/kml-2.2.0/ogckml22.xsd"));
 		Validator validator = schema.newValidator();
 		validator.validate(new DOMSource(document));
 	}

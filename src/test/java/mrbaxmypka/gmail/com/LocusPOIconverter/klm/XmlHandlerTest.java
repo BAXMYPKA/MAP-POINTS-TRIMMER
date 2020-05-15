@@ -15,8 +15,8 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class XmlHandlerTest {
 	
@@ -29,7 +29,7 @@ class XmlHandlerTest {
 		  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
 		  "xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
 		  "<Document>\n" +
-		  "\t<name>Locus17.04.2020</name>\n" +
+		  "\t<name>Test POIs from Locus</name>\n" +
 		  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
 		  "\t<Style id=\"file:///sdcard/Locus/cache/images/1571471453728\">\n" +
 		  "\t\t<IconStyle>\n" +
@@ -63,17 +63,36 @@ class XmlHandlerTest {
 		  "<Placemark>\n" +
 		  "\t<name>A road fork</name>\n" +
 		  "\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-		  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
-		  "<!-- desc_user:start -->\n" +
-		  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"/storage/emulated/0/Locus/data/media/photo/Точка_1318431492316.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/Точка_1318431492316.jpg\" width=\"330px\" align=\"center\"></a>Test place name</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">203m</td></tr>\n" +
-		  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">332°</td></tr>\n" +
-		  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">10m</td></tr>\n" +
-		  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-18 18:46:14</td></tr>\n" +
-		  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
-		  "Test user description" +
-		  "<!-- desc_user:end -->\n" +
-		  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
-		  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+		  "<table width=\"100%\">\n" +
+		  " <tbody>\n" +
+		  " <!-- desc_user:start -->\n" +
+		  " <font color=\"black\">\n" +
+		  "   <tr>\n" +
+		  "\t<td width=\"100%\" align=\"center\"><a href=\"file:/_1318431492316.jpg\" target=\"_blank\"><img src=\"file:/_1318431492316.jpg\" width=\"330px\" align=\"center\"></a>Test place name</td>\n" +
+		  "   </tr>\n" +
+		  "\t <table width=\"100%\">\n" +
+		  "\t  <tbody>\n" +
+		  "\t   <tr>\n" +
+		  "\t\t<td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td>\n" +
+		  "\t\t<td align=\"center\" valign=\"center\">203m</td>\n" +
+		  "\t   </tr> \n" +
+		  "\t   <tr>\n" +
+		  "\t\t<td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td>\n" +
+		  "\t\t<td align=\"center\" valign=\"center\">332°</td>\n" +
+		  "\t   </tr> \n" +
+		  "\t   <tr>\n" +
+		  "\t\t<td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td>\n" +
+		  "\t\t<td align=\"center\" valign=\"center\">10m</td>\n" +
+		  "\t   </tr> \n" +
+		  "\t   <tr>\n" +
+		  "\t\t<td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td>\n" +
+		  "\t\t<td align=\"center\" valign=\"center\">2012-09-18 18:46:14</td>\n" +
+		  "\t   </tr> \n" +
+		  "\t  </tbody>\n" +
+		  "\t </table></font> \n" +
+		  "\t Test user description<!-- desc_user:end --> >\n" +
+		  " </tbody>\n" +
+		  "</table>" +
 		  "<!-- desc_gen:end -->]]></description>\n" +
 		  "\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
 		  "\t<Point>\n" +
@@ -87,112 +106,112 @@ class XmlHandlerTest {
 		  "</kml>\n";
 	
 	private static String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
-		"\t xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"\n" +
-		"\t xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.google.com/kml/ext/2.2 \">\n" +
-		"\t<Document>\n" +
-		"\t\t<name>Мои метки 19.08.2019.kmz</name>\n" +
-		"\t\t<Style id=\"track001102\">\n" +
-		"\t\t\t<LineStyle>\n" +
-		"\t\t\t\t<color>c80000ff</color>\n" +
-		"\t\t\t\t<width>2.3</width>\n" +
-		"\t\t\t</LineStyle>\n" +
-		"\t\t</Style>\n" +
-		"\t\t<StyleMap id=\"msn_police\">\n" +
-		"\t\t\t<Pair>\n" +
-		"\t\t\t\t<key>normal</key>\n" +
-		"\t\t\t\t<styleUrl>#sn_police2</styleUrl>\n" +
-		"\t\t\t</Pair>\n" +
-		"\t\t\t<Pair>\n" +
-		"\t\t\t\t<key>highlight</key>\n" +
-		"\t\t\t\t<styleUrl>#sh_police20</styleUrl>\n" +
-		"\t\t\t</Pair>\n" +
-		"\t\t</StyleMap>\n" +
-		"\t\t<Folder>\n" +
-		"\t\t\t<name>Мои метки</name>\n" +
-		"\t\t\t<open>1</open>\n" +
-		"\t\t\t<Style>\n" +
-		"\t\t\t\t<ListStyle>\n" +
-		"\t\t\t\t\t<listItemType>check</listItemType>\n" +
-		"\t\t\t\t\t<ItemIcon>\n" +
-		"\t\t\t\t\t\t<state>open</state>\n" +
-		"\t\t\t\t\t\t<href>C:/Users/Sersus/Programs/КАРТОГРАФИЯ/Locus/data-media-photo/mysavedplaces_open.png</href>\n" +
-		"\t\t\t\t\t</ItemIcon>\n" +
-		"\t\t\t\t\t<ItemIcon>\n" +
-		"\t\t\t\t\t\t<state>closed</state>\n" +
-		"\t\t\t\t\t\t<href>C:/Users/Sersus/Programs/КАРТОГРАФИЯ/Locus/data-media-photo/mysavedplaces_closed.png\n" +
-		"\t\t\t\t\t\t</href>\n" +
-		"\t\t\t\t\t</ItemIcon>\n" +
-		"\t\t\t\t\t<bgColor>00ffffff</bgColor>\n" +
-		"\t\t\t\t\t<maxSnippetLines>2</maxSnippetLines>\n" +
-		"\t\t\t\t</ListStyle>\n" +
-		"\t\t\t</Style>\n" +
-		"\t\t\t<Document>\n" +
-		"\t\t\t\t<name>ИзбранноеИзЛокус19.08.2019</name>\n" +
-		"\t\t\t\t<atom:author>\n" +
-		"\t\t\t\t\t<atom:name>Locus (Android)</atom:name>\n" +
-		"\t\t\t\t</atom:author>\n" +
-		"\t\t\t\t<Style id=\"misc-sunny.png\">\n" +
-		"\t\t\t\t\t<IconStyle>\n" +
-		"\t\t\t\t\t\t<color>99ffffff</color>\n" +
-		"\t\t\t\t\t\t<scale>0.5</scale>\n" +
-		"\t\t\t\t\t\t<Icon>\n" +
-		"\t\t\t\t\t\t\t<href>C:/Users/Sersus/Programs/КАРТОГРАФИЯ/Locus/data-media-photo/misc-sunny.png</href>\n" +
-		"\t\t\t\t\t\t</Icon>\n" +
-		"\t\t\t\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
-		"\t\t\t\t\t</IconStyle>\n" +
-		"\t\t\t\t\t<LabelStyle>\n" +
-		"\t\t\t\t\t\t<color>00ffffff</color>\n" +
-		"\t\t\t\t\t\t<scale>0</scale>\n" +
-		"\t\t\t\t\t</LabelStyle>\n" +
-		"\t\t\t\t</Style>\n" +
-		"\t\t\t\t<Style id=\"misc-sunny.png0\">\n" +
-		"\t\t\t\t\t<IconStyle>\n" +
-		"\t\t\t\t\t\t<color>99ffffff</color>\n" +
-		"\t\t\t\t\t\t<scale>0.5</scale>\n" +
-		"\t\t\t\t\t\t<Icon>\n" +
-		"\t\t\t\t\t\t\t<href>C:/Users/Sersus/Programs/КАРТОГРАФИЯ/Locus/data-media-photo/misc-sunny.png</href>\n" +
-		"\t\t\t\t\t\t</Icon>\n" +
-		"\t\t\t\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
-		"\t\t\t\t\t</IconStyle>\n" +
-		"\t\t\t\t\t<LabelStyle>\n" +
-		"\t\t\t\t\t\t<color>00ffffff</color>\n" +
-		"\t\t\t\t\t\t<scale>0</scale>\n" +
-		"\t\t\t\t\t</LabelStyle>\n" +
-		"\t\t\t\t</Style>\n" +
-		"\t\t\t\t<StyleMap id=\"misc-sunny.png1\">\n" +
-		"\t\t\t\t\t<Pair>\n" +
-		"\t\t\t\t\t\t<key>normal</key>\n" +
-		"\t\t\t\t\t\t<styleUrl>#misc-sunny.png0</styleUrl>\n" +
-		"\t\t\t\t\t</Pair>\n" +
-		"\t\t\t\t\t<Pair>\n" +
-		"\t\t\t\t\t\t<key>highlight</key>\n" +
-		"\t\t\t\t\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-		"\t\t\t\t\t</Pair>\n" +
-		"\t\t\t\t</StyleMap>\n"+
-		"\t\t\t<Folder>\n" +
-		"\t\t\t\t<name>My POIs</name>\n" +
-		"\t\t\t\t<Placemark>\n" +
-		"\t\t\t\t\t<name>The POI without image</name>\n" +
-		"\t\t\t\t\t<open>1</open>\n" +
-		"\t\t\t\t\t\t<description>GE description without CDATA</description>\n" +
-		"\t\t\t\t\t<styleUrl>#generic41</styleUrl>\n" +
-		"\t\t\t\t\t<Point>\n" +
-		"\t\t\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
-		"\t\t\t\t\t</Point>\n" +
-		"\t\t\t\t</Placemark>\n" +
-		"\t\t\t\t<Placemark>\n" +
-		"\t\t\t\t\t<name>The POI with image</name>\n" +
-		"\t\t\t\t\t<open>1</open>\n" +
-		"\t\t\t\t\t\t<description><img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\"></description>\n" +
-		"\t\t\t\t\t<styleUrl>#generic42</styleUrl>\n" +
-		"\t\t\t\t\t<Point>\n" +
-		"\t\t\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
-		"\t\t\t\t\t</Point>\n" +
-		"\t\t\t\t</Placemark>\n" +
-		"\t\t\t</Folder>\n"+
-		"\t</Document>\n" +
-		"</kml>\n";
+		  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
+		  "\t xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"\n" +
+		  "\t xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.google.com/kml/ext/2.2 \">\n" +
+		  "\t<Document>\n" +
+		  "\t\t<name>Test POIs from Google Earth.kmz</name>\n" +
+		  "\t\t<Style id=\"track001102\">\n" +
+		  "\t\t\t<LineStyle>\n" +
+		  "\t\t\t\t<color>c80000ff</color>\n" +
+		  "\t\t\t\t<width>2.3</width>\n" +
+		  "\t\t\t</LineStyle>\n" +
+		  "\t\t</Style>\n" +
+		  "\t\t<StyleMap id=\"msn_police\">\n" +
+		  "\t\t\t<Pair>\n" +
+		  "\t\t\t\t<key>normal</key>\n" +
+		  "\t\t\t\t<styleUrl>#sn_police2</styleUrl>\n" +
+		  "\t\t\t</Pair>\n" +
+		  "\t\t\t<Pair>\n" +
+		  "\t\t\t\t<key>highlight</key>\n" +
+		  "\t\t\t\t<styleUrl>#sh_police20</styleUrl>\n" +
+		  "\t\t\t</Pair>\n" +
+		  "\t\t</StyleMap>\n" +
+		  "\t\t<Folder>\n" +
+		  "\t\t\t<name>My Placemarks</name>\n" +
+		  "\t\t\t<open>1</open>\n" +
+		  "\t\t\t<Style>\n" +
+		  "\t\t\t\t<ListStyle>\n" +
+		  "\t\t\t\t\t<listItemType>check</listItemType>\n" +
+		  "\t\t\t\t\t<ItemIcon>\n" +
+		  "\t\t\t\t\t\t<state>open</state>\n" +
+		  "\t\t\t\t\t\t<href>C:/Users/%username%/Programs//Locus/data-media-photo/mysavedplaces_open.png</href>\n" +
+		  "\t\t\t\t\t</ItemIcon>\n" +
+		  "\t\t\t\t\t<ItemIcon>\n" +
+		  "\t\t\t\t\t\t<state>closed</state>\n" +
+		  "\t\t\t\t\t\t<href>C:/Users/%username%/Programs//Locus/data-media-photo/mysavedplaces_closed.png\n" +
+		  "\t\t\t\t\t\t</href>\n" +
+		  "\t\t\t\t\t</ItemIcon>\n" +
+		  "\t\t\t\t\t<bgColor>00ffffff</bgColor>\n" +
+		  "\t\t\t\t\t<maxSnippetLines>2</maxSnippetLines>\n" +
+		  "\t\t\t\t</ListStyle>\n" +
+		  "\t\t\t</Style>\n" +
+		  "\t\t\t<Document>\n" +
+		  "\t\t\t\t<name>Test POIs from Locus</name>\n" +
+		  "\t\t\t\t<atom:author>\n" +
+		  "\t\t\t\t\t<atom:name>Locus (Android)</atom:name>\n" +
+		  "\t\t\t\t</atom:author>\n" +
+		  "\t\t\t\t<Style id=\"misc-sunny.png\">\n" +
+		  "\t\t\t\t\t<IconStyle>\n" +
+		  "\t\t\t\t\t\t<color>99ffffff</color>\n" +
+		  "\t\t\t\t\t\t<scale>0.5</scale>\n" +
+		  "\t\t\t\t\t\t<Icon>\n" +
+		  "\t\t\t\t\t\t\t<href>C:/Users/%username%/Programs/Locus/data-media-photo/misc-sunny.png</href>\n" +
+		  "\t\t\t\t\t\t</Icon>\n" +
+		  "\t\t\t\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
+		  "\t\t\t\t\t</IconStyle>\n" +
+		  "\t\t\t\t\t<LabelStyle>\n" +
+		  "\t\t\t\t\t\t<color>00ffffff</color>\n" +
+		  "\t\t\t\t\t\t<scale>0</scale>\n" +
+		  "\t\t\t\t\t</LabelStyle>\n" +
+		  "\t\t\t\t</Style>\n" +
+		  "\t\t\t\t<Style id=\"misc-sunny.png0\">\n" +
+		  "\t\t\t\t\t<IconStyle>\n" +
+		  "\t\t\t\t\t\t<color>99ffffff</color>\n" +
+		  "\t\t\t\t\t\t<scale>0.5</scale>\n" +
+		  "\t\t\t\t\t\t<Icon>\n" +
+		  "\t\t\t\t\t\t\t<href>C:/Users/%username%/Programs//Locus/data-media-photo/misc-sunny.png</href>\n" +
+		  "\t\t\t\t\t\t</Icon>\n" +
+		  "\t\t\t\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
+		  "\t\t\t\t\t</IconStyle>\n" +
+		  "\t\t\t\t\t<LabelStyle>\n" +
+		  "\t\t\t\t\t\t<color>00ffffff</color>\n" +
+		  "\t\t\t\t\t\t<scale>0</scale>\n" +
+		  "\t\t\t\t\t</LabelStyle>\n" +
+		  "\t\t\t\t</Style>\n" +
+		  "\t\t\t\t<StyleMap id=\"misc-sunny.png1\">\n" +
+		  "\t\t\t\t\t<Pair>\n" +
+		  "\t\t\t\t\t\t<key>normal</key>\n" +
+		  "\t\t\t\t\t\t<styleUrl>#misc-sunny.png0</styleUrl>\n" +
+		  "\t\t\t\t\t</Pair>\n" +
+		  "\t\t\t\t\t<Pair>\n" +
+		  "\t\t\t\t\t\t<key>highlight</key>\n" +
+		  "\t\t\t\t\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+		  "\t\t\t\t\t</Pair>\n" +
+		  "\t\t\t\t</StyleMap>\n" +
+		  "\t\t\t<Folder>\n" +
+		  "\t\t\t\t<name>My POIs</name>\n" +
+		  "\t\t\t\t<Placemark>\n" +
+		  "\t\t\t\t\t<name>The POI without image</name>\n" +
+		  "\t\t\t\t\t<open>1</open>\n" +
+		  "\t\t\t\t\t\t<description>GE description without CDATA</description>\n" +
+		  "\t\t\t\t\t<styleUrl>#generic41</styleUrl>\n" +
+		  "\t\t\t\t\t<Point>\n" +
+		  "\t\t\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
+		  "\t\t\t\t\t</Point>\n" +
+		  "\t\t\t\t</Placemark>\n" +
+		  "\t\t\t\t<Placemark>\n" +
+		  "\t\t\t\t\t<name>The POI with image</name>\n" +
+		  "\t\t\t\t\t<open>1</open>\n" +
+		  "\t\t\t\t\t\t<description><img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\"></description>\n" +
+		  "\t\t\t\t\t<styleUrl>#generic42</styleUrl>\n" +
+		  "\t\t\t\t\t<Point>\n" +
+		  "\t\t\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
+		  "\t\t\t\t\t</Point>\n" +
+		  "\t\t\t\t</Placemark>\n" +
+		  "\t\t\t</Folder>\n" +
+		  "\t</Document>\n" +
+		  "</kml>\n";
 	
 	@Test
 	@Disabled
@@ -211,20 +230,19 @@ class XmlHandlerTest {
 	
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		  throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		//GIVEN
 		String newPath = "C:\\MyPoi\\MyPoiImages";
 		multipartFile = new MockMultipartFile(
 			  "LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes());
-		multipartDto = new MultipartDto( multipartFile);
+		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPath(true);
 		multipartDto.setPath(newPath);
 		multipartDto.setPathType("absolute");
 		
 		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
-		//TODO: to investigate the appearance of CDATAs within text tags
-		System.out.println(processedKml);
+
 		//THEN
 		assertTrue(processedKml.contains("<href>file:///C:/MyPoi/MyPoiImages/file-sdcardLocuscacheimages1571471453728.png</href>"));
 		assertTrue(processedKml.contains("<href>file:///C:/MyPoi/MyPoiImages/file-sdcardLocuscacheimages1589191676952.png</href>"));
@@ -239,25 +257,51 @@ class XmlHandlerTest {
 	 */
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body_Except_Special_GoogleEarth_Web_Links()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		  throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		//GIVEN
-		//TODO: to collect special GE links for its local <href> to local icons
-		String newPath = "C:\\MyPoi\\MyPoiImages";
-		multipartFile = new MockMultipartFile(
-			"LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes());
-		multipartDto = new MultipartDto( multipartFile);
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPath(true);
-		multipartDto.setPath(newPath);
+		multipartDto.setPath("C:\\MyPoi\\MyPoiImages");
 		multipartDto.setPathType("absolute");
 		
 		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
 		
 		//THEN
-		System.out.println(processedKml);
-		
 		//Special GoogleEarth icons paths should be preserved
 		assertTrue(processedKml.contains("<href>http://maps.google.com/mapfiles/kml/shapes/motorcycling.png</href>"));
+	}
+	
+	@Test
+	public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded()
+		  throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		//GIVEN
+		String pathWithWhitespaces = "D:\\My Folder\\My POI";
+		multipartFile = new MockMultipartFile(
+			  "LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPath(true);
+		multipartDto.setPath(pathWithWhitespaces);
+		multipartDto.setPathType("absolute");
+		
+		//WHEN
+		String processedHtml = xmlHandler.processKml(multipartDto);
+		
+		//THEN All whitespaces should be replaced with URL '%20' sign
+		assertAll(
+			  () -> assertTrue(processedHtml.contains(
+					"<href>file:///D:/My%20Folder/My%20POI/file-sdcardLocuscacheimages1571471453728.png</href>")),
+			  () -> assertTrue(processedHtml.contains(
+					"<href>file:///D:/My%20Folder/My%20POI/file-sdcardLocuscacheimages1589191676952.png</href>"))
+		);
+		
+		assertAll(
+			  () -> assertFalse(processedHtml.contains(
+					"<href>files/file-sdcardLocuscacheimages1571471453728.png</href>")),
+			  () -> assertFalse(processedHtml.contains(
+					"<href>files/file-sdcardLocuscacheimages1589191676952.png</href>"))
+		);
 	}
 	
 	@Test
