@@ -42,8 +42,8 @@ public class HtmlHandler {
 		}
 		//A possible plain text outside html markup
 		String plainTextDescription = extractPlainTextDescriptions(parsedHtmlFragment).trim();
-		
-		if (multipartDto.isClearOutdatedDescriptions()) { //Should be the first treatment
+		//Should be the first treatment
+		if (multipartDto.isClearOutdatedDescriptions()) {
 			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
 		}
 		if (multipartDto.isSetPath()) {
@@ -103,9 +103,15 @@ public class HtmlHandler {
 	 * Each existing a[href] contains a full path with the filename as the last text element.
 	 * Here we have to replace only the URL and leave the original filename.
 	 */
-	private String getNewHrefWithOldFilename(
-		String oldHrefWithFilename, PathTypes pathType, String newHrefWithoutFilename) {
-		
+	String getNewHrefWithOldFilename(@Nullable String oldHrefWithFilename, PathTypes pathType, String newHrefWithoutFilename) {
+		oldHrefWithFilename = oldHrefWithFilename == null || oldHrefWithFilename.isEmpty() ? "" : oldHrefWithFilename;
+		//User may want to erase <href>
+		if (newHrefWithoutFilename.isBlank()){
+			return "";
+		}
+		if (pathType == null) {
+			throw new IllegalArgumentException("PathTypes cannot be null!");
+		}
 		String newHrefWithOldFilename;
 		
 		if (pathType.equals(PathTypes.RELATIVE)) {
@@ -187,23 +193,6 @@ public class HtmlHandler {
 				setPreviewSizeInStyles(img, previewSizeAttr);
 			}
 		});
-/*
-		for (int i = 0; i < imgElements.size(); i++) {
-			Element img = imgElements.get(i);
-			//First eliminate all malformed <img> without [src] attribute
-			if (!img.hasAttr("src")) {
-				img.remove();
-				imgElements.remove(img);
-				continue;
-			}
-			if (img.hasAttr("width")) {
-				img.attr("width", previewSizeAttr);
-			}
-			if (img.hasAttr("style")) {
-				setPreviewSizeInStyles(img, previewSizeAttr);
-			}
-		}
-*/
 		//No <img> with [src] attribures
 		//Remake imgs into a links if they aren't.
 		imgElements.stream()
@@ -277,7 +266,6 @@ public class HtmlHandler {
 			tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
 			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
 		}
-		
 		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
 	}
 	

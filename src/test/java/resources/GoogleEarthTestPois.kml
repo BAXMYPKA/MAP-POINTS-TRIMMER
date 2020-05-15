@@ -3,7 +3,7 @@
 	 xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom"
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.google.com/kml/ext/2.2 ">
 	<Document>
-		<name>Мои метки 19.08.2019.kmz</name>
+		<name>My test Google Earth POIs and tracks.kmz</name>
 		<Style id="track001102">
 			<LineStyle>
 				<color>c80000ff</color>

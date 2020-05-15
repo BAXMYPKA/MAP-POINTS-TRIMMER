@@ -15,6 +15,9 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class XmlHandlerTest {
 	
 	private static InputStream inputStream;
@@ -207,36 +210,60 @@ class XmlHandlerTest {
 	}
 	
 	@Test
-	@Disabled("Should be rewritten to set paths in main XML body")
-	public void setPath_In_Description_Cdata_Should_Replace_All_Href_And_Src()
-		  throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body()
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		//GIVEN
-		
-		String newPath = "files:/a new path/";
-		inputStream = new FileInputStream("src/test/java/resources/LocusTestPois.kml");
+		String newPath = "C:\\MyPoi\\MyPoiImages";
 		multipartFile = new MockMultipartFile(
-			  "LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
-		multipartDto = new MultipartDto(
-			  multipartFile, false, false, false, false, true, PathTypes.RELATIVE, newPath, false, null, false);
+			  "LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes());
+		multipartDto = new MultipartDto( multipartFile);
+		multipartDto.setSetPath(true);
+		multipartDto.setPath(newPath);
+		multipartDto.setPathType("absolute");
 		
 		//WHEN
+		String processedKml = xmlHandler.processKml(multipartDto);
+		//TODO: to investigate the appearance of CDATAs within text tags
+		System.out.println(processedKml);
+		//THEN
+		assertTrue(processedKml.contains("<href>file:///C:/MyPoi/MyPoiImages/file-sdcardLocuscacheimages1571471453728.png</href>"));
+		assertTrue(processedKml.contains("<href>file:///C:/MyPoi/MyPoiImages/file-sdcardLocuscacheimages1589191676952.png</href>"));
 		
+		assertFalse(processedKml.contains("<href>files/file-sdcardLocuscacheimages1571471453728.png</href>"));
+		assertFalse(processedKml.contains("<href>files/file-sdcardLocuscacheimages1589191676952.png</href>"));
+	}
+	
+	/**
+	 * Google Earth has some special http links to icons which it treats as local.
+	 * So those types of <href></href> have not to be changed.
+	 */
+	@Test
+	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body_Except_Special_GoogleEarth_Web_Links()
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		//GIVEN
+		//TODO: to collect special GE links for its local <href> to local icons
+		String newPath = "C:\\MyPoi\\MyPoiImages";
+		multipartFile = new MockMultipartFile(
+			"LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes());
+		multipartDto = new MultipartDto( multipartFile);
+		multipartDto.setSetPath(true);
+		multipartDto.setPath(newPath);
+		multipartDto.setPathType("absolute");
+		
+		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
 		
-		//THEN Check all the new href and src
+		//THEN
+		System.out.println(processedKml);
 		
-		Assertions.assertFalse(processedKml.contains("href=\"/storage/emulated/0/Locus/data/media/photo/"));
-		Assertions.assertFalse(processedKml.contains("src=\"/storage/emulated/0/Locus/data/media/photo/"));
-		
-		Assertions.assertTrue(processedKml.contains("href=\"files:/a new path/"));
-		Assertions.assertTrue(processedKml.contains("src=\"files:/a new path/"));
+		//Special GoogleEarth icons paths should be preserved
+		assertTrue(processedKml.contains("<href>http://maps.google.com/mapfiles/kml/shapes/motorcycling.png</href>"));
 	}
 	
 	@Test
 	public void trimXml_Only_Should_Return_Only_Xml_Without_LineBreaks()
-		  throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+		  throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		//GIVEN
-		
 		inputStream = new ByteArrayInputStream(locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartFile = new MockMultipartFile(
 			  "LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
@@ -256,9 +283,9 @@ class XmlHandlerTest {
 		);
 		
 		Assertions.assertAll(
-			  () -> Assertions.assertFalse(processedKml.contains("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")),
-			  () -> Assertions.assertFalse(processedKml.contains("<Document>\n")),
-			  () -> Assertions.assertFalse(processedKml.contains("\t<name>Избранное_Locus17.04.2020</name>\n"))
+			  () -> assertFalse(processedKml.contains("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")),
+			  () -> assertFalse(processedKml.contains("<Document>\n")),
+			  () -> assertFalse(processedKml.contains("\t<name>Избранное_Locus17.04.2020</name>\n"))
 		);
 	}
 }

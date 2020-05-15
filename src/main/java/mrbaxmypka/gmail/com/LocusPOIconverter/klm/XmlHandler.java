@@ -1,5 +1,6 @@
 package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
 
+import javafx.event.Event;
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +14,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.*;
 import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 
 /**
  * Kml processing class based on the StAX xml-library.
@@ -56,16 +55,19 @@ public class XmlHandler {
 		eventFactory = XMLEventFactory.newInstance();
 		eventWriter = outputFactory.createXMLEventWriter(stringWriter);
 		
+/*
 		if (multipartDto.isValidateXml()) {
 			Document document = getDocument(multipartDto.getMultipartFile().getInputStream());
 			validateXml(document);
 		}
+*/
 		//To skip the whole processing if nothing is set
 		if (!multipartDto.isSetPath() &&
 			!multipartDto.isTrimDescriptions() &&
 			!multipartDto.isSetPreviewSize() &&
 			!multipartDto.isClearOutdatedDescriptions() &&
-			!multipartDto.isTrimXml()) {
+			!multipartDto.isTrimXml() &&
+			!multipartDto.isAsAttachmentInLocus()) {
 			return new String(multipartDto.getMultipartFile().getBytes());
 		}
 		while (eventReader.hasNext()) {
@@ -74,8 +76,20 @@ public class XmlHandler {
 				case XMLEvent.CHARACTERS:
 				case XMLEvent.CDATA:
 					event = processCdata(event.asCharacters(), multipartDto);
+					writeXmlEvent(event);
+					break;
+				case XMLStreamConstants.START_ELEMENT:
+					StartElement startElement = event.asStartElement();
+					if (startElement.getName().getLocalPart().equals("href")) {
+						writeXmlEvent(event);
+						XMLEvent newHrefTextEvent = processHref(eventReader.nextEvent(), multipartDto);
+						writeXmlEvent(newHrefTextEvent);
+						break;
+					}
+				default:
+					writeXmlEvent(event);
 			}
-			writeXmlEvent(event);
+//			writeXmlEvent(event);
 		}
 		return stringWriter.toString();
 	}
@@ -117,6 +131,20 @@ public class XmlHandler {
 		processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartDto);
 		
 		return eventFactory.createCData(processedHtmlCdata);
+	}
+	
+	/**
+	 * Every old href tag contains path to file and a filename. So here we derive an existing filename
+	 * and append it to the new path.
+	 *
+	 * @param textEventHrefWithFilename {@link XMLEvent} as string within <href></href> tags
+	 * @return A new href with the old filename.
+	 */
+	private XMLEvent processHref(XMLEvent textEventHrefWithFilename, MultipartDto multipartDto) {
+		String oldHrefWithFilename = textEventHrefWithFilename.asCharacters().getData();
+		String newHrefWithOldFilename = htmlHandler.getNewHrefWithOldFilename(
+			oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
+		return eventFactory.createCharacters(newHrefWithOldFilename);
 	}
 	
 	/**
