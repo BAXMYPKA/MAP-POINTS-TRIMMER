@@ -68,7 +68,7 @@ class XmlHandlerTest {
 		  " <!-- desc_user:start -->\n" +
 		  " <font color=\"black\">\n" +
 		  "   <tr>\n" +
-		  "\t<td width=\"100%\" align=\"center\"><a href=\"file:/_1318431492316.jpg\" target=\"_blank\"><img src=\"file:/_1318431492316.jpg\" width=\"330px\" align=\"center\"></a>Test place name</td>\n" +
+		  "\t<td width=\"100%\" align=\"center\"><a href=\"files/_1318431492316.jpg\" target=\"_blank\"><img src=\"files/_1318431492316.jpg\" width=\"330px\" align=\"center\"></a>Test place name</td>\n" +
 		  "   </tr>\n" +
 		  "\t <table width=\"100%\">\n" +
 		  "\t  <tbody>\n" +
@@ -95,6 +95,9 @@ class XmlHandlerTest {
 		  "</table>" +
 		  "<!-- desc_gen:end -->]]></description>\n" +
 		  "\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+		  "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+		  "\t\t<lc:attachment>files/_1318431492316.jpg</lc:attachment>\n" +
+		  "\t</ExtendedData>\n" +
 		  "\t<Point>\n" +
 		  "\t\t<coordinates>37.558700,55.919883,0.00</coordinates>\n" +
 		  "\t</Point>\n" +
@@ -242,7 +245,7 @@ class XmlHandlerTest {
 		
 		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
-
+		
 		//THEN
 		assertTrue(processedKml.contains("<href>file:///C:/MyPoi/MyPoiImages/file-sdcardLocuscacheimages1571471453728.png</href>"));
 		assertTrue(processedKml.contains("<href>file:///C:/MyPoi/MyPoiImages/file-sdcardLocuscacheimages1589191676952.png</href>"));
@@ -311,13 +314,13 @@ class XmlHandlerTest {
 		inputStream = new ByteArrayInputStream(locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartFile = new MockMultipartFile(
 			  "LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
-		multipartDto = new MultipartDto(
-			  multipartFile, false, true, false, false, false, null, null, false, null, false);
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setTrimXml(true);
 		
 		//WHEN
 		
 		String processedKml = xmlHandler.processKml(multipartDto);
-		
+		System.out.println(processedKml);
 		//THEN xml tags are without whitespaces but CDATA starts and ends with them
 		
 		Assertions.assertAll(
@@ -332,4 +335,25 @@ class XmlHandlerTest {
 			  () -> assertFalse(processedKml.contains("\t<name>Избранное_Locus17.04.2020</name>\n"))
 		);
 	}
+	
+	@Test
+	public void locusAsAttachment()
+		  throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		//GIVEN
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes());
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPath(true);
+		multipartDto.setPath("C:\\MyPoi\\MyPoiImages");
+		multipartDto.setPathType("absolute");
+		multipartDto.setAsAttachmentInLocus(true);
+		
+		//WHEN
+		String processedKml = xmlHandler.processKml(multipartDto);
+		
+		//THEN
+		System.out.println(processedKml);
+		
+	}
+	
+	
 }

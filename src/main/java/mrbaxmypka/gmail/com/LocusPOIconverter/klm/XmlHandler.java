@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.*;
 import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.dom.DOMSource;
@@ -20,6 +21,9 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Kml processing class based on the StAX xml-library.
@@ -54,6 +58,9 @@ public class XmlHandler {
 		eventFactory = XMLEventFactory.newInstance();
 		eventWriter = outputFactory.createXMLEventWriter(stringWriter);
 		
+		List<String> imagesFromDescription = new ArrayList<>();
+		LinkedList<XMLEvent> extendedDataEvents = new LinkedList<>();
+		
 /*
 		if (multipartDto.isValidateXml()) {
 			Document document = getDocument(multipartDto.getMultipartFile().getInputStream());
@@ -74,18 +81,43 @@ public class XmlHandler {
 			switch (event.getEventType()) {
 				case XMLEvent.START_ELEMENT:
 					StartElement startElement = event.asStartElement();
-					if (startElement.getName().getLocalPart().equals("href")) {
-						writeXmlEvent(event);
-						XMLEvent newHrefTextEvent = processHref(eventReader.nextEvent(), multipartDto);
-						writeXmlEvent(newHrefTextEvent);
-						break;
+					if (multipartDto.isSetPath()) {
+						if (startElement.getName().getLocalPart().equals("href")) {
+							writeXmlEvent(event);
+							XMLEvent newHrefTextEvent = processHref(eventReader.nextEvent(), multipartDto);
+							writeXmlEvent(newHrefTextEvent);
+							break;
+						}
 					}
 					if (startElement.getName().getLocalPart().equals("description")) {
 						writeXmlEvent(event);
 						XMLEvent descriptionTextEvent =
 							  processDescriptionText(eventReader.nextEvent().asCharacters(), multipartDto);
+						if (multipartDto.isAsAttachmentInLocus()) {
+							imagesFromDescription.addAll(
+								  htmlHandler.getAllImagesFromDescription(descriptionTextEvent.asCharacters().getData()));
+						}
 						writeXmlEvent(descriptionTextEvent);
 						break;
+					}
+					if (multipartDto.isAsAttachmentInLocus() && startElement.getName().getLocalPart().equals("ExtendedData")) {
+						while (eventReader.hasNext()) {
+							extendedDataEvents.add(event);
+							event = eventReader.nextEvent();
+							if (event.isEndElement() && event.asEndElement().getName().getLocalPart().equals("ExtendedData")) {
+								extendedDataEvents.add(event);
+								eventReader.nextEvent();
+								break;
+							}
+						}
+						break;
+					}
+					writeXmlEvent(event);
+					break;
+				case XMLEvent.END_ELEMENT:
+					EndElement endElement = event.asEndElement();
+					if (endElement.getName().getLocalPart().equals("Placemark")) {
+						processLocusAttachments(imagesFromDescription, extendedDataEvents);
 					}
 				default:
 					writeXmlEvent(event);
@@ -103,6 +135,14 @@ public class XmlHandler {
 	
 	private void writeXmlEvent(XMLEvent event) throws XMLStreamException {
 		eventWriter.add(event);
+	}
+	
+	private void processLocusAttachments(List<String> imagesFromDescription, List<XMLEvent> extendedDataEvents) {
+		if (!extendedDataEvents.isEmpty()) {
+			extendedDataEvents.stream()
+				  .filter(event -> event.isCharacters())
+				  .forEach(event -> System.out.println(event.asCharacters().getData()));
+		}
 	}
 	
 	/**
@@ -148,6 +188,7 @@ public class XmlHandler {
 	/**
 	 * Some programs as Google Earth has special href they internally redirect to their local image store.
 	 * It is not recommended to change those type of hrefs.
+	 *
 	 * @param oldHrefWithFilename The existing <href>path to image</href> to be verified.
 	 * @return 'True' if existing href is not recommended to change. Otherwise 'false'.
 	 */

@@ -65,6 +65,16 @@ public class HtmlHandler {
 		return parsedHtmlFragment.html();
 	}
 	
+	List<String> getAllImagesFromDescription(String description) {
+		Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
+		if (parsedHtmlFragment == null) {
+			//No html markup found, cdata is a plain text
+			return Collections.emptyList();
+		}
+		Elements imgElements = parsedHtmlFragment.select("img[src]");
+		return imgElements.stream().map(img -> img.attr("src")).collect(Collectors.toList());
+	}
+	
 	/**
 	 * The given CDATA may contain a plain texts before or after HTML markup.
 	 * So here we extract a possible text (as {@link TextNode}) to append it back to the processed HTML
@@ -201,7 +211,6 @@ public class HtmlHandler {
 	 */
 	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize, MultipartDto multipartDto) {
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
-//		Elements imgElements = parsedHtmlFragment.select("img");
 		if (imgElements.size() == 0) return;
 		
 		String previewSizeAttr = previewSize.toString() + "px";
@@ -483,35 +492,5 @@ public class HtmlHandler {
 		});
 		parsedHtmlFragment.prependChild(desc_gen_start);
 		parsedHtmlFragment.appendChild(desc_gen_end);
-
-		/*
-		for (int i = 0; i < parsedHtmlFragment.childNodeSize(); i++) {
-			Node childNode = parsedHtmlFragment.childNode(i);
-			if (childNode instanceof Comment) {
-				if (((Comment) childNode).getData().contains("desc_gen:start") ||
-					  ((Comment) childNode).getData().contains("desc_gen:end")) {
-					childNode.remove();
-				}
-			}
-		}
-*/
-
-/*
-		for (int i = 0; i < elements.size(); i++) {
-			System.out.println(elements.get(i).text());
-			if (elements.get(i).text().contains("desc_gen:start") || elements.get(i).ownText().contains("desc_gen:end")) {
-				elements.get(i).remove();
-				elements.remove(i);
-			}
-*/
-	
-/*
-		if (!parsedHtmlFragment.html().startsWith(desc_gen_start.getData())) {
-			parsedHtmlFragment.prependChild(desc_gen_start);
-		}
-		if (!parsedHtmlFragment.html().endsWith(desc_gen_end.getData())) {
-			parsedHtmlFragment.appendChild(desc_gen_end);
-		}
-*/
 	}
 }
