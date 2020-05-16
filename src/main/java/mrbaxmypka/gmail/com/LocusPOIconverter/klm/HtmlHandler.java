@@ -178,7 +178,7 @@ public class HtmlHandler {
 		return newHrefWithoutFilename + filename;
 	}
 	
-	private String getFileName(String oldHrefWithFilename) {
+	String getFileName(String oldHrefWithFilename) {
 		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/") != -1 ?
 			  oldHrefWithFilename.lastIndexOf("/") :
 			  oldHrefWithFilename.lastIndexOf("\\");

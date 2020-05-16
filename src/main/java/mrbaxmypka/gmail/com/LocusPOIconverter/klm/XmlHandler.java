@@ -35,6 +35,7 @@ public class XmlHandler {
 	private XMLEventFactory eventFactory;
 	private XMLEventWriter eventWriter;
 	private HtmlHandler htmlHandler;
+	private List<String> imagesExtensions;
 	
 	@Autowired
 	public XmlHandler(HtmlHandler htmlHandler) {
@@ -47,7 +48,7 @@ public class XmlHandler {
 	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
 	 */
 	public String processKml(MultipartDto multipartDto)
-		  throws XMLStreamException, IOException, ParserConfigurationException, SAXException {
+		throws XMLStreamException, IOException, ParserConfigurationException, SAXException {
 		
 		StringWriter stringWriter = new StringWriter();
 		
@@ -69,11 +70,11 @@ public class XmlHandler {
 */
 		//To skip the whole processing if nothing is set
 		if (!multipartDto.isSetPath() &&
-			  !multipartDto.isTrimDescriptions() &&
-			  !multipartDto.isSetPreviewSize() &&
-			  !multipartDto.isClearOutdatedDescriptions() &&
-			  !multipartDto.isTrimXml() &&
-			  !multipartDto.isAsAttachmentInLocus()) {
+			!multipartDto.isTrimDescriptions() &&
+			!multipartDto.isSetPreviewSize() &&
+			!multipartDto.isClearOutdatedDescriptions() &&
+			!multipartDto.isTrimXml() &&
+			!multipartDto.isAsAttachmentInLocus()) {
 			return new String(multipartDto.getMultipartFile().getBytes());
 		}
 		while (eventReader.hasNext()) {
@@ -92,10 +93,10 @@ public class XmlHandler {
 					if (startElement.getName().getLocalPart().equals("description")) {
 						writeXmlEvent(event);
 						XMLEvent descriptionTextEvent =
-							  processDescriptionText(eventReader.nextEvent().asCharacters(), multipartDto);
+							processDescriptionText(eventReader.nextEvent().asCharacters(), multipartDto);
 						if (multipartDto.isAsAttachmentInLocus()) {
 							imagesFromDescription.addAll(
-								  htmlHandler.getAllImagesFromDescription(descriptionTextEvent.asCharacters().getData()));
+								htmlHandler.getAllImagesFromDescription(descriptionTextEvent.asCharacters().getData()));
 						}
 						writeXmlEvent(descriptionTextEvent);
 						break;
@@ -127,7 +128,7 @@ public class XmlHandler {
 	}
 	
 	private Document getDocument(InputStream kmlInputStream)
-		  throws ParserConfigurationException, IOException, SAXException {
+		throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document kmlDocument = documentBuilder.parse(kmlInputStream);
 		return kmlDocument;
@@ -137,12 +138,56 @@ public class XmlHandler {
 		eventWriter.add(event);
 	}
 	
+	
+	//TODO: to simplify
+	
 	private void processLocusAttachments(List<String> imagesFromDescription, List<XMLEvent> extendedDataEvents) {
+		if (imagesFromDescription.isEmpty()) return;;
+		
 		if (!extendedDataEvents.isEmpty()) {
-			extendedDataEvents.stream()
-				  .filter(event -> event.isCharacters())
-				  .forEach(event -> System.out.println(event.asCharacters().getData()));
+			//Comparing filenames from lc:attachments and description to overwrite the existing attachments
+			for (int i = 0; i < extendedDataEvents.size(); i++) {
+				
+				if (extendedDataEvents.get(i).isStartElement() &&
+					extendedDataEvents.get(i).asStartElement().getName().getPrefix().equals("lc") &&
+					extendedDataEvents.get(i).asStartElement().getName().getLocalPart().equals("attachment")) {
+					
+					XMLEvent lcAttachmentTextEvent = extendedDataEvents.get(++i);
+					String attachmentText = lcAttachmentTextEvent.asCharacters().getData();
+					String filenameFromTextEvent = htmlHandler.getFileName(attachmentText);
+					
+					for (int j = 0; j < imagesFromDescription.size(); j++) {
+						
+						String filenameFromDescription = htmlHandler.getFileName(imagesFromDescription.get(j));
+						
+						if (filenameFromTextEvent.equals(filenameFromDescription)) {
+							lcAttachmentTextEvent = eventFactory.createCharacters(imagesFromDescription.get(j));
+							extendedDataEvents.set(i, lcAttachmentTextEvent);
+							imagesFromDescription.remove(j);
+						}
+					}
+				}
+			}
+			if (!imagesFromDescription.isEmpty()) {
+				//If not all the images from Description are attached
+				List<XMLEvent> xmlEventList = getImagesAsLcAttachments(imagesFromDescription);
+				extendedDataEvents.addAll(xmlEventList);
+			}
+		} else {
+			//
 		}
+	}
+	
+	private List<XMLEvent> getImagesAsLcAttachments(List<String> imagesToAttach) {
+		List<XMLEvent> lcAttachments = new ArrayList<>();
+		imagesToAttach.forEach(img -> {
+			lcAttachments.add(
+				eventFactory.createStartElement("lc", "http://www.locusmap.eu","attachment"));
+			lcAttachments.add(eventFactory.createCharacters(img));
+			lcAttachments
+				.add(eventFactory.createStartElement("lc", "http://www.locusmap.eu","attachment"));
+		});
+		return lcAttachments;
 	}
 	
 	/**
@@ -157,8 +202,8 @@ public class XmlHandler {
 		
 		if (characters.isWhiteSpace() || characters.getData().matches("\\s*>\\s*")) {
 			return multipartDto.isTrimXml() ?
-				  eventFactory.createIgnorableSpace("") :
-				  eventFactory.createCharacters(characters.getData());
+				eventFactory.createIgnorableSpace("") :
+				eventFactory.createCharacters(characters.getData());
 		}
 		//Obtain an inner CDATA text to treat as HTML elements or plain text
 		String processedHtmlCdata = htmlHandler.processCdata(characters.getData(), multipartDto);
@@ -181,7 +226,7 @@ public class XmlHandler {
 			return eventFactory.createCharacters(oldHrefWithFilename);
 		}
 		String newHrefWithOldFilename = htmlHandler.getNewHrefWithOldFilename(
-			  oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
+			oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
 		return eventFactory.createCharacters(newHrefWithOldFilename);
 	}
 	
@@ -212,7 +257,7 @@ public class XmlHandler {
 	private void validateXml(Document document) throws SAXException, IOException {
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema = schemaFactory.newSchema(
-			  new File("src/main/resources/static/xsd/kml-2.2.0/ogckml22.xsd"));
+			new File("src/main/resources/static/xsd/kml-2.2.0/ogckml22.xsd"));
 		Validator validator = schema.newValidator();
 		validator.validate(new DOMSource(document));
 	}
