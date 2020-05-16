@@ -178,6 +178,11 @@ public class HtmlHandler {
 		return newHrefWithoutFilename + filename;
 	}
 	
+	/**
+	 * Extract full filename from a given string. E.g. 'files:/image.png' will be returned as 'image.png'
+	 * @param oldHrefWithFilename Href or src to the image
+	 * @return The name of the file from the gven string
+	 */
 	String getFileName(String oldHrefWithFilename) {
 		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/") != -1 ?
 			  oldHrefWithFilename.lastIndexOf("/") :
