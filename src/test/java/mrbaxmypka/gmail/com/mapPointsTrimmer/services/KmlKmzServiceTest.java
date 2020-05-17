@@ -1,8 +1,8 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.services;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
-import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
-import mrbaxmypka.gmail.com.LocusPOIconverter.klm.HtmlHandler;
-import mrbaxmypka.gmail.com.LocusPOIconverter.klm.XmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.klm.HtmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.klm.XmlHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,7 @@ class KmlKmzServiceTest {
 	
 	/**
 	 * In reality a temporary file has to be deleted by
-	 * {@link mrbaxmypka.gmail.com.LocusPOIconverter.controllers.ShutdownController#shutdownApp(Model, Locale)}
+	 * {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.ShutdownController#shutdownApp(Model, Locale)}
 	 * when called. That controller obtains the {@link Path} by {@link KmlKmzService#getTempKmlFile()} and deletes it
 	 * in same manner.
 	 */

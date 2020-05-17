@@ -1,12 +1,13 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
 
-import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,7 +46,7 @@ class HtmlHandlerTest {
 	
 	@BeforeEach
 	public void beforeEach() {
-		MultipartFile multipartFile = new MockMultipartFile("html", html.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile("html", html.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 	}
 	
@@ -66,7 +67,7 @@ class HtmlHandlerTest {
 			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
 			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			  "<!-- desc_gen:end -->";
-		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);
@@ -92,7 +93,7 @@ class HtmlHandlerTest {
 			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
 			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
 			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>";
-		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);
@@ -119,7 +120,8 @@ class HtmlHandlerTest {
 			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
-		MultipartFile multipartFile = new MockMultipartFile("html", withoutDescUserComments.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile(
+			"html", withoutDescUserComments.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(400);
@@ -147,7 +149,8 @@ class HtmlHandlerTest {
 			"<!-- desc_user:end -->\n" +
 			"</font>\n" +
 			"<!-- desc_gen:end -->";
-		MultipartFile multipartFile = new MockMultipartFile("html", withDescUserCommentsAndText.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile(
+			"html", withDescUserCommentsAndText.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(400);
@@ -189,7 +192,7 @@ class HtmlHandlerTest {
 			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
-		MultipartFile multipartFile = new MockMultipartFile("html", oldStyleCdata.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile("html", oldStyleCdata.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(400);
@@ -249,7 +252,7 @@ class HtmlHandlerTest {
 			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
-		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);
@@ -436,7 +439,7 @@ class HtmlHandlerTest {
 			"<a href=\"file:\"><img src=\"file:\"></img>Inside a text</a>" +
 			"</div>" +
 			"Plain text description";
-		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPath(true);
 		multipartDto.setSetPreviewSize(true);
@@ -461,7 +464,7 @@ class HtmlHandlerTest {
 	public void cdata_As_Plain_Description_Text_Should_Return_Plain_Text() {
 		//GIVEN Plain text from <description>...</description>
 		String plainTextDescription = "Plain text description";
-		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPath(true);
 		multipartDto.setSetPreviewSize(true);
@@ -486,7 +489,7 @@ class HtmlHandlerTest {
 			"<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\">" +
 			"</td></tr></table>\n" +
 			"<!-- desc_gen:end -->";
-		MultipartFile multipartFile = new MockMultipartFile("html", twoPureImgs.getBytes());
+		MultipartFile multipartFile = new MockMultipartFile("html", twoPureImgs.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);

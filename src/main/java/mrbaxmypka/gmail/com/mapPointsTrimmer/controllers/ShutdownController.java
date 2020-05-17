@@ -1,6 +1,6 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.controllers;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
-import mrbaxmypka.gmail.com.LocusPOIconverter.services.KmlKmzService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.KmlKmzService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.MessageSource;

@@ -1,14 +1,12 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.controllers;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
-import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.Locale;
 
 @Controller
 public class IndexController {

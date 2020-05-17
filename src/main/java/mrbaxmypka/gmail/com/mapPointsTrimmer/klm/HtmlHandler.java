@@ -1,8 +1,8 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
 
 import lombok.NoArgsConstructor;
-import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
-import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Element;
@@ -13,7 +13,6 @@ import org.jsoup.select.NodeFilter;
 import org.jsoup.select.NodeVisitor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.expression.Lists;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

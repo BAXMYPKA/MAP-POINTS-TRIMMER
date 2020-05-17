@@ -1,6 +1,6 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.configurations;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.configurations;
 
-import mrbaxmypka.gmail.com.LocusPOIconverter.utils.StringToPathTypesConverter;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.StringToPathTypesConverter;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

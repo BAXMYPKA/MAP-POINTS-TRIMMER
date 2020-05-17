@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>mrbaxmypka.gmail.com</groupId>
-	<artifactId>Losus-POI-converter</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Losus-POI-converter</name>
-	<description>Demo project for Spring Boot</description>
+	<artifactId>Map-Points-Trimmer</artifactId>
+	<version>1.0</version>
+	<name>Map Points Trimmer</name>
+	<description>The trimmer for custom map points as the client-server application based on Spring Boot</description>
 
 	<properties>
 		<java.version>11</java.version>
@@ -87,6 +87,21 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<configuration>
+							<mainClass>mrbaxmypka.gmail.com.mapPointsTrimmer.LocusPoiConverterApplication</mainClass>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>11</source>
+					<target>11</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

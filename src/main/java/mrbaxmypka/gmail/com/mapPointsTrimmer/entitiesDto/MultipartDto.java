@@ -1,7 +1,7 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
-import mrbaxmypka.gmail.com.LocusPOIconverter.utils.PathTypes;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,6 +1,11 @@
 (function () {
 		
-		const userMessage = document.querySelector(".userMessage");
+		const userMessage = document.querySelector("#userMessage");
+		
+		userMessage.addEventListener('click', ev => {
+			userMessage.innerHTML = "";
+			userMessage.className = "userMessage.hidden";
+		});
 		
 		document.querySelector(".shutdownButtonOn").addEventListener('click', (ev => {
 			ev.preventDefault();
@@ -23,14 +28,14 @@
 				if (userMessage.innerHTML === evt.target.getAttribute("title")) {
 					//To hide the description if same interrogation is clicked
 					userMessage.innerHTML = "";
-					userMessage.hidden = true;
+					userMessage.className = "userMessage.hidden";
 					document.querySelectorAll(".interrogation").forEach(interrogation => {
 						interrogation.style.backgroundColor = "limegreen";
 					});
 				} else {
 					//To show the interrogation description in userMessage innerHtml
 					userMessage.innerHTML = evt.target.getAttribute("title");
-					userMessage.hidden = false;
+					userMessage.className = "userMessage";
 					evt.target.style.backgroundColor = "greenyellow";
 					document.querySelectorAll(".interrogation").forEach(interrogation => {
 						if (interrogation !== evt.target) {
@@ -38,7 +43,7 @@
 						}
 					});
 				}
-			})
+			});
 		});
 		
 		document.getElementById("locusFile").addEventListener('change', ev => {
@@ -61,13 +66,14 @@
 			}
 		});
 		
-		document.getElementById("convert").addEventListener('click', ev => {
+		document.getElementById("trim").addEventListener('click', ev => {
 			if (document.getElementById('locusFile').files.length === 0) {
 				return;
 			} else {
 				document.querySelector('.downloadMessage').hidden = false;
 				// document.querySelector('.awaitGif').hidden = false;
 				document.querySelector('.loaderForm').submit();
+				document.getElementById("locusFile").value = null;
 			}
 		});
 	}

@@ -19,13 +19,19 @@
 		
 		<img src="../static/img/unnamed.png" th:src="@{/img/unnamed.png}" alt="logo" class="logo">
 		
-		<a href="/" th:href="@{/}" class="applicationName">
-			<h1 class="applicationName" th:utext="#{html.h1.header}">
-				Locus<span style="font-size: smaller">&copy;</span> POI trimmer
-			</h1>
-		</a>
+		<div class="headerGroup2">
+			
+			<a href="/" th:href="@{/}" class="applicationName">
+				<h1 class="applicationName" th:utext="#{html.h1.header}">
+					Locus<span style="font-size: smaller">&copy;</span> POI trimmer
+				</h1>
+			</a>
+			<h2 class="applicationSlogan">The handler for your custom POI database</h2>
 		
-		<div class="headerGroup1">
+		</div>
+		
+		
+		<div class="headerGroup3">
 			
 			<select class="langSelector" onchange="location = this.value">
 				<option th:text="#{html.option.lang}">Language...</option>
@@ -45,29 +51,34 @@
 	
 	<main>
 		
-		<h2 th:text="#{html.h2.howToConvert}">How to properly convert your Locus POIs to Google Earth Windows
-			application</h2>
+		<h2 th:text="#{html.h2.howToConvert}">
+			How to properly trim and process your custom Points if Interest (POI)
+		</h2>
 		
 		
 		<article th:utext="#{html.article.howToUse}">
 			How properly import and export POIs from Locus to Google Earth (and vise versa) application description.
 		</article>
 		
-		<div class="userMessage" th:utext="${userMessage} != null ? ${userMessage} : ''"
-			 th:hidden="${userMessage} != null ? false : true">
-		
+		<div id="userMessage" class="userMessage" th:utext="${userMessage} != null ? ${userMessage} : ''"
+			 th:class="${userMessage} != null ? 'userMessage' : 'userMessage.hidden'"
+			 th:title="#{html.title.close}">
 		</div>
 		
 		<form class="loaderForm" action="/poi" method="post" enctype="multipart/form-data"
 			  th:action="@{/poi}" name="poiFile" id="poiFile">
-			<label for="locusFile">Load Locus POI file</label>
+			<label for="locusFile" th:text="#{html.label.loadPoi}">Load custom points file</label>
 			<div class="interrogation" title="Description" th:title="#{html.title.interrogation.locusFile}">?</div>
 			<br>
 			<input id="locusFile" type="file" accept=".kmz, .kml" class="inputButton" name="multipartFile"
 				   required autofocus>
 			<br><br>
-			<label for="fieldSet" th:text="#{html.label.additionalParams}">Set additional parameters</label>
-			<fieldset id="fieldSet" class="loaderForm">
+			
+			<label for="fieldSetMain" class="loaderFieldset" th:text="#{html.label.additionalParams}">
+				Set additional parameters
+			</label>
+			
+			<fieldset id="fieldSetMain" class="loaderForm">
 				<!--				<input id="validateXml" name="validateXml" type="checkbox">-->
 				<!--				<label for="validateXml" th:text="#{html.label.validateXml}">Severe validation check</label>-->
 				<!--				<div class="interrogation" title="Description" th:title="#{html.title.photoPreviewDescription}">?</div>-->
@@ -84,15 +95,6 @@
 					?
 				</div>
 				<br>
-				<input id="asAttachmentInLocus" name="asAttachmentInLocus" type="checkbox">
-				<label for="asAttachmentInLocus" th:text="#{html.label.locusAsAttachments}">
-					Add as attachments in Locus Pro
-				</label>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.asAttachmentInLocus}">
-					?
-				</div>
-				
-				<br>
 				<input id="setPreviewSize" name="setPreviewSize" type="checkbox">
 				<label for="setPreviewSize" th:text="#{html.label.previewSize}">Set photos preview size</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPhotosPreview}">
@@ -102,13 +104,6 @@
 				<input id="previewSize" name="previewSize" type="number" placeholder="640" value="640"
 					   min="0" max="2440" disabled>
 				<span th:text="#{html.span.px}">px</span>
-				<br>
-				<input id="clearDescriptions" name="clearDescriptions" type="checkbox" checked>
-				<label for="clearDescriptions" th:text="#{html.label.clearDescriptions}">Clear outdated POIs
-					descriptions</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{html.title.interrogation.trimOutdatedPoiDesc}">?
-				</div>
 				<br>
 				<input id="setPath" name="setPath" type="checkbox">
 				<label for="setPath" th:text="#{html.input.setPath}">Set paths to all image files for photo POIs</label>
@@ -149,6 +144,31 @@
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.path}">?</div>
 				<br>
 			</fieldset>
+			<br>
+			
+			<label for="fieldSetLocus" class="loaderFieldset" th:utext="#{html.label.locusParams}">
+				Set Locus Map&copy; specific parameters
+			</label>
+			
+			<fieldset id="fieldSetLocus" class="loaderForm">
+				<input id="asAttachmentInLocus" name="asAttachmentInLocus" type="checkbox">
+				<label for="asAttachmentInLocus" th:text="#{html.label.locusAsAttachments}">
+					Add as attachments in Locus Pro
+				</label>
+				<div class="interrogation" title="Description"
+					 th:title="#{html.title.interrogation.asAttachmentInLocus}">
+					?
+				</div>
+				<br>
+				<input id="clearDescriptions" name="clearDescriptions" type="checkbox">
+				<label for="clearDescriptions" th:text="#{html.label.clearDescriptions}">Clear outdated POIs
+					descriptions</label>
+				<div class="interrogation" title="Description"
+					 th:title="#{html.title.interrogation.trimOutdatedPoiDesc}">?
+				</div>
+				<br>
+			
+			</fieldset>
 			
 			<div class="bottomFieldset">
 				<input type="submit" th:value="#{html.input.value.convert}" value="PROCESS" id="trim"
@@ -164,7 +184,8 @@
 	
 	<footer>
 		
-		<span>Footer content</span>
+		<div class="footerContent">About</div>
+		<div class="footerContent">Contacts: BAXMYPKA</div>
 	
 	</footer>
 

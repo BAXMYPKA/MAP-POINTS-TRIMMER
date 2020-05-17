@@ -1,7 +1,7 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
 
 import lombok.NoArgsConstructor;
-import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;

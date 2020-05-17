@@ -1,8 +1,8 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.services;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import lombok.Getter;
-import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
-import mrbaxmypka.gmail.com.LocusPOIconverter.klm.XmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.klm.XmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.lang.NonNull;

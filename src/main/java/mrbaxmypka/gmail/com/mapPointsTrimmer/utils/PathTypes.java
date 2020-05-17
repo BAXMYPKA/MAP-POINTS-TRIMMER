@@ -1,4 +1,4 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.utils;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.utils;
 
 import java.util.StringJoiner;
 

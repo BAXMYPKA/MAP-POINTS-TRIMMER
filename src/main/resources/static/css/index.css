@@ -1,7 +1,45 @@
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+@media (max-width: 2440px) and (min-width: 1910px) {
+	
+	#main {
+		width: 50%;
+	}
+}
+
+@media (max-width: 1900px) and (min-width: 1400px) {
+	
+	#main {
+		width: 60%;
+	}
+}
+
+@media (max-width: 1390px) and (min-width: 800px) {
+	
+	#main {
+		width: 85%;
+	}
+}
+
 #main {
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
+}
+
+main {
+	padding: 1em;
+}
+
+article {
+	margin-bottom: 0.5em;
+	padding: 0.5em;
+	background-color: rgba(166, 155, 19, 0.25);
+	
 }
 
 header {
@@ -15,7 +53,31 @@ header {
 	border-radius: 0.4em;
 }
 
-.headerGroup1 {
+label {
+	transition: all;
+	transition-duration: 0.2s;
+}
+
+label:hover {
+	color: darkgoldenrod;
+}
+
+input[type=radio] {
+	margin-left: 1em;
+}
+
+footer {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	padding: 0.5em;
+	background-color: rgba(173, 163, 47, 0.58);
+	border: goldenrod 0.1em solid;
+	border-radius: 0.4em;
+}
+
+.headerGroup3 {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -53,7 +115,7 @@ header {
 }
 
 .shutdownButtonOn:hover {
-	box-shadow: lightgrey  0.1em 0.1em 0.3em 0.2em;
+	box-shadow: lightgrey 0.1em 0.1em 0.3em 0.2em;
 	cursor: cell;
 	color: limegreen;
 }
@@ -78,27 +140,34 @@ header {
 	transition-duration: 0.3s;
 }
 
+.headerGroup2 {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+}
+
 .applicationName {
+	margin: 0 0 0.2em 0;
 	text-decoration: none;
 	text-transform: uppercase;
 	/*font-family: Arial, sans-serif;*/
 	font-family: Tahoma, Geneva, sans-serif;
-	font-size: 1.5em;
+	font-size: 1.3em;
 	font-weight: bolder;
 	color: saddlebrown;
 }
 
-main {
-	padding: 2em;
+.applicationSlogan {
+	margin: 0;
+	text-decoration: none;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 1.2em;
+	font-style: italic;
+	font-weight: bolder;
+	color: rgba(69, 12, 0, 0.58);
 }
 
-article {
-	/*margin: 1em;*/
-	margin-bottom: 0.5em;
-	padding: 0.5em;
-	background-color: rgba(166, 155, 19, 0.31);
-	
-}
 
 .userMessage {
 	margin-bottom: 0.5em;
@@ -109,6 +178,19 @@ article {
 	font-size: 0.8em;
 	transition-property: all;
 	transition-duration: 0.5s;
+	opacity: 1;
+	visibility: visible;
+}
+
+.userMessage.hidden {
+	transition: all;
+	transition-duration: 0.5s;
+	opacity: 0;
+	visibility: hidden;
+}
+
+.userMessage:hover {
+	background-color: rgba(203, 203, 203, 0.3);
 }
 
 .loaderForm {
@@ -125,6 +207,11 @@ article {
 .loaderForm > label {
 	margin: 0.3em;
 	font-weight: bold;
+}
+
+.loaderFieldset {
+	/*font-family: Tahoma, serif;*/
+	text-transform: uppercase;
 }
 
 .inputButton {
@@ -173,24 +260,6 @@ article {
 	width: 35em;
 }
 
-/*
-.interrogation {
-	display: inline-block;
-	width: 0.9em;
-	height: 0.9em;
-	padding: 0.1em;
-	border-radius: 50%;
-	border: green solid 0.1em;
-	background-color: lightgreen;
-	text-align: center;
-	vertical-align: middle;
-	font-size: 0.8em;
-	font-weight: bold;
-	transition-duration: 0.5s;
-	transition: all;
-}
-*/
-
 .interrogation {
 	display: inline-flex;
 	flex-direction: row;
@@ -222,17 +291,4 @@ article {
 .downloadMessage {
 	margin-left: 1em;
 	font-style: italic;
-}
-
-label {
-	transition: all;
-	transition-duration: 0.2s;
-}
-
-label:hover {
-	color: darkgoldenrod;
-}
-
-input[type=radio] {
-	margin-left: 1em;
 }

@@ -1,6 +1,6 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.klm;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
 
-import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -236,7 +236,7 @@ class XmlHandlerTest {
 		//GIVEN
 		String newPath = "C:\\MyPoi\\MyPoiImages";
 		multipartFile = new MockMultipartFile(
-			"LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes());
+			"LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPath(true);
 		multipartDto.setPath(newPath);
@@ -261,7 +261,8 @@ class XmlHandlerTest {
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body_Except_Special_GoogleEarth_Web_Links()
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		//GIVEN
-		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes());
+		multipartFile = new MockMultipartFile(
+			"TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPath(true);
 		multipartDto.setPath("C:\\MyPoi\\MyPoiImages");
@@ -281,7 +282,7 @@ class XmlHandlerTest {
 		//GIVEN
 		String pathWithWhitespaces = "D:\\My Folder\\My POI";
 		multipartFile = new MockMultipartFile(
-			"LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes());
+			"LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPath(true);
 		multipartDto.setPath(pathWithWhitespaces);
@@ -411,7 +412,7 @@ class XmlHandlerTest {
 			"</Placemark>\n" +
 			"</Document>\n" +
 			"</kml>\n";
-		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes());
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setAsAttachmentInLocus(true);
 		
@@ -468,7 +469,7 @@ class XmlHandlerTest {
 			"</Placemark>\n" +
 			"</Document>\n" +
 			"</kml>\n";
-		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes());
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setAsAttachmentInLocus(true);
 		
@@ -525,7 +526,7 @@ class XmlHandlerTest {
 			"</Placemark>\n" +
 			"</Document>\n" +
 			"</kml>\n";
-		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes());
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setAsAttachmentInLocus(true);
 		

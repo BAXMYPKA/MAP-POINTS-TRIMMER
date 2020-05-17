@@ -1,4 +1,4 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.controllers;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

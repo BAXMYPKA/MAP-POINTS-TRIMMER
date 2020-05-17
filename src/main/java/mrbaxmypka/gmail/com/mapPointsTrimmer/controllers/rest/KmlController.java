@@ -1,7 +1,7 @@
-package mrbaxmypka.gmail.com.LocusPOIconverter.controllers.rest;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.rest;
 
-import mrbaxmypka.gmail.com.LocusPOIconverter.entitiesDto.MultipartDto;
-import mrbaxmypka.gmail.com.LocusPOIconverter.services.KmlKmzService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.KmlKmzService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.FileSystemResource;
