@@ -49,7 +49,9 @@
 			application</h2>
 		
 		
-		<article th:utext="#{}">How properly import POIs from Locus to Google Earth application description</article>
+		<article th:utext="#{html.article.howToUse}">
+			How properly import and export POIs from Locus to Google Earth (and vise versa) application description.
+		</article>
 		
 		<div class="userMessage" th:utext="${userMessage} != null ? ${userMessage} : ''"
 			 th:hidden="${userMessage} != null ? false : true">

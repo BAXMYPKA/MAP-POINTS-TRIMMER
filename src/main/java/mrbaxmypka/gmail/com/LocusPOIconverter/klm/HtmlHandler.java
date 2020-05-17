@@ -179,15 +179,18 @@ public class HtmlHandler {
 	}
 	
 	/**
-	 * Extract full filename from a given string. E.g. 'files:/image.png' will be returned as 'image.png'
+	 * Extract full filename from a given img[src] or a[href]. E.g. 'files:/image.png' will be returned as 'image.png'
 	 * @param oldHrefWithFilename Href or src to the image
-	 * @return The name of the file from the gven string
+	 * @return The name of the file from the given src or empty string if nothing found.
 	 */
 	String getFileName(String oldHrefWithFilename) {
+		if (!oldHrefWithFilename.contains(".") ||
+			(!oldHrefWithFilename.contains("/") && !oldHrefWithFilename.contains("\\"))) return "";
 		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/") != -1 ?
 			  oldHrefWithFilename.lastIndexOf("/") :
 			  oldHrefWithFilename.lastIndexOf("\\");
-		return oldHrefWithFilename.substring(lastIndexOFSlash + 1);
+		String filename =  oldHrefWithFilename.substring(lastIndexOFSlash + 1);
+		return filename.isBlank() ? "" : filename;
 	}
 	
 	private String trimNewHrefWithoutFilename(String newHrefWithoutFilename) {
