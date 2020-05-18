@@ -17,7 +17,10 @@
 	
 	<header class="mainHeader">
 		
-		<img src="../static/img/unnamed.png" th:src="@{/img/unnamed.png}" alt="logo" class="mainHeader__logo">
+		<!--		<a href="index.html" th:href="@{/}" title="Main page" class="mainHeader__logoA">-->
+		<img src="../static/img/MapPointsTrimmerLogo2.png" th:src="@{/img/unnamed.png}" alt="logo"
+			 class="mainHeader__logoImg">
+		<!--		</a>-->
 		
 		<div class="nameHeaderGroup">
 			
@@ -26,7 +29,9 @@
 					MAP POINTS TRIMMER
 				</h1>
 			</a>
-			<h2 class="nameHeaderGroup__appSlogan">The handler for your custom POI database</h2>
+			<h2 class="nameHeaderGroup__appSlogan" th:text="#{html.h2.slogan}">
+				The handler for your custom POI with photos
+			</h2>
 		
 		</div>
 		
@@ -39,12 +44,17 @@
 				<option th:value="@{/(lang=ru)}">RU</option>
 			</select>
 			
-			<button class="rightHeaderGroup__shutdownButtonOn"
-					th:class="${shutdownBtnClass} ?: 'shutdownButtonOn'"
-					th:text="#{html.text.shutdown}" th:title="#{html.title.shutdown}">
-				SHUTDOWN
-			</button>
-		
+			<!--
+						<button class="rightHeaderGroup__shutdownButtonOn"
+								th:class="${shutdownBtnClass} ?: 'shutdownButtonOn'"
+								th:text="#{html.text.shutdown}" th:title="#{html.title.shutdown}">
+							SHUTDOWN
+						</button>
+			-->
+<!--			<a class="rightHeaderGroup__shutdownButtonOn">-->
+				<img src="../static/img/pngwing.com.png" alt="" class="rightHeaderGroup__shutdownButtonOn_img"
+				th:class="${shutdownBtnClass} != null ? ${shutdownBtnClass} : 'rightHeaderGroup__shutdownButtonOn_img'">
+<!--			</a>-->
 		</div>
 	
 	</header>
@@ -71,7 +81,7 @@
 			<label for="locusFile" th:text="#{html.label.loadPoi}" class="loadForm__label">
 				Load custom points file
 			</label>
-			<div class="interrogation" title="Description" th:title="#{html.title.interrogation.locusFile}">?</div>
+			<div class="interrogation" title="Description" th:title="#{html.title.interrogation.pointsFile}">?</div>
 			<br>
 			<input id="locusFile" type="file" accept=".kmz, .kml" class="inputButton" name="multipartFile"
 				   required autofocus>
@@ -130,7 +140,7 @@
 				<br>
 				<input type="radio" name="pathType" value="absolute" id="absolutePath" disabled>
 				<label for="absolutePath" class="loadForm__label loadForm__label_subSelectLabel"
-					   th:text="#{html.text.absolutePath}" >
+					   th:text="#{html.text.absolutePath}">
 					Absolute path
 				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.absolutePath}">
@@ -178,7 +188,7 @@
 				<input id="clearDescriptions" name="clearDescriptions" type="checkbox">
 				<label for="clearDescriptions" class="loadForm__label"
 					   th:text="#{html.label.clearDescriptions}">
-					Clear outdated POIs	descriptions
+					Clear outdated POIs descriptions
 				</label>
 				<div class="interrogation" title="Description"
 					 th:title="#{html.title.interrogation.trimOutdatedPoiDesc}">?
@@ -188,11 +198,28 @@
 			</fieldset>
 			
 			<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
-				<input type="submit" id="trim"  value="PROCESS" class="inputButton loadForm__inputButton_processSpecialButton"
+				
+				<input type="submit" id="trim" value="PROCESS"
+					   class="inputButton loadForm__inputButton_processSpecialButton"
 					   th:value="#{html.input.value.convert}">
+				
+				<select name="downloadAs" class="loadForm__selectDownloadAs"
+						title="For now only '.kml' files are supported">
+					<option selected>Download as...</option>
+					<option value="kml" title="A processed file with the points and tracks inside."
+							th:title="#{html.title.select.downloadAsKml}">
+						.kml
+					</option>
+					<option value="kmz" title="A full archive with photos and the processed .kml file inside." disabled
+							th:title="#{html.title.select.downloadAsKmz}">
+						.kmz
+					</option>
+				</select>
+				
 				<span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					Download
 				</span>
+			
 			</fieldset>
 		
 		</form>
@@ -201,8 +228,9 @@
 	
 	<footer class="mainFooter">
 		
-		<div class="mainFooter__footerContent">About</div>
-		<div class="mainFooter__footerContent">Contacts: BAXMYPKA</div>
+		<div class="mainFooter__item">About</div>
+		<div class="mainFooter__item"><span class="mainFooter__item_noStyle">Contacts:</span> BAXMYPKA</div>
+		<!--		<div class="mainFooter__article"></div>-->
 	
 	</footer>
 

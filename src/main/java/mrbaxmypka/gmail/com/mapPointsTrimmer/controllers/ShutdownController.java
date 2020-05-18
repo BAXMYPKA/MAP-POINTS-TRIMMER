@@ -27,7 +27,7 @@ public class ShutdownController {
 	/**
 	 * Attribute for index.html to apply this css className to make the 'Shutdown' button grey.
 	 */
-	private final String SHUTDOWN_BTN_CLASS = "shutdownButtonOff";
+	private final String SHUTDOWN_BTN_CLASS = "rightHeaderGroup__shutdownButtonOn_img_shutDown";
 	
 	@GetMapping(path = "/shutdown")
 	public String shutdownApp(Model model, Locale locale) throws Exception {
