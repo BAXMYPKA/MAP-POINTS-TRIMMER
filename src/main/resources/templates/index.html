@@ -13,33 +13,33 @@
 </head>
 <body>
 
-<div id="main">
+<div id="main" class="main">
 	
-	<header>
+	<header class="mainHeader">
 		
-		<img src="../static/img/unnamed.png" th:src="@{/img/unnamed.png}" alt="logo" class="logo">
+		<img src="../static/img/unnamed.png" th:src="@{/img/unnamed.png}" alt="logo" class="mainHeader__logo">
 		
-		<div class="headerGroup2">
+		<div class="nameHeaderGroup">
 			
-			<a href="/" th:href="@{/}" class="applicationName">
-				<h1 class="applicationName" th:utext="#{html.h1.header}">
-					Locus<span style="font-size: smaller">&copy;</span> POI trimmer
+			<a href="/" th:href="@{/}" class="nameHeaderGroup__appName">
+				<h1 class="nameHeaderGroup__appName" th:utext="#{html.h1.header}">
+					MAP POINTS TRIMMER
 				</h1>
 			</a>
-			<h2 class="applicationSlogan">The handler for your custom POI database</h2>
+			<h2 class="nameHeaderGroup__appSlogan">The handler for your custom POI database</h2>
 		
 		</div>
 		
 		
-		<div class="headerGroup3">
+		<div class="rightHeaderGroup">
 			
-			<select class="langSelector" onchange="location = this.value">
+			<select class="rightHeaderGroup__langSelector" onchange="location = this.value">
 				<option th:text="#{html.option.lang}">Language...</option>
 				<option th:value="@{/(lang=en)}">EN</option>
 				<option th:value="@{/(lang=ru)}">RU</option>
 			</select>
 			
-			<button class="shutdownButtonOn"
+			<button class="rightHeaderGroup__shutdownButtonOn"
 					th:class="${shutdownBtnClass} ?: 'shutdownButtonOn'"
 					th:text="#{html.text.shutdown}" th:title="#{html.title.shutdown}">
 				SHUTDOWN
@@ -49,46 +49,52 @@
 	
 	</header>
 	
-	<main>
+	<main class="mainBody">
 		
-		<h2 th:text="#{html.h2.howToConvert}">
-			How to properly trim and process your custom Points if Interest (POI)
+		<h2 th:text="#{html.h2.howToConvert}" class="h2">
+			How to properly trim and process your custom Points if Interest (POI) with photos
 		</h2>
 		
 		
-		<article th:utext="#{html.article.howToUse}">
+		<article class="article" th:utext="#{html.article.howToUse}">
 			How properly import and export POIs from Locus to Google Earth (and vise versa) application description.
 		</article>
 		
-		<div id="userMessage" class="userMessage" th:utext="${userMessage} != null ? ${userMessage} : ''"
+		<div id="userMessage" class="userMessage" title="Close"
+			 th:utext="${userMessage} != null ? ${userMessage} : ''"
 			 th:class="${userMessage} != null ? 'userMessage' : 'userMessage.hidden'"
 			 th:title="#{html.title.close}">
 		</div>
 		
-		<form class="loaderForm" action="/poi" method="post" enctype="multipart/form-data"
+		<form class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
 			  th:action="@{/poi}" name="poiFile" id="poiFile">
-			<label for="locusFile" th:text="#{html.label.loadPoi}">Load custom points file</label>
+			<label for="locusFile" th:text="#{html.label.loadPoi}" class="loadForm__label">
+				Load custom points file
+			</label>
 			<div class="interrogation" title="Description" th:title="#{html.title.interrogation.locusFile}">?</div>
 			<br>
 			<input id="locusFile" type="file" accept=".kmz, .kml" class="inputButton" name="multipartFile"
 				   required autofocus>
 			<br><br>
 			
-			<label for="fieldSetMain" class="loaderFieldset" th:text="#{html.label.additionalParams}">
+			<label for="fieldSetMain" class="loadForm__label loadForm__label_LoadFieldSet"
+				   th:text="#{html.label.additionalParams}">
 				Set additional parameters
 			</label>
 			
-			<fieldset id="fieldSetMain" class="loaderForm">
+			<fieldset id="fieldSetMain" class="loadForm loadForm__fieldSet">
 				<!--				<input id="validateXml" name="validateXml" type="checkbox">-->
 				<!--				<label for="validateXml" th:text="#{html.label.validateXml}">Severe validation check</label>-->
 				<!--				<div class="interrogation" title="Description" th:title="#{html.title.photoPreviewDescription}">?</div>-->
 				<!--				<br>-->
 				<input id="trimXml" name="trimXml" type="checkbox">
-				<label for="trimXml" th:text="#{html.label.trimXml}">Trim whitespaces in xml markup to compress</label>
+				<label for="trimXml" th:text="#{html.label.trimXml}" class="loadForm__label">
+					Trim whitespaces in xml markup to compress
+				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.trimXml}">?</div>
 				<br>
 				<input id="trimDescriptions" name="trimDescriptions" type="checkbox">
-				<label for="trimDescriptions" th:text="#{html.label.trimDescriptions}">
+				<label for="trimDescriptions" class="loadForm__label" th:text="#{html.label.trimDescriptions}">
 					Trim whitespaces in user descriptions to compress
 				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.trimDescription}">
@@ -96,7 +102,9 @@
 				</div>
 				<br>
 				<input id="setPreviewSize" name="setPreviewSize" type="checkbox">
-				<label for="setPreviewSize" th:text="#{html.label.previewSize}">Set photos preview size</label>
+				<label for="setPreviewSize" class="loadForm__label" th:text="#{html.label.previewSize}">
+					Set photos preview size
+				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPhotosPreview}">
 					?
 				</div>
@@ -106,11 +114,14 @@
 				<span th:text="#{html.span.px}">px</span>
 				<br>
 				<input id="setPath" name="setPath" type="checkbox">
-				<label for="setPath" th:text="#{html.input.setPath}">Set paths to all image files for photo POIs</label>
+				<label for="setPath" class="loadForm__label" th:text="#{html.input.setPath}">
+					Set paths to all image files in map points
+				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPath}">?</div>
 				<br>
 				<input type="radio" name="pathType" id="relativePath" value="relative" checked disabled>
-				<label for="relativePath" th:text="#{html.text.relativePath}" class="selectLabel">
+				<label for="relativePath" class="loadForm__label loadForm__label_subSelectLabel"
+					   th:text="#{html.text.relativePath}">
 					Relative path
 				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.relativePath}">
@@ -118,7 +129,8 @@
 				</div>
 				<br>
 				<input type="radio" name="pathType" value="absolute" id="absolutePath" disabled>
-				<label for="absolutePath" th:text="#{html.text.absolutePath}" class="selectLabel">
+				<label for="absolutePath" class="loadForm__label loadForm__label_subSelectLabel"
+					   th:text="#{html.text.absolutePath}" >
 					Absolute path
 				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.absolutePath}">
@@ -126,7 +138,8 @@
 				</div>
 				<br>
 				<input type="radio" name="pathType" value="web" id="webPath" disabled>
-				<label for="webPath" th:text="#{html.text.webPath}" class="selectLabel">
+				<label for="webPath" class="loadForm__label loadForm__label_subSelectLabel"
+					   th:text="#{html.text.webPath}">
 					WEB path
 				</label>
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.webPath}">
@@ -146,13 +159,15 @@
 			</fieldset>
 			<br>
 			
-			<label for="fieldSetLocus" class="loaderFieldset" th:utext="#{html.label.locusParams}">
+			<label for="fieldSetLocus" class="loadForm__label loadForm__label_LoadFieldSet"
+				   th:utext="#{html.label.locusParams}">
 				Set Locus Map&copy; specific parameters
 			</label>
 			
-			<fieldset id="fieldSetLocus" class="loaderForm">
+			<fieldset id="fieldSetLocus" class="loadForm loadForm__fieldSet">
 				<input id="asAttachmentInLocus" name="asAttachmentInLocus" type="checkbox">
-				<label for="asAttachmentInLocus" th:text="#{html.label.locusAsAttachments}">
+				<label for="asAttachmentInLocus" class="loadForm__label"
+					   th:text="#{html.label.locusAsAttachments}">
 					Add as attachments in Locus Pro
 				</label>
 				<div class="interrogation" title="Description"
@@ -161,8 +176,10 @@
 				</div>
 				<br>
 				<input id="clearDescriptions" name="clearDescriptions" type="checkbox">
-				<label for="clearDescriptions" th:text="#{html.label.clearDescriptions}">Clear outdated POIs
-					descriptions</label>
+				<label for="clearDescriptions" class="loadForm__label"
+					   th:text="#{html.label.clearDescriptions}">
+					Clear outdated POIs	descriptions
+				</label>
 				<div class="interrogation" title="Description"
 					 th:title="#{html.title.interrogation.trimOutdatedPoiDesc}">?
 				</div>
@@ -170,22 +187,22 @@
 			
 			</fieldset>
 			
-			<div class="bottomFieldset">
-				<input type="submit" th:value="#{html.input.value.convert}" value="PROCESS" id="trim"
-					   class="inputButton processButton">
+			<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
+				<input type="submit" id="trim"  value="PROCESS" class="inputButton loadForm__inputButton_processSpecialButton"
+					   th:value="#{html.input.value.convert}">
 				<span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					Download
 				</span>
-			</div>
+			</fieldset>
 		
 		</form>
 	
 	</main>
 	
-	<footer>
+	<footer class="mainFooter">
 		
-		<div class="footerContent">About</div>
-		<div class="footerContent">Contacts: BAXMYPKA</div>
+		<div class="mainFooter__footerContent">About</div>
+		<div class="mainFooter__footerContent">Contacts: BAXMYPKA</div>
 	
 	</footer>
 
