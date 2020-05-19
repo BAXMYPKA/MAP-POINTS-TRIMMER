@@ -1,10 +1,8 @@
-# Locus POI to Google Earth POI converter
-Overcomplicated client-server Java application based on Spring to convert custom POI (Points of Interest) from Locus Android application to Google Earth Windows application.
+# MAP POINTS TRIMMER
+## The convenient handler for your map points with photos
+Сlient-server Java application based on Spring to convert custom POI (Points of Interest) from Locus Android application to Google Earth Windows application.
 
-Программа позволяет правильным образом сконвертировать все ваши сохраненные точки (POI) из программы Locus со смартфона на компьютер в программу Google Earth или любую другую, умеющую работать с POI. Если у вас точки с фотографиями местности (photo POI), то можно будет сделать правильный предпросмотр, удалить ненужную историю сохранений, выставить любой путь до фотографий и т.п.
-Такая конвертация также значительно сокращает размер файла и время на его обработку внутри программ, так как при каждом сохранении ваших избранных точек Locus добавляет все больше ненужной информации. Зато при обратном сохранении полученного после обработки файла в Locus вы получите предпросмотр фотографий (если имеются для точки) прямо в ее описании без необходимости заходить в отдельную закладку "Вложения".
-
-Умомянуть: Локус имеет xsd v2.2.0
+Программа позволяет правильным образом перенести все ваши сохраненные точки (POI) из одной программы работы с картами в другую (например, из Locus Map pro в Google Earth Pro). Если ваши точки с привязанными фотографиями местности, то можно сделать правильный предпросмотр, удалить ненужную историю сохранений, выставить любой путь до фотографий и т.п.
 
  Parameters - change according to selected export format:
 
