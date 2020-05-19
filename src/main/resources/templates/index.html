@@ -56,7 +56,8 @@
 			<img src="../static/img/turnOffBtn.png" alt="SHUTDOWN" class="rightHeaderGroup__shutdownButtonOn_img"
 				 th:alt="#{html.text.shutdown}" th:title="#{html.text.shutdown}"
 				 th:src="@{/img/turnOffBtn.png}"
-				 th:class="${shutdownBtnClass} != null ? ${shutdownBtnClass} : 'rightHeaderGroup__shutdownButtonOn_img'">
+				 th:class="${#request.getAttribute('shutdownBtnClass')} != null ?
+				  ${#request.getAttribute('shutdownBtnClass')} : 'rightHeaderGroup__shutdownButtonOn_img'">
 			<!--			</a>-->
 		</div>
 	
@@ -75,7 +76,7 @@
 				How properly import and export POIs from Locus to Google Earth (and vise versa) application description.
 			</section>
 			
-			<a href="" id="openSection" class="article__open" th:title="#{html.text.open}">+</a>
+			<!--			<a href="" id="openSection" class="article__open" th:title="#{html.text.open}">+</a>-->
 			
 			<section id="closableSection" class="article__section article__section_closed"
 					 th:utext="#{html.arcticle.section.scenarios}">
@@ -109,7 +110,7 @@
 			<fieldset id="fieldSetMain" class="loadForm loadForm__fieldSet">
 				<!--				<input id="validateXml" name="validateXml" type="checkbox">-->
 				<!--				<label for="validateXml" th:text="#{html.label.validateXml}">Severe validation check</label>-->
-				<!--				<div class="interrogation" title="Description" th:title="#{html.title.photoPreviewDescription}">?</div>-->
+				<!--				<div class="interrogation" title="Description" >?</div>-->
 				<!--				<br>-->
 				<input id="trimXml" name="trimXml" type="checkbox">
 				<label for="trimXml" th:text="#{html.label.trimXml}" class="loadForm__label">
@@ -240,18 +241,34 @@
 	
 	</main>
 	
-	<article class="articleAbout" th:utext="#{html.article.about}" hidden>
+	<article class="articleAbout" th:utext="#{html.article.about}" th:title="#{html.title.close}" title="Close"
+			 style="display: none">
 		About application text.
 	</article>
 	
 	<footer class="mainFooter">
 		
 		<div id="aboutItem" class="mainFooter__item">About</div>
-		<div class="mainFooter__item"><span class="mainFooter__item_noStyle">Contacts:</span> BAXMYPKA</div>
+		
+		<div>
+			<ul class="listSmall">
+				<li title="Deleloper's Github" th:title="#{html.title.footer.contacts.github}">
+					<a href="https://github.com/BAXMYPKA" target="_blank" class="mainFooter__item_smaller">
+						Github
+					</a>
+				</li>
+				<li title="Email">
+					<a href="mailto:mrbaxmypka@gmail.com" class="mainFooter__item_smaller">Email</a>
+				</li>
+				<li class="mainFooter__item_noStyle" title="Location" th:title="#{html.title.footer.location}">
+					RU, Moscow
+				</li>
+			</ul>
+		</div>
 	
 	</footer>
-	
-	
+
+
 </div>
 
 </body>

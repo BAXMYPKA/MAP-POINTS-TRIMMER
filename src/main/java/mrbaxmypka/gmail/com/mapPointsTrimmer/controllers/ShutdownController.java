@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.Files;
 import java.util.Locale;
@@ -30,24 +31,23 @@ public class ShutdownController {
 	private final String SHUTDOWN_BTN_CLASS = "rightHeaderGroup__shutdownButtonOn_img_shutDown";
 	
 	@GetMapping(path = "/shutdown")
-	public String shutdownApp(Model model, Locale locale) throws Exception {
+	public String shutdownApp(Model model, RedirectAttributes redirectAttributes, Locale locale) {
 		try {
 			Files.deleteIfExists(kmlKmzService.getTempKmlFile());
 		} finally {
 			Thread thread = new Thread(() -> {
 				try {
-					Thread.sleep(1500);
+					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					System.out.println(e.getMessage());
 				}
-				System.out.println("SHUTTING DOWN...");
-				SpringApplication.exit(applicationContext, () -> 2);
+				SpringApplication.exit(applicationContext, () -> 666);
 			});
 			thread.start();
 			
 			String shutdownMessage = messageSource.getMessage("userMessage.shutdownSuccess", null, locale);
-			model.addAttribute("userMessage", shutdownMessage);
-			model.addAttribute("shutdownBtnClass", SHUTDOWN_BTN_CLASS);
+			redirectAttributes.addFlashAttribute("userMessage", shutdownMessage);
+			redirectAttributes.addFlashAttribute("shutdownBtnClass", SHUTDOWN_BTN_CLASS);
 			return "redirect:/";
 		}
 	}
