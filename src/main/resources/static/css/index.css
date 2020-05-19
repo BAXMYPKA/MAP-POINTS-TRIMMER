@@ -6,24 +6,31 @@ body {
 	margin-bottom: 0;
 }
 
-@media (max-width: 2440px) and (min-width: 1910px) {
+@media (max-width: 2440px) and (min-width: 1900px) {
 	
 	#main {
 		width: 50%;
 	}
 }
 
-@media (max-width: 1900px) and (min-width: 1400px) {
+@media (max-width: 1900px) and (min-width: 1600px) {
 	
 	#main {
-		width: 60%;
+		max-width: 55%;
 	}
 }
 
-@media (max-width: 1390px) and (min-width: 800px) {
+@media (max-width: 1600px) and (min-width: 1240px) {
 	
 	#main {
-		width: 85%;
+		max-width: 60%;
+	}
+}
+
+@media (max-width: 1240px) and (min-width: 920px) {
+	
+	#main {
+		max-width: 80%;
 	}
 }
 
@@ -46,9 +53,33 @@ body {
 
 .article {
 	margin-bottom: 0.5em;
-	padding: 0.5em;
+	padding: 0.3em;
 	background-color: rgba(178, 167, 20, 0.06);
 	
+}
+
+.article__section {
+	margin-top: 0.2em;
+	padding: 0.3em;
+	height: auto;
+	transition: all;
+	transition-duration: 0.5s;
+}
+
+.article__section_closed {
+	opacity: 0.4;
+	height: 0.5em;
+	overflow: hidden;
+	border-top: saddlebrown 0.08em dotted;
+	border-radius: 0.3em;
+	background: linear-gradient(to bottom, rgba(202, 191, 20, 0.13), white);
+}
+
+.article__open {
+	text-decoration: none;
+	text-transform: uppercase;
+	font-size: 1.8em;
+	font-weight: bold;
 }
 
 .mainHeader {
@@ -97,6 +128,7 @@ input[type=radio] {
 .rightHeaderGroup__langSelector:hover {
 	background-color: rgba(209, 203, 148, 0.18);
 }
+
 
 /*
 .rightHeaderGroup__shutdownButtonOn {
@@ -363,7 +395,6 @@ input[type=radio] {
 	text-transform: uppercase;
 	font-family: "Arial Black", sans-serif;
 	color: #572b10;
-	/*font-weight: bold;*/
 }
 
 .mainFooter__item:hover {
@@ -372,11 +403,26 @@ input[type=radio] {
 	font-weight: bolder;
 }
 
-.mainFooter__article {
-	flex-wrap: wrap;
+.mainFooter__item:active {
+	color: #5c2e0c;
+}
+
+.articleAbout {
+	margin-top: 0.5em;
+	padding: 0.3em;
+	background: linear-gradient(to bottom, rgba(240, 240, 174, 0.04), rgba(107, 68, 19, 0.35));
+	border-top: goldenrod 0.2em dashed;
+	border-radius: 1em 1em 0 0;
+	transition: all;
+	transition-duration: 0.3s;
+}
+
+.articleAbout:hover {
+	cursor: pointer;
+	/*background: linear-gradient(to bottom, rgba(240, 240, 174, 0.04), rgba(107, 68, 19, 0.35));*/
+	background-color: rgba(107, 68, 19, 0.35);
 }
 
 .mainFooter__item_noStyle {
-	/*text-transform: none;*/
 	color: initial;
 }

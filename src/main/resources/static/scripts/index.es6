@@ -12,6 +12,10 @@
 			window.location.href = window.location.href.concat('shutdown');
 		}));
 		
+		document.querySelector(".mainHeader__logoImg").addEventListener('click', ev => {
+			window.location.href = serverAddress;
+		});
+		
 		document.getElementById('setPreviewSize').addEventListener('change', ev => {
 				const previewSize = document.getElementById("previewSize");
 				if (ev.target.checked) {
@@ -19,9 +23,13 @@
 				} else {
 					previewSize.disabled = true;
 				}
-				;
 			}
 		);
+		
+		document.getElementById("openSection").addEventListener('click', ev => {
+			ev.preventDefault();
+			document.getElementById("closableSection").classList.toggle("article__section_closed");
+		});
 		
 		document.querySelectorAll(".interrogation").forEach(value => {
 			value.addEventListener('click', evt => {
@@ -75,6 +83,16 @@
 				document.querySelector('.loaderForm').submit();
 				document.getElementById("locusFile").value = null;
 			}
+		});
+		
+		document.querySelector("#aboutItem").addEventListener('click', ev => {
+			const articleAbout = document.querySelector(".articleAbout");
+			
+			articleAbout.addEventListener('click', evt => {
+				evt.target.hidden !== true;
+			});
+			
+			articleAbout.hidden !== true;
 		});
 	}
 )();

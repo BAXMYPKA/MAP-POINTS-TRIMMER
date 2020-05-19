@@ -7,6 +7,7 @@
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		const maxFileSizeMb = [[${maxFileSizeMb}]];
+		const serverAddress = [[${serverAddress}]];
 		/*]]>*/
 	</script>
 	<title>Locus POI trimmer</title>
@@ -18,7 +19,7 @@
 	<header class="mainHeader">
 		
 		<!--		<a href="index.html" th:href="@{/}" title="Main page" class="mainHeader__logoA">-->
-		<img src="../static/img/MapPointsTrimmerLogo2.png" th:src="@{/img/unnamed.png}" alt="logo"
+		<img src="../static/img/MapPointsTrimmerLogo2.png" th:src="@{/img/MapPointsTrimmerLogo2.png}" alt="logo"
 			 class="mainHeader__logoImg">
 		<!--		</a>-->
 		
@@ -51,10 +52,12 @@
 							SHUTDOWN
 						</button>
 			-->
-<!--			<a class="rightHeaderGroup__shutdownButtonOn">-->
-				<img src="../static/img/pngwing.com.png" alt="" class="rightHeaderGroup__shutdownButtonOn_img"
-				th:class="${shutdownBtnClass} != null ? ${shutdownBtnClass} : 'rightHeaderGroup__shutdownButtonOn_img'">
-<!--			</a>-->
+			<!--			<a class="rightHeaderGroup__shutdownButtonOn">-->
+			<img src="../static/img/turnOffBtn.png" alt="SHUTDOWN" class="rightHeaderGroup__shutdownButtonOn_img"
+				 th:alt="#{html.text.shutdown}" th:title="#{html.text.shutdown}"
+				 th:src="@{/img/turnOffBtn.png}"
+				 th:class="${shutdownBtnClass} != null ? ${shutdownBtnClass} : 'rightHeaderGroup__shutdownButtonOn_img'">
+			<!--			</a>-->
 		</div>
 	
 	</header>
@@ -66,8 +69,19 @@
 		</h2>
 		
 		
-		<article class="article" th:utext="#{html.article.howToUse}">
-			How properly import and export POIs from Locus to Google Earth (and vise versa) application description.
+		<article class="article">
+			
+			<section class="article__section" th:utext="#{html.article.section.howToUse}">
+				How properly import and export POIs from Locus to Google Earth (and vise versa) application description.
+			</section>
+			
+			<a href="" id="openSection" class="article__open" th:title="#{html.text.open}">+</a>
+			
+			<section id="closableSection" class="article__section article__section_closed"
+					 th:utext="#{html.arcticle.section.scenarios}">
+				Typical scenarios...
+			</section>
+		
 		</article>
 		
 		<div id="userMessage" class="userMessage" title="Close"
@@ -226,14 +240,18 @@
 	
 	</main>
 	
+	<article class="articleAbout" th:utext="#{html.article.about}" hidden>
+		About application text.
+	</article>
+	
 	<footer class="mainFooter">
 		
-		<div class="mainFooter__item">About</div>
+		<div id="aboutItem" class="mainFooter__item">About</div>
 		<div class="mainFooter__item"><span class="mainFooter__item_noStyle">Contacts:</span> BAXMYPKA</div>
-		<!--		<div class="mainFooter__article"></div>-->
 	
 	</footer>
-
+	
+	
 </div>
 
 </body>
