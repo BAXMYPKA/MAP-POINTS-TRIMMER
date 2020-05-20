@@ -16,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,7 +51,7 @@ public class KmlKmzService {
 	 * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
 	 */
 	public Path processMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+		  throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		
 		locale = locale == null ? this.defaultLocale : locale;
 		String processedKml;
@@ -67,33 +68,37 @@ public class KmlKmzService {
 			return tempKmlFile;
 		} else {
 			throw new IllegalArgumentException(messageSource.getMessage(
-				"exception.fileExtensionNotSupported",
-				new Object[]{multipartDto.getMultipartFile().getOriginalFilename()},
-				locale));
+				  "exception.fileExtensionNotSupported",
+				  new Object[]{multipartDto.getMultipartFile().getOriginalFilename()},
+				  locale));
 		}
 	}
 	
 	/**
 	 * Extracts a .kml file from a given .kmz archive and inserts it into a new {@link MultipartFile} to return.
+	 *
 	 * @param multipartFileWithKmz Receives {@link MultipartFile} with .kmz file inside it.
-	 * @param locale To return a localized maxFileSizeMb to a User in case of error.
+	 * @param locale               To return a localized maxFileSizeMb to a User in case of error.
 	 * @return New {@link MultipartFile} with only .kml file in it.
 	 */
 	private MultipartFile getMultipartFileWithKml(MultipartFile multipartFileWithKmz, Locale locale) throws IOException {
-		try (ZipInputStream zis = new ZipInputStream(multipartFileWithKmz.getInputStream())){
+		try (ZipInputStream zis = new ZipInputStream(multipartFileWithKmz.getInputStream())) {
 			ZipEntry zipEntry;
 			while ((zipEntry = zis.getNextEntry()) != null) {
 				if (zipEntry.getName().endsWith(".kml")) {
-					byte[] buffer = new byte[(int) zipEntry.getSize()];
-					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
+					//Size may be unknown is entry not written to disk!
+//					byte[] buffer = new byte[(int) zipEntry.getSize()];
+// 					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
+					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+					buffer.writeBytes(zis.readAllBytes());
 					multipartFileWithKmz = new MockMultipartFile(
-						zipEntry.getName(), zipEntry.getName(), "text/plain", buffer);
+						  zipEntry.getName(), zipEntry.getName(), "text/plain", buffer.toByteArray());
 					return multipartFileWithKmz;
 				}
 			}
 		}
 		throw new IllegalArgumentException(messageSource.getMessage("exception.kmzNoKml",
-			new Object[]{multipartFileWithKmz.getOriginalFilename()}, locale));
+			  new Object[]{multipartFileWithKmz.getOriginalFilename()}, locale));
 	}
 	
 	private Path writeTempKmlFile(String kmlDoc, MultipartDto multipartDto) throws IOException {

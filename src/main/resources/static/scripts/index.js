@@ -81,7 +81,7 @@
 			} else {
 				document.querySelector('.downloadMessage').hidden = false;
 				// document.querySelector('.awaitGif').hidden = false;
-				document.querySelector('.loaderForm').submit();
+				document.querySelector('.loadForm').submit();
 				document.getElementById("locusFile").value = null;
 			}
 		});

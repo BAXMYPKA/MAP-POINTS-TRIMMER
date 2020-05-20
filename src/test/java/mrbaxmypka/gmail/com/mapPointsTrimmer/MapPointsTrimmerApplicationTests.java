@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LocusPoiConverterApplicationTests {
+class MapPointsTrimmerApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -90,7 +90,7 @@
 				<executions>
 					<execution>
 						<configuration>
-							<mainClass>mrbaxmypka.gmail.com.mapPointsTrimmer.LocusPoiConverterApplication</mainClass>
+							<mainClass>mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication</mainClass>
 						</configuration>
 					</execution>
 				</executions>
