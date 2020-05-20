@@ -81,13 +81,17 @@
 		
 		</article>
 		
-		<div id="userMessage" class="userMessage" title="Close"
-			 th:class="${userMessage} ? 'userMessage' : (${#request.getParameter('userMessage')} ? 'userMessage' : 'userMessage.hidden')"
-			 th:title="#{html.title.close}">
+		<div id="userMessage" class="userMessage"
+			 th:class="${userMessage} ? 'userMessage' : (${#request.getParameter('userMessage')} ? 'userMessage' : 'userMessage.hidden')">
 			
 			<span th:utext="${userMessage} ? ${userMessage} : ''"></span>
 			<span th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
-			
+			<span class="userMessage__close" title="Close"
+				  th:title="#{html.title.close}"
+				  th:if="${userMessage != null || #request.getParameter('userMessage') != null}">
+				X
+			</span>
+		
 		</div>
 		
 		<form class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
@@ -175,9 +179,9 @@
 					   th:title="#{html.title.defaultPath}"
 					   title="Windows 7/10 default path to the installed Google Earth Pro's saved places"
 					   th:placeholder="#{html.placeholder.input.defaultPath}"
-					   placeholder="C:\Users\%username%\AppData\LocalLow\Google\GoogleEarth\files"
-					   th:value="#{html.placeholder.input.defaultPath}"
-					   value="C:\Users\%username%\AppData\LocalLow\Google\GoogleEarth\files">
+					   placeholder="C:\Users\%username%\AppData\LocalLow\Google\GoogleEarth\files">
+<!--					   th:value="#{html.placeholder.input.defaultPath}"-->
+<!--					   value="C:\Users\%username%\AppData\LocalLow\Google\GoogleEarth\files">-->
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.path}">?</div>
 				<br>
 			</fieldset>
@@ -199,7 +203,7 @@
 					?
 				</div>
 				<br>
-				<input id="clearDescriptions" name="clearDescriptions" type="checkbox">
+				<input id="clearDescriptions" name="clearOutdatedDescriptions" type="checkbox">
 				<label for="clearDescriptions" class="loadForm__label"
 					   th:text="#{html.label.clearDescriptions}">
 					Clear outdated POIs descriptions

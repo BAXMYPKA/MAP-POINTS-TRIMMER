@@ -388,6 +388,46 @@ class HtmlHandlerTest {
 		);
 	}
 	
+	
+	@Test
+	public void setPath_Should_Set_Correct_Wrong_Backslashes() {
+		//GIVEN
+		String descriptionCdata = "<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><img src=\"files/p__20200511_131742.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"><br /><br />\n" +
+			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">165 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2020-05-12 08:50:23</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table>\n" +
+			  "<!-- desc_user:start -->\n" +
+			  "Test user description\n" +
+			  "<!-- desc_user:end -->\n" +
+			  "</font>\n" +
+			  "<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", descriptionCdata.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(400);
+		multipartDto.setSetPath(true);
+		multipartDto.setPathType("relAtive");
+		//Wrong backslash
+		multipartDto.setPath("..My maps\\my folder");
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(descriptionCdata, multipartDto);
+
+		//THEN
+		assertAll(
+			  () -> assertTrue(processedHtml.contains("<a href=\"..My%20maps/my%20folder/p__20200511_131742.jpg\"")),
+			  () -> assertTrue(processedHtml.contains("<img src=\"..My%20maps/my%20folder/p__20200511_131742.jpg\""))
+		);
+		
+		assertAll(
+			  () -> assertFalse(processedHtml.contains(
+					"<img src=\"..My%20maps\\my%20folder/p__20200511_131742.jpg")),
+			  () -> assertFalse(processedHtml.contains(
+					"<img src=\"files/p__20200511_131742.jpg"))
+		);
+	}
+	
 	@Test
 	public void setTrimDescriptions_Should_Trim_All_Whitespaces_And_Write_Only_Descriptions_Inline() {
 		//GIVEN
@@ -428,6 +468,68 @@ class HtmlHandlerTest {
 			() -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
 		);
 		assertTrue(processedHtml.contains("<!-- desc_user:start -->User description within comments"));
+	}
+	
+	@Test
+	public void clearDescriptions_Should_Return_Single_Table_With_Earliest_DateTimes_And_Full_Descriptions2() {
+		//GIVEN
+		//Реальная точка "Плотина"
+		String outdatedDescription = "<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
+			  "<!-- desc_user:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"/storage/emulated/0/Locus/data/media/photo/_1370227813151.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/_1370227813151.jpg\" width=\"330px\" align=\"center\"></a></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">170°</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3.0 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2013-06-05 08:27:14</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-04-28 15:35:07</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-05-10 16:33:59</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-03 14:39:11</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-07 17:25:15</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-07-18 17:23:19</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-08-10 13:33:16</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-09-18 16:16:45</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_user:end -->\n" +
+			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", outdatedDescription.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setAsAttachmentInLocus(true);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(750);
+//		multipartDto.setClearOutdatedDescriptions(true);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		System.out.println(processedHtml);
+		//THEN contains only the earliest date of creation
+/*
+		assertAll(
+			  () -> assertFalse(processedHtml.contains("2014-07-18 17:23:20")),
+			  () -> assertFalse(processedHtml.contains("2014-08-10 13:33:17")),
+			  () -> assertFalse(processedHtml.contains("2014-09-18 16:16:45")),
+			  () -> assertFalse(processedHtml.contains("2014-11-21 00:27:31"))
+		);
+		
+		Assertions.assertTrue(processedHtml.contains("2014-07-06 13:20:39"));
+		
+		Assertions.assertTrue(processedHtml.contains("<td align=\"center\" valign=\"center\">175 m</td>"));
+		
+		assertAll(
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
+			  () -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
+		);
+		assertTrue(processedHtml.contains("<!-- desc_user:start -->User description within comments"));
+*/
 	}
 	
 	@Test
@@ -510,58 +612,4 @@ class HtmlHandlerTest {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	@Test
-	public void all_Conditions_Enabled_Should_Return_Valid_Cdata() {
-		//GIVEN
-		multipartDto.setSetPath(true);
-		multipartDto.setPathType("Absolute");
-		multipartDto.setPath("D:\\My Folder\\My POI");
-		
-		multipartDto.setSetPreviewSize(true);
-		multipartDto.setPreviewSize(900);
-		
-		multipartDto.setClearOutdatedDescriptions(true);
-		
-		multipartDto.setTrimDescriptions(true);
-		
-		//WHEN
-		String processedHtml = htmlHandler.processCdata(html, multipartDto);
-		
-		//THEN
-		//Set path
-		Assertions.assertAll(
-			() -> Assertions.assertTrue(processedHtml
-				.contains("href=\"file:///D:/My%20Folder/My%20POI/_1404638472855.jpg\"")),
-			() -> Assertions.assertTrue(processedHtml
-				.contains("img src=\"file:///D:/My%20Folder/My%20POI/_1404638472855.jpg\"")),
-			
-			() -> Assertions.assertFalse(processedHtml
-				.contains("/storage/emulated/0/Locus/data/media/photo/"))
-		);
-		//Set preview size
-		Assertions.assertAll(
-			() -> Assertions.assertTrue(processedHtml.contains("width=\"900px\"")),
-			
-			() -> Assertions.assertFalse(processedHtml.contains("width=\"330px\""))
-		);
-		//Clear outdated descriptions
-		Assertions.assertAll(
-			() -> Assertions.assertTrue(processedHtml.contains(
-				"<td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">175 m</td>")),
-			() -> Assertions.assertTrue(processedHtml.contains(
-				"<td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">160°</td>")),
-			() -> Assertions.assertTrue(processedHtml.contains(
-				"<td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3.0 m</td>")),
-			
-			
-			() -> Assertions.assertFalse(processedHtml.contains("2014-07-18 17:23:20")),
-			() -> Assertions.assertFalse(processedHtml.contains("2014-09-18 16:16:45"))
-		);
-		//Trim descriptions inline
-		Assertions.assertAll(
-			() -> Assertions.assertFalse(processedHtml.contains("\n")),
-			() -> Assertions.assertFalse(processedHtml.contains("\t")),
-			() -> Assertions.assertFalse(processedHtml.contains("  "))
-		);
-	}
 }

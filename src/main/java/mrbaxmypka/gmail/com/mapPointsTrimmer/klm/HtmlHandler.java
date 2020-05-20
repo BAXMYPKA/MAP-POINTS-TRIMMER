@@ -44,7 +44,7 @@ public class HtmlHandler {
 		}
 		//A possible plain text outside html markup
 		String plainTextDescription = extractPlainTextDescriptions(parsedHtmlFragment).trim();
-		//Should be the first treatment
+		//MUST be the first treatment
 		if (multipartDto.isClearOutdatedDescriptions()) {
 			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
 		}
@@ -179,16 +179,17 @@ public class HtmlHandler {
 	
 	/**
 	 * Extract full filename from a given img[src] or a[href]. E.g. 'files:/image.png' will be returned as 'image.png'
+	 *
 	 * @param oldHrefWithFilename Href or src to the image
 	 * @return The name of the file from the given src or empty string if nothing found.
 	 */
 	String getFileName(String oldHrefWithFilename) {
 		if (!oldHrefWithFilename.contains(".") ||
-			(!oldHrefWithFilename.contains("/") && !oldHrefWithFilename.contains("\\"))) return "";
+			  (!oldHrefWithFilename.contains("/") && !oldHrefWithFilename.contains("\\"))) return "";
 		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/") != -1 ?
 			  oldHrefWithFilename.lastIndexOf("/") :
 			  oldHrefWithFilename.lastIndexOf("\\");
-		String filename =  oldHrefWithFilename.substring(lastIndexOFSlash + 1);
+		String filename = oldHrefWithFilename.substring(lastIndexOFSlash + 1);
 		return filename.isBlank() ? "" : filename;
 	}
 	
@@ -200,7 +201,9 @@ public class HtmlHandler {
 			// Every new href has to end with '/'
 			newHrefWithoutFilename = newHrefWithoutFilename.concat("/");
 		}
-		newHrefWithoutFilename = newHrefWithoutFilename.replaceAll("\\s", "%20");
+		newHrefWithoutFilename = newHrefWithoutFilename
+			  .replaceAll("\\s", "%20")
+			  .replaceAll("\\\\", "/");
 		
 		return newHrefWithoutFilename;
 	}
@@ -232,12 +235,15 @@ public class HtmlHandler {
 		//No <img> with [src] attribures
 		//Remake imgs into a links if they aren't.
 		imgElements.stream()
-			  .filter(element -> element.hasParent())
+			  .filter(Node::hasParent)
 			  .filter(element -> !element.parent().tagName().equalsIgnoreCase("a"))
 			  .forEach(element -> element.replaceWith(getAElementWithInnerImgElement(element)));
 		//Finally creates a new User description within <!-- desc_user:start --> ... <!-- desc_user:end -->
 		// with User's text and images inside it.
-		clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
+		if (!multipartDto.isClearOutdatedDescriptions()) {
+			//All is not clear and need to be placed within UserDescStartEnd comments
+			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
+		}
 	}
 	
 	/**
@@ -279,6 +285,31 @@ public class HtmlHandler {
 		return trimmedString;
 	}
 	
+/*
+	private void setImagesWithinDescUserComments(Element parsedHtmlFragment, MultipartDto multipartDto) {
+		//1 Delete all userStartEnd comments
+		Elements imgElements = parsedHtmlFragment.select("img[src]");
+		String userDescriptionText = getUserDescriptionText(parsedHtmlFragment).trim();
+		Element newHtmlDescription = createNewHtmlDescription(userDescriptionText, multipartDto);
+		
+		if (!imgElements.isEmpty()) {
+			Element tr = new Element("tr");
+			Element td = new Element("td").attr("align", "center");
+			td.insertChildren(0, getAElementsWithInnerImgElement(imgElements));
+			tr.appendChild(td);
+			newHtmlDescription.select("tbody").first().appendChild(tr);
+			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
+		}
+		
+		Elements tableRowWithDescAndDateTime = getTableRowsWithMinDateTime(parsedHtmlFragment.getAllElements());
+		if (!tableRowWithDescAndDateTime.isEmpty()) {
+			tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
+			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
+		}
+		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
+	}
+*/
+	
 	/**
 	 * Removes all the unnecessary HTML nodes and data duplicates.
 	 * MUST be the last method in a chain.
@@ -296,10 +327,9 @@ public class HtmlHandler {
 			newHtmlDescription.select("tbody").first().appendChild(tr);
 			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
 		}
-		
-		Elements tableRowWithDescAndDateTime = getTableRowsWithDescAndDateTime(parsedHtmlFragment.getAllElements());
-		if (!tableRowWithDescAndDateTime.isEmpty()) {
-			tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
+		Elements tableRowWithMinDateTime = getTableRowsWithMinDateTime(parsedHtmlFragment.getAllElements());
+		if (!tableRowWithMinDateTime.isEmpty()) {
+			tableRowWithMinDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
 			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
 		}
 		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
@@ -433,7 +463,7 @@ public class HtmlHandler {
 	 * @return {@code new Elements("<tr>")} with the whole POI description for the earliest DateTime
 	 * or empty {@link Elements} collection (.size() == 0)
 	 */
-	private Elements getTableRowsWithDescAndDateTime(Elements htmlElements) {
+	private Elements getTableRowsWithMinDateTime(Elements htmlElements) {
 		Elements tdElementsWithDescription = htmlElements.select("td");
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		Element tdElementWithMinimumDateTime = tdElementsWithDescription.stream()

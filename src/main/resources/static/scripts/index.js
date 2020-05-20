@@ -2,10 +2,14 @@
 		
 		const userMessage = document.querySelector("#userMessage");
 		
-		userMessage.addEventListener('click', ev => {
-			userMessage.innerHTML = "";
-			userMessage.className = "userMessage.hidden";
-		});
+		let userMessageClose = document.querySelector(".userMessage__close");
+		if (userMessageClose !== null) {
+			userMessageClose.addEventListener('click', ev => {
+				userMessage.innerHTML = "";
+				userMessage.className = "userMessage.hidden";
+				
+			});
+		}
 		
 		document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', (ev => {
 			ev.preventDefault();
