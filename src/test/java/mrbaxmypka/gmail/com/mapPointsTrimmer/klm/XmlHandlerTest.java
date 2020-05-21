@@ -135,11 +135,11 @@ class XmlHandlerTest {
 		"\t\t\t\t\t<listItemType>check</listItemType>\n" +
 		"\t\t\t\t\t<ItemIcon>\n" +
 		"\t\t\t\t\t\t<state>open</state>\n" +
-		"\t\t\t\t\t\t<href>C:/Users/%username%/Programs//Locus/data-media-photo/mysavedplaces_open.png</href>\n" +
+		"\t\t\t\t\t\t<href>C:/Users/%username%/Programs/Locus/data-media-photo/mysavedplaces_open.png</href>\n" +
 		"\t\t\t\t\t</ItemIcon>\n" +
 		"\t\t\t\t\t<ItemIcon>\n" +
 		"\t\t\t\t\t\t<state>closed</state>\n" +
-		"\t\t\t\t\t\t<href>C:/Users/%username%/Programs//Locus/data-media-photo/mysavedplaces_closed.png\n" +
+		"\t\t\t\t\t\t<href>C:/Users/%username%/Programs/Locus/data-media-photo/mysavedplaces_closed.png\n" +
 		"\t\t\t\t\t\t</href>\n" +
 		"\t\t\t\t\t</ItemIcon>\n" +
 		"\t\t\t\t\t<bgColor>00ffffff</bgColor>\n" +
@@ -170,7 +170,7 @@ class XmlHandlerTest {
 		"\t\t\t\t\t\t<color>99ffffff</color>\n" +
 		"\t\t\t\t\t\t<scale>0.5</scale>\n" +
 		"\t\t\t\t\t\t<Icon>\n" +
-		"\t\t\t\t\t\t\t<href>C:/Users/%username%/Programs//Locus/data-media-photo/misc-sunny.png</href>\n" +
+		"\t\t\t\t\t\t\t<href>C:/Users/%username%/Programs/Locus/data-media-photo/misc-sunny.png</href>\n" +
 		"\t\t\t\t\t\t</Icon>\n" +
 		"\t\t\t\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
 		"\t\t\t\t\t</IconStyle>\n" +
@@ -216,27 +216,12 @@ class XmlHandlerTest {
 	private XmlHandler xmlHandler = new XmlHandler(htmlHandler);
 	
 	@Test
-	@Disabled
-	public void valid_LocusPOI_Kml_Should_Be_Validated() throws IOException {
-		//GIVEN Only to validate xml
-		inputStream = new FileInputStream("src/test/java/resources/LocusTestPois.kml");
-		multipartFile = new MockMultipartFile(
-			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
-		multipartDto = new MultipartDto(
-			multipartFile, false, false, false, true, false, null, null, false, null, false);
-		
-		//WHEN
-		
-		Assertions.assertDoesNotThrow(() -> xmlHandler.processKml(multipartDto));
-	}
-	
-	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body()
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		//GIVEN
 		String newPath = "C:\\MyPoi\\MyPoiImages";
 		multipartFile = new MockMultipartFile(
-			"LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
+			"LocusTestPoi.kml", "LocusTestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPath(true);
 		multipartDto.setPath(newPath);
@@ -624,5 +609,4 @@ class XmlHandlerTest {
 						  "\t</ExtendedData>"))
 		);
 	}
-	
 }

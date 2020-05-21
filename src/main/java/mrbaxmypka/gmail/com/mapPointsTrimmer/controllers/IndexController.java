@@ -18,12 +18,6 @@ import java.util.Arrays;
 @Controller
 public class IndexController {
 	
-	@Autowired
-	private MessageSource messageSource;
-	
-	@Autowired
-	private Environment environment;
-	
 	@Value("${trimmer.maxFileSizeMb}")
 	private Integer maxFileSizeMb;
 	

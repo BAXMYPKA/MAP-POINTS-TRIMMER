@@ -1,13 +1,13 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -286,10 +286,80 @@ class HtmlHandlerTest {
 		
 		//THEN
 		
-		Assertions.assertFalse(processedKml.contains("width=\"330px\""));
-		Assertions.assertTrue(processedKml.contains("width=\"0px\""));
+		assertFalse(processedKml.contains("width=\"330px\""));
+		assertTrue(processedKml.contains("width=\"0px\""));
 	}
 	
+	@Test
+	public void setPreviewSize_Should_Return_Cleared_Single_Table_With_Earliest_DateTime_And_Full_Descriptions() {
+		//"Set preview size" option forces clearing outdated descriptions and rearrange the html structure
+		//so that to place the images within <!-- desc_user:start\end --> comments
+		//as Locus shows inner content only within them.
+		
+		//GIVEN
+		//The real placemark named "Плотина"
+		String outdatedDescription = "<!-- desc_gen:start -->\n" +
+			"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
+			"<!-- desc_user:start -->\n" +
+			"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"/storage/emulated/0/Locus/data/media/photo/_1370227813151.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/_1370227813151.jpg\" width=\"330px\" align=\"center\"></a></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">170°</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3.0 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2013-06-05 08:27:14</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-04-28 15:35:07</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-05-10 16:33:59</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-03 14:39:11</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-07 17:25:15</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-07-18 17:23:19</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-08-10 13:33:16</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-09-18 16:16:45</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			"<!-- desc_user:end -->\n" +
+			"</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			"<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", outdatedDescription.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(750);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processCdata(outdatedDescription, multipartDto);
+		
+		//THEN contains only the earliest date of creation
+		assertAll(
+			() -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
+			() -> assertTrue(processedHtml.contains("<!-- desc_user:end -->")),
+			() -> assertTrue(processedHtml.contains("2013-06-05 08:27:14"))
+		);
+		
+		assertAll(
+			() -> assertFalse(processedHtml.contains("2014-05-10 16:33:59")),
+			() -> assertFalse(processedHtml.contains("2014-06-03 14:39:11")),
+			() -> assertFalse(processedHtml.contains("2014-09-18 16:16:45")),
+			() -> assertFalse(processedHtml.contains("2014-11-21 00:27:30"))
+		);
+		//Description points have to be inserted without dublicates
+		Pattern patternAltitude = Pattern.compile("177 m", Pattern.MULTILINE);
+		Pattern patternAzimuth = Pattern.compile("170°", Pattern.MULTILINE);
+		Pattern patternPrecision = Pattern.compile("3.0 m", Pattern.MULTILINE);
+		Matcher matcherAlt = patternAltitude.matcher(processedHtml);
+		Matcher matcherAzm = patternAzimuth.matcher(processedHtml);
+		Matcher matcherPre = patternPrecision.matcher(processedHtml);
+		
+		assertAll(
+			() -> assertEquals(1, matcherAlt.results().count()),
+			() -> assertEquals(1, matcherAzm.results().count()),
+			() -> assertEquals(1, matcherPre.results().count())
+		);
+	}
 	
 	@Test
 	public void set_Relative_Path_Should_Set_Relative_Path_Type() {
@@ -438,9 +508,9 @@ class HtmlHandlerTest {
 		
 		//THEN
 		//Doesn't contain new strings
-		Assertions.assertFalse(Pattern.matches(".*\\n.*", processedHtml));
+		assertFalse(Pattern.matches(".*\\n.*", processedHtml));
 		//Doesn't contain 2 or more whitespaces in a row
-		Assertions.assertFalse(Pattern.matches(".*\\s{2,}.*", processedHtml));
+		assertFalse(Pattern.matches(".*\\s{2,}.*", processedHtml));
 	}
 	
 	@Test
@@ -459,77 +529,15 @@ class HtmlHandlerTest {
 			() -> assertFalse(processedHtml.contains("2014-11-21 00:27:31"))
 		);
 		
-		Assertions.assertTrue(processedHtml.contains("2014-07-06 13:20:39"));
+		assertTrue(processedHtml.contains("2014-07-06 13:20:39"));
 		
-		Assertions.assertTrue(processedHtml.contains("<td align=\"center\" valign=\"center\">175 m</td>"));
+		assertTrue(processedHtml.contains("<td align=\"center\" valign=\"center\">175 m</td>"));
 		
 		assertAll(
 			() -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
 			() -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
 		);
 		assertTrue(processedHtml.contains("<!-- desc_user:start -->User description within comments"));
-	}
-	
-	@Test
-	public void clearDescriptions_Should_Return_Single_Table_With_Earliest_DateTimes_And_Full_Descriptions2() {
-		//GIVEN
-		//Реальная точка "Плотина"
-		String outdatedDescription = "<!-- desc_gen:start -->\n" +
-			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
-			  "<!-- desc_user:start -->\n" +
-			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"/storage/emulated/0/Locus/data/media/photo/_1370227813151.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/_1370227813151.jpg\" width=\"330px\" align=\"center\"></a></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">170°</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3.0 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2013-06-05 08:27:14</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-04-28 15:35:07</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-05-10 16:33:59</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-03 14:39:11</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-07 17:25:15</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-07-18 17:23:19</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-08-10 13:33:16</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-09-18 16:16:45</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
-			  "<!-- desc_user:end -->\n" +
-			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">177 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
-			  "<!-- desc_gen:end -->";
-		MultipartFile multipartFile = new MockMultipartFile("html", outdatedDescription.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setAsAttachmentInLocus(true);
-		multipartDto.setSetPreviewSize(true);
-		multipartDto.setPreviewSize(750);
-//		multipartDto.setClearOutdatedDescriptions(true);
-		
-		//WHEN
-		String processedHtml = htmlHandler.processCdata(html, multipartDto);
-		System.out.println(processedHtml);
-		//THEN contains only the earliest date of creation
-/*
-		assertAll(
-			  () -> assertFalse(processedHtml.contains("2014-07-18 17:23:20")),
-			  () -> assertFalse(processedHtml.contains("2014-08-10 13:33:17")),
-			  () -> assertFalse(processedHtml.contains("2014-09-18 16:16:45")),
-			  () -> assertFalse(processedHtml.contains("2014-11-21 00:27:31"))
-		);
-		
-		Assertions.assertTrue(processedHtml.contains("2014-07-06 13:20:39"));
-		
-		Assertions.assertTrue(processedHtml.contains("<td align=\"center\" valign=\"center\">175 m</td>"));
-		
-		assertAll(
-			  () -> assertTrue(processedHtml.contains("<!-- desc_user:start -->")),
-			  () -> assertTrue(processedHtml.contains("<!-- desc_user:end -->"))
-		);
-		assertTrue(processedHtml.contains("<!-- desc_user:start -->User description within comments"));
-*/
 	}
 	
 	@Test
@@ -606,10 +614,4 @@ class HtmlHandlerTest {
 			() -> assertTrue(processedHtml.contains("></a>"))
 		);
 	}
-	
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 }

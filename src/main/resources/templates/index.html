@@ -62,7 +62,7 @@
 	<main class="mainBody">
 		
 		<h2 th:text="#{html.h2.howToConvert}" class="h2">
-			How to properly trim and process your custom Points if Interest (POI) with photos
+			How to properly trim and process your custom Points of Interest (POI) with photos
 		</h2>
 		
 		
@@ -71,8 +71,6 @@
 			<section class="article__section" th:utext="#{html.article.section.howToUse}">
 				How properly import and export POIs from Locus to Google Earth (and vise versa) application description.
 			</section>
-			
-			<!--			<a href="" id="openSection" class="article__open" th:title="#{html.text.open}">+</a>-->
 			
 			<section id="closableSection" class="article__section article__section_closed"
 					 th:utext="#{html.article.section.scenarios}">
@@ -94,8 +92,8 @@
 		
 		</div>
 		
-		<form class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
-			  th:action="@{/poi}" name="poiFile" id="poiFile">
+		<form id="poiFile" class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
+			  th:action="@{/poi}" name="poiFile">
 			<label for="locusFile" th:text="#{html.label.loadPoi}" class="loadForm__label">
 				Load custom points file
 			</label>
@@ -180,8 +178,6 @@
 					   title="Windows 7/10 default path to the installed Google Earth Pro's saved places"
 					   th:placeholder="#{html.placeholder.input.defaultPath}"
 					   placeholder="C:\Users\%username%\AppData\LocalLow\Google\GoogleEarth\files">
-<!--					   th:value="#{html.placeholder.input.defaultPath}"-->
-<!--					   value="C:\Users\%username%\AppData\LocalLow\Google\GoogleEarth\files">-->
 				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.path}">?</div>
 				<br>
 			</fieldset>

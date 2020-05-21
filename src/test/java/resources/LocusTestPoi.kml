@@ -2,7 +2,7 @@
 <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2"
 xmlns:atom="http://www.w3.org/2005/Atom">
 <Document>
-	<name>Избранное_Locus17.04.2020</name>
+	<name>Locus17.04.2020</name>
 	<atom:author><atom:name>Locus (Android)</atom:name></atom:author>
 	<Style id="file:///sdcard/Locus/cache/images/1571471453728">
 		<IconStyle>

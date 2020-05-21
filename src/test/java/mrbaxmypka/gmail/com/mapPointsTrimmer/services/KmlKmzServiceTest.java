@@ -11,6 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -57,7 +58,7 @@ class KmlKmzServiceTest {
 	
 	/**
 	 * In reality a temporary file has to be deleted by
-	 * {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.ShutdownController#shutdownApp(Model, Locale)}
+	 * {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.ShutdownController#shutdownApp(Model, RedirectAttributes, Locale)}
 	 * when called. That controller obtains the {@link Path} by {@link KmlKmzService#getTempKmlFile()} and deletes it
 	 * in same manner.
 	 */
