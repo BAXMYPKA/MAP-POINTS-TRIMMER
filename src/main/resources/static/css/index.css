@@ -261,7 +261,7 @@ input[type=radio] {
 	right: 0;
 	z-index: -1;
 	opacity: 0.3;
-	background: url("../img/google-earth-locus.jpg");
+	background: url("../img/earth-hemisphere.jpg");
 	background-size: cover;
 }
 

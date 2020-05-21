@@ -22,10 +22,8 @@
 	
 	<header class="mainHeader">
 		
-		<!--		<a href="index.html" th:href="@{/}" title="Main page" class="mainHeader__logoA">-->
 		<img src="../static/img/MapPointsTrimmerLogo2.png" th:src="@{/img/MapPointsTrimmerLogo2.png}" alt="logo"
 			 class="mainHeader__logoImg">
-		<!--		</a>-->
 		
 		<div class="nameHeaderGroup">
 			
@@ -44,17 +42,16 @@
 		<div class="rightHeaderGroup">
 			
 			<select class="rightHeaderGroup__langSelector" onchange="location = this.value">
-				<option th:text="#{html.option.lang}">Language...</option>
+				<option th:text="#{html.header.option.lang}">Language...</option>
 				<option th:value="@{/(lang=en)}">EN</option>
 				<option th:value="@{/(lang=ru)}">RU</option>
 			</select>
-			<!--			<a class="rightHeaderGroup__shutdownButtonOn">-->
 			<img src="../static/img/turnOffBtn.png" alt="SHUTDOWN" class="rightHeaderGroup__shutdownButtonOn_img"
 				 th:alt="#{html.text.shutdown}" th:title="#{html.text.shutdown}"
 				 th:src="@{/img/turnOffBtn.png}"
 				 th:class="${#request.getAttribute('shutdownBtnClass')} != null ?
 				  ${#request.getAttribute('shutdownBtnClass')} : 'rightHeaderGroup__shutdownButtonOn_img'">
-			<!--			</a>-->
+		
 		</div>
 	
 	</header>
@@ -68,12 +65,12 @@
 		
 		<article class="article">
 			
-			<section class="article__section" th:utext="#{html.article.section.howToUse}">
+			<section class="article__section" th:utext="#{commonMessages.article.howToUse}">
 				How properly import and export POIs from Locus to Google Earth (and vise versa) application description.
 			</section>
 			
 			<section id="closableSection" class="article__section article__section_closed"
-					 th:utext="#{html.article.section.scenarios}">
+					 th:utext="#{commonMessages.article.scenarios}">
 				Typical scenarios...
 			</section>
 		
@@ -83,7 +80,8 @@
 			 th:class="${userMessage} ? 'userMessage' : (${#request.getParameter('userMessage')} ? 'userMessage' : 'userMessage.hidden')">
 			
 			<span th:utext="${userMessage} ? ${userMessage} : ''"></span>
-			<span th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
+			<span
+				th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
 			<span class="userMessage__close" title="Close"
 				  th:title="#{html.title.close}"
 				  th:if="${userMessage != null || #request.getParameter('userMessage') != null}">
@@ -97,7 +95,9 @@
 			<label for="locusFile" th:text="#{html.label.loadPoi}" class="loadForm__label">
 				Load custom points file
 			</label>
-			<div class="interrogation" title="Description" th:title="#{html.title.interrogation.pointsFile}">?</div>
+			<div class="interrogation" title="Description"
+				 th:title="#{commonMessages.interrogationAsDescription.pointsFile}">?
+			</div>
 			<br>
 			<input id="locusFile" type="file" accept=".kmz, .kml" class="inputButton" name="multipartFile"
 				   required autofocus>
@@ -109,21 +109,21 @@
 			</label>
 			
 			<fieldset id="fieldSetMain" class="loadForm loadForm__fieldSet">
-				<!--				<input id="validateXml" name="validateXml" type="checkbox">-->
-				<!--				<label for="validateXml" th:text="#{html.label.validateXml}">Severe validation check</label>-->
-				<!--				<div class="interrogation" title="Description" >?</div>-->
-				<!--				<br>-->
+				
 				<input id="trimXml" name="trimXml" type="checkbox">
 				<label for="trimXml" th:text="#{html.label.trimXml}" class="loadForm__label">
 					Trim whitespaces in xml markup to compress
 				</label>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.trimXml}">?</div>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.trimXml}">?
+				</div>
 				<br>
 				<input id="trimDescriptions" name="trimDescriptions" type="checkbox">
 				<label for="trimDescriptions" class="loadForm__label" th:text="#{html.label.trimDescriptions}">
 					Trim whitespaces in user descriptions to compress
 				</label>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.trimDescription}">
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.trimDescription}">
 					?
 				</div>
 				<br>
@@ -131,7 +131,8 @@
 				<label for="setPreviewSize" class="loadForm__label" th:text="#{html.label.previewSize}">
 					Set photos preview size
 				</label>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPhotosPreview}">
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.setPhotosPreview}">
 					?
 				</div>
 				<br>
@@ -143,14 +144,17 @@
 				<label for="setPath" class="loadForm__label" th:text="#{html.input.setPath}">
 					Set paths to all image files in map points
 				</label>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.setPath}">?</div>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.setPath}">?
+				</div>
 				<br>
 				<input type="radio" name="pathType" id="relativePath" value="relative" checked disabled>
 				<label for="relativePath" class="loadForm__label loadForm__label_subSelectLabel"
 					   th:text="#{html.text.relativePath}">
 					Relative path
 				</label>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.relativePath}">
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.relativePath}">
 					?
 				</div>
 				<br>
@@ -159,7 +163,8 @@
 					   th:text="#{html.text.absolutePath}">
 					Absolute path
 				</label>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.absolutePath}">
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.absolutePath}">
 					?
 				</div>
 				<br>
@@ -168,7 +173,8 @@
 					   th:text="#{html.text.webPath}">
 					WEB path
 				</label>
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.webPath}">
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.webPath}">
 					?
 				</div>
 				<br>
@@ -178,7 +184,9 @@
 					   title="Windows 7/10 default path to the installed Google Earth Pro's saved places"
 					   th:placeholder="#{html.placeholder.input.defaultPath}"
 					   placeholder="C:\Users\%username%\AppData\LocalLow\Google\GoogleEarth\files">
-				<div class="interrogation" title="Description" th:title="#{html.title.interrogation.path}">?</div>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.path}">?
+				</div>
 				<br>
 			</fieldset>
 			<br>
@@ -195,7 +203,7 @@
 					Add as attachments in Locus Pro
 				</label>
 				<div class="interrogation" title="Description"
-					 th:title="#{html.title.interrogation.asAttachmentInLocus}">
+					 th:title="#{commonMessages.interrogationAsDescription.asAttachmentInLocus}">
 					?
 				</div>
 				<br>
@@ -205,7 +213,7 @@
 					Clear outdated POIs descriptions
 				</label>
 				<div class="interrogation" title="Description"
-					 th:title="#{html.title.interrogation.trimOutdatedPoiDesc}">?
+					 th:title="#{commonMessages.interrogationAsDescription.trimOutdatedPoiDesc}">?
 				</div>
 				<br>
 			
@@ -240,7 +248,7 @@
 	
 	</main>
 	
-	<article class="articleAbout" th:utext="#{html.article.about}" th:title="#{html.title.close}" title="Close"
+	<article class="articleAbout" th:utext="#{commonMessages.about}" th:title="#{html.title.close}" title="Close"
 			 style="display: none">
 		About application text.
 	</article>
@@ -257,7 +265,7 @@
 					</a>
 				</li>
 				<li title="Email">
-					<a href="mailto:mrbaxmypka@gmail.com" class="mainFooter__item_smaller">Email</a>
+					<a href="mailto:mrbaxmypka@yandex.ru" class="mainFooter__item_smaller">Email</a>
 				</li>
 				<li class="mainFooter__item_noStyle" title="Location" th:title="#{html.title.footer.location}">
 					RU, Moscow

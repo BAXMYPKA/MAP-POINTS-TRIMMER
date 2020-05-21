@@ -58,12 +58,6 @@ public class XmlHandler {
 		List<String> imagesFromDescription = new ArrayList<>();
 		LinkedList<XMLEvent> extendedDataEvents = new LinkedList<>();
 		
-/*
-		if (multipartDto.isValidateXml()) {
-			Document document = getDocument(multipartDto.getMultipartFile().getInputStream());
-			validateXml(document);
-		}
-*/
 		//To skip the whole processing if nothing is set
 		if (!multipartDto.isSetPath() &&
 			  !multipartDto.isTrimDescriptions() &&
@@ -98,6 +92,9 @@ public class XmlHandler {
 						}
 						writeXmlEvent(multipartDto, descriptionTextEvent);
 						break;
+					}
+					if (startElement.getName().getLocalPart().equals("ExtendedData")) {
+						//Process lc: prefix
 					}
 					if (multipartDto.isAsAttachmentInLocus() && startElement.getName().getLocalPart().equals("ExtendedData")) {
 						extendedDataEvents.clear();//To start collection new <ExtendedData> inner xml events
@@ -268,6 +265,10 @@ public class XmlHandler {
 		return eventFactory.createNamespace("lc", "http://www.locusmap.eu");
 	}
 	
+	private void checkLcPrefixForLocusmapNamespace(StartElement extendedData, XMLEventReader eventReader) {
+		//TODO: to check
+	}
+	
 	/**
 	 * The first temporary condition checks {@code '\\s*>\\s*'} regexp as Locus may spread those signs occasionally
 	 * (especially after {@code <ExtendedData> tag}). So
@@ -330,13 +331,5 @@ public class XmlHandler {
 			processedHtmlCdata = "\n" + processedHtmlCdata.concat("\n");
 		}
 		return processedHtmlCdata;
-	}
-	
-	private void validateXml(Document document) throws SAXException, IOException {
-		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema = schemaFactory.newSchema(
-			  new File("src/main/resources/static/xsd/kml-2.2.0/ogckml22.xsd"));
-		Validator validator = schema.newValidator();
-		validator.validate(new DOMSource(document));
 	}
 }
