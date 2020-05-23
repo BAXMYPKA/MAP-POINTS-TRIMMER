@@ -4,20 +4,14 @@ import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.*;
 import javax.xml.stream.events.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,13 +37,17 @@ public class XmlHandler {
 	 * CDATA[[]] as an HTML markup.
 	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
 	 */
-	public String processKml(MultipartDto multipartDto)
-		  throws XMLStreamException, IOException, ParserConfigurationException, SAXException {
+	public String processKml(MultipartDto multipartDto)	throws XMLStreamException, IOException {
+		
+		InputStream kmlInputStream = stupidNamespaceFixMethod(multipartDto.getMultipartFile().getInputStream());
 		
 		StringWriter stringWriter = new StringWriter();
 		
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-		XMLEventReader eventReader = inputFactory.createXMLEventReader(multipartDto.getMultipartFile().getInputStream());
+		XMLEventReader eventReader =
+			inputFactory.createXMLEventReader(kmlInputStream);
+//		XMLEventReader eventReader = inputFactory.createXMLEventReader(multipartDto.getMultipartFile().getInputStream());
+		
 		
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		eventFactory = XMLEventFactory.newInstance();
@@ -60,11 +58,11 @@ public class XmlHandler {
 		
 		//To skip the whole processing if nothing is set
 		if (!multipartDto.isSetPath() &&
-			  !multipartDto.isTrimDescriptions() &&
-			  !multipartDto.isSetPreviewSize() &&
-			  !multipartDto.isClearOutdatedDescriptions() &&
-			  !multipartDto.isTrimXml() &&
-			  !multipartDto.isAsAttachmentInLocus()) {
+			!multipartDto.isTrimDescriptions() &&
+			!multipartDto.isSetPreviewSize() &&
+			!multipartDto.isClearOutdatedDescriptions() &&
+			!multipartDto.isTrimXml() &&
+			!multipartDto.isAsAttachmentInLocus()) {
 			return new String(multipartDto.getMultipartFile().getBytes());
 		}
 		while (eventReader.hasNext()) {
@@ -84,17 +82,14 @@ public class XmlHandler {
 					if (startElement.getName().getLocalPart().equals("description")) {
 						writeXmlEvent(multipartDto, event);
 						XMLEvent descriptionTextEvent =
-							  processDescriptionText(eventReader.nextEvent().asCharacters(), multipartDto);
+							processDescriptionText(eventReader.nextEvent().asCharacters(), multipartDto);
 						if (multipartDto.isAsAttachmentInLocus()) {
 							imagesFromDescription.clear(); //To prepare for the images from a new description
 							imagesFromDescription.addAll(
-								  htmlHandler.getAllImagesFromDescription(descriptionTextEvent.asCharacters().getData()));
+								htmlHandler.getAllImagesFromDescription(descriptionTextEvent.asCharacters().getData()));
 						}
 						writeXmlEvent(multipartDto, descriptionTextEvent);
 						break;
-					}
-					if (startElement.getName().getLocalPart().equals("ExtendedData")) {
-						//Process lc: prefix
 					}
 					if (multipartDto.isAsAttachmentInLocus() && startElement.getName().getLocalPart().equals("ExtendedData")) {
 						extendedDataEvents.clear();//To start collection new <ExtendedData> inner xml events
@@ -115,13 +110,14 @@ public class XmlHandler {
 				case XMLEvent.END_ELEMENT:
 					EndElement endElement = event.asEndElement();
 					if (multipartDto.isAsAttachmentInLocus() && endElement.getName().getLocalPart().equals("Placemark")) {
-						List<XMLEvent> extendedData = processLocusAttachments(imagesFromDescription, extendedDataEvents);
+						List<XMLEvent> extendedData = processExtendedData(
+							imagesFromDescription, extendedDataEvents, multipartDto);
 						writeXmlEvent(multipartDto, extendedData.toArray(XMLEvent[]::new));
 						extendedDataEvents.clear();//To prepare for a new <ExtendedData> events
 					}
 					writeXmlEvent(multipartDto, event);
 					break;
-				
+					
 				default:
 					writeXmlEvent(multipartDto, event);
 			}
@@ -129,11 +125,20 @@ public class XmlHandler {
 		return stringWriter.toString();
 	}
 	
-	private Document getDocument(InputStream kmlInputStream)
-		  throws ParserConfigurationException, IOException, SAXException {
-		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document kmlDocument = documentBuilder.parse(kmlInputStream);
-		return kmlDocument;
+	private InputStream stupidNamespaceFixMethod(InputStream kmlInputStream) throws IOException {
+		//A really stupid quickfix for GoogleEarth reproducing <ExtendedData> without Locus specific prefix "lc"
+		//with corresponding namespace for the following <lc:attachments> tags
+		String kml = new String(kmlInputStream.readAllBytes(), StandardCharsets.UTF_8);
+		if (kml.contains("<lc:attachment>") && !kml.contains("<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">")) {
+			int firstHeaderIndex = kml.indexOf("<kml");
+			int lastHeaderIndex = kml.indexOf(">", firstHeaderIndex);
+			String header = kml.substring(firstHeaderIndex, lastHeaderIndex+1);
+			if (!header.contains("xmlns:lc=\"http://www.locusmap.eu\"")) {
+				String newHeader = header.replace(">", " xmlns:lc=\"http://www.locusmap.eu\">\n");
+				kml = kml.replace(header, newHeader);
+			}
+		}
+		return new ByteArrayInputStream(kml.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	private void writeXmlEvent(MultipartDto multipartDto, XMLEvent... event) throws XMLStreamException {
@@ -142,6 +147,21 @@ public class XmlHandler {
 				continue;
 			}
 			eventWriter.add(ev);
+		}
+	}
+	
+	private List<XMLEvent> processExtendedData(
+		List<String> imgSrcFromDescription, List<XMLEvent> extendedDataEvents, MultipartDto multipartDto) {
+		//If no need to add attachments it checks <ExtendedData> correct namespace for <lc:attachments> prefixes
+		if (!multipartDto.isAsAttachmentInLocus()) {
+			extendedDataEvents.stream().filter(event -> event.isStartElement() &&
+				event.asStartElement().getName().getLocalPart().equals("attachments") &&
+				event.asStartElement().getName().getPrefix().equals("lc"))
+				.findAny()
+				.ifPresent(event -> addLcPrefixForLocusmapNamespace(extendedDataEvents));
+			return extendedDataEvents;
+		} else {
+			return processLocusAttachments(imgSrcFromDescription, extendedDataEvents);
 		}
 	}
 	
@@ -173,24 +193,24 @@ public class XmlHandler {
 		if (!extendedDataEvents.isEmpty()) {
 			addLcPrefixForLocusmapNamespace(extendedDataEvents);
 			extendedDataEvents = extendedDataEvents.stream()
-				  .map(extendedEvent -> {
-					  if (!extendedEvent.isCharacters() || extendedEvent.asCharacters().isWhiteSpace()) {
-						  return extendedEvent;
-					  }
-					  String eventFilename = htmlHandler.getFileName(extendedEvent.asCharacters().getData());
-					  
-					  Iterator<String> iterator = imgSrcFromDescription.iterator();
-					  while (iterator.hasNext()) {
-						  String imgSrc = iterator.next();
-						  if (htmlHandler.getFileName(imgSrc).equals(eventFilename)) {
-							  extendedEvent = eventFactory.createCharacters(imgSrc);
-							  iterator.remove();
-							  break;
-						  }
-					  }
-					  return extendedEvent;
-				  })
-				  .collect(Collectors.toList());
+				.map(extendedEvent -> {
+					if (!extendedEvent.isCharacters() || extendedEvent.asCharacters().isWhiteSpace()) {
+						return extendedEvent;
+					}
+					String eventFilename = htmlHandler.getFileName(extendedEvent.asCharacters().getData());
+					
+					Iterator<String> iterator = imgSrcFromDescription.iterator();
+					while (iterator.hasNext()) {
+						String imgSrc = iterator.next();
+						if (htmlHandler.getFileName(imgSrc).equals(eventFilename)) {
+							extendedEvent = eventFactory.createCharacters(imgSrc);
+							iterator.remove();
+							break;
+						}
+					}
+					return extendedEvent;
+				})
+				.collect(Collectors.toList());
 			//If not all the images from Description are attached we create and add new <lc:attachment>'s
 			if (!imgSrcFromDescription.isEmpty()) {
 				List<XMLEvent> xmlEventList = getImagesSrcAsLcAttachments(imgSrcFromDescription);
@@ -212,11 +232,11 @@ public class XmlHandler {
 		List<XMLEvent> lcAttachments = new ArrayList<>();
 		imagesToAttach.forEach(img -> {
 			lcAttachments.add(
-				  eventFactory.createStartElement("lc", "http://www.locusmap.eu", "attachment"));
+				eventFactory.createStartElement("lc", "http://www.locusmap.eu", "attachment"));
 			lcAttachments
-				  .add(eventFactory.createCharacters(img));
+				.add(eventFactory.createCharacters(img));
 			lcAttachments
-				  .add(eventFactory.createEndElement("lc", "http://www.locusmap.eu", "attachment"));
+				.add(eventFactory.createEndElement("lc", "http://www.locusmap.eu", "attachment"));
 		});
 		return lcAttachments;
 	}
@@ -229,9 +249,9 @@ public class XmlHandler {
 	 */
 	private List<XMLEvent> getNewExtendedData(List<XMLEvent> xmlEventsToBeInside) {
 		XMLEvent extendedDataStart = eventFactory.createStartElement(
-					"", "http://www.locusmap.eu", "ExtendedData");
-		XMLEvent extendedDataEnd =  eventFactory.createEndElement(
-			  "", "", "ExtendedData");
+			"", "http://www.locusmap.eu", "ExtendedData");
+		XMLEvent extendedDataEnd = eventFactory.createEndElement(
+			"", "", "ExtendedData");
 		List<XMLEvent> extendedData = new LinkedList<>(Arrays.asList(extendedDataStart, getLcLocusNamespace(), extendedDataEnd));
 		extendedData.addAll(2, xmlEventsToBeInside);
 		return extendedData;
@@ -265,10 +285,6 @@ public class XmlHandler {
 		return eventFactory.createNamespace("lc", "http://www.locusmap.eu");
 	}
 	
-	private void checkLcPrefixForLocusmapNamespace(StartElement extendedData, XMLEventReader eventReader) {
-		//TODO: to check
-	}
-	
 	/**
 	 * The first temporary condition checks {@code '\\s*>\\s*'} regexp as Locus may spread those signs occasionally
 	 * (especially after {@code <ExtendedData> tag}). So
@@ -281,8 +297,8 @@ public class XmlHandler {
 		
 		if (characters.isWhiteSpace() || characters.getData().matches("\\s*>\\s*")) {
 			return multipartDto.isTrimXml() ?
-				  eventFactory.createIgnorableSpace("") :
-				  eventFactory.createCharacters(characters.getData());
+				eventFactory.createIgnorableSpace("") :
+				eventFactory.createCharacters(characters.getData());
 		}
 		//Obtain an inner CDATA text to treat as HTML elements or plain text
 		String processedHtmlCdata = htmlHandler.processCdata(characters.getData(), multipartDto);
@@ -305,7 +321,7 @@ public class XmlHandler {
 			return eventFactory.createCharacters(oldHrefWithFilename);
 		}
 		String newHrefWithOldFilename = htmlHandler.getNewHrefWithOldFilename(
-			  oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
+			oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
 		return eventFactory.createCharacters(newHrefWithOldFilename);
 	}
 	

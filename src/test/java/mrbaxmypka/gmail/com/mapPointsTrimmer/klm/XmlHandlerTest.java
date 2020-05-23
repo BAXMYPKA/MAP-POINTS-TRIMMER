@@ -1,8 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +9,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -336,7 +333,7 @@ class XmlHandlerTest {
 		
 		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
-
+		
 		//THEN xml tags are without whitespaces but CDATA starts and ends with them
 		
 		assertAll(
@@ -362,7 +359,7 @@ class XmlHandlerTest {
 	}
 	
 	@Test
-	public void locusAsAttachment_Should_Create_ExtendedData_lcAttachment_With_Src_From_Description_One()
+	public void locusAsAttachment_Should_Create_ExtendedData_lcAttachment_With_Src_From_Description()
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		//GIVEN kml without <ExtendedData>
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -416,7 +413,7 @@ class XmlHandlerTest {
 	}
 	
 	@Test
-	public void locusAsAttachment_Should_Just_Replace_Existing_Src_From_Description_One()
+	public void locusAsAttachment_Should_Just_Replace_Existing_Src_From_Description()
 		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		//GIVEN with existing <ExtendedData>
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -537,57 +534,57 @@ class XmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_With_2_Placemarks_Should_Add_More_Attachments_Src_From_Description_To_Each_Without_Dublicates()
-		  throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
 		//GIVEN For 2 Placemarks in a row with existing <ExtendedData> and additional images in description
 		String locus = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-			  "<Document>\n" +
-			  "\t<name>FullTestKmzExport01</name>\n" +
-			  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>"+
-			  "<Placemark>\n" +
-			  "\t<name>2020-05-11 13:03:33</name>\n" +
-			  "\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"files/p__20200511_130333.jpg\" target=\"_blank\"><img src=\"files/p__20200511_130333.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"></a><br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">166 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Скорость</b></small></td><td align=\"center\" valign=\"center\">12,6 km/h</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">327 °</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">10 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2020-05-11 13:03:45</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
-			  "<!-- desc_gen:end -->]]></description>\n" +
-			  "\t<styleUrl>#file:///sdcard/Locus/cache/images/1589191424250</styleUrl>\n" +
-			  "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-			  "\t\t<lc:attachment>files/p__20200511_130333.jpg</lc:attachment>\n" +
-			  "\t</ExtendedData>\n" +
-			  ">\t<Point>\n" +
-			  "\t\t<coordinates>37.786342,56.039063,166.00</coordinates>\n" +
-			  "\t</Point>\n" +
-			  "\t<gx:TimeStamp>\n" +
-			  "\t\t<when>2020-05-11T13:03:33Z</when>\n" +
-			  "\t</gx:TimeStamp>\n" +
-			  "</Placemark>\n" +
-			  "<Placemark>\n" +
-			  "\t<name>2020-05-11 12:53:32</name>\n" +
-			  "\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"files/p__20200511_125332.jpg\" target=\"_blank\"><img src=\"files/p__20200511_125332.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"></a><br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">159 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Скорость</b></small></td><td align=\"center\" valign=\"center\">1,8 km/h</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">236 °</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">10 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2020-05-11 12:53:50</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
-			  "<!-- desc_gen:end -->]]></description>\n" +
-			  "\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-			  "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-			  "\t\t<lc:attachment>files/p__20200511_125332.jpg</lc:attachment>\n" +
-			  "\t</ExtendedData>\n" +
-			  ">\t<Point>\n" +
-			  "\t\t<coordinates>37.809237,56.039861,159.00</coordinates>\n" +
-			  "\t</Point>\n" +
-			  "\t<gx:TimeStamp>\n" +
-			  "\t\t<when>2020-05-11T12:53:32Z</when>\n" +
-			  "\t</gx:TimeStamp>\n" +
-			  "</Placemark>\n"+
-			  "</Document>\n" +
-			  "</kml>\n";
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"<Document>\n" +
+			"\t<name>FullTestKmzExport01</name>\n" +
+			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>" +
+			"<Placemark>\n" +
+			"\t<name>2020-05-11 13:03:33</name>\n" +
+			"\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+			"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"files/p__20200511_130333.jpg\" target=\"_blank\"><img src=\"files/p__20200511_130333.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"></a><br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">166 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Скорость</b></small></td><td align=\"center\" valign=\"center\">12,6 km/h</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">327 °</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">10 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2020-05-11 13:03:45</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			"<!-- desc_gen:end -->]]></description>\n" +
+			"\t<styleUrl>#file:///sdcard/Locus/cache/images/1589191424250</styleUrl>\n" +
+			"\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+			"\t\t<lc:attachment>files/p__20200511_130333.jpg</lc:attachment>\n" +
+			"\t</ExtendedData>\n" +
+			">\t<Point>\n" +
+			"\t\t<coordinates>37.786342,56.039063,166.00</coordinates>\n" +
+			"\t</Point>\n" +
+			"\t<gx:TimeStamp>\n" +
+			"\t\t<when>2020-05-11T13:03:33Z</when>\n" +
+			"\t</gx:TimeStamp>\n" +
+			"</Placemark>\n" +
+			"<Placemark>\n" +
+			"\t<name>2020-05-11 12:53:32</name>\n" +
+			"\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+			"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"files/p__20200511_125332.jpg\" target=\"_blank\"><img src=\"files/p__20200511_125332.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"></a><br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">159 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Скорость</b></small></td><td align=\"center\" valign=\"center\">1,8 km/h</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">236 °</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">10 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2020-05-11 12:53:50</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			"<!-- desc_gen:end -->]]></description>\n" +
+			"\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			"\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+			"\t\t<lc:attachment>files/p__20200511_125332.jpg</lc:attachment>\n" +
+			"\t</ExtendedData>\n" +
+			">\t<Point>\n" +
+			"\t\t<coordinates>37.809237,56.039861,159.00</coordinates>\n" +
+			"\t</Point>\n" +
+			"\t<gx:TimeStamp>\n" +
+			"\t\t<when>2020-05-11T12:53:32Z</when>\n" +
+			"\t</gx:TimeStamp>\n" +
+			"</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>\n";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locus.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setAsAttachmentInLocus(true);
@@ -599,14 +596,85 @@ class XmlHandlerTest {
 		
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(
-			  () -> assertTrue(processedKml.contains(
-					"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-						  "\t\t<lc:attachment>files/p__20200511_130333.jpg</lc:attachment>\n" +
-						  "\t</ExtendedData>")),
-			  () -> assertTrue(processedKml.contains(
-					"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-						  "\t\t<lc:attachment>files/p__20200511_125332.jpg</lc:attachment>\n" +
-						  "\t</ExtendedData>"))
+			() -> assertTrue(processedKml.contains(
+				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+					"\t\t<lc:attachment>files/p__20200511_130333.jpg</lc:attachment>\n" +
+					"\t</ExtendedData>")),
+			() -> assertTrue(processedKml.contains(
+				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+					"\t\t<lc:attachment>files/p__20200511_125332.jpg</lc:attachment>\n" +
+					"\t</ExtendedData>"))
 		);
 	}
+	
+	/**
+	 * Locus Map points with correct tags as
+	 * <ExtendedData xmlns:lc="http://www.locusmap.eu"><lc:attachment>...</lc:attachment></ExtendedData>
+	 * after importing to Google Earth and then exporting from Google Earth back loose xmlns:lc="http://www.locusmap.eu"
+	 * namespace.
+	 * We have to return it back.
+	 */
+	@Test
+	public void header_Should_Be_Added_With_Lc_Locusmap_eu_Namespace_Prefix_If_Contain_Lc_Attachments()
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		//GIVEN with existing <ExtendedData> parent without namespace for "lc" prefix and <lc:attachment> child
+		String googleKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"<Document>\n" +
+			"\t<name>Test POIs from Locus</name>\n" +
+			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			"<Placemark>\n" +
+			"\t<name>A road fork</name>\n" +
+			"\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+			"<table width=\"100%\">\n" +
+			" <tbody>\n" +
+			" <!-- desc_user:start -->\n" +
+			" <font color=\"black\">\n" +
+			"   <tr>\n" +
+			"\t<td width=\"100%\" align=\"center\">" +
+			"\t<a href=\"files/p__20200409_150847.jpg\" target=\"_blank\">" +
+			"<img src=\"files/p__20200409_150847.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"></a>" +
+			"Test place name</td>\n</tr>\n" +
+			"\t Test user description<!-- desc_user:end --> >\n" +
+			" </tbody>\n" +
+			"</table>" +
+			"<!-- desc_gen:end -->]]></description>\n" +
+			"\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			"" +
+			"\t<ExtendedData>\n" +
+			"\t\t<lc:attachment>files/p__20200409_150847.jpg</lc:attachment>\n" +
+			"\t</ExtendedData>\n" +
+			"" +
+			"\t<Point>\n" +
+			"\t\t<coordinates>37.558700,55.919883,0.00</coordinates>\n" +
+			"\t</Point>\n" +
+			"\t<gx:TimeStamp>\n" +
+			"\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+			"\t</gx:TimeStamp>\n" +
+			"</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>\n";
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(640);
+		
+		//WHEN
+		String processedKml = xmlHandler.processKml(multipartDto);
+
+		//THEN <ExtendedData> has to contain "lc" prefix with "locusmap.eu" namespace to support <lc:attachment>
+		// children tags
+		
+		assertAll(
+			() -> assertTrue(processedKml.contains(
+				"xmlns:lc=\"http://www.locusmap.eu\">")),
+			() -> assertTrue(processedKml.contains("<kml xmlns=\"http://www.opengis.net/kml/2.2\" " +
+				"xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:lc=\"http://www.locusmap.eu\">")),
+			() -> assertTrue(processedKml.contains(
+				"<lc:attachment>files/p__20200409_150847.jpg</lc:attachment>")),
+			() -> assertTrue(processedKml.contains("</ExtendedData>"))
+		
+		);
+	}
+	
 }
