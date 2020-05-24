@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -377,8 +379,8 @@ class XmlHandlerTest {
 			" <font color=\"black\">\n" +
 			"   <tr>\n" +
 			"\t<td width=\"100%\" align=\"center\">" +
-			"<a href=\"file:///C:/MyPOI/_1318431492316.jpg\" target=\"_blank\">" +
-			"<img src=\"file:///C:/MyPOI/_1318431492316.jpg\" width=\"330px\" align=\"center\">" +
+			"<a href=\"files/_1318431492316.jpg\" target=\"_blank\">" +
+			"<img src=\"files//_1318431492316.jpg\" width=\"330px\" align=\"center\">" +
 			"</a>Test place name</td>\n</tr>\n" +
 			"\t Test user description<!-- desc_user:end --> >\n" +
 			" </tbody>\n" +
@@ -400,13 +402,13 @@ class XmlHandlerTest {
 		
 		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
-		
+
 		//THEN <ExtendedData xmlns:lc="http://www.locusmap.eu"> has to be created with <lc:attachment>
 		assertAll(
 			() -> assertTrue(processedKml.contains(
 				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">")),
 			() -> assertTrue(processedKml.contains(
-				"<lc:attachment>file:///C:/MyPOI/_1318431492316.jpg</lc:attachment>")),
+				"<lc:attachment>files/_1318431492316.jpg</lc:attachment>")),
 			() -> assertTrue(processedKml.contains(
 				"</ExtendedData>"))
 		);
@@ -460,8 +462,7 @@ class XmlHandlerTest {
 		
 		//THEN <lc:attachments> text has to be replaced from description one
 		assertTrue(processedKml.contains("<ExtendedData xmlns:lc=\"http://www.locusmap.eu\""));//Just a check
-		assertTrue(processedKml.contains("<lc:attachment>file:///C:/MyPOI/_1318431492316.jpg</lc:attachment>"));
-		
+		assertTrue(processedKml.contains("<lc:attachment>C:/MyPOI/_1318431492316.jpg</lc:attachment>"));
 		assertFalse(processedKml.contains("<lc:attachment>files/_1318431492316.jpg</lc:attachment>"));
 	}
 	
@@ -522,7 +523,7 @@ class XmlHandlerTest {
 			() -> assertTrue(processedKml.contains(
 				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\"")),
 			() -> assertTrue(processedKml.contains(
-				"<lc:attachment>file:///C:/MyPOI/_1318431492316.jpg</lc:attachment>")),
+				"<lc:attachment>C:/MyPOI/_1318431492316.jpg</lc:attachment>")),
 			() -> assertTrue(processedKml.contains(
 				"<lc:attachment>files/p__20180523_123601.jpg</lc:attachment>")),
 			() -> assertTrue(processedKml.contains(
@@ -590,6 +591,7 @@ class XmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(640);
+		multipartDto.setPreviewSizeUnit(PreviewSizeUnits.PIXELS);
 		
 		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
@@ -606,6 +608,79 @@ class XmlHandlerTest {
 					"\t</ExtendedData>"))
 		);
 	}
+	
+	@Test
+	public void locusAsAttachment_Should_Contain_Only_Relative_And_Absolute_Type_Of_Href_When_PathTypes_Undefined()
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		//GIVEN with existing <ExtendedData> and additional images in description with various types of path
+		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
+			"xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"<Document>\n" +
+			"\t<name>Test POIs from Locus</name>\n" +
+			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			"<Placemark>\n" +
+			"\t<name>A road fork</name>\n" +
+			"\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+			"<table width=\"100%\">\n" +
+			" <tbody>\n" +
+			" <!-- desc_user:start -->\n" +
+			" <font color=\"black\">\n" +
+			"   <tr>\n" +
+			"\t<td width=\"100%\" align=\"center\">" +
+			"<a href=\"http://my-site/images/_1318431492333.jpg\" target=\"_blank\">" +
+			"<img src=\"http://my-site/images/_1318431492333.jpg\" width=\"330px\" align=\"center\"></a>" +
+			"<a href=\"file:///C:/MyPOI/_1318431492316.jpg\" target=\"_blank\">" +
+			"<img src=\"file:///C:/MyPOI/_1318431492316.jpg\" width=\"330px\" align=\"center\"></a>" +
+			"<a href=\"files/p__20180523_123601.jpg\" target=\"_blank\">" +
+			"<img src=\"files/p__20180523_123601.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"></a>\n" +
+			"\t<a href=\"../POI/files/p__20200409_150847.jpg\" target=\"_blank\">" +
+			"<img src=\"../POI/files/p__20200409_150847.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px " +
+			"white solid;\"></a>" +
+			"Test place name</td>\n</tr>\n" +
+			"\t Test user description<!-- desc_user:end --> >\n" +
+			" </tbody>\n" +
+			"</table>" +
+			"<!-- desc_gen:end -->]]></description>\n" +
+			"\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			"\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+			"\t\t<lc:attachment>files/_1318431492316.jpg</lc:attachment>\n" +
+			"\t</ExtendedData>\n" +
+			"\t<Point>\n" +
+			"\t\t<coordinates>37.558700,55.919883,0.00</coordinates>\n" +
+			"\t</Point>\n" +
+			"\t<gx:TimeStamp>\n" +
+			"\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+			"\t</gx:TimeStamp>\n" +
+			"</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>\n";
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setAsAttachmentInLocus(true);
+		
+		//WHEN
+		String processedKml = xmlHandler.processKml(multipartDto);
+
+		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
+		assertAll(
+			() -> assertTrue(processedKml.contains(
+				"<lc:attachment>C:/MyPOI/_1318431492316.jpg</lc:attachment>")),
+			() -> assertTrue(processedKml.contains(
+				"<lc:attachment>files/p__20180523_123601.jpg</lc:attachment>")),
+			() -> assertTrue(processedKml.contains(
+				"<lc:attachment>../POI/files/p__20200409_150847.jpg</lc:attachment>"))
+		);
+		
+		assertAll(
+			() -> assertFalse(processedKml.contains(
+				"<lc:attachment>http://my-site/images/_1318431492333.jpg</lc:attachment>")),
+			() -> assertFalse(processedKml.contains(
+				"<lc:attachment>file:///C:/MyPOI/_1318431492316.jpg</lc:attachment>")),
+			() -> assertFalse(processedKml.contains(
+				"<lc:attachment>/C:/MyPOI/_1318431492316.jpg</lc:attachment>"))
+		);
+			}
 	
 	/**
 	 * Locus Map points with correct tags as
@@ -661,7 +736,7 @@ class XmlHandlerTest {
 		
 		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
-
+		
 		//THEN <ExtendedData> has to contain "lc" prefix with "locusmap.eu" namespace to support <lc:attachment>
 		// children tags
 		

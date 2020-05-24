@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Element;
@@ -52,8 +53,8 @@ public class HtmlHandler {
 			setPath(parsedHtmlFragment, multipartDto.getPathType(), multipartDto.getPath());
 		}
 		if (multipartDto.isSetPreviewSize()) {
-			Integer previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
-			setPreviewSize(parsedHtmlFragment, previewSize, multipartDto);
+//			Integer previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
+			setPreviewSize(parsedHtmlFragment, multipartDto);
 		}
 		addStartEndComments(parsedHtmlFragment);
 		// MUST be the last treatment in all the conditions chain
@@ -100,9 +101,9 @@ public class HtmlHandler {
 */
 		//A possible User Text Description as TextNode is strictly one of the children.
 		return parsedHtmlFragment.childNodes().stream()
-			  .filter(node -> node instanceof TextNode)
-			  .map(node -> ((TextNode) node).getWholeText())
-			  .collect(Collectors.joining("\n"));
+			.filter(node -> node instanceof TextNode)
+			.map(node -> ((TextNode) node).getWholeText())
+			.collect(Collectors.joining("\n"));
 	}
 	
 	/**
@@ -162,6 +163,27 @@ public class HtmlHandler {
 		return newHrefWithoutFilename.concat(filename);
 	}
 	
+	/**
+	 * Locus Map <lc:attachment></lc:attachment> receives only {@link PathTypes#RELATIVE} or {@link PathTypes#ABSOLUTE}
+	 * without (!) 'file:///' prefix.
+	 *
+	 * @return 1) Locus specific absolute type of path like: '/sdcard/Locus/photos/'
+	 * 2) Relative type of path (starting with '../', '/' or folder name like 'Locus/photos/'
+	 * 3) Empty String if the given href starting with 'www.' or 'http://'
+	 */
+	String getLocusAttachmentAbsoluteHref(String oldHrefAbsoluteTypeWithFilename, MultipartDto multipartDto) {
+		if (oldHrefAbsoluteTypeWithFilename.startsWith("http") || oldHrefAbsoluteTypeWithFilename.startsWith("www")) {
+			return "";
+		}
+		String locusHref = oldHrefAbsoluteTypeWithFilename.trim().replace("file:///", "");
+		
+		if (PathTypes.ABSOLUTE.equals(multipartDto.getPathType()) && !locusHref.startsWith("/")) {
+			locusHref = "/" + locusHref;
+		}//Relative type of path can start from "/" or "..." so we ignore that type
+		locusHref = locusHref.replaceAll("\\\\", "/").replaceAll("//", "/");
+		return locusHref;
+	}
+	
 	private String getNewAbsoluteHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
 		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
 		newHrefWithoutFilename = newHrefWithoutFilename.replaceAll("\\\\", "/");
@@ -185,10 +207,10 @@ public class HtmlHandler {
 	 */
 	String getFileName(String oldHrefWithFilename) {
 		if (!oldHrefWithFilename.contains(".") ||
-			  (!oldHrefWithFilename.contains("/") && !oldHrefWithFilename.contains("\\"))) return "";
+			(!oldHrefWithFilename.contains("/") && !oldHrefWithFilename.contains("\\"))) return "";
 		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/") != -1 ?
-			  oldHrefWithFilename.lastIndexOf("/") :
-			  oldHrefWithFilename.lastIndexOf("\\");
+			oldHrefWithFilename.lastIndexOf("/") :
+			oldHrefWithFilename.lastIndexOf("\\");
 		String filename = oldHrefWithFilename.substring(lastIndexOFSlash + 1);
 		return filename.isBlank() ? "" : filename;
 	}
@@ -202,8 +224,8 @@ public class HtmlHandler {
 			newHrefWithoutFilename = newHrefWithoutFilename.concat("/");
 		}
 		newHrefWithoutFilename = newHrefWithoutFilename
-			  .replaceAll("\\s", "%20")
-			  .replaceAll("\\\\", "/");
+			.replaceAll("\\s", "%20")
+			.replaceAll("\\\\", "/");
 		
 		return newHrefWithoutFilename;
 	}
@@ -219,25 +241,32 @@ public class HtmlHandler {
 	 * So when {@link MultipartDto#isSetPreviewSize() = true} to display it on the screen these comments
 	 * have to embrace all the description.
 	 */
-	private void setPreviewSize(Element parsedHtmlFragment, Integer previewSize, MultipartDto multipartDto) {
-		Elements imgElements = parsedHtmlFragment.select("img[src]");
+	private void setPreviewSize(Element parsedHtmlFragment, MultipartDto multipartDto) {
+		
+		int previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
+		PreviewSizeUnits sizeUnit = multipartDto.getPreviewSizeUnit() != null ?
+			multipartDto.getPreviewSizeUnit() : PreviewSizeUnits.PIXELS;
+		
+		String previewText = previewSize + sizeUnit.getUnit();
+		
+		Elements imgElements = parsedHtmlFragment.select("img");
+//		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		if (imgElements.size() == 0) return;
 		
-		String previewSizeAttr = previewSize.toString() + "px";
 		imgElements.forEach(img -> {
 			if (img.hasAttr("width")) {
-				img.attr("width", previewSizeAttr);
+				img.attr("width", previewText);
 			}
 			if (img.hasAttr("style")) {
-				setPreviewSizeInStyles(img, previewSizeAttr);
+				setPreviewSizeInStyles(img, previewText);
 			}
 		});
 		//No <img> with [src] attribures
 		//Remake imgs into a links if they aren't.
 		imgElements.stream()
-			  .filter(Node::hasParent)
-			  .filter(element -> !element.parent().tagName().equalsIgnoreCase("a"))
-			  .forEach(element -> element.replaceWith(getAElementWithInnerImgElement(element)));
+			.filter(Node::hasParent)
+			.filter(element -> !element.parent().tagName().equalsIgnoreCase("a"))
+			.forEach(element -> element.replaceWith(getAElementWithInnerImgElement(element)));
 		//Finally creates a new User description within <!-- desc_user:start --> ... <!-- desc_user:end -->
 		// with User's text and images inside it.
 		if (!multipartDto.isClearOutdatedDescriptions()) {
@@ -270,8 +299,8 @@ public class HtmlHandler {
 			}
 		});
 		String newStyles = stylesKeyMap.entrySet().stream()
-			  .map(entry -> entry.getKey() + ":" + entry.getValue() + ";")
-			  .collect(Collectors.joining());
+			.map(entry -> entry.getKey() + ":" + entry.getValue() + ";")
+			.collect(Collectors.joining());
 		imgElementWithStyles.attr("style", newStyles);
 	}
 	
@@ -281,7 +310,7 @@ public class HtmlHandler {
 	private String trimDescriptions(Element parsedHtmlFragment) {
 		//Deletes 2 or more whitespaces in a row
 		String trimmedString = parsedHtmlFragment.html()
-			  .replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
+			.replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
 		return trimmedString;
 	}
 	
@@ -344,17 +373,17 @@ public class HtmlHandler {
 		Element newImgElement = new Element(imgElement.tagName());
 		newImgElement.attributes().addAll(imgElement.attributes());
 		return new Element("a").attr("href", src).attr("target", "_blank")
-			  .appendChild(newImgElement);
+			.appendChild(newImgElement);
 	}
 	
 	private Elements getAElementsWithInnerImgElement(Elements imgElements) {
 		return imgElements.stream()
-			  .map(imgElement -> {
-				  String src = imgElement.attr("src");
-				  return new Element("a").attr("href", src).attr("target", "_blank")
-						.appendChild(imgElement);
-			  })
-			  .collect(Collectors.toCollection(Elements::new));
+			.map(imgElement -> {
+				String src = imgElement.attr("src");
+				return new Element("a").attr("href", src).attr("target", "_blank")
+					.appendChild(imgElement);
+			})
+			.collect(Collectors.toCollection(Elements::new));
 	}
 	
 	/**
@@ -369,7 +398,7 @@ public class HtmlHandler {
 	 */
 	private Element createNewHtmlDescription(String userDescription, MultipartDto multipartDto) {
 		Element table = new Element("table")
-			  .attr("width", "100%").attr("style", "color:black");
+			.attr("width", "100%").attr("style", "color:black");
 		table.appendChild(new Element("tbody"));
 		//'setPath' option for photos and any user description texts in Locus have to be within special comments
 		if (multipartDto.isSetPreviewSize() || !userDescription.isBlank()) {
@@ -436,18 +465,18 @@ public class HtmlHandler {
 		
 		for (int i = 0; i < nodesWithinUserDescComments.size(); i++) {
 			if (nodesWithinUserDescComments.get(i) instanceof Comment &&
-				  ((Comment) nodesWithinUserDescComments.get(i)).getData().contains("desc_user:start")) {
+				((Comment) nodesWithinUserDescComments.get(i)).getData().contains("desc_user:start")) {
 				//From here we iterate over further Elements...
 				for (int j = i; j < nodesWithinUserDescComments.size(); j++) {
 					if (nodesWithinUserDescComments.get(j) instanceof TextNode &&
-						  !((TextNode) nodesWithinUserDescComments.get(j)).getWholeText().isBlank()) {
+						!((TextNode) nodesWithinUserDescComments.get(j)).getWholeText().isBlank()) {
 						//Write out all non-blank text data
 						textUserDescription.append(((TextNode) nodesWithinUserDescComments.get(j)).getWholeText());
 						continue;
 					}
 					//... Until find the end marker
 					if (nodesWithinUserDescComments.get(j) instanceof Comment &&
-						  ((Comment) nodesWithinUserDescComments.get(j)).getData().contains("desc_user:end")) {
+						((Comment) nodesWithinUserDescComments.get(j)).getData().contains("desc_user:end")) {
 						return textUserDescription.toString();
 					}
 				}
@@ -467,23 +496,23 @@ public class HtmlHandler {
 		Elements tdElementsWithDescription = htmlElements.select("td");
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		Element tdElementWithMinimumDateTime = tdElementsWithDescription.stream()
-			  .filter(Element::hasText)
-			  .filter(e -> {
-				  try {
-					  LocalDateTime.parse(e.text(), dateTimeFormatter);
-					  return true;
-				  } catch (DateTimeParseException ex) {
-					  return false;
-				  }
-			  })
-			  .min((e1, e2) -> {
-				  LocalDateTime dateTime1 =
-						LocalDateTime.parse(e1.text(), dateTimeFormatter);
-				  LocalDateTime dateTime2 =
-						LocalDateTime.parse(e2.text(), dateTimeFormatter);
-				  return dateTime1.compareTo(dateTime2);
-			  })
-			  .orElse(new Element("empty"));
+			.filter(Element::hasText)
+			.filter(e -> {
+				try {
+					LocalDateTime.parse(e.text(), dateTimeFormatter);
+					return true;
+				} catch (DateTimeParseException ex) {
+					return false;
+				}
+			})
+			.min((e1, e2) -> {
+				LocalDateTime dateTime1 =
+					LocalDateTime.parse(e1.text(), dateTimeFormatter);
+				LocalDateTime dateTime2 =
+					LocalDateTime.parse(e2.text(), dateTimeFormatter);
+				return dateTime1.compareTo(dateTime2);
+			})
+			.orElse(new Element("empty"));
 		if (tdElementWithMinimumDateTime.hasParent()) {
 			//<tr> is the first parent, <tbody> or <table> is the second which contains all the <tr> with descriptions
 			return tdElementWithMinimumDateTime.parent().parent().children();
@@ -515,8 +544,8 @@ public class HtmlHandler {
 			@Override
 			public FilterResult head(Node node, int depth) {
 				if (node instanceof Comment &&
-					  (((Comment) node).getData().contains("desc_gen:start") ||
-							((Comment) node).getData().contains("desc_gen:end"))) {
+					(((Comment) node).getData().contains("desc_gen:start") ||
+						((Comment) node).getData().contains("desc_gen:end"))) {
 					return FilterResult.REMOVE;
 				}
 				return FilterResult.CONTINUE;

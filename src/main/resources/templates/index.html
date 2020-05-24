@@ -11,7 +11,7 @@
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		const maxFileSizeMb = [[${maxFileSizeMb}]];
-		const serverAddress = [[${serverAddress}]];
+		const serverAddress = [[${serverAddress}]]
 		/*]]>*/
 	</script>
 	<title>Map Points Trimmer</title>
@@ -138,7 +138,13 @@
 				<br>
 				<input id="previewSize" name="previewSize" type="number" placeholder="640" value="640"
 					   min="0" max="2440" disabled>
-				<span th:text="#{html.span.px}">px</span>
+				<select id="previewSizeUnits" name="previewSizeUnits">
+					<option value="pixels" selected th:title="#{html.span.px}">px</option>
+					<option value="percent">%</option>
+				</select>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.previewSizeUnits}">?
+				</div>
 				<br>
 				<input id="setPath" name="setPath" type="checkbox">
 				<label for="setPath" class="loadForm__label" th:text="#{html.input.setPath}">

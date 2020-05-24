@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,7 +57,14 @@ public class MultipartDto implements Serializable {
 	/**
 	 * Enables or disables using {@link #previewSize}
 	 */
+	@Nullable
 	private boolean setPreviewSize;
+	
+	/**
+	 * Defines units for images size (percentage or pixels);
+	 * If null, {@link PreviewSizeUnits#PIXELS} will be used
+	 */
+	private PreviewSizeUnits previewSizeUnit;
 	
 	/**
 	 * Attached photos preview size (in width) in pixels
@@ -71,5 +79,9 @@ public class MultipartDto implements Serializable {
 	
 	public void setPathType(@Nullable String pathType) {
 		this.pathType = PathTypes.getByValue(pathType);
+	}
+	
+	public void setPreviewUnit(@Nullable String previewUnit) {
+		this.previewSizeUnit = PreviewSizeUnits.getByTypeName(previewUnit);
 	}
 }

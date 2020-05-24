@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
 
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,19 +38,17 @@ public class XmlHandler {
 	 * CDATA[[]] as an HTML markup.
 	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
 	 */
-	public String processKml(MultipartDto multipartDto)	throws XMLStreamException, IOException {
+	public String processKml(MultipartDto multipartDto) throws XMLStreamException, IOException {
 		
 		InputStream kmlInputStream = stupidNamespaceFixMethod(multipartDto.getMultipartFile().getInputStream());
 		
 		StringWriter stringWriter = new StringWriter();
 		
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-		XMLEventReader eventReader =
-			inputFactory.createXMLEventReader(kmlInputStream);
+		XMLEventReader eventReader = inputFactory.createXMLEventReader(kmlInputStream);
 //		XMLEventReader eventReader = inputFactory.createXMLEventReader(multipartDto.getMultipartFile().getInputStream());
-		
-		
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+		
 		eventFactory = XMLEventFactory.newInstance();
 		eventWriter = outputFactory.createXMLEventWriter(stringWriter);
 		
@@ -117,7 +116,7 @@ public class XmlHandler {
 					}
 					writeXmlEvent(multipartDto, event);
 					break;
-					
+				
 				default:
 					writeXmlEvent(multipartDto, event);
 			}
@@ -132,7 +131,7 @@ public class XmlHandler {
 		if (kml.contains("<lc:attachment>") && !kml.contains("<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">")) {
 			int firstHeaderIndex = kml.indexOf("<kml");
 			int lastHeaderIndex = kml.indexOf(">", firstHeaderIndex);
-			String header = kml.substring(firstHeaderIndex, lastHeaderIndex+1);
+			String header = kml.substring(firstHeaderIndex, lastHeaderIndex + 1);
 			if (!header.contains("xmlns:lc=\"http://www.locusmap.eu\"")) {
 				String newHeader = header.replace(">", " xmlns:lc=\"http://www.locusmap.eu\">\n");
 				kml = kml.replace(header, newHeader);
@@ -161,7 +160,7 @@ public class XmlHandler {
 				.ifPresent(event -> addLcPrefixForLocusmapNamespace(extendedDataEvents));
 			return extendedDataEvents;
 		} else {
-			return processLocusAttachments(imgSrcFromDescription, extendedDataEvents);
+			return processLocusAttachments(imgSrcFromDescription, extendedDataEvents, multipartDto);
 		}
 	}
 	
@@ -187,8 +186,19 @@ public class XmlHandler {
 	 * @return A new {@link LinkedList<XMLEvent>} with modified or new <lc:attachments></lc:attachments>.
 	 * Or the old unmodified List if no changes were done.</ExtendedData>
 	 */
-	private List<XMLEvent> processLocusAttachments(List<String> imgSrcFromDescription, List<XMLEvent> extendedDataEvents) {
-		if (imgSrcFromDescription.isEmpty()) return extendedDataEvents;
+	private List<XMLEvent> processLocusAttachments(
+		List<String> imgSrcFromDescription, List<XMLEvent> extendedDataEvents, MultipartDto multipartDto) {
+		
+		if (imgSrcFromDescription.isEmpty()) {
+			//No images from description to insert as attachments
+			return extendedDataEvents;
+		} else if (multipartDto.getPathType() != null && multipartDto.getPathType().equals(PathTypes.WEB)) {
+			//WEB paths are not supported as attachments
+			return extendedDataEvents;
+		}
+		//Turn all imgSrc into Locus specific paths
+		final List<String> locusAttachmentsHref = getLocusSpecificAttachmentsHref(imgSrcFromDescription, multipartDto);
+		
 		//Iterate through existing <ExtendedData> elements
 		if (!extendedDataEvents.isEmpty()) {
 			addLcPrefixForLocusmapNamespace(extendedDataEvents);
@@ -199,28 +209,43 @@ public class XmlHandler {
 					}
 					String eventFilename = htmlHandler.getFileName(extendedEvent.asCharacters().getData());
 					
-					Iterator<String> iterator = imgSrcFromDescription.iterator();
+					Iterator<String> iterator = locusAttachmentsHref.iterator();
 					while (iterator.hasNext()) {
 						String imgSrc = iterator.next();
 						if (htmlHandler.getFileName(imgSrc).equals(eventFilename)) {
+							
 							extendedEvent = eventFactory.createCharacters(imgSrc);
 							iterator.remove();
 							break;
+							
 						}
 					}
 					return extendedEvent;
 				})
 				.collect(Collectors.toList());
 			//If not all the images from Description are attached we create and add new <lc:attachment>'s
-			if (!imgSrcFromDescription.isEmpty()) {
-				List<XMLEvent> xmlEventList = getImagesSrcAsLcAttachments(imgSrcFromDescription);
+			if (!locusAttachmentsHref.isEmpty()) {
+				List<XMLEvent> xmlEventList = getImagesSrcAsLcAttachments(locusAttachmentsHref);
 				extendedDataEvents.addAll(1, xmlEventList);
 			}
 			return extendedDataEvents;
 		} else { //<ExtendedData> isn't presented within the <Placemark>
 			//Create a new <ExtendedData> parent with new <lc:attachment> children from images src from description
-			return getNewExtendedData(getImagesSrcAsLcAttachments(imgSrcFromDescription));
+			return getNewExtendedData(getImagesSrcAsLcAttachments(locusAttachmentsHref));
 		}
+	}
+	
+	private List<String> getLocusSpecificAttachmentsHref(List<String> imagesToAttach, MultipartDto multipartDto) {
+		imagesToAttach = imagesToAttach.stream()
+			.map(imgSrc -> {
+				//Locus lc:attachments accepts only RELATIVE type of path
+				//So remake path to Locus specific absolute path without "file:///"
+				return htmlHandler.getLocusAttachmentAbsoluteHref(imgSrc, multipartDto);
+			})
+			.filter(imgSrc -> !imgSrc.isBlank())
+			.collect(Collectors.toList());
+		
+		return imagesToAttach;
 	}
 	
 	/**
@@ -231,6 +256,8 @@ public class XmlHandler {
 	private List<XMLEvent> getImagesSrcAsLcAttachments(List<String> imagesToAttach) {
 		List<XMLEvent> lcAttachments = new ArrayList<>();
 		imagesToAttach.forEach(img -> {
+			lcAttachments.add(
+				eventFactory.createCharacters("\n")); //Just for prettyPrinting
 			lcAttachments.add(
 				eventFactory.createStartElement("lc", "http://www.locusmap.eu", "attachment"));
 			lcAttachments

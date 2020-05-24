@@ -79,6 +79,18 @@
 			}
 		});
 		
+		document.getElementsByName("pathType").forEach(pathType => {
+			pathType.addEventListener('change', ev => {
+				const asAttachmentInLocus = document.getElementById("asAttachmentInLocus");
+				if (ev.target.getAttribute("id") === "webPath") {
+					asAttachmentInLocus.disabled = true;
+				} else {
+					asAttachmentInLocus.disabled = false;
+				}
+				
+			})
+		});
+		
 		document.getElementById("trim").addEventListener('click', ev => {
 			if (document.getElementById('locusFile').files.length === 0) {
 				return;
