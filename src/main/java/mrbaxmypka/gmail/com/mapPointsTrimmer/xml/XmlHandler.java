@@ -1,4 +1,4 @@
-package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
@@ -328,7 +328,7 @@ public class XmlHandler {
 				eventFactory.createCharacters(characters.getData());
 		}
 		//Obtain an inner CDATA text to treat as HTML elements or plain text
-		String processedHtmlCdata = htmlHandler.processCdata(characters.getData(), multipartDto);
+		String processedHtmlCdata = htmlHandler.processDescriptionText(characters.getData(), multipartDto);
 		
 		processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartDto);
 		

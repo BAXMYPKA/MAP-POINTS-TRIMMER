@@ -2,7 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import lombok.Getter;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.klm.XmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.XmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.lang.NonNull;
@@ -16,7 +16,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;

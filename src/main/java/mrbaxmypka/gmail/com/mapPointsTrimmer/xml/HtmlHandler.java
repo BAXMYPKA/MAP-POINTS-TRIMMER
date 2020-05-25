@@ -1,4 +1,4 @@
-package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
@@ -15,6 +15,7 @@ import org.jsoup.select.NodeVisitor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -33,7 +34,7 @@ public class HtmlHandler {
 	 * @param multipartDto To determine all other conditions to be processed on CDATA HTML
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
-	public String processCdata(String description, MultipartDto multipartDto) {
+	public String processDescriptionText(String description, MultipartDto multipartDto) {
 		Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
 		
 		if (parsedHtmlFragment == null) {
@@ -82,23 +83,6 @@ public class HtmlHandler {
 	 * @return Extracted plain text or empty string.
 	 */
 	private String extractPlainTextDescriptions(Element parsedHtmlFragment) {
-		/*
-		parsedHtmlFragment.parent().filter(new NodeFilter() {
-			@Override
-			public FilterResult head(Node node, int depth) {
-				if (node instanceof TextNode && !((TextNode) node).getWholeText().isBlank()) {
-					plainTextDescription.append(((TextNode) node).getWholeText());
-					return FilterResult.CONTINUE;
-				}
-				return FilterResult.CONTINUE;
-			}
-			
-			@Override
-			public FilterResult tail(Node node, int depth) {
-				return FilterResult.CONTINUE;
-			}
-		});
-*/
 		//A possible User Text Description as TextNode is strictly one of the children.
 		return parsedHtmlFragment.childNodes().stream()
 			.filter(node -> node instanceof TextNode)
@@ -258,7 +242,7 @@ public class HtmlHandler {
 				img.attr("width", previewText);
 			}
 			if (img.hasAttr("style")) {
-				setPreviewSizeInStyles(img, previewText);
+				setPreviewSizeInStyles(img, previewSize, sizeUnit);
 			}
 		});
 		//No <img> with [src] attribures
@@ -275,33 +259,52 @@ public class HtmlHandler {
 		}
 	}
 	
+	private void setStyleToElement(Element element, String key, String value) {
+		Map<String, String> stylesKeyMap = getStylesKeyMap(element);
+		
+		stylesKeyMap.put(key.trim(), value.trim());
+		
+		String newStyles = stylesKeyMap.entrySet().stream()
+			.map(entry -> entry.getKey() + ": " + entry.getValue() + ";")
+			.collect(Collectors.joining());
+		element.attr("style", newStyles);
+	}
+	
 	/**
 	 * Sets the new preview size into inline "Style" attributes as "width", "max-width"
 	 *
-	 * @param imgElementWithStyles With obligatory "style" attribute
-	 * @param previewSize          Ready to use value, eg. "640px".
+	 * @param imgElement  With obligatory "style" attribute
+	 * @param previewSize Ready to use value, eg. "640px".
 	 */
-	private void setPreviewSizeInStyles(Element imgElementWithStyles, String previewSize) {
+	private void setPreviewSizeInStyles(Element imgElement, int previewSize, PreviewSizeUnits sizeUnit) {
+		String styleKeyValue = previewSize + sizeUnit.getUnit();
+		Map<String, String> stylesKeyMap = getStylesKeyMap(imgElement);
+		
+		if (stylesKeyMap.containsKey("max-width")) {
+			stylesKeyMap.put("max-width", styleKeyValue);
+		} else {
+			stylesKeyMap.put("width", styleKeyValue);
+		}
+		String newStyles = stylesKeyMap.entrySet().stream()
+			.map(entry -> entry.getKey() + ":" + entry.getValue() + ";")
+			.collect(Collectors.joining());
+		imgElement.attr("style", newStyles);
+	}
+	
+	/**
+	 * @return Map of Element's "style" attribute as key-value pair. E.g. 'style="width: 200px; max-width: 250px"
+	 * return key="width", value="200px" etc.
+	 */
+	private Map<String, String> getStylesKeyMap(Element element) {
 		Map<String, String> stylesKeyMap = new LinkedHashMap<>();
-		String[] keys = imgElementWithStyles.attr("style").split(":|;");
+		String[] keys = element.attr("style").split(":|;");
 		
 		if (keys.length > 0) {
 			for (int i = 0; i < keys.length; i += 2) {
 				stylesKeyMap.put(keys[i].trim(), keys[i + 1].trim());
 			}
 		}
-		stylesKeyMap.entrySet().forEach(entry -> {
-			if (entry.getKey().equalsIgnoreCase("width")) {
-				entry.setValue(previewSize);
-			}
-			if (entry.getKey().equalsIgnoreCase("max-width")) {
-				entry.setValue(previewSize);
-			}
-		});
-		String newStyles = stylesKeyMap.entrySet().stream()
-			.map(entry -> entry.getKey() + ":" + entry.getValue() + ";")
-			.collect(Collectors.joining());
-		imgElementWithStyles.attr("style", newStyles);
+		return stylesKeyMap;
 	}
 	
 	/**
@@ -309,35 +312,9 @@ public class HtmlHandler {
 	 */
 	private String trimDescriptions(Element parsedHtmlFragment) {
 		//Deletes 2 or more whitespaces in a row
-		String trimmedString = parsedHtmlFragment.html()
+		return parsedHtmlFragment.html()
 			.replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
-		return trimmedString;
 	}
-	
-/*
-	private void setImagesWithinDescUserComments(Element parsedHtmlFragment, MultipartDto multipartDto) {
-		//1 Delete all userStartEnd comments
-		Elements imgElements = parsedHtmlFragment.select("img[src]");
-		String userDescriptionText = getUserDescriptionText(parsedHtmlFragment).trim();
-		Element newHtmlDescription = createNewHtmlDescription(userDescriptionText, multipartDto);
-		
-		if (!imgElements.isEmpty()) {
-			Element tr = new Element("tr");
-			Element td = new Element("td").attr("align", "center");
-			td.insertChildren(0, getAElementsWithInnerImgElement(imgElements));
-			tr.appendChild(td);
-			newHtmlDescription.select("tbody").first().appendChild(tr);
-			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
-		}
-		
-		Elements tableRowWithDescAndDateTime = getTableRowsWithMinDateTime(parsedHtmlFragment.getAllElements());
-		if (!tableRowWithDescAndDateTime.isEmpty()) {
-			tableRowWithDescAndDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
-			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
-		}
-		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
-	}
-*/
 	
 	/**
 	 * Removes all the unnecessary HTML nodes and data duplicates.
@@ -350,9 +327,10 @@ public class HtmlHandler {
 		
 		if (!imgElements.isEmpty()) {
 			Element tr = new Element("tr");
-			Element td = new Element("td").attr("align", "center");
-			td.insertChildren(0, getAElementsWithInnerImgElement(imgElements));
-			tr.appendChild(td);
+			Element tdForImg = new Element("td")
+				.attr("align", "center").attr("colspan", "2");
+			tdForImg.insertChildren(0, getAElementsWithInnerImgElement(imgElements));
+			tr.appendChild(tdForImg);
 			newHtmlDescription.select("tbody").first().appendChild(tr);
 			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
 		}

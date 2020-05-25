@@ -1,4 +1,4 @@
-package mrbaxmypka.gmail.com.mapPointsTrimmer.klm;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +73,7 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(twoImgsWithStyles, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
 
 		//THEN
 		assertAll(
@@ -99,7 +99,7 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(twoImgsWithStyles, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
 		
 		//THEN
 		assertAll(
@@ -127,7 +127,7 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(withoutDescUserComments, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(withoutDescUserComments, multipartDto);
 		
 		//THEN
 		assertAll(
@@ -156,7 +156,7 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(withDescUserCommentsAndText, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(withDescUserCommentsAndText, multipartDto);
 		
 		//THEN
 		assertAll(
@@ -198,7 +198,7 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(oldStyleCdata, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(oldStyleCdata, multipartDto);
 		
 		//THEN
 		assertAll(
@@ -218,7 +218,7 @@ class HtmlHandlerTest {
 		
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
 		
 		//THEN
 		assertAll(
@@ -258,7 +258,7 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(twoImgsWithStyles, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
 		
 		//THEN
 		assertAll(
@@ -282,7 +282,7 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		
-		String processedKml = htmlHandler.processCdata(html, multipartDto);
+		String processedKml = htmlHandler.processDescriptionText(html, multipartDto);
 		
 		//THEN
 		
@@ -331,7 +331,7 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(outdatedDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(outdatedDescription, multipartDto);
 		
 		//THEN contains only the earliest date of creation
 		assertAll(
@@ -369,7 +369,7 @@ class HtmlHandlerTest {
 		multipartDto.setPath("../myFiles");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
 		
 		//THEN
 		assertAll(
@@ -393,7 +393,7 @@ class HtmlHandlerTest {
 		multipartDto.setPath("D:\\MyFolder\\MyPOI");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
 		
 		//THEN
 		assertAll(
@@ -418,7 +418,7 @@ class HtmlHandlerTest {
 		multipartDto.setPath(pathWithWhitespaces);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
 		
 		//THEN All whitespaces should be replaced with URL '%20' sign
 		assertAll(
@@ -442,7 +442,7 @@ class HtmlHandlerTest {
 		multipartDto.setPath("http://www.mysite.com/my images");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
 		
 		//THEN
 		assertAll(
@@ -482,7 +482,7 @@ class HtmlHandlerTest {
 		multipartDto.setPath("..My maps\\my folder");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(descriptionCdata, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(descriptionCdata, multipartDto);
 
 		//THEN
 		assertAll(
@@ -504,7 +504,7 @@ class HtmlHandlerTest {
 		multipartDto.setTrimDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
 		
 		//THEN
 		//Doesn't contain new strings
@@ -519,7 +519,7 @@ class HtmlHandlerTest {
 		multipartDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
 		
 		//THEN contains only the earliest date of creation
 		assertAll(
@@ -556,7 +556,7 @@ class HtmlHandlerTest {
 		multipartDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(plainTextDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
 
 		//THEN
 		assertAll(
@@ -581,7 +581,7 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(plainTextDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
 		System.out.println(processedHtml);
 		//THEN
 		assertTrue(processedHtml.contentEquals("Plain text description"));
@@ -605,7 +605,7 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processCdata(twoPureImgs, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoPureImgs, multipartDto);
 		
 		//THEN
 		assertAll(

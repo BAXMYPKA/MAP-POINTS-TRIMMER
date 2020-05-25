@@ -1,8 +1,8 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.klm.HtmlHandler;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.klm.XmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.XmlHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
