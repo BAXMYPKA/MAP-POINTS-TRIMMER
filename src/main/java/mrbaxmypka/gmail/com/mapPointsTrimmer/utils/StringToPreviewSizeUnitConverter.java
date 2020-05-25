@@ -9,6 +9,11 @@ public class StringToPreviewSizeUnitConverter implements Converter<String, Previ
 	
 	@Override
 	public PreviewSizeUnits convert(String s) {
-		return PreviewSizeUnits.valueOf(s.toUpperCase());
+		for (PreviewSizeUnits unit : PreviewSizeUnits.values()) {
+			if (unit.getUnit().equalsIgnoreCase(s)) {
+				return unit;
+			}
+		}
+		return PreviewSizeUnits.getByTypeName(s);
 	}
 }

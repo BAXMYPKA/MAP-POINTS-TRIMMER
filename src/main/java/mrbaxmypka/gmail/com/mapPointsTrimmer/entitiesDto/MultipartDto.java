@@ -81,7 +81,18 @@ public class MultipartDto implements Serializable {
 		this.pathType = PathTypes.getByValue(pathType);
 	}
 	
-	public void setPreviewUnit(@Nullable String previewUnit) {
+	/**
+	 * @param previewUnit Full text as "pixels" or "percentage" in any letter case
+	 *                    OR unit as "px" or "%"
+	 * @throws IllegalArgumentException If no match found.
+	 */
+	public void setPreviewUnit(@Nullable String previewUnit) throws IllegalArgumentException {
+		for (PreviewSizeUnits unit : PreviewSizeUnits.values()) {
+			if (unit.getUnit().equalsIgnoreCase(previewUnit)) {
+				this.previewSizeUnit = unit;
+				return;
+			}
+		}
 		this.previewSizeUnit = PreviewSizeUnits.getByTypeName(previewUnit);
 	}
 }

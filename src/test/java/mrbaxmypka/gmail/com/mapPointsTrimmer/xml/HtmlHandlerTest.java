@@ -362,6 +362,99 @@ class HtmlHandlerTest {
 	}
 	
 	@Test
+	public void setPreviewSize_In_Percentage_Should_Set_Percentage_Units() {
+		//GIVEN
+		String imgInPixels = "<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+			  "<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
+			  "<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(90);
+		multipartDto.setPreviewUnit("%");
+		
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
+
+		//THEN
+		assertAll(
+			  () -> assertTrue(processedHtml.contains(" width=\"90%\" ")),
+			  () -> assertTrue(processedHtml.contains("max-width:90%;\""))
+		);
+		
+		assertAll(
+			  () -> assertFalse(processedHtml.contains("width:60px")),
+			  () -> assertFalse(processedHtml.contains("max-width: 300%"))
+		);
+		
+	}
+	
+	@Test
+	public void setPreviewSize_With_ClearOutdatedDescriptions_Should_Not_Return_Fanthom_Empty_A_Elements() {
+		//GIVEN
+		String imgInPixels = "<!-- desc_gen:start -->\n" +
+			  "<div> <!-- desc_user:start --> \n" +
+			  " <table width=\"100%\" style=\"color:black\"> \n" +
+			  "  <tbody> \n" +
+			  "   <tr> \n" +
+			  "    <td align=\"center\" colspan=\"2\"><a href=\"file:///D:/TEMP/TRIMMER%20TESTS/01FullTestKmzExportFromLocus/p__20200511_130333.jpg\" target=\"_blank\"><img src=\"files/p__20200511_130333.jpg\" width=\"800px\" align=\"center\" style=\"border: 3px white solid;\"></a></td> \n" +
+			  "    <td></td> \n" +
+			  "   </tr> \n" +
+			  "   <tr> \n" +
+			  "    <td colspan=\"2\"> \n" +
+			  "     <hr></td> \n" +
+			  "   </tr> \n" +
+			  "   <tr> \n" +
+			  "    <td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td> \n" +
+			  "    <td align=\"center\" valign=\"center\">166 m</td> \n" +
+			  "   </tr> \n" +
+			  "   <tr> \n" +
+			  "    <td align=\"left\" valign=\"center\"><small><b>Скорость</b></small></td> \n" +
+			  "    <td align=\"center\" valign=\"center\">12,6 km/h</td> \n" +
+			  "   </tr> \n" +
+			  "   <tr> \n" +
+			  "    <td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td> \n" +
+			  "    <td align=\"center\" valign=\"center\">327 °</td> \n" +
+			  "   </tr> \n" +
+			  "   <tr> \n" +
+			  "    <td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td> \n" +
+			  "    <td align=\"center\" valign=\"center\">10 m</td> \n" +
+			  "   </tr> \n" +
+			  "   <tr> \n" +
+			  "    <td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td> \n" +
+			  "    <td align=\"center\" valign=\"center\">2020-05-11 13:03:45</td> \n" +
+			  "   </tr> \n" +
+			  "   <tr> \n" +
+			  "    <td colspan=\"2\"> \n" +
+			  "     <hr></td> \n" +
+			  "   </tr> \n" +
+			  "  </tbody> \n" +
+			  " </table><!-- desc_user:end --> \n" +
+			  "</div><!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(100);
+		multipartDto.setPreviewUnit("%");
+		multipartDto.setSetPath(true);
+		multipartDto.setPath("/storage/");
+		multipartDto.setAsAttachmentInLocus(true);
+		multipartDto.setClearOutdatedDescriptions(true);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
+		
+		//THEN
+		assertFalse(processedHtml.contains("<a href=\"/storage/p__20200511_130333.jpg\" target=\"_blank\"></a>"));
+	}
+	
+	@Test
 	public void set_Relative_Path_Should_Set_Relative_Path_Type() {
 		//GIVEN
 		multipartDto.setSetPath(true);
