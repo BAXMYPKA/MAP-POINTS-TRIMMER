@@ -92,8 +92,8 @@ h4 {
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 1em;
-	padding: 0.5em;
+	margin-bottom: 0.4em;
+	padding: 0.2em;
 	background: linear-gradient(to bottom, rgba(107, 68, 19, 0.11), rgba(240, 240, 174, 0.04));
 	border-bottom: goldenrod 0.1em solid;
 	border-radius: 0 0 1em 1em;
@@ -125,7 +125,6 @@ input[type=radio] {
 	margin-right: 1em;
 	border: goldenrod 0.1em solid;
 	border-radius: 0.3em;
-	font-family: Tahoma, sans-serif;
 	font-size: 0.7em;
 	background-color: rgba(240, 240, 174, 0.04);
 }
@@ -168,18 +167,6 @@ input[type=radio] {
 	background-color: darkgrey;
 }
 
-.shutdownButtonOff {
-	padding: 0.5em;
-	border-radius: 0.3em;
-	background-color: lightgray;
-	font-weight: bold;
-	font-size: small;
-	font-family: "Arial Black", sans-serif;
-	color: green;
-	transition: all;
-	transition-duration: 0.3s;
-}
-
 .nameHeaderGroup {
 	display: flex;
 	flex-direction: column;
@@ -191,17 +178,16 @@ input[type=radio] {
 	margin: 0 0 0.2em 0;
 	text-decoration: none;
 	text-transform: uppercase;
-	/*font-family: Arial, sans-serif;*/
-	font-family: Tahoma, Geneva, sans-serif;
+	font-family: Georgia, serif;
 	font-size: 1.3em;
-	font-weight: bolder;
+	font-weight: bold;
 	color: #5c2e0c;
 }
 
 .nameHeaderGroup__appSlogan {
 	margin: 0;
 	text-decoration: none;
-	font-family: Tahoma, Geneva, sans-serif;
+	font-family: Georgia, serif;
 	font-size: 1.2em;
 	font-style: italic;
 	font-weight: bolder;
@@ -215,7 +201,7 @@ input[type=radio] {
 	padding: 0.5em;
 	border: sandybrown 0.1em dashed;
 	border-radius: 1em;
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	/*font-family: Verdana, sans-serif;*/
 	font-size: 0.8em;
 	transition-property: all;
 	transition-duration: 0.5s;
@@ -232,7 +218,6 @@ input[type=radio] {
 }
 
 .userMessage__close {
-	/*display: inline-block;*/
 	font-weight: bold;
 	font-size: 1.5em;
 	color: firebrick;
@@ -260,7 +245,7 @@ input[type=radio] {
 	bottom: 0;
 	right: 0;
 	z-index: -1;
-	opacity: 0.4;
+	opacity: 0.5;
 	background: url("../img/earth-hemisphere.jpg");
 	background-size: cover;
 }
@@ -276,6 +261,7 @@ input[type=radio] {
 	transition: all;
 	transition-duration: 0.2s;
 	font-weight: bold;
+	text-shadow: -1px -1px 5px lightslategrey;
 }
 
 .loadForm__label:hover {
@@ -288,7 +274,6 @@ input[type=radio] {
 }
 
 .loadForm__label_LoadFieldSet {
-	/*font-family: Tahoma, serif;*/
 	text-transform: uppercase;
 }
 
@@ -390,6 +375,7 @@ input[type=radio] {
 
 .mainFooter__item {
 	text-transform: uppercase;
+	/*font-weight: bold;*/
 	font-family: "Arial Black", sans-serif;
 	color: #572b10;
 }
@@ -407,6 +393,7 @@ input[type=radio] {
 .mainFooter__item_smaller {
 	text-transform: uppercase;
 	font-family: "Arial Black", sans-serif;
+	/*font-weight: bold;*/
 	font-size: smaller;
 	color: #572b10;
 }

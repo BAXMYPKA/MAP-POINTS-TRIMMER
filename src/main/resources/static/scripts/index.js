@@ -88,17 +88,14 @@
 					asAttachmentInLocus.disabled = false;
 				}
 				
-			})
+			});
 		});
 		
 		document.getElementById("trim").addEventListener('click', ev => {
-			if (document.getElementById('locusFile').files.length === 0) {
-				return;
-			} else {
+			if (document.getElementById('locusFile').files.length !== 0) {
 				document.querySelector('.downloadMessage').hidden = false;
-				// document.querySelector('.awaitGif').hidden = false;
 				document.querySelector('.loadForm').submit();
-				document.getElementById("locusFile").value = null;
+				// document.getElementById("locusFile").value = null;
 			}
 		});
 		
