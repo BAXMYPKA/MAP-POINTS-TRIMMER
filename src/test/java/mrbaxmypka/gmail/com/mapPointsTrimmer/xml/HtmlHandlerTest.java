@@ -58,15 +58,15 @@ class HtmlHandlerTest {
 	public void any_Modification_Should_Enclose_Description_With_DescGenStart_DescGenEnd_With_Them_Initially() {
 		//GIVEN
 		String twoImgsWithStyles = "<!-- desc_gen:start -->\n" +
-			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
-			  "<img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\">" +
-			  "<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
-			  "<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
-			  "<!-- desc_gen:end -->";
+			"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+			"<img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\">" +
+			"<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
+			"<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
@@ -74,11 +74,11 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
-
+		
 		//THEN
 		assertAll(
-			  () -> assertTrue(processedHtml.startsWith("<!-- desc_gen:start -->")),
-			  () -> assertTrue(processedHtml.endsWith("<!-- desc_gen:end -->"))
+			() -> assertTrue(processedHtml.startsWith("<!-- desc_gen:start -->")),
+			() -> assertTrue(processedHtml.endsWith("<!-- desc_gen:end -->"))
 		);
 	}
 	
@@ -86,13 +86,13 @@ class HtmlHandlerTest {
 	public void any_Modification_Should_Enclose_Description_With_DescGenStart_DescGenEnd_Without_Them_Initially() {
 		//GIVEN
 		String twoImgsWithStyles = "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
-			  "<img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\">" +
-			  "<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
-			  "<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>";
+			"<img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\">" +
+			"<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
+			"<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
@@ -103,8 +103,8 @@ class HtmlHandlerTest {
 		
 		//THEN
 		assertAll(
-			  () -> assertTrue(processedHtml.startsWith("<!-- desc_gen:start -->")),
-			  () -> assertTrue(processedHtml.endsWith("<!-- desc_gen:end -->"))
+			() -> assertTrue(processedHtml.startsWith("<!-- desc_gen:start -->")),
+			() -> assertTrue(processedHtml.endsWith("<!-- desc_gen:end -->"))
 		);
 	}
 	
@@ -259,11 +259,11 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
-		
+
 		//THEN
 		assertAll(
-			() -> assertTrue(processedHtml.contains("style=\"width:750px;border:3px white solid;\"")),
-			() -> assertTrue(processedHtml.contains("style=\"border:3px white solid;color:black;max-width:750px;\""))
+			() -> assertTrue(processedHtml.contains("style=\"width: 750px;")),
+			() -> assertTrue(processedHtml.contains("max-width: 750px"))
 		);
 		
 		assertAll(
@@ -365,14 +365,14 @@ class HtmlHandlerTest {
 	public void setPreviewSize_In_Percentage_Should_Set_Percentage_Units() {
 		//GIVEN
 		String imgInPixels = "<!-- desc_gen:start -->\n" +
-			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
-			  "<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
-			  "<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
-			  "<!-- desc_gen:end -->";
+			"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+			"<img src=\"files/p__20180514_153338.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid; color: black; max-width: 300%\"> " +
+			"<br /><br /></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">169 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">147 °</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">3 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
@@ -384,13 +384,13 @@ class HtmlHandlerTest {
 
 		//THEN
 		assertAll(
-			  () -> assertTrue(processedHtml.contains(" width=\"90%\" ")),
-			  () -> assertTrue(processedHtml.contains("max-width:90%;\""))
+			() -> assertTrue(processedHtml.contains(" width=\"90%\" ")),
+			() -> assertTrue(processedHtml.contains("max-width: 90%;\""))
 		);
 		
 		assertAll(
-			  () -> assertFalse(processedHtml.contains("width:60px")),
-			  () -> assertFalse(processedHtml.contains("max-width: 300%"))
+			() -> assertFalse(processedHtml.contains("width:60px")),
+			() -> assertFalse(processedHtml.contains("max-width: 300%"))
 		);
 		
 	}
@@ -399,44 +399,44 @@ class HtmlHandlerTest {
 	public void setPreviewSize_With_ClearOutdatedDescriptions_Should_Not_Return_Fanthom_Empty_A_Elements() {
 		//GIVEN
 		String imgInPixels = "<!-- desc_gen:start -->\n" +
-			  "<div> <!-- desc_user:start --> \n" +
-			  " <table width=\"100%\" style=\"color:black\"> \n" +
-			  "  <tbody> \n" +
-			  "   <tr> \n" +
-			  "    <td align=\"center\" colspan=\"2\"><a href=\"file:///D:/TEMP/TRIMMER%20TESTS/01FullTestKmzExportFromLocus/p__20200511_130333.jpg\" target=\"_blank\"><img src=\"files/p__20200511_130333.jpg\" width=\"800px\" align=\"center\" style=\"border: 3px white solid;\"></a></td> \n" +
-			  "    <td></td> \n" +
-			  "   </tr> \n" +
-			  "   <tr> \n" +
-			  "    <td colspan=\"2\"> \n" +
-			  "     <hr></td> \n" +
-			  "   </tr> \n" +
-			  "   <tr> \n" +
-			  "    <td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td> \n" +
-			  "    <td align=\"center\" valign=\"center\">166 m</td> \n" +
-			  "   </tr> \n" +
-			  "   <tr> \n" +
-			  "    <td align=\"left\" valign=\"center\"><small><b>Скорость</b></small></td> \n" +
-			  "    <td align=\"center\" valign=\"center\">12,6 km/h</td> \n" +
-			  "   </tr> \n" +
-			  "   <tr> \n" +
-			  "    <td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td> \n" +
-			  "    <td align=\"center\" valign=\"center\">327 °</td> \n" +
-			  "   </tr> \n" +
-			  "   <tr> \n" +
-			  "    <td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td> \n" +
-			  "    <td align=\"center\" valign=\"center\">10 m</td> \n" +
-			  "   </tr> \n" +
-			  "   <tr> \n" +
-			  "    <td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td> \n" +
-			  "    <td align=\"center\" valign=\"center\">2020-05-11 13:03:45</td> \n" +
-			  "   </tr> \n" +
-			  "   <tr> \n" +
-			  "    <td colspan=\"2\"> \n" +
-			  "     <hr></td> \n" +
-			  "   </tr> \n" +
-			  "  </tbody> \n" +
-			  " </table><!-- desc_user:end --> \n" +
-			  "</div><!-- desc_gen:end -->";
+			"<div> <!-- desc_user:start --> \n" +
+			" <table width=\"100%\" style=\"color:black\"> \n" +
+			"  <tbody> \n" +
+			"   <tr> \n" +
+			"    <td align=\"center\" colspan=\"2\"><a href=\"file:///D:/TEMP/TRIMMER%20TESTS/01FullTestKmzExportFromLocus/p__20200511_130333.jpg\" target=\"_blank\"><img src=\"files/p__20200511_130333.jpg\" width=\"800px\" align=\"center\" style=\"border: 3px white solid;\"></a></td> \n" +
+			"    <td></td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td colspan=\"2\"> \n" +
+			"     <hr></td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">166 m</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Скорость</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">12,6 km/h</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">327 °</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">10 m</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">2020-05-11 13:03:45</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td colspan=\"2\"> \n" +
+			"     <hr></td> \n" +
+			"   </tr> \n" +
+			"  </tbody> \n" +
+			" </table><!-- desc_user:end --> \n" +
+			"</div><!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
@@ -556,15 +556,15 @@ class HtmlHandlerTest {
 	public void setPath_Should_Set_Correct_Wrong_Backslashes() {
 		//GIVEN
 		String descriptionCdata = "<!-- desc_gen:start -->\n" +
-			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><img src=\"files/p__20200511_131742.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"><br /><br />\n" +
-			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">165 m</td></tr>\n" +
-			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2020-05-12 08:50:23</td></tr>\n" +
-			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table>\n" +
-			  "<!-- desc_user:start -->\n" +
-			  "Test user description\n" +
-			  "<!-- desc_user:end -->\n" +
-			  "</font>\n" +
-			  "<!-- desc_gen:end -->";
+			"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><img src=\"files/p__20200511_131742.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"><br /><br />\n" +
+			"</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">165 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2020-05-12 08:50:23</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table>\n" +
+			"<!-- desc_user:start -->\n" +
+			"Test user description\n" +
+			"<!-- desc_user:end -->\n" +
+			"</font>\n" +
+			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", descriptionCdata.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setSetPreviewSize(true);
@@ -576,18 +576,18 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(descriptionCdata, multipartDto);
-
+		
 		//THEN
 		assertAll(
-			  () -> assertTrue(processedHtml.contains("<a href=\"..My%20maps/my%20folder/p__20200511_131742.jpg\"")),
-			  () -> assertTrue(processedHtml.contains("<img src=\"..My%20maps/my%20folder/p__20200511_131742.jpg\""))
+			() -> assertTrue(processedHtml.contains("<a href=\"..My%20maps/my%20folder/p__20200511_131742.jpg\"")),
+			() -> assertTrue(processedHtml.contains("<img src=\"..My%20maps/my%20folder/p__20200511_131742.jpg\""))
 		);
 		
 		assertAll(
-			  () -> assertFalse(processedHtml.contains(
-					"<img src=\"..My%20maps\\my%20folder/p__20200511_131742.jpg")),
-			  () -> assertFalse(processedHtml.contains(
-					"<img src=\"files/p__20200511_131742.jpg"))
+			() -> assertFalse(processedHtml.contains(
+				"<img src=\"..My%20maps\\my%20folder/p__20200511_131742.jpg")),
+			() -> assertFalse(processedHtml.contains(
+				"<img src=\"files/p__20200511_131742.jpg"))
 		);
 	}
 	
@@ -650,13 +650,90 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
-
+		
 		//THEN
 		assertAll(
 			() -> assertTrue(processedHtml.startsWith("Plain text description")),
 			() -> assertTrue(processedHtml.contains(
 				"<!-- desc_user:start -->Inside user startEnd"))
 		);
+	}
+	
+	@Test
+	public void reimported_Points_From_Locus_Should_Have_Been_Eliminated() {
+		//GIVEN
+		String imgInPixels = "<!-- desc_gen:start -->\n" +
+			"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"files/p__20200511_130333.jpg\" target=\"_blank\"><img src=\"files/p__20200511_130333.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"></a><br /><br />\n" +
+			"<!-- desc_user:start -->\n" +
+			"<table width=\"100%\" style=\"color:black\"> \n" +
+			"  <tbody> \n" +
+			"   <tr> \n" +
+			"    <td align=\"center\" colspan=\"2\"><a href=\"file:////storage/emulated/0/DCIM/FullTestKmzExport01/p__20200511_130333.jpg\" target=\"_blank\"><img src=\"file:////storage/emulated/0/DCIM/FullTestKmzExport01/p__20200511_130333.jpg\" width=\"100%\" align=\"center\" style=\"border:3px white solid;width:100%;\"></a></td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td colspan=\"2\"> \n" +
+			"     <hr></td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">166 m</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Скорость</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">12,6 km/h</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">327 °</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">10 m</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td> \n" +
+			"    <td align=\"center\" valign=\"center\">2020-05-11 13:03:45</td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td colspan=\"2\"> \n" +
+			"     <hr></td> \n" +
+			"   </tr> \n" +
+			"   <tr> \n" +
+			"    <td colspan=\"2\"> \n" +
+			"     <hr></td> \n" +
+			"   </tr> \n" +
+			"  </tbody> \n" +
+			" </table>\n" +
+			"<!-- desc_user:end -->\n" +
+			"</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Altitude</b></small></td><td align=\"center\" valign=\"center\">166 m</td></tr>\n" +
+			"<tr><td align=\"left\" valign=\"center\"><small><b>Created</b></small></td><td align=\"center\" valign=\"center\">2020-05-26 12:26:45</td></tr>\n" +
+			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			"<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPreviewSize(800);
+		multipartDto.setPreviewUnit("px");
+		multipartDto.setSetPath(true);
+		multipartDto.setPath("/storage/");
+		multipartDto.setClearOutdatedDescriptions(true);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
+
+		//THEN
+		Pattern image = Pattern.compile("src=\"/storage/p__20200511_130333.jpg\"", Pattern.MULTILINE);
+		Pattern href = Pattern.compile("href=\"/storage/p__20200511_130333.jpg\"", Pattern.MULTILINE);
+		Matcher matcherImage = image.matcher(processedHtml);
+		Matcher matcherHref = href.matcher(processedHtml);
+		
+		assertAll(
+			() -> assertEquals(1, matcherImage.results().count()),
+			() -> assertEquals(1, matcherHref.results().count())
+		
+		);
+
+//		assertFalse(processedHtml.contains("<a href=\"/storage/p__20200511_130333.jpg\" target=\"_blank\"></a>"));
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -675,7 +752,7 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
-		System.out.println(processedHtml);
+
 		//THEN
 		assertTrue(processedHtml.contentEquals("Plain text description"));
 	}

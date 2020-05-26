@@ -335,6 +335,9 @@ public class HtmlHandler {
 	 * MUST be the last method in a chain.
 	 */
 	private void clearOutdatedDescriptions(Element parsedHtmlFragment, MultipartDto multipartDto) {
+		
+		deleteImagesDuplicates(parsedHtmlFragment);
+		
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		String userDescriptionText = getUserDescriptionText(parsedHtmlFragment).trim();
 		Element newHtmlDescription = createNewHtmlDescription(userDescriptionText, multipartDto);
@@ -425,27 +428,6 @@ public class HtmlHandler {
 	 * @return Derived text between xml tags or empty String if nothing found.
 	 */
 	private String getUserDescriptionText(Element parsedHtmlFragment) {
-/*
-		StringBuilder textUserDescription = new StringBuilder("");
-		Elements allElements = parsedHtmlFragment.getAllElements();
-		for (int i = 0; i < allElements.size(); i++){
-			if (allElements.get(i).ownText().contains("desc_user:start")) {
-				//From here we iterate over further Elements...
-				for (int j = i; j < allElements.size(); j++) {
-					if (allElements.get(j).hasText()) {
-						//Write out all non-blank text data
-						textUserDescription.append(allElements.get(j).ownText());
-						continue;
-					}
-					//... Until find the end marker
-					if (allElements.get(j).ownText().contains("desc_user:end")) {
-						return textUserDescription.toString();
-					}
-				}
-			}
-			
-		}
-*/
 		//This Comment has Parent with all the children for extracting text with User's descriptions
 		final Comment[] commentNode = new Comment[1];//To be modified from within anonymous class or lambda
 		parsedHtmlFragment.traverse(new NodeVisitor() {
@@ -543,10 +525,29 @@ public class HtmlHandler {
 	private void clearEmptyTables(Element table) {
 		Elements tableRows = table.select("tr");
 		tableRows.forEach(tr -> {
-			
 			Elements tdElements = tr.select("td");
 			if (tdElements.stream().allMatch(td -> td.children().isEmpty())) tr.remove();
-			
+		});
+	}
+	
+	/**
+	 * Searches for <img> tags with same filenames in their "src" attributes and deletes them from DOM.
+	 * If they're have parent nodes as <a href=""></a> - they will be deleted too.
+	 */
+	private void deleteImagesDuplicates(Element parsedHtmlFragment) {
+		Elements imgElements = parsedHtmlFragment.select("img[src]");
+		
+		Set<String> fileNames = new HashSet<>(3);
+		imgElements.forEach(img -> {
+			String fileName = getFileName(img.attr("src"));
+			if (fileNames.contains(fileName)) {
+				if (img.hasParent() && img.parent().tagName().equals("a")) {
+					img.parent().remove();
+				} else {
+					img.remove();
+				}
+			}
+			fileNames.add(fileName);
 		});
 	}
 	

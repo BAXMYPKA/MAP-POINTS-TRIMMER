@@ -34,8 +34,12 @@ body {
 	}
 }
 
+h3 {
+	background-color: rgba(195, 195, 195, 0.27);
+}
+
 h4 {
-	text-align: center;
+	/*text-align: center;*/
 }
 
 .main {
@@ -63,8 +67,8 @@ h4 {
 }
 
 .article__section {
-	margin-top: 0.2em;
-	padding: 0.3em;
+	/*margin-top: 0.2em;*/
+	padding: 0.1em;
 	height: auto;
 	transition: all;
 	transition-duration: 0.5s;
@@ -262,6 +266,7 @@ input[type=radio] {
 	transition-duration: 0.2s;
 	font-weight: bold;
 	text-shadow: -1px -1px 5px lightslategrey;
+	/*text-shadow: -1px -1px 5px darkgrey;*/
 }
 
 .loadForm__label:hover {
