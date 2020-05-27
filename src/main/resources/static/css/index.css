@@ -265,7 +265,7 @@ input[type=radio] {
 	transition: all;
 	transition-duration: 0.2s;
 	font-weight: bold;
-	text-shadow: -1px -1px 5px lightslategrey;
+	text-shadow: -1px -1px 4px lightslategrey;
 	/*text-shadow: -1px -1px 5px darkgrey;*/
 }
 
