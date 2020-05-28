@@ -34,7 +34,7 @@ This is the first application version, use it with caution.
 
 ## TECH INFO
 
-User technologies:
+Used technologies:
 * Java v.11
 * Maven
 * Spring Boot
