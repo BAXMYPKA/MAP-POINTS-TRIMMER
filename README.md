@@ -1,4 +1,4 @@
-[RUSSIAN]()
+[RUSSIAN](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/README_ru.md)
 
 # MAP POINTS TRIMMER
 **The convenient handler for your map points with photos**
