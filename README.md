@@ -7,7 +7,7 @@ The aim of this utility is to help transfer your map points with photos in their
 You can set a desired preview size, delete the unnecessary garbage from descriptions, set any path to all your photos etc.
  
 ## How to use it
-Download the ready to use application here [по ссылке]().
+Download the ready to use application here [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases).
 
 When the application start use your browser to visit: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
