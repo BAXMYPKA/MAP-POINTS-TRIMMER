@@ -1,4 +1,4 @@
-[English](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/README.md)
+[ENGLISH](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/README.md)
 
 # MAP POINTS TRIMMER
 **Удобный обработчик ваших точек с фотографиями на карте**
