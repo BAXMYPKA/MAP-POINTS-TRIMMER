@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title th:text="#{html.title.errorPage}">Error page</title>
+</head>
+<body>
+
+<h1 th:utext="#{html.h1.error}">There is an error occurred in the application!</h1>
+
+<div class="userMessage" th:utext="#{userMessage.errorPageMessage}"></div>
+
+</body>
+</html>

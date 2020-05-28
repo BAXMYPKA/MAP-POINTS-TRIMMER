@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2"
+xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Locus17.04.2020</name>
+	<atom:author><atom:name>Locus (Android)</atom:name></atom:author>
+	<Style id="file:///sdcard/Locus/cache/images/1571471453728">
+		<IconStyle>
+			<Icon><href>files/file-sdcardLocuscacheimages1571471453728.png</href></Icon>
+			<hotSpot x="0.5" y="0.0" xunits="fraction" yunits="fraction" />
+		</IconStyle>
+	</Style>
+	<Style id="restaurant-bar.png">
+		<IconStyle>
+			<Icon><href>files/restaurant-bar.png</href></Icon>
+			<hotSpot x="0.5" y="0.0" xunits="fraction" yunits="fraction" />
+		</IconStyle>
+	</Style>
+	<Style id="culture-artmuseum.png">
+		<IconStyle>
+			<Icon><href>files/culture-artmuseum.png</href></Icon>
+			<hotSpot x="0.5" y="0.0" xunits="fraction" yunits="fraction" />
+		</IconStyle>
+	</Style>
+	<Style id="file:///sdcard/Locus/cache/images/1570269854270">
+		<IconStyle>
+			<Icon><href>files/file-sdcardLocuscacheimages1570269854270.png</href></Icon>
+			<hotSpot x="0.5" y="0.0" xunits="fraction" yunits="fraction" />
+		</IconStyle>
+	</Style>
+<Placemark>
+	<name>Грунтовая развилка</name>
+	<description><![CDATA[<!-- desc_gen:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center">
+<!-- desc_user:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><a href="/storage/emulated/0/Locus/data/media/photo/Точка_1318431492316.jpg" target="_blank"><img src="/storage/emulated/0/Locus/data/media/photo/Точка_1318431492316.jpg" width="330px" align="center"></a>Test user description</td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">203m</td></tr>
+<tr><td align="left" valign="center"><small><b>Азимут</b></small></td><td align="center" valign="center">332°</td></tr>
+<tr><td align="left" valign="center"><small><b>Точность</b></small></td><td align="center" valign="center">10m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2012-09-18 18:46:14</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_user:end -->
+</td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-11-21 00:27:30</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_gen:end -->]]></description>
+	<styleUrl>#misc-sunny.png</styleUrl>
+	<Point>
+		<coordinates>37.558700,55.919883,0.00</coordinates>
+	</Point>
+	<gx:TimeStamp>
+		<when>2014-11-21T00:27:31Z</when>
+	</gx:TimeStamp>
+</Placemark>
+<Placemark>
+	<name>Катушкин</name>
+	<description><![CDATA[<!-- desc_gen:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center">
+<!-- desc_user:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_user:end -->
+</td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-11-21 00:27:30</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_gen:end -->]]></description>
+	<styleUrl>#sport-cyclingsport.png</styleUrl>
+	<Point>
+		<coordinates>37.726676,55.842598,0.00</coordinates>
+	</Point>
+	<gx:TimeStamp>
+		<when>2014-11-21T00:27:31Z</when>
+	</gx:TimeStamp>
+</Placemark>
+<Placemark>
+	<name>Перпенд отл выезд из леса!</name>
+	<description><![CDATA[<!-- desc_gen:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center">
+<!-- desc_user:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">222 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-05-10 16:33:59</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">222 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-06-03 14:39:11</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">222 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-06-07 17:25:15</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">222 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-07-18 17:23:19</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">222 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-08-10 13:33:15</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">222 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-09-18 16:16:44</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_user:end -->
+</td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">222 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-11-21 00:27:30</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_gen:end -->]]></description>
+	<styleUrl>#misc-sunny.png</styleUrl>
+	<Point>
+		<coordinates>37.363799,56.037653,221.65</coordinates>
+	</Point>
+	<gx:TimeStamp>
+		<when>2014-11-21T00:27:31Z</when>
+	</gx:TimeStamp>
+</Placemark>
+<Placemark>
+	<name>Кододец</name>
+	<description><![CDATA[<!-- desc_gen:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center">
+<!-- desc_user:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">230 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-05-10 16:33:59</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">230 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-06-03 14:39:11</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">230 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-06-07 17:25:15</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">230 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-07-18 17:23:19</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">230 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-08-10 13:33:15</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">230 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-09-18 16:16:44</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_user:end -->
+</td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">230 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-11-21 00:27:30</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_gen:end -->]]></description>
+	<styleUrl>#tourism-drinkingwater.png</styleUrl>
+	<Point>
+		<coordinates>37.258107,56.212229,230.03</coordinates>
+	</Point>
+	<gx:TimeStamp>
+		<when>2014-11-21T00:27:32Z</when>
+	</gx:TimeStamp>
+</Placemark>
+<Placemark>
+	<name>2014-07-06 13:21:11</name>
+	<description><![CDATA[<!-- desc_gen:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center">
+<!-- desc_user:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><a href="/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg" target="_blank"><img src="/storage/emulated/0/Locus/data/media/photo/_1404638472855.jpg" width="330px" align="center" ></a></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">175 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Азимут</b></small></td><td align="center" valign="center">160°</td></tr>
+<tr><td align="left" valign="center"><small><b>Точность</b></small></td><td align="center" valign="center">3.0 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-07-06 13:20:39</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">175 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-07-18 17:23:20</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">175 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-08-10 13:33:17</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">175 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-09-18 16:16:45</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_user:end -->
+</td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">175 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-11-21 00:27:31</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_gen:end -->]]></description>
+	<styleUrl>#sport-cyclingsport.png</styleUrl>
+	<Point>
+		<coordinates>38.202408,56.227471,174.93</coordinates>
+	</Point>
+	<gx:TimeStamp>
+		<when>2014-11-21T00:27:36Z</when>
+	</gx:TimeStamp>
+</Placemark>
+<Placemark>
+	<name>2014-07-06 13:22:53</name>
+	<description><![CDATA[<!-- desc_gen:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center">
+<!-- desc_user:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><font color="black"><table width="100%"><tr><td width="100%" align="center"><a href="/storage/emulated/0/Locus/data/media/photo/_1404638574390.jpg" target="_blank"><img src="/storage/emulated/0/Locus/data/media/photo/_1404638574390.jpg" width="330px" align="center" ></a></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">177 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Азимут</b></small></td><td align="center" valign="center">120°</td></tr>
+<tr><td align="left" valign="center"><small><b>Точность</b></small></td><td align="center" valign="center">3.0 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-07-06 13:22:22</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">177 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-07-18 17:23:20</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">177 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-08-10 13:33:17</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">177 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-09-18 16:16:45</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_user:end -->
+</td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">177 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2014-11-21 00:27:31</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_gen:end -->]]></description>
+	<styleUrl>#sport-cyclingsport.png</styleUrl>
+	<Point>
+		<coordinates>38.204526,56.225635,176.95</coordinates>
+	</Point>
+	<gx:TimeStamp>
+		<when>2014-11-21T00:27:36Z</when>
+	</gx:TimeStamp>
+</Placemark>
+<Placemark>
+	<name>Завал, тропы почти нет</name>
+	<description><![CDATA[<!-- desc_gen:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center"><a href="files/p__20180514_153338.jpg" target="_blank"><img src="files/p__20180514_153338.jpg" width="60px" align="right" style="border: 3px white solid;"></a><br /><br /></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">169 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Азимут</b></small></td><td align="center" valign="center">147 °</td></tr>
+<tr><td align="left" valign="center"><small><b>Точность</b></small></td><td align="center" valign="center">3 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2018-05-14 15:28:41</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_gen:end -->]]></description>
+	<styleUrl>#administration-police.png</styleUrl>
+	<ExtendedData xmlns:lc="http://www.locusmap.eu">
+		<lc:attachment>files/p__20180514_153338.jpg</lc:attachment>
+	</ExtendedData>
+>	<Point>
+		<coordinates>38.089565,55.956791,169.00</coordinates>
+	</Point>
+	<gx:TimeStamp>
+		<when>2018-05-14T15:33:37Z</when>
+	</gx:TimeStamp>
+</Placemark>
+<Placemark>
+	<name>2018-05-23 12:36:00</name>
+	<description><![CDATA[<!-- desc_gen:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center"><a href="files/p__20180523_123601.jpg" target="_blank"><img src="files/p__20180523_123601.jpg" width="60px" align="right" style="border: 3px white solid;"></a><br /><br /></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">213 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Азимут</b></small></td><td align="center" valign="center">317 °</td></tr>
+<tr><td align="left" valign="center"><small><b>Точность</b></small></td><td align="center" valign="center">6 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2018-05-23 12:31:00</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_gen:end -->]]></description>
+	<styleUrl>#sport-cyclingsport.png</styleUrl>
+	<ExtendedData xmlns:lc="http://www.locusmap.eu">
+		<lc:attachment>files/p__20180523_123601.jpg</lc:attachment>
+	</ExtendedData>
+>	<Point>
+		<coordinates>37.320152,56.313417,213.00</coordinates>
+	</Point>
+	<gx:TimeStamp>
+		<when>2018-05-23T12:35:59Z</when>
+	</gx:TimeStamp>
+</Placemark>
+<Placemark>
+	<name>2020-04-09 15:08:47</name>
+	<description><![CDATA[<!-- desc_gen:start -->
+<font color="black"><table width="100%"><tr><td width="100%" align="center"><a href="files/p__20200409_150847.jpg" target="_blank"><img src="files/p__20200409_150847.jpg" width="60px" align="right" style="border: 3px white solid;"></a><br /><br /></td></tr><tr><td colspan="1"><hr></td></tr><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Высота</b></small></td><td align="center" valign="center">228 m</td></tr>
+<tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">2020-04-09 15:09:15</td></tr>
+</table></td></tr><tr><td><table width="100%"></table></td></tr></table></font>
+<!-- desc_gen:end -->]]></description>
+	<styleUrl>#file:///sdcard/Locus/cache/images/1586434138689</styleUrl>
+	<ExtendedData xmlns:lc="http://www.locusmap.eu">
+		<lc:attachment>files/p__20200409_150847.jpg</lc:attachment>
+	</ExtendedData>
+>	<Point>
+		<coordinates>38.216408,56.266199,228.00</coordinates>
+	</Point>
+	<gx:TimeStamp>
+		<when>2020-04-09T15:08:47Z</when>
+	</gx:TimeStamp>
+</Placemark>
+</Document>
+</kml>
