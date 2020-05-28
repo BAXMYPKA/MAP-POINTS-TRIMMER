@@ -3,8 +3,10 @@
 # MAP POINTS TRIMMER
 **The convenient handler for your map points with photos**
 
-The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview, and also have the ability to be magnified by click.<br>Also it proposes a few additional options.
+The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview, and also have the ability to be magnified by click.
+Also it proposes a few additional options.
 You can set a desired preview size, delete the unnecessary garbage from descriptions, set any path to all your photos etc.
+First of all it's been developed for Locus Map Pro and Google Earth Pro for desktop.
  
 ## How to use it
 Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/files/4696182/MAP-POINTS-TRIMMER.zip).
