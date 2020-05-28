@@ -21,7 +21,7 @@
 * Windows 7/Linux
 * Intel/AMD Dual Core CPU with 2.0GHz+
 * 4Gb+ RAM
-* Preinstalled minimum [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") or the latest [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
+* Установленная Ява JVM версии не ниже [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") или последняя [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
  
 ## В проекте
 
@@ -33,3 +33,13 @@
 Это первая версия, возможны баги.
 
 Используйте на свой страх и риск )))
+
+## ТЕХНИЧЕСКИЕ ПОДРОБНОСТИ
+
+При создании использовались:
+* Java v.11
+* Maven
+* Spring Boot
+* JavaScript 2015+
+* HTML
+* CSS

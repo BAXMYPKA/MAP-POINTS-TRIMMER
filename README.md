@@ -3,33 +3,41 @@
 # MAP POINTS TRIMMER
 **The convenient handler for your map points with photos**
 
-Программа позволяет переносить все ваши сохраненные точки на карте (POI) с вложенными фотографиями местности из одной программы работы с картами в другую (в первую очередь, между Locus Map Pro и Google Earth Pro для десктопа).
-Фотографиям можно сделать правильный предпросмотр, удалить ненужную историю сохранений, выставить любой путь до фотографий и т.п.
+The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview, and also have the ability to be magnified by click.<br>Also it proposes a few additional options.
+You can set a desired preview size, delete the unnecessary garbage from descriptions, set any path to all your photos etc.
  
-## Как использовать
-Скачать готовую для автозапуска программу можно [по ссылке]().
+## How to use it
+Download the ready to use application here [по ссылке]().
 
-После запуска заходите в приложение через любой браузер по адресу: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
+When the application start use your browser to visit: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
-**По завершению работы не забудьте его выключить!!** (Иначе сервер так и останется висеть у вас в памяти.)
+**After you finish don't forget to shut down the application with a special button!** (Otherwise the local server will hang in your RAM.)
 
-На данный момент программа работает только с .kml и .kmz файлами, как наиболее правильно и точно поддерживающие сохранение и передачу фотографий и других полезных данных внутри точек.
+For the moment the utility supports only .kml and .kmz formats as the most powerful for keep and transfer points with photos.
 
-Поддержка формата точек .gpx рассматривается в будущем. Хотя и не знаю, насколько это будет актуальным.
+The support of .gpx format is being considered but I'm hesitating if it will be useful.
 
-## Минимальные системные требования
+## Minimum system requirements
 * Windows 7/Linux
 * Intel/AMD Dual Core CPU with 2.0GHz+
 * 4Gb+ RAM
-* Preinstalled minimum [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") or the latest [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
+* Preinstalled Java JVM with a minimum versiont [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") or the latest [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
  
-## В проекте
+## In the project
 
-* Масштабирование иконок и подписей к ним в файлах .kml. Если иконок много, уменьшать каждую вручную глупо, а Google Earth Pro позволяет присвоить только одну иконку для всех точек в папке и настроить масштаб.
-* Поддержка формата .gpx. Пока под вопросом, т.к. не до конца решил, нужно ли это.
+* Scalability for icons and their text in .kml files as Google Earth Pro doesn't allow to scale all icons without keeping their individual image.
+* .gpx format support
 
-##  Особенности
+##  Features
 
-Это первая версия, возможны баги.
+This is the first application version, use it with caution.
 
-Используйте на свой страх и риск )))
+## TECH INFO
+
+User technologies:
+* Java v.11
+* Maven
+* Spring Boot
+* JavaScript 2015+
+* HTML
+* CSS

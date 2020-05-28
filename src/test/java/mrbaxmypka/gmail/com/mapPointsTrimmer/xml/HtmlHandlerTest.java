@@ -259,7 +259,7 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
-
+		
 		//THEN
 		assertAll(
 			() -> assertTrue(processedHtml.contains("style=\"width: 750px;")),
@@ -381,7 +381,7 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
-
+		
 		//THEN
 		assertAll(
 			() -> assertTrue(processedHtml.contains(" width=\"90%\" ")),
@@ -720,7 +720,7 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
-
+		
 		//THEN
 		Pattern image = Pattern.compile("src=\"/storage/p__20200511_130333.jpg\"", Pattern.MULTILINE);
 		Pattern href = Pattern.compile("href=\"/storage/p__20200511_130333.jpg\"", Pattern.MULTILINE);
@@ -752,7 +752,7 @@ class HtmlHandlerTest {
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
-
+		
 		//THEN
 		assertTrue(processedHtml.contentEquals("Plain text description"));
 	}
@@ -784,4 +784,21 @@ class HtmlHandlerTest {
 			() -> assertTrue(processedHtml.contains("></a>"))
 		);
 	}
+	
+	@Test
+	public void description_As_Plain_Description_Text_Should_Return_Correct_Description() {
+		//GIVEN Plain text prepended before HTML markup
+		String plainTextDescription = "Plain text description";
+		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setSetPath(true);
+		multipartDto.setSetPreviewSize(true);
+		
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
+
+		//THEN
+		assertEquals("Plain text description", processedHtml);
+	}
+	
 }
