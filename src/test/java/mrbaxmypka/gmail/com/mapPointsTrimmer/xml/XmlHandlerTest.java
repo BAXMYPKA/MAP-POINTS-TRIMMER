@@ -103,119 +103,12 @@ class XmlHandlerTest {
 		"</Placemark>\n" +
 		"</Document>\n" +
 		"</kml>\n";
-	private static String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
-		"\t xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"\n" +
-		"\t xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.google.com/kml/ext/2.2 \">\n" +
-		"\t<Document>\n" +
-		"\t\t<name>Test POIs from Google Earth.kmz</name>\n" +
-		"\t\t<Style id=\"track001102\">\n" +
-		"\t\t\t<LineStyle>\n" +
-		"\t\t\t\t<color>c80000ff</color>\n" +
-		"\t\t\t\t<width>2.3</width>\n" +
-		"\t\t\t</LineStyle>\n" +
-		"\t\t</Style>\n" +
-		"\t\t<StyleMap id=\"msn_police\">\n" +
-		"\t\t\t<Pair>\n" +
-		"\t\t\t\t<key>normal</key>\n" +
-		"\t\t\t\t<styleUrl>#sn_police2</styleUrl>\n" +
-		"\t\t\t</Pair>\n" +
-		"\t\t\t<Pair>\n" +
-		"\t\t\t\t<key>highlight</key>\n" +
-		"\t\t\t\t<styleUrl>#sh_police20</styleUrl>\n" +
-		"\t\t\t</Pair>\n" +
-		"\t\t</StyleMap>\n" +
-		"\t\t<Folder>\n" +
-		"\t\t\t<name>My Placemarks</name>\n" +
-		"\t\t\t<open>1</open>\n" +
-		"\t\t\t<Style>\n" +
-		"\t\t\t\t<ListStyle>\n" +
-		"\t\t\t\t\t<listItemType>check</listItemType>\n" +
-		"\t\t\t\t\t<ItemIcon>\n" +
-		"\t\t\t\t\t\t<state>open</state>\n" +
-		"\t\t\t\t\t\t<href>C:/Users/%username%/Programs/Locus/data-media-photo/mysavedplaces_open.png</href>\n" +
-		"\t\t\t\t\t</ItemIcon>\n" +
-		"\t\t\t\t\t<ItemIcon>\n" +
-		"\t\t\t\t\t\t<state>closed</state>\n" +
-		"\t\t\t\t\t\t<href>C:/Users/%username%/Programs/Locus/data-media-photo/mysavedplaces_closed.png\n" +
-		"\t\t\t\t\t\t</href>\n" +
-		"\t\t\t\t\t</ItemIcon>\n" +
-		"\t\t\t\t\t<bgColor>00ffffff</bgColor>\n" +
-		"\t\t\t\t\t<maxSnippetLines>2</maxSnippetLines>\n" +
-		"\t\t\t\t</ListStyle>\n" +
-		"\t\t\t</Style>\n" +
-		"\t\t\t<Document>\n" +
-		"\t\t\t\t<name>Test POIs from Locus</name>\n" +
-		"\t\t\t\t<atom:author>\n" +
-		"\t\t\t\t\t<atom:name>Locus (Android)</atom:name>\n" +
-		"\t\t\t\t</atom:author>\n" +
-		"\t\t\t\t<Style id=\"misc-sunny.png\">\n" +
-		"\t\t\t\t\t<IconStyle>\n" +
-		"\t\t\t\t\t\t<color>99ffffff</color>\n" +
-		"\t\t\t\t\t\t<scale>0.5</scale>\n" +
-		"\t\t\t\t\t\t<Icon>\n" +
-		"\t\t\t\t\t\t\t<href>C:/Users/%username%/Programs/Locus/data-media-photo/misc-sunny.png</href>\n" +
-		"\t\t\t\t\t\t</Icon>\n" +
-		"\t\t\t\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
-		"\t\t\t\t\t</IconStyle>\n" +
-		"\t\t\t\t\t<LabelStyle>\n" +
-		"\t\t\t\t\t\t<color>00ffffff</color>\n" +
-		"\t\t\t\t\t\t<scale>0</scale>\n" +
-		"\t\t\t\t\t</LabelStyle>\n" +
-		"\t\t\t\t</Style>\n" +
-		"\t\t\t\t<Style id=\"misc-sunny.png0\">\n" +
-		"\t\t\t\t\t<IconStyle>\n" +
-		"\t\t\t\t\t\t<color>99ffffff</color>\n" +
-		"\t\t\t\t\t\t<scale>0.5</scale>\n" +
-		"\t\t\t\t\t\t<Icon>\n" +
-		"\t\t\t\t\t\t\t<href>C:/Users/%username%/Programs/Locus/data-media-photo/misc-sunny.png</href>\n" +
-		"\t\t\t\t\t\t</Icon>\n" +
-		"\t\t\t\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
-		"\t\t\t\t\t</IconStyle>\n" +
-		"\t\t\t\t\t<LabelStyle>\n" +
-		"\t\t\t\t\t\t<color>00ffffff</color>\n" +
-		"\t\t\t\t\t\t<scale>0</scale>\n" +
-		"\t\t\t\t\t</LabelStyle>\n" +
-		"\t\t\t\t</Style>\n" +
-		"\t\t\t\t<StyleMap id=\"misc-sunny.png1\">\n" +
-		"\t\t\t\t\t<Pair>\n" +
-		"\t\t\t\t\t\t<key>normal</key>\n" +
-		"\t\t\t\t\t\t<styleUrl>#misc-sunny.png0</styleUrl>\n" +
-		"\t\t\t\t\t</Pair>\n" +
-		"\t\t\t\t\t<Pair>\n" +
-		"\t\t\t\t\t\t<key>highlight</key>\n" +
-		"\t\t\t\t\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-		"\t\t\t\t\t</Pair>\n" +
-		"\t\t\t\t</StyleMap>\n" +
-		"\t\t\t<Folder>\n" +
-		"\t\t\t\t<name>My POIs</name>\n" +
-		"\t\t\t\t<Placemark>\n" +
-		"\t\t\t\t\t<name>The POI without image</name>\n" +
-		"\t\t\t\t\t<open>1</open>\n" +
-		"\t\t\t\t\t\t<description>GE description without CDATA</description>\n" +
-		"\t\t\t\t\t<styleUrl>#generic41</styleUrl>\n" +
-		"\t\t\t\t\t<Point>\n" +
-		"\t\t\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
-		"\t\t\t\t\t</Point>\n" +
-		"\t\t\t\t</Placemark>\n" +
-		"\t\t\t\t<Placemark>\n" +
-		"\t\t\t\t\t<name>The POI with image</name>\n" +
-		"\t\t\t\t\t<open>1</open>\n" +
-		"\t\t\t\t\t\t<description><img style=\"width:500px;border:3px white solid;\" src=\"files/p__20200511_130745.jpg\"></description>\n" +
-		"\t\t\t\t\t<styleUrl>#generic42</styleUrl>\n" +
-		"\t\t\t\t\t<Point>\n" +
-		"\t\t\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
-		"\t\t\t\t\t</Point>\n" +
-		"\t\t\t\t</Placemark>\n" +
-		"\t\t\t</Folder>\n" +
-		"\t</Document>\n" +
-		"</kml>\n";
 	private HtmlHandler htmlHandler = new HtmlHandler();
 	private XmlHandler xmlHandler = new XmlHandler(htmlHandler);
 	
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, XMLStreamException {
 		//GIVEN
 		String newPath = "C:\\MyPoi\\MyPoiImages";
 		multipartFile = new MockMultipartFile(
@@ -242,7 +135,7 @@ class XmlHandlerTest {
 	 */
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body_Except_Special_GoogleEarth_Web_Links()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, XMLStreamException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
 			"TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
@@ -261,7 +154,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, XMLStreamException {
 		//GIVEN
 		String pathWithWhitespaces = "D:\\My Folder\\My POI";
 		multipartFile = new MockMultipartFile(
@@ -292,7 +185,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void trimXml_Only_Should_Return_Only_Xml_Without_LineBreaks()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, XMLStreamException {
 		//GIVEN
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -401,7 +294,7 @@ class XmlHandlerTest {
 		
 		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
-
+		
 		//THEN <ExtendedData xmlns:lc="http://www.locusmap.eu"> has to be created with <lc:attachment>
 		assertAll(
 			() -> assertTrue(processedKml.contains(
@@ -534,7 +427,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_With_2_Placemarks_Should_Add_More_Attachments_Src_From_Description_To_Each_Without_Dublicates()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, XMLStreamException {
 		//GIVEN For 2 Placemarks in a row with existing <ExtendedData> and additional images in description
 		String locus = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -610,7 +503,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Contain_Only_Relative_And_Absolute_Type_Of_Href_When_PathTypes_Undefined()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, XMLStreamException {
 		//GIVEN with existing <ExtendedData> and additional images in description with various types of path
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -660,7 +553,7 @@ class XmlHandlerTest {
 		
 		//WHEN
 		String processedKml = xmlHandler.processKml(multipartDto);
-
+		
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(
 			() -> assertTrue(processedKml.contains(
@@ -679,7 +572,7 @@ class XmlHandlerTest {
 			() -> assertFalse(processedKml.contains(
 				"<lc:attachment>/C:/MyPOI/_1318431492316.jpg</lc:attachment>"))
 		);
-			}
+	}
 	
 	/**
 	 * Locus Map points with correct tags as
@@ -690,7 +583,7 @@ class XmlHandlerTest {
 	 */
 	@Test
 	public void header_Should_Be_Added_With_Lc_Locusmap_eu_Namespace_Prefix_If_Contain_Lc_Attachments()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, XMLStreamException {
 		//GIVEN with existing <ExtendedData> parent without namespace for "lc" prefix and <lc:attachment> child
 		String googleKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
