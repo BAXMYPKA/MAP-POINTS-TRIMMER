@@ -9,18 +9,23 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class XmlHandlerTest {
+class KmlHandlerTest {
 	
 	private static InputStream inputStream;
 	private static MultipartDto multipartDto;
 	private static MultipartFile multipartFile;
+	private HtmlHandler htmlHandler = new HtmlHandler();
+	private KmlHandler kmlHandler = new KmlHandler(htmlHandler);
 	private static String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
 		"xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -103,12 +108,10 @@ class XmlHandlerTest {
 		"</Placemark>\n" +
 		"</Document>\n" +
 		"</kml>\n";
-	private HtmlHandler htmlHandler = new HtmlHandler();
-	private XmlHandler xmlHandler = new XmlHandler(htmlHandler);
 	
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body()
-		throws IOException, XMLStreamException {
+		throws IOException, XMLStreamException, ParserConfigurationException, SAXException, TransformerException {
 		//GIVEN
 		String newPath = "C:\\MyPoi\\MyPoiImages";
 		multipartFile = new MockMultipartFile(
@@ -119,7 +122,7 @@ class XmlHandlerTest {
 		multipartDto.setPathType("absolute");
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto);
 		
 		//THEN
 		assertTrue(processedKml.contains("<href>file:///C:/MyPoi/MyPoiImages/file-sdcardLocuscacheimages1571471453728.png</href>"));
@@ -135,7 +138,7 @@ class XmlHandlerTest {
 	 */
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body_Except_Special_GoogleEarth_Web_Links()
-		throws IOException, XMLStreamException {
+		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
 			"TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
@@ -145,7 +148,7 @@ class XmlHandlerTest {
 		multipartDto.setPathType("absolute");
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto);
 		
 		//THEN
 		//Special GoogleEarth icons paths should be preserved
@@ -154,7 +157,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded()
-		throws IOException, XMLStreamException {
+		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
 		//GIVEN
 		String pathWithWhitespaces = "D:\\My Folder\\My POI";
 		multipartFile = new MockMultipartFile(
@@ -165,7 +168,7 @@ class XmlHandlerTest {
 		multipartDto.setPathType("absolute");
 		
 		//WHEN
-		String processedHtml = xmlHandler.processKml(multipartDto);
+		String processedHtml = kmlHandler.processXml(multipartDto);
 		
 		//THEN All whitespaces should be replaced with URL '%20' sign
 		assertAll(
@@ -185,7 +188,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void trimXml_Only_Should_Return_Only_Xml_Without_LineBreaks()
-		throws IOException, XMLStreamException {
+		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
 		//GIVEN
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -226,26 +229,21 @@ class XmlHandlerTest {
 		multipartDto.setTrimXml(true);
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
-		
+		String processedKml = kmlHandler.processXml(multipartDto);
+		System.out.println(processedKml);
 		//THEN xml tags are without whitespaces but CDATA starts and ends with them
 		
 		assertAll(
 			() -> assertTrue(processedKml.contains(
-				"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document><name>Test POIs from Locus</name><atom:author><atom:name>Locus (Android)</atom:name></atom:author><Placemark><name>A road fork</name><description>")),
+				"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"><Document><name>Test POIs from Locus</name><atom:author><atom:name>Locus (Android)</atom:name></atom:author><Placemark><name>A road fork</name><description>")),
 			() -> assertTrue(processedKml.contains(
-				"</description><styleUrl>#misc-sunny.png</styleUrl><Point><coordinates>37.558700,55.919883,0.00</coordinates></Point><gx:TimeStamp><when>2014-11-21T00:27:31Z</when></gx:TimeStamp></Placemark></Document></kml>")),
-			() -> assertTrue(processedKml.contains(
-				"![CDATA[\n" +
-					"<!-- desc_gen:start --> <font color=\"black\"> </font><font color=\"black\"> Test user description<!-- desc_user:end --> &gt; </font>\n" +
-					"<table width=\"100%\"> \n" +
-					" <tbody> <!-- desc_user:start --> \n" +
-					"  <tr> \n" +
-					"   <td width=\"100%\" align=\"center\"><a href=\"file:///C:/MyPOI/_1318431492316.jpg\" target=\"_blank\"><img src=\"file:///C:/MyPOI/_1318431492316.jpg\" width=\"330px\" align=\"center\"></a>Test place name</td> \n" +
-					"  </tr>\n" +
-					" </tbody> \n" +
-					"</table><!-- desc_gen:end -->"))
-		);
+				"</description><styleUrl>#misc-sunny.png</styleUrl><Point><coordinates>37.558700,55.919883,0.00</coordinates></Point><gx:TimeStamp><when>2014-11-21T00:27:31Z</when></gx:TimeStamp></Placemark></Document></kml>")));
+		
+		Pattern newLinePattern = Pattern.compile("\n", Pattern.MULTILINE);
+		Matcher newLineMatcher = newLinePattern.matcher(processedKml);
+		//The resulting string contains 10 new lines
+		assertEquals(10, newLineMatcher.results().count());
+		
 		assertFalse(processedKml.contains(
 			"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 				"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -254,7 +252,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Create_ExtendedData_lcAttachment_With_Src_From_Description()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		//GIVEN kml without <ExtendedData>
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -293,8 +291,8 @@ class XmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
-		
+		String processedKml = kmlHandler.processXml(multipartDto);
+		System.out.println(processedKml);
 		//THEN <ExtendedData xmlns:lc="http://www.locusmap.eu"> has to be created with <lc:attachment>
 		assertAll(
 			() -> assertTrue(processedKml.contains(
@@ -308,7 +306,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Just_Replace_Existing_Src_From_Description()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		//GIVEN with existing <ExtendedData>
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -350,7 +348,7 @@ class XmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto);
 		
 		//THEN <lc:attachments> text has to be replaced from description one
 		assertTrue(processedKml.contains("<ExtendedData xmlns:lc=\"http://www.locusmap.eu\""));//Just a check
@@ -360,7 +358,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Add_More_Attachments_Src_From_Description()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
 		//GIVEN with existing <ExtendedData> and additional images in description
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -406,7 +404,7 @@ class XmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto);
 		
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertFalse(processedKml.contains("<lc:attachment>files/_1318431492316.jpg</lc:attachment>"));
@@ -427,7 +425,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_With_2_Placemarks_Should_Add_More_Attachments_Src_From_Description_To_Each_Without_Dublicates()
-		throws IOException, XMLStreamException {
+		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
 		//GIVEN For 2 Placemarks in a row with existing <ExtendedData> and additional images in description
 		String locus = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -486,7 +484,7 @@ class XmlHandlerTest {
 		multipartDto.setPreviewSizeUnit(PreviewSizeUnits.PIXELS);
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto);
 		
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(
@@ -503,7 +501,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Contain_Only_Relative_And_Absolute_Type_Of_Href_When_PathTypes_Undefined()
-		throws IOException, XMLStreamException {
+		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
 		//GIVEN with existing <ExtendedData> and additional images in description with various types of path
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -552,7 +550,7 @@ class XmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto);
 		
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(
@@ -583,7 +581,7 @@ class XmlHandlerTest {
 	 */
 	@Test
 	public void header_Should_Be_Added_With_Lc_Locusmap_eu_Namespace_Prefix_If_Contain_Lc_Attachments()
-		throws IOException, XMLStreamException {
+		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
 		//GIVEN with existing <ExtendedData> parent without namespace for "lc" prefix and <lc:attachment> child
 		String googleKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -627,7 +625,7 @@ class XmlHandlerTest {
 		multipartDto.setPreviewSize(640);
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto);
 		
 		//THEN <ExtendedData> has to contain "lc" prefix with "locusmap.eu" namespace to support <lc:attachment>
 		// children tags

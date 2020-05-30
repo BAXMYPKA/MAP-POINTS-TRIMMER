@@ -35,6 +35,7 @@ public class HtmlHandler {
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
 	public String processDescriptionText(String description, MultipartDto multipartDto) {
+		//TODO: to elininate &gt &lt after parsing
 		Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
 		
 		if (parsedHtmlFragment == null) {

@@ -2,7 +2,8 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.XmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.Xml;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KmlKmzServiceTest {
 	
-	private static XmlHandler xmlHandler = new XmlHandler(new HtmlHandler());
+	private static KmlHandler kmlHandler = new KmlHandler(new HtmlHandler());
 	private static KmlKmzService kmlKmzService;
 	private static MessageSource messageSource;
 	private static MultipartDto multipartDto;
@@ -43,8 +44,8 @@ class KmlKmzServiceTest {
 		messageSource = Mockito.mock(MessageSource.class);
 		Mockito.when(messageSource.getMessage("exception.nullFilename", null, null))
 			.thenReturn("Filename cannot be null!");
-		xmlHandler = Mockito.mock(XmlHandler.class);
-		kmlKmzService = new KmlKmzService(xmlHandler, messageSource);
+		kmlHandler = Mockito.mock(KmlHandler.class);
+		kmlKmzService = new KmlKmzService(kmlHandler, messageSource);
 		testKml = "<kml>test</kml>";
 		multipartFile = new MockMultipartFile(
 			"MockKml.kml", "MockKml.kml", null, testKml.getBytes());
@@ -66,7 +67,7 @@ class KmlKmzServiceTest {
 	public void kml_File_Should_Be_Saved_Temporarily_then_Deleted()
 		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
 		// GIVEN
-		Mockito.when(xmlHandler.processKml(multipartDto)).thenReturn(testKml);
+		Mockito.when(kmlHandler.processKml(multipartDto)).thenReturn(testKml);
 		
 		//WHEN
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
@@ -85,7 +86,7 @@ class KmlKmzServiceTest {
 	public void kml_File_Should_Be_Returned_Same()
 		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
 		// GIVEN
-		Mockito.when(xmlHandler.processKml(multipartDto)).thenReturn(testKml);
+		Mockito.when(kmlHandler.processKml(multipartDto)).thenReturn(testKml);
 		
 		//WHEN
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
@@ -104,7 +105,7 @@ class KmlKmzServiceTest {
 		multipartDto = new MultipartDto(multipartFileWIthKmz);
 		
 		String kmlTest = "<kml>success</kml>";
-		Mockito.when(xmlHandler.processKml(multipartDto)).thenReturn(kmlTest);
+		Mockito.when(kmlHandler.processKml(multipartDto)).thenReturn(kmlTest);
 		
 		//WHEN
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
@@ -127,8 +128,8 @@ class KmlKmzServiceTest {
 		MultipartFile multipartFileWIthKmz = new MockMultipartFile(
 			"LocusTestKmz", "LocusTestKmz.kmz", null, kmzInputStream);
 		multipartDto = new MultipartDto(multipartFileWIthKmz);
-		xmlHandler = new XmlHandler(new HtmlHandler());
-		kmlKmzService = new KmlKmzService(xmlHandler, messageSource);
+		kmlHandler = new KmlHandler(new HtmlHandler());
+		kmlKmzService = new KmlKmzService(kmlHandler, messageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);

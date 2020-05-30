@@ -2,7 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import lombok.Getter;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.XmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.lang.NonNull;
@@ -31,7 +31,7 @@ public class KmlKmzService {
 	
 	private MessageSource messageSource;
 	
-	private XmlHandler xmlHandler;
+	private KmlHandler kmlHandler;
 	
 	private String tempDir = System.getProperty("java.io.tmpdir");
 	
@@ -39,8 +39,8 @@ public class KmlKmzService {
 	private Path tempKmlFile;
 	
 	@Autowired
-	public KmlKmzService(XmlHandler xmlHandler, MessageSource messageSource) {
-		this.xmlHandler = xmlHandler;
+	public KmlKmzService(KmlHandler kmlHandler, MessageSource messageSource) {
+		this.kmlHandler = kmlHandler;
 		this.messageSource = messageSource;
 	}
 	
@@ -56,13 +56,14 @@ public class KmlKmzService {
 		String processedKml;
 		
 		if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kml")) {
-			processedKml = xmlHandler.processKml(multipartDto);
+//			processedKml = kmlHandler.processKml(multipartDto);
+			processedKml = kmlHandler.processXml(multipartDto);
 			tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
 			return tempKmlFile;
 		} else if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kmz")) {
 			MultipartFile multipartWithKml = getMultipartFileWithKml(multipartDto.getMultipartFile(), locale);
 			multipartDto.setMultipartFile(multipartWithKml);
-			processedKml = xmlHandler.processKml(multipartDto);
+			processedKml = kmlHandler.processKml(multipartDto);
 			tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
 			return tempKmlFile;
 		} else {

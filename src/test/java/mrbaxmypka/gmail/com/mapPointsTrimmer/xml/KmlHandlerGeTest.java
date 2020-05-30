@@ -12,12 +12,12 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlHandlerGeTest {
+public class KmlHandlerGeTest {
 	
 	private static MultipartDto multipartDto;
 	private static MultipartFile multipartFile;
 	private HtmlHandler htmlHandler = new HtmlHandler();
-	private XmlHandler xmlHandler = new XmlHandler(htmlHandler);
+	private KmlHandler kmlHandler = new KmlHandler(htmlHandler);
 	private static String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
 		"\t xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"\n" +
@@ -157,7 +157,7 @@ public class XmlHandlerGeTest {
 		multipartDto.setPreviewSize(640);
 		
 		//WHEN
-		String processedKml = xmlHandler.processKml(multipartDto);
+		String processedKml = kmlHandler.processKml(multipartDto);
 		
 		//THEN
 		
