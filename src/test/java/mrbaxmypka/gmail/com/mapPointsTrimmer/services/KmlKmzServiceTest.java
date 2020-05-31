@@ -3,7 +3,6 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.Xml;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -67,7 +66,7 @@ class KmlKmzServiceTest {
 	public void kml_File_Should_Be_Saved_Temporarily_then_Deleted()
 		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
 		// GIVEN
-		Mockito.when(kmlHandler.processKml(multipartDto)).thenReturn(testKml);
+		Mockito.when(kmlHandler.processXml(multipartDto)).thenReturn(testKml);
 		
 		//WHEN
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
@@ -86,7 +85,7 @@ class KmlKmzServiceTest {
 	public void kml_File_Should_Be_Returned_Same()
 		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
 		// GIVEN
-		Mockito.when(kmlHandler.processKml(multipartDto)).thenReturn(testKml);
+		Mockito.when(kmlHandler.processXml(multipartDto)).thenReturn(testKml);
 		
 		//WHEN
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
@@ -105,7 +104,7 @@ class KmlKmzServiceTest {
 		multipartDto = new MultipartDto(multipartFileWIthKmz);
 		
 		String kmlTest = "<kml>success</kml>";
-		Mockito.when(kmlHandler.processKml(multipartDto)).thenReturn(kmlTest);
+		Mockito.when(kmlHandler.processXml(multipartDto)).thenReturn(kmlTest);
 		
 		//WHEN
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);

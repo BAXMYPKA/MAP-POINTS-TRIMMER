@@ -369,6 +369,8 @@ input[type=radio] {
 .downloadMessage {
 	margin-left: 1em;
 	font-style: italic;
+	font-weight: bold;
+	background-color: rgba(188, 188, 135, 0.4);
 }
 
 .mainFooter {

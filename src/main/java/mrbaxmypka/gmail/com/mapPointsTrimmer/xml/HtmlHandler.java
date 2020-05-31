@@ -15,7 +15,6 @@ import org.jsoup.select.NodeVisitor;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
-import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -35,7 +34,6 @@ public class HtmlHandler {
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
 	public String processDescriptionText(String description, MultipartDto multipartDto) {
-		//TODO: to elininate &gt &lt after parsing
 		Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
 		
 		if (parsedHtmlFragment == null) {

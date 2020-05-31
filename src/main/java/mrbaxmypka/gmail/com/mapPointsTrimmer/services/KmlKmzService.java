@@ -63,7 +63,7 @@ public class KmlKmzService {
 		} else if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kmz")) {
 			MultipartFile multipartWithKml = getMultipartFileWithKml(multipartDto.getMultipartFile(), locale);
 			multipartDto.setMultipartFile(multipartWithKml);
-			processedKml = kmlHandler.processKml(multipartDto);
+			processedKml = kmlHandler.processXml(multipartDto);
 			tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
 			return tempKmlFile;
 		} else {

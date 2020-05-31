@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class KmlHandlerTest {
+class KmlHandlerLocusTest {
 	
 	private static InputStream inputStream;
 	private static MultipartDto multipartDto;
@@ -251,8 +251,8 @@ class KmlHandlerTest {
 	}
 	
 	@Test
-	public void locusAsAttachment_Should_Create_ExtendedData_lcAttachment_With_Src_From_Description()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+	public void locusAsAttachment_Should_Create_ExtendedData_For_Attachments_With_Src_From_Description()
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		//GIVEN kml without <ExtendedData>
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -272,7 +272,7 @@ class KmlHandlerTest {
 			"<a href=\"files/_1318431492316.jpg\" target=\"_blank\">" +
 			"<img src=\"files//_1318431492316.jpg\" width=\"330px\" align=\"center\">" +
 			"</a>Test place name</td>\n</tr>\n" +
-			"\t Test user description<!-- desc_user:end --> >\n" +
+			"\t Test user description<!-- desc_user:end --> \n" +
 			" </tbody>\n" +
 			"</table>" +
 			"<!-- desc_gen:end -->]]></description>\n" +
@@ -292,7 +292,7 @@ class KmlHandlerTest {
 		
 		//WHEN
 		String processedKml = kmlHandler.processXml(multipartDto);
-		
+
 		//THEN <ExtendedData> ans <lc:attachment xmlns:lc="http://www.locusmap.eu"> has to be created
 		assertAll(
 			() -> assertTrue(processedKml.contains(
@@ -326,7 +326,7 @@ class KmlHandlerTest {
 			"<a href=\"file:///C:/MyPOI/_1318431492316.jpg\" target=\"_blank\">" +
 			"<img src=\"file:///C:/MyPOI/_1318431492316.jpg\" width=\"330px\" align=\"center\">" +
 			"</a>Test place name</td>\n</tr>\n" +
-			"\t Test user description<!-- desc_user:end --> >\n" +
+			"\t Test user description<!-- desc_user:end --> \n" +
 			" </tbody>\n" +
 			"</table>" +
 			"<!-- desc_gen:end -->]]></description>\n" +
@@ -405,7 +405,7 @@ class KmlHandlerTest {
 		
 		//WHEN
 		String processedKml = kmlHandler.processXml(multipartDto);
-		
+
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertFalse(processedKml.contains("<lc:attachment>files/_1318431492316.jpg</lc:attachment>"));
 		
@@ -489,11 +489,12 @@ class KmlHandlerTest {
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(
 			() -> assertTrue(processedKml.contains(
-				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">" + System.lineSeparator() +
-					"\t\t<lc:attachment>files/p__20200511_130333.jpg</lc:attachment>")),
+				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+					"\t\t<lc:attachment>files/p__20200511_130333.jpg</lc:attachment>\n" +
+					"\t</ExtendedData>")),
 			() -> assertTrue(processedKml.contains(
-				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">" + System.lineSeparator() +
-					"\t\t<lc:attachment>files/p__20200511_125332.jpg</lc:attachment>" + System.lineSeparator() +
+				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+					"\t\t<lc:attachment>files/p__20200511_125332.jpg</lc:attachment>\n" +
 					"\t</ExtendedData>"))
 		);
 	}
