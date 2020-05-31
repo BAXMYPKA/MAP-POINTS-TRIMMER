@@ -3,10 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -65,10 +62,13 @@ public class KmlHandler extends Xml {
 		if (multipartDto.isAsAttachmentInLocus()) {
 			processLocusAttachments_2(documentRoot, multipartDto);
 		}
-		
-		return writeTransformedDocument(document, multipartDto);
+		if (multipartDto.isTrimXml()) {
+			trimWhitespaces(documentRoot);
+		}
+		return writeTransformedDocument(document);
 	}
 	
+/*
 	private String writeTransformedDocument(Document document, MultipartDto multipartDto) throws TransformerException {
 		if (multipartDto.isTrimXml()) {
 			Element documentElement = document.getDocumentElement();
@@ -83,6 +83,7 @@ public class KmlHandler extends Xml {
 		transformer.transform(domSource, result);
 		return stringWriter.toString();
 	}
+*/
 	
 	private void trimWhitespaces(Node node) {
 		NodeList childNodes = node.getChildNodes();
@@ -106,7 +107,7 @@ public class KmlHandler extends Xml {
 		for (int i = 0; i < hrefs.getLength(); i++) {
 			Node node = hrefs.item(i);
 			String oldHrefWithFilename = node.getTextContent();
-			if (isChangeable(oldHrefWithFilename)) {
+			if (isChangeable_2(oldHrefWithFilename)) {
 				String newHrefWithOldFilename = getHtmlHandler().getNewHrefWithOldFilename(
 					oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
 				node.setTextContent(newHrefWithOldFilename);
@@ -132,8 +133,10 @@ public class KmlHandler extends Xml {
 			} else {
 				//Obtain an inner CDATA text to treat as HTML elements or plain text
 				String processedHtmlCdata = htmlHandler.processDescriptionText(textContent, multipartDto);
-				processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartDto);
-				descriptionNode.setTextContent(processedHtmlCdata);
+//				processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartDto);
+				CDATASection cdataSection = document.createCDATASection(processedHtmlCdata);
+				descriptionNode.setTextContent("");
+				descriptionNode.appendChild(cdataSection);
 			}
 		}
 	}
@@ -145,8 +148,53 @@ public class KmlHandler extends Xml {
 	 * 3) If description contains more src to images than the existing <ExtendedData></ExtendedData> has,
 	 * it add additional <lc:attacmhent></lc:attacmhent> elements to the <ExtendedData></ExtendedData> parent.
 	 *
+	 * @return A new {@link LinkedList<XMLEvent>} with modified or new <lc:attachments></lc:attachments>.
+	 * Or the old unmodified List if no changes were done.</ExtendedData>
+	 */
+	private void processLocusAttachments_2(Element documentRoot, MultipartDto multipartDto) {
+		NodeList placemarks = documentRoot.getElementsByTagName("Placemark");
+		//Iterate though every <Placemark>
+		for (int i = 0; i < placemarks.getLength(); i++) {
+			Node placemark = placemarks.item(i);
+			NodeList placemarksChildNodes = placemark.getChildNodes();
+			
+			String descriptionText = "";//If any as a plain text
+			List<String> imgSrcFromDescription = new LinkedList<>();//Existing img files in <description>
+			List<Node> attachments = new LinkedList<>();//Existing <attachment> nodes in <ExtendedData>
+			
+			//Derive <description> and <ExtendedData> from Placemark
+			for (int j = 0; j < placemarksChildNodes.getLength(); j++) {
+				if (placemarksChildNodes.item(j).getNodeType() != Node.ELEMENT_NODE) continue;
+				if (placemarksChildNodes.item(j).getLocalName().equals("description")) {
+					descriptionText = placemarksChildNodes.item(j).getTextContent();
+					imgSrcFromDescription = htmlHandler.getAllImagesFromDescription(descriptionText);
+				} else if (placemarksChildNodes.item(j).getLocalName().equals("ExtendedData")) {
+					
+					//<ExtendedData> is the parent for every <attachment>
+					NodeList extendedDataChildNodes = placemarksChildNodes.item(j).getChildNodes();
+					for (int k = 0; k < extendedDataChildNodes.getLength(); k++) {
+						if (extendedDataChildNodes.item(k).getNodeType() != Node.ELEMENT_NODE) continue;
+						if (extendedDataChildNodes.item(k).getLocalName().equals("attachment")) {
+							attachments.add(extendedDataChildNodes.item(k));
+						}
+					}
+				}
+			}
+			processImagesFromDescription_2(imgSrcFromDescription, attachments, placemark, multipartDto);
+		}
+		
+	}
+	
+	/**
+	 * 1) Compares the given List of src to images from user description
+	 * and an existing <lc:attacmhent></lc:attacmhent> from <ExtendedData></ExtendedData> of Locus xml.
+	 * 2) Overwrites src in attachments if they have the same filenames as those from User description
+	 * 3) If description contains more src to images than the existing <ExtendedData></ExtendedData> has,
+	 * it add additional <lc:attacmhent></lc:attacmhent> elements to the <ExtendedData></ExtendedData> parent.
+	 *
 	 * @param imgSrcFromDescription A List of src to images from User Description
-	 * @param extendedDataEvents    (Linked)List of {@link XMLEvent} within <ExtendedData></ExtendedData> parent, e.g.:
+	 * @param attachmentNodes       (Linked)List of <attachment></attachment> {@link Node} within <ExtendedData></ExtendedData>
+	 *                              parent, e.g.:
 	 *                              <ExtendedData>
 	 *                              <lc:attachment></lc:attachment>
 	 *                              <lc:attachment></lc:attachment>
@@ -157,57 +205,27 @@ public class KmlHandler extends Xml {
 	 *                              <>...</>
 	 *                              <ExtendedData>...</ExtendedData>
 	 *                              </Placemark>
-	 * @return A new {@link LinkedList<XMLEvent>} with modified or new <lc:attachments></lc:attachments>.
-	 * Or the old unmodified List if no changes were done.</ExtendedData>
+	 * @param placemark             A Parent {@link Node} for adding a new <ExtendedData></ExtendedData> if the last one is not
+	 *                              presented.
 	 */
-	private void processLocusAttachments_2(Element documentRoot, MultipartDto multipartDto) {
-		NodeList extendedDatas = documentRoot.getElementsByTagName("ExtendedData");
-		for (int i = 0; i < extendedDatas.getLength(); i++) {
-			Node extendedData = extendedDatas.item(i);
-			Node placemark = extendedData.getParentNode();
-			
-			NodeList placemarkChildren = placemark.getChildNodes();
-			String descriptionText = "";
-			List<String> imgSrcFromDescription = new LinkedList<>();
-			List<Node> attachmentNodes = new LinkedList<>();
-			
-			for (int j = 0; j < placemarkChildren.getLength(); j++) {
-				if (placemarkChildren.item(j).getNodeName().equals("description")) {
-					Node description = placemarkChildren.item(j);
-					descriptionText = description.getTextContent();
-					imgSrcFromDescription = htmlHandler.getAllImagesFromDescription(descriptionText);
-				} else if (placemarkChildren.item(j).getNodeName().equals("attachment")) {
-					attachmentNodes.add(placemarkChildren.item(j));
-				}
-			}
-			
-			processImagesFromDescription_2(imgSrcFromDescription, attachmentNodes, placemark, multipartDto);
-			
-			
-		}
-		
-	}
-	
-	private void processImagesFromDescription_2(List<String> imgSrcFromDescription,	List<Node> attachmentNodes,
-		Node attachmentNodesParent,	MultipartDto multipartDto) {
-		
+	private void processImagesFromDescription_2(
+		List<String> imgSrcFromDescription, List<Node> attachmentNodes, Node placemark, MultipartDto multipartDto) {
+		//No images from description to insert as attachments
 		if (imgSrcFromDescription.isEmpty()) {
-			//No images from description to insert as attachments
 			return;
-		} else if (multipartDto.getPathType() != null && multipartDto.getPathType().equals(PathTypes.WEB)) {
 			//WEB paths are not supported as attachments
+		} else if (multipartDto.getPathType() != null && multipartDto.getPathType().equals(PathTypes.WEB)) {
 			return;
 		}
-		//TODO: to add namespace to parent ExtendedData
 		//Turn all imgSrc into Locus specific paths
-		final List<String> locusAttachmentsHref = getLocusSpecificAttachmentsHref(imgSrcFromDescription, multipartDto);
+		final List<String> locusAttachmentsHref = getLocusSpecificAttachmentsHref_2(imgSrcFromDescription, multipartDto);
 		
 		//Iterate through existing <ExtendedData> elements
 		if (!attachmentNodes.isEmpty()) {
-//			addLcPrefixForLocusmapNamespace_2(attachmentNodes);
+			//addLcPrefixForLocusmapNamespace_2(attachmentNodes);
 			attachmentNodes = attachmentNodes.stream()
 				.filter(attachment -> attachment.getPrefix().equals("lc"))
-				.map(attachment -> {
+				.peek(attachment -> {
 					String attachmentFilename = htmlHandler.getFileName(attachment.getTextContent());
 					
 					Iterator<String> iterator = locusAttachmentsHref.iterator();
@@ -220,7 +238,6 @@ public class KmlHandler extends Xml {
 							break;
 						}
 					}
-					return attachment;
 				})
 				.collect(Collectors.toList());
 			//If not all the images from Description are attached we create and add new <lc:attachment>'s
@@ -229,13 +246,13 @@ public class KmlHandler extends Xml {
 				Node parentExtendedData = attachmentNodes.get(0).getParentNode();
 				newAttachments.forEach(parentExtendedData::appendChild);
 			}
-		} else { //<ExtendedData> isn't presented within the <Placemark>
+			//<ExtendedData> isn't presented within the <Placemark>
+		} else {
 			//Create a new <ExtendedData> parent with new <lc:attachment> children from images src from description
 			List<Element> imagesSrcAsLcAttachments = getImagesSrcAsLcAttachments_2(locusAttachmentsHref);
 			Node newExtendedData = getNewExtendedData_2(imagesSrcAsLcAttachments);
-			attachmentNodesParent.appendChild(newExtendedData);
+			placemark.appendChild(newExtendedData);
 		}
-		
 	}
 	
 	/**
@@ -261,6 +278,19 @@ public class KmlHandler extends Xml {
 		
 	}
 	
+	private List<String> getLocusSpecificAttachmentsHref_2(List<String> imagesToAttach, MultipartDto multipartDto) {
+		imagesToAttach = imagesToAttach.stream()
+			.map(imgSrc -> {
+				//Locus lc:attachments accepts only RELATIVE type of path
+				//So remake path to Locus specific absolute path without "file:///"
+				return getHtmlHandler().getLocusAttachmentAbsoluteHref(imgSrc, multipartDto);
+			})
+			.filter(imgSrc -> !imgSrc.isBlank())
+			.collect(Collectors.toList());
+		
+		return imagesToAttach;
+	}
+	
 	/**
 	 * @param imagesToAttach Src to images from User description
 	 * @return {@link XMLEvent#CHARACTERS} as <lc:attachment>src/to/image.img</lc:attachment>
@@ -268,10 +298,8 @@ public class KmlHandler extends Xml {
 	 */
 	private List<Element> getImagesSrcAsLcAttachments_2(List<String> imagesToAttach) {
 		List<Element> lcAttachments = new ArrayList<>();
-		
 		imagesToAttach.forEach(img -> {
-			Element attachment = document.createElement("attachment");
-			attachment.setPrefix("lc");
+			Element attachment = document.createElementNS("http://www.locusmap.eu", "lc:attachment");
 			attachment.setTextContent(img);
 			lcAttachments.add(attachment);
 		});
@@ -280,17 +308,28 @@ public class KmlHandler extends Xml {
 	
 	/**
 	 * @param elementsToBeInside All {@link XMLEvent}'s to be written inside <ExtendedData></ExtendedData> with
-	 *                            Locus namespace.
+	 *                           Locus namespace.
 	 * @return {@link LinkedList<XMLEvent>} with XMLEvents inside to be written into existing document as:
 	 * <ExtendedData xmlns:lc="http://www.locusmap.eu">... xmlEventsToBeInside ...</ExtendedData>
 	 */
 	private Node getNewExtendedData_2(List<Element> elementsToBeInside) {
 		Element extendedData = document.createElement("ExtendedData");
-		extendedData.setAttributeNS("http://www.locusmap.eu", "xmlns", "lc");
+//		Element extendedData = document.createElementNS("http://www.locusmap.eu", "ExtendedData");
 		elementsToBeInside.forEach(extendedData::appendChild);
 		return extendedData;
 	}
 	
+	/**
+	 * Some programs as Google Earth has special href they internally redirect to their local image store.
+	 * It is not recommended to change those type of hrefs.
+	 *
+	 * @param oldHrefWithFilename The existing <href>path to image</href> to be verified.
+	 * @return 'True' if existing href is not recommended to change. Otherwise 'false'.
+	 */
+	private boolean isChangeable_2(String oldHrefWithFilename) {
+		String googleMapSpecialUrl = "http://maps.google.com/";
+		return !oldHrefWithFilename.startsWith(googleMapSpecialUrl);
+	}
 	
 	/**
 	 * All the additional information for a User (preview size, outdated descriptions etc) are placed inside the
@@ -587,7 +626,7 @@ public class KmlHandler extends Xml {
 				eventFactory.createCharacters(characters.getData());
 		}
 		//Obtain an inner CDATA text to treat as HTML elements or plain text
-		String processedHtmlCdata = getHtmlHandler().processDescriptionText(characters.getData(), multipartDto);
+		String processedHtmlCdata = htmlHandler.processDescriptionText(characters.getData(), multipartDto);
 		
 		processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartDto);
 		

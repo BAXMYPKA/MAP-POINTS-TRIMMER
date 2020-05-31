@@ -55,7 +55,6 @@ public class HtmlHandler {
 			setPath(parsedHtmlFragment, multipartDto.getPathType(), multipartDto.getPath());
 		}
 		if (multipartDto.isSetPreviewSize()) {
-//			Integer previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
 			setPreviewSize(parsedHtmlFragment, multipartDto);
 		}
 		addStartEndComments(parsedHtmlFragment);
