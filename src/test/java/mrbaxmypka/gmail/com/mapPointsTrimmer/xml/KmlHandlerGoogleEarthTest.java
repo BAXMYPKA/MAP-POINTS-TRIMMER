@@ -2,6 +2,8 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
@@ -9,17 +11,19 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class KmlHandlerGoogleEarthTest {
 	
 	private static MultipartDto multipartDto;
 	private static MultipartFile multipartFile;
-	private HtmlHandler htmlHandler = new HtmlHandler();
-	private KmlHandler kmlHandler = new KmlHandler(htmlHandler);
 	private static String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
 		"\t xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"\n" +
@@ -127,6 +131,8 @@ public class KmlHandlerGoogleEarthTest {
 		"\t\t\t</Folder>\n" +
 		"\t</Document>\n" +
 		"</kml>\n";
+	private HtmlHandler htmlHandler = new HtmlHandler();
+	private KmlHandler kmlHandler = new KmlHandler(htmlHandler);
 	
 	@Test
 	public void header_Should_Be_Added_With_Lc_Locusmap_Namespace_Prefix_If_Contain_Lc_Attachments_Without_Namespace_In_ExtendedData_And_Attachment()
@@ -196,6 +202,60 @@ public class KmlHandlerGoogleEarthTest {
 					"\t\t\t<lc:attachment>files/p__20180907_123842.jpg</lc:attachment>\n" +
 					"\t\t</ExtendedData>"))
 		);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(ints = {0, 1, 7, 15, 21, 37, 51, 99, 100, 106, 116, 213})
+	public void percentage_Integer_Input_Should_Be_Turned_Into_Scale(int integer) {
+		//GIVEN User input as a percentage
+		
+		//WHEN it has being transformed into scale
+		BigDecimal scale = BigDecimal.valueOf(integer / 10, 1);
+		
+		//THEN the result has to be from 0.0 to
+		System.out.print("scale = " + scale);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(ints = {0, 1, 7, 15, 21, 37, 51, 99, 100, 106, 116, 213})
+	public void percentage_Integer_Input_Should_Be_Turned_Into_Scale_With_0_1_Step(int integer) {
+		//GIVEN User input as a percentage
+		multipartDto = new MultipartDto(new MockMultipartFile("Name", (byte[]) null));
+		
+		//WHEN it has being transformed into scale
+		multipartDto.setPointIconSize(integer);
+		multipartDto.setPointTextSize(integer);
+		
+		//THEN the result has to be from 0.0 to 2.1 with the step equals 0.1
+		System.out.print("scale = " + multipartDto.getPointIconSize());
+		
+		Pattern pattern = Pattern.compile("[\\d]\\.[\\d]");
+		Matcher matcherIconSize = pattern.matcher(multipartDto.getPointIconSize().toString());
+		Matcher matcherIconTextSize = pattern.matcher(multipartDto.getPointTextSize().toString());
+		
+		assertTrue(matcherIconSize.matches());
+		assertTrue(matcherIconTextSize.matches());
+	}
+	
+	@ParameterizedTest
+	@ValueSource(doubles = {0.0, 0.1, 1.7, 0.11, 0.16, 0.56, 0.97})
+	public void BigDecimal_Input_Should_Be_Turned_Into_Scale_With_0_1_Step(double doubleVal) {
+		//GIVEN User input as a percentage
+		multipartDto = new MultipartDto(new MockMultipartFile("Name", (byte[]) null));
+		
+		//WHEN it has being transformed into scale
+		multipartDto.setPointIconSize(doubleVal);
+		multipartDto.setPointTextSize(doubleVal);
+		
+		//THEN the result has to be from 0.0 to 2.1 with the step equals 0.1
+		System.out.print("scale = " + multipartDto.getPointIconSize());
+		
+		Pattern pattern = Pattern.compile("[\\d]\\.[\\d]");
+		Matcher matcherIconSize = pattern.matcher(multipartDto.getPointIconSize().toString());
+		Matcher matcherIconTextSize = pattern.matcher(multipartDto.getPointTextSize().toString());
+		
+		assertTrue(matcherIconSize.matches());
+		assertTrue(matcherIconTextSize.matches());
 	}
 	
 }

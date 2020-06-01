@@ -324,6 +324,10 @@ input[type=radio] {
 	display: inline-block;
 }
 
+.loadForm_previewSizeInput {
+	width: 4em;
+}
+
 .loadForm_percentageInput {
 	width: 3em;
 }

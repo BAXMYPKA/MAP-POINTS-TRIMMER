@@ -6,11 +6,11 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -84,25 +84,13 @@ public class MultipartDto implements Serializable {
 	@Digits(integer = 3, fraction = 0)
 	@PositiveOrZero
 	@Max(300)
-	private Integer pointIconSize;
-	
-	@Nullable
-	@Digits(integer = 3, fraction = 0)
-	@PositiveOrZero
-	@Max(100)
-	private Integer pointIconTransparency;
+	private BigDecimal pointIconSize;
 	
 	@Nullable
 	@Digits(integer = 3, fraction = 0)
 	@PositiveOrZero
 	@Max(300)
-	private Integer pointTextSize;
-	
-	@Nullable
-	@Digits(integer = 3, fraction = 0)
-	@PositiveOrZero
-	@Max(100)
-	private Integer pointTextTransparency;
+	private BigDecimal pointTextSize;
 	
 	public void setPathType(@Nullable String pathType) {
 		this.pathType = PathTypes.getByValue(pathType);
@@ -122,4 +110,52 @@ public class MultipartDto implements Serializable {
 		}
 		this.previewSizeUnit = PreviewSizeUnits.getByTypeName(previewUnit);
 	}
+	
+	public void setPointIconSize(@Nullable BigDecimal pointIconSize) {
+		if (pointIconSize != null) {
+			pointIconSize = pointIconSize.setScale(1, RoundingMode.HALF_DOWN);
+		}
+		this.pointIconSize = pointIconSize;
+	}
+	
+	public void setPointTextSize(@Nullable BigDecimal pointTextSize) {
+		if (pointTextSize != null) {
+			pointTextSize = pointTextSize.setScale(1, RoundingMode.HALF_DOWN);
+		}
+		this.pointTextSize = pointTextSize;
+		
+	}
+	
+	public void setPointIconSize(@Nullable Double pointIconSize) {
+		if (pointIconSize != null) {
+			this.pointIconSize = BigDecimal.valueOf(pointIconSize);
+		} else {
+			this.pointIconSize = null;
+		}
+	}
+	
+	public void setPointTextSize(@Nullable Double pointTextSize) {
+		if (pointTextSize != null) {
+			this.pointTextSize = new BigDecimal(pointTextSize, MathContext.DECIMAL128).setScale(1, RoundingMode.HALF_EVEN);
+		} else {
+			this.pointTextSize = null;
+		}
+	}
+	
+	public void setPointIconSize(@Nullable Integer pointIconSize) {
+		if (pointIconSize == null) {
+			this.pointIconSize = null;
+		} else {
+			this.pointIconSize = BigDecimal.valueOf(pointIconSize / 10, 1);
+		}
+	}
+	
+	public void setPointTextSize(@Nullable Integer pointTextSize) {
+		if (pointTextSize == null) {
+			this.pointTextSize = null;
+		} else {
+			this.pointTextSize = BigDecimal.valueOf(pointTextSize / 10, 1);
+		}
+	}
+	
 }

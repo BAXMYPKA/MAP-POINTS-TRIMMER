@@ -99,6 +99,24 @@
 			}
 		});
 		
+		document.getElementById("setPointIconSize").addEventListener('change', ev => {
+			const pointsIconSizeInput = document.getElementById("pointIconSize");
+			if (ev.target.checked) {
+				pointsIconSizeInput.disabled = false;
+			} else {
+				pointsIconSizeInput.disabled = true;
+			}
+		})
+		
+		document.getElementById("setPointTextSize").addEventListener('change', ev => {
+			const pointsIconSizeInput = document.getElementById("pointTextSize");
+			if (ev.target.checked) {
+				pointsIconSizeInput.disabled = false;
+			} else {
+				pointsIconSizeInput.disabled = true;
+			}
+		})
+		
 		const articleAbout = document.querySelector(".articleAbout");
 		
 		articleAbout.addEventListener('click', evt => {

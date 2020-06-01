@@ -33,22 +33,17 @@ public class KmlHandler extends XmlHandler {
 	 */
 	public String processXml(MultipartDto multipartDto)
 		throws IOException, ParserConfigurationException, SAXException, TransformerException {
-		//To skip the whole processing if nothing is set
-		if (!multipartDto.isSetPath() &&
-			!multipartDto.isTrimDescriptions() &&
-			!multipartDto.isSetPreviewSize() &&
-			!multipartDto.isClearOutdatedDescriptions() &&
-			!multipartDto.isTrimXml() &&
-			!multipartDto.isAsAttachmentInLocus()) {
-			return new String(multipartDto.getMultipartFile().getBytes());
-		}
+		
 		document = getDocument(multipartDto.getMultipartFile().getInputStream());
 		Element documentRoot = document.getDocumentElement();
+		//Processing Google Earth specific options
+		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
+		googleEarthHandler.processXml(document, multipartDto);
 		
 		if (multipartDto.isSetPath()) {
 			processHref(documentRoot, multipartDto);
 		}
-		//Processing the further options regarding to inner CDATA from <description>'s
+		//Processing the further text options regarding to inner CDATA or plain text from <description>s
 		processDescriptionsTexts(documentRoot, multipartDto);
 		
 		if (multipartDto.isAsAttachmentInLocus()) {
@@ -57,6 +52,7 @@ public class KmlHandler extends XmlHandler {
 		if (multipartDto.isTrimXml()) {
 			trimWhitespaces(documentRoot);
 		}
+		
 		return writeTransformedDocument(document);
 	}
 	
@@ -159,11 +155,14 @@ public class KmlHandler extends XmlHandler {
 	}
 	
 	/**
-	 * 1) Compares the given List of src to images from user description
-	 * and an existing <lc:attacmhent></lc:attacmhent> from <ExtendedData></ExtendedData> of Locus xml.
-	 * 2) Overwrites src in attachments if they have the same filenames as those from User description
-	 * 3) If description contains more src to images than the existing <ExtendedData></ExtendedData> has,
-	 * it add additional <lc:attacmhent></lc:attacmhent> elements to the <ExtendedData></ExtendedData> parent.
+	 * 1) Compares the given List of images src from user description to the existing <lc:attacmhent></lc:attacmhent>
+	 * from <ExtendedData></ExtendedData> from Locus xml.
+	 * 1.1) If no <lc:attachment> presented, it will create a new <ExtendedData> and all the existing images src will
+	 * be appended to if as the new <lc:attachment>.
+	 * 2) Overwrites attachments data with data from srs if they have the same filenames as those from User description
+	 * 2.1) Deletes those src from images list
+	 * 3) If description contains more images src than the existing <lc:attachments>s,
+	 * it will add additional <lc:attacmhent> elements to the <ExtendedData> parent.
 	 *
 	 * @param imgSrcFromDescription A List of src to images from User Description
 	 * @param attachmentNodes       (Linked)List of <attachment></attachment> {@link Node} within <ExtendedData></ExtendedData>
@@ -272,6 +271,7 @@ public class KmlHandler extends XmlHandler {
 		return extendedData;
 	}
 	//TODO: to move to GoogleEarthHandler
+	
 	/**
 	 * Some programs as Google Earth has special href they internally redirect to their local image store.
 	 * It is not recommended to change those type of hrefs.
