@@ -11,7 +11,7 @@
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		const maxFileSizeMb = [[${maxFileSizeMb}]];
-		const serverAddress = [[${serverAddress}]]
+		const serverAddress = [[${serverAddress}]];
 		/*]]>*/
 	</script>
 	<title>Map Points Trimmer</title>
@@ -66,7 +66,8 @@
 		<article class="article">
 			
 			<section class="article__section" th:utext="#{commonMessages.article.howToUse}">
-				How to properly import and export POIs from Locus to Google Earth (and vise versa) application description.
+				How to properly import and export POIs from Locus to Google Earth (and vise versa) application
+				description.
 			</section>
 			
 			<section id="closableSection" class="article__section article__section_closed"
@@ -221,6 +222,67 @@
 				<div class="interrogation" title="Description"
 					 th:title="#{commonMessages.interrogationAsDescription.clearOutdatedPoiDesc}">?
 				</div>
+				
+				<br>
+			
+			</fieldset>
+			
+			<br>
+			
+			<label for="fieldSetGoogle" class="loadForm__label loadForm__label_LoadFieldSet"
+				   th:utext="#{html.label.locusParams}">
+				Set Google Earth specific parameters
+			</label>
+			
+			<fieldset id="fieldSetGoogle" class="loadForm loadForm__fieldSet">
+				
+				<input id="pointIconSize" class="loadForm_percentageInput" name="pointIconSize"
+					   type="number" min="0" max="300" placeholder="%">
+				<label for="pointIconSize" class="loadForm__label"
+					   th:text="#{html.label.locusAsAttachments}">
+					Point icon size
+				</label>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.asAttachmentInLocus}">
+					?
+				</div>
+				
+				<br>
+				
+				<input id="pointIconTransparency" class="loadForm_percentageInput" name="pointIconTransparency"
+					   type="number" min="0" max="100" placeholder="%">
+				<label for="pointIconTransparency" class="loadForm__label"
+					   th:text="#{html.label.clearDescriptions}">
+					Point icon transparency
+				</label>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.clearOutdatedPoiDesc}">?
+				</div>
+				
+				<br>
+				
+				<input id="pointTextSize" class="loadForm_percentageInput" name="pointTextSize"
+					   type="number" min="0" max="300" placeholder="%">
+				<label for="pointTextSize" class="loadForm__label"
+					   th:text="#{html.label.locusAsAttachments}">
+					Point text size
+				</label>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.asAttachmentInLocus}">
+					?
+				</div>
+				
+				<br>
+				
+				<input id="pointTextTransparency" class="loadForm_percentageInput" name="pointTextTransparency"
+					   type="number" min="0" max="100" placeholder="%">
+				<label for="pointTextTransparency" class="loadForm__label"
+					   th:text="#{html.label.clearDescriptions}">
+					Point text transparency
+				</label>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.clearOutdatedPoiDesc}">?
+				</div>
 				<br>
 			
 			</fieldset>
@@ -266,7 +328,8 @@
 		<div>
 			<ul class="listSmall">
 				<li title="Deleloper's Github" th:title="#{html.title.footer.contacts.github}">
-					<a href="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases" target="_blank" class="mainFooter__item_smaller">
+					<a href="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases" target="_blank"
+					   class="mainFooter__item_smaller">
 						Github
 					</a>
 				</li>

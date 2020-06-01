@@ -58,6 +58,14 @@ public abstract class XmlHandler {
 		return document;
 	}
 	
+	/**
+	 * @param document {@link Document} to be transformed into String.
+	 * @return {@link String} where
+	 * 1) All {@link Transformer} linebreaks as "\r\n" are replaced with default "\n"
+	 * 2) As Locus may spread orphan signs ">" occasionally (especially after {@code <ExtendedData> tag})
+	 * before returning the resulting String is checked with "&gt;\t" regexp (or {@code '\\s*>\\s*'} within original
+	 * kml for those signs to be deleted.
+	 */
 	String writeTransformedDocument(Document document) throws TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		DOMSource domSource = new DOMSource(document);

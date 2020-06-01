@@ -271,7 +271,7 @@ public class KmlHandler extends XmlHandler {
 		elementsToBeInside.forEach(extendedData::appendChild);
 		return extendedData;
 	}
-	
+	//TODO: to move to GoogleEarthHandler
 	/**
 	 * Some programs as Google Earth has special href they internally redirect to their local image store.
 	 * It is not recommended to change those type of hrefs.

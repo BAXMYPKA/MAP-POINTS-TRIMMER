@@ -273,10 +273,11 @@ input[type=radio] {
 	font-weight: bold;
 	text-shadow: -1px -1px 4px lightslategrey;
 	/*text-shadow: -1px -1px 5px darkgrey;*/
+	background-color: rgba(222, 190, 121, 0.16);
 }
 
 .loadForm__label:hover {
-	color: #6a4a0b;
+	color: #6a440b;
 }
 
 .loadForm__label_LoadFieldSet {
@@ -322,6 +323,17 @@ input[type=radio] {
 .loadForm__selectDownloadAs {
 	display: inline-block;
 }
+
+.loadForm_percentageInput {
+	width: 3em;
+}
+
+/*
+.loadForm_percentageInput::after {
+	display: block;
+	content: "per";
+}
+*/
 
 .inputButton {
 	font-weight: bold;

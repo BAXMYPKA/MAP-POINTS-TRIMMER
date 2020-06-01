@@ -6,7 +6,10 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 
 @NoArgsConstructor
@@ -76,6 +79,30 @@ public class MultipartDto implements Serializable {
 	 * A given images will be displayed in "Attachments" tab exclusively in Locus Pro
 	 */
 	private boolean asAttachmentInLocus;
+	
+	@Nullable
+	@Digits(integer = 3, fraction = 0)
+	@PositiveOrZero
+	@Max(300)
+	private Integer pointIconSize;
+	
+	@Nullable
+	@Digits(integer = 3, fraction = 0)
+	@PositiveOrZero
+	@Max(100)
+	private Integer pointIconTransparency;
+	
+	@Nullable
+	@Digits(integer = 3, fraction = 0)
+	@PositiveOrZero
+	@Max(300)
+	private Integer pointTextSize;
+	
+	@Nullable
+	@Digits(integer = 3, fraction = 0)
+	@PositiveOrZero
+	@Max(100)
+	private Integer pointTextTransparency;
 	
 	public void setPathType(@Nullable String pathType) {
 		this.pathType = PathTypes.getByValue(pathType);
