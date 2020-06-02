@@ -80,17 +80,33 @@ public class MultipartDto implements Serializable {
 	 */
 	private boolean asAttachmentInLocus;
 	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
 	@Nullable
-	@Digits(integer = 3, fraction = 0)
 	@PositiveOrZero
 	@Max(300)
-	private BigDecimal pointIconSize;
+	private Integer pointIconSize;
 	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
 	@Nullable
-	@Digits(integer = 3, fraction = 0)
 	@PositiveOrZero
 	@Max(300)
-	private BigDecimal pointTextSize;
+	private Integer pointTextSize;
+	
+	private boolean isScaleCorrect(Double scale) {
+		return Double.toString(scale).matches("\\d\\.\\d") && scale.compareTo(3.0) > 0;
+	}
 	
 	public void setPathType(@Nullable String pathType) {
 		this.pathType = PathTypes.getByValue(pathType);
@@ -111,51 +127,110 @@ public class MultipartDto implements Serializable {
 		this.previewSizeUnit = PreviewSizeUnits.getByTypeName(previewUnit);
 	}
 	
-	public void setPointIconSize(@Nullable BigDecimal pointIconSize) {
-		if (pointIconSize != null) {
-			pointIconSize = pointIconSize.setScale(1, RoundingMode.HALF_DOWN);
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
+	public void setPointIconSize(@Nullable Integer pointIconSize) {
+		if (pointIconSize != null && pointIconSize > 300) {
+			throw new NumberFormatException("Point Icon Size cannot exceed 300%!");
+		} else {
+			this.pointIconSize = pointIconSize;
 		}
-		this.pointIconSize = pointIconSize;
 	}
 	
-	public void setPointTextSize(@Nullable BigDecimal pointTextSize) {
-		if (pointTextSize != null) {
-			pointTextSize = pointTextSize.setScale(1, RoundingMode.HALF_DOWN);
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
+	public void setPointTextSize(@Nullable Integer pointTextSize) {
+		if (pointTextSize != null && pointTextSize > 300) {
+			throw new NumberFormatException("Point Text Size cannot exceed 300%!");
+		} else {
+			this.pointTextSize = pointTextSize;
 		}
-		this.pointTextSize = pointTextSize;
+	}
+	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 *
+	 * @param pointIconSizeScaled As a pure "scale" CSS parameter from 0.0 to 3.0 with the step of 0.1
+	 * @throws NumberFormatException If the method receives incompatible data, e.g. 11.1 or 0.12 ect
+	 */
+	public void setPointIconSizeScaled(@Nullable Double pointIconSizeScaled) throws NumberFormatException {
+		if (pointIconSizeScaled == null) {
+			this.pointIconSize = null;
+		} else if (isScaleCorrect(pointIconSizeScaled)) {
+			throw new NumberFormatException("Scale has to be represented as value from 0.0 to 3.0 with the step of 0.1");
+		} else {
+			BigDecimal bigDecimal = BigDecimal.valueOf(pointIconSizeScaled).setScale(1, RoundingMode.DOWN);
+			this.pointIconSize = bigDecimal.multiply(BigDecimal.valueOf(100)).intValue();
+		}
+	}
+	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 *
+	 * @param pointTextSizeScaled As a pure "scale" CSS parameter from 0.0 to 3.0 with the step of 0.1
+	 * @throws NumberFormatException If the method receives incompatible data, e.g. 11.1 or 0.12 ect
+	 */
+	public void setPointTextSizeScaled(@Nullable Double pointTextSizeScaled) throws NumberFormatException {
+		if (pointTextSizeScaled == null) {
+			this.pointTextSize = null;
+		} else if (isScaleCorrect(pointTextSizeScaled)) {
+			throw new NumberFormatException("Scale has to be represented as value from 0.0 to 3.0 with the step of 0.1");
+		} else {
+			BigDecimal bigDecimal = BigDecimal.valueOf(pointTextSizeScaled).setScale(1, RoundingMode.DOWN);
+			this.pointTextSize = bigDecimal.multiply(BigDecimal.valueOf(100)).intValue();
+			
+		}
+	}
+	
+	/**
+	 * @return Essential scale CSS parameter from 0.0 to 3.0 (max) with the step of 0.1
+	 */
+	public BigDecimal getPointIconSizeScaled() {
+		if (this.getPointIconSize() != null) {
+			BigDecimal pointIconSizeScaled = new BigDecimal(String.valueOf(this.pointIconSize));
+			return new BigDecimal(String.valueOf(this.pointIconSize)).divide(BigDecimal.valueOf(100), 1, RoundingMode.DOWN);
+		}
+		return null;
+	}
+	
+	/**
+	 * @return Essential scale CSS parameter from 0.0 to 3.0 (max) with the step of 0.1
+	 */
+	public BigDecimal getPointTextSizeScaled() {
+		if (this.getPointIconSize() != null) {
+			return new BigDecimal(String.valueOf(this.pointTextSize)).divide(BigDecimal.valueOf(100), 1, RoundingMode.DOWN);
+		}
+		return null;
 		
 	}
 	
-	public void setPointIconSize(@Nullable Double pointIconSize) {
-		if (pointIconSize != null) {
-			this.pointIconSize = BigDecimal.valueOf(pointIconSize);
-		} else {
-			this.pointIconSize = null;
-		}
+	/**
+	 * @see #getPointIconSizeScaled()
+	 */
+	@Nullable
+	@Deprecated
+	public Integer getPointIconSize() {
+		return pointIconSize;
 	}
 	
-	public void setPointTextSize(@Nullable Double pointTextSize) {
-		if (pointTextSize != null) {
-			this.pointTextSize = new BigDecimal(pointTextSize, MathContext.DECIMAL128).setScale(1, RoundingMode.HALF_EVEN);
-		} else {
-			this.pointTextSize = null;
-		}
+	/**
+	 * @see #getPointTextSizeScaled()
+	 */
+	@Nullable
+	@Deprecated
+	public Integer getPointTextSize() {
+		return pointTextSize;
 	}
-	
-	public void setPointIconSize(@Nullable Integer pointIconSize) {
-		if (pointIconSize == null) {
-			this.pointIconSize = null;
-		} else {
-			this.pointIconSize = BigDecimal.valueOf(pointIconSize / 10, 1);
-		}
-	}
-	
-	public void setPointTextSize(@Nullable Integer pointTextSize) {
-		if (pointTextSize == null) {
-			this.pointTextSize = null;
-		} else {
-			this.pointTextSize = BigDecimal.valueOf(pointTextSize / 10, 1);
-		}
-	}
-	
 }

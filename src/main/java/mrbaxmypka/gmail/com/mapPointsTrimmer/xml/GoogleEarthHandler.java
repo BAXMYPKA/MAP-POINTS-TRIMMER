@@ -6,6 +6,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,17 +28,17 @@ public class GoogleEarthHandler {
 	}
 	
 	private void setPointsIconsSize(Element documentRoot, MultipartDto multipartDto) {
-		Float scale = multipartDto.getPointIconSize().floatValue();
+		String scale = multipartDto.getPointIconSizeScaled().toString();
 		NodeList iconStyles = documentRoot.getElementsByTagName("IconStyle");
 		List<Node> scales = getIconStylesScales(iconStyles);
-		scales.forEach(scaleNode -> scaleNode.setTextContent(scale.toString()));
+		scales.forEach(scaleNode -> scaleNode.setTextContent(scale));
 	}
 	
 	private void setPointTextSize(Element documentRoot, MultipartDto multipartDto) {
-		Float scale = multipartDto.getPointIconSize().floatValue();
+		String scale = multipartDto.getPointIconSizeScaled().toString();
 		NodeList styles = documentRoot.getElementsByTagName("Style");
 		List<Node> scales = getLabelStylesScales(styles);
-		scales.forEach(scaleNode -> scaleNode.setTextContent(scale.toString()));
+		scales.forEach(scaleNode -> scaleNode.setTextContent(scale));
 	}
 	
 	private List<Node> getIconStylesScales(NodeList iconStyles) {

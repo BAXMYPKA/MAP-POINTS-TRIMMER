@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -12,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
@@ -204,6 +206,14 @@ public class KmlHandlerGoogleEarthTest {
 		);
 	}
 	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
+	@Disabled
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 7, 15, 21, 37, 51, 99, 100, 106, 116, 213})
 	public void percentage_Integer_Input_Should_Be_Turned_Into_Scale(int integer) {
@@ -216,41 +226,58 @@ public class KmlHandlerGoogleEarthTest {
 		System.out.print("scale = " + scale);
 	}
 	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
 	@ParameterizedTest
-	@ValueSource(ints = {0, 1, 7, 15, 21, 37, 51, 99, 100, 106, 116, 213})
-	public void percentage_Integer_Input_Should_Be_Turned_Into_Scale_With_0_1_Step(int integer) {
+	@ValueSource(ints = {0, 7, 15, 37, 51, 99, 100, 106, 116, 213})
+	public void percentage_Integer_Input_Should_Be_Returned_As_Scale_With_0_1_Step(int percentage) {
 		//GIVEN User input as a percentage
 		multipartDto = new MultipartDto(new MockMultipartFile("Name", (byte[]) null));
 		
 		//WHEN it has being transformed into scale
-		multipartDto.setPointIconSize(integer);
-		multipartDto.setPointTextSize(integer);
+		multipartDto.setPointIconSize(percentage);
+		multipartDto.setPointTextSize(percentage);
 		
 		//THEN the result has to be from 0.0 to 2.1 with the step equals 0.1
-		System.out.print("scale = " + multipartDto.getPointIconSize());
+		System.out.println("icon scale = " + multipartDto.getPointIconSizeScaled());
+		System.out.print("text scale = " + multipartDto.getPointTextSizeScaled());
 		
 		Pattern pattern = Pattern.compile("[\\d]\\.[\\d]");
-		Matcher matcherIconSize = pattern.matcher(multipartDto.getPointIconSize().toString());
-		Matcher matcherIconTextSize = pattern.matcher(multipartDto.getPointTextSize().toString());
+		Matcher matcherIconSize = pattern.matcher(multipartDto.getPointIconSizeScaled().toString());
+		Matcher matcherIconTextSize = pattern.matcher(multipartDto.getPointTextSizeScaled().toString());
 		
 		assertTrue(matcherIconSize.matches());
 		assertTrue(matcherIconTextSize.matches());
 	}
 	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
 	@ParameterizedTest
-	@ValueSource(doubles = {0.0, 0.1, 1.7, 0.11, 0.16, 0.56, 0.97})
-	public void BigDecimal_Input_Should_Be_Turned_Into_Scale_With_0_1_Step(double doubleVal) {
+	@ValueSource(doubles = {0.0, 0.1, 0.5, 0.9, 1.0, 2.2})
+	public void scale_as_Double_Should_Return_Correct_Percentage(double doubleVal) {
 		//GIVEN User input as a percentage
 		multipartDto = new MultipartDto(new MockMultipartFile("Name", (byte[]) null));
 		
+		
 		//WHEN it has being transformed into scale
-		multipartDto.setPointIconSize(doubleVal);
-		multipartDto.setPointTextSize(doubleVal);
+		multipartDto.setPointIconSizeScaled(doubleVal);
+		multipartDto.setPointTextSizeScaled(doubleVal);
 		
-		//THEN the result has to be from 0.0 to 2.1 with the step equals 0.1
-		System.out.print("scale = " + multipartDto.getPointIconSize());
+		//THEN the result has to be from 0(%) to 220(%)
+		System.out.println("icon percent = " + multipartDto.getPointIconSize());
+		System.out.print("text percent = " + multipartDto.getPointTextSize());
 		
-		Pattern pattern = Pattern.compile("[\\d]\\.[\\d]");
+		Pattern pattern = Pattern.compile("\\d{1,3}");
 		Matcher matcherIconSize = pattern.matcher(multipartDto.getPointIconSize().toString());
 		Matcher matcherIconTextSize = pattern.matcher(multipartDto.getPointTextSize().toString());
 		
