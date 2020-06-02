@@ -30,9 +30,12 @@ public abstract class XmlHandler {
 	@Getter(value = AccessLevel.PROTECTED)
 	protected HtmlHandler htmlHandler;
 	
+	protected GoogleEarthHandler googleEarthHandler;
+	
 	@Autowired
-	public XmlHandler(HtmlHandler htmlHandler) {
+	public XmlHandler(HtmlHandler htmlHandler, GoogleEarthHandler googleEarthHandler) {
 		this.htmlHandler = htmlHandler;
+		this.googleEarthHandler = googleEarthHandler;
 	}
 	
 	public abstract String processXml(MultipartDto multipartDto)

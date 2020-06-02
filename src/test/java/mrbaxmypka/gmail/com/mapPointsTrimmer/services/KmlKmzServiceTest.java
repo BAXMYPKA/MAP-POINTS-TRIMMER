@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.GoogleEarthHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.junit.jupiter.api.AfterEach;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KmlKmzServiceTest {
 	
-	private static KmlHandler kmlHandler = new KmlHandler(new HtmlHandler());
+	private static KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(), new GoogleEarthHandler());
 	private static KmlKmzService kmlKmzService;
 	private static MessageSource messageSource;
 	private static MultipartDto multipartDto;
@@ -127,7 +128,7 @@ class KmlKmzServiceTest {
 		MultipartFile multipartFileWIthKmz = new MockMultipartFile(
 			"LocusTestKmz", "LocusTestKmz.kmz", null, kmzInputStream);
 		multipartDto = new MultipartDto(multipartFileWIthKmz);
-		kmlHandler = new KmlHandler(new HtmlHandler());
+		kmlHandler = new KmlHandler(new HtmlHandler(), new GoogleEarthHandler());
 		kmlKmzService = new KmlKmzService(kmlHandler, messageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions

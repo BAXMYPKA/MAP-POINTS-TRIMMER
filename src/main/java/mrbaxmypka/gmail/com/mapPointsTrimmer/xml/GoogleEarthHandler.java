@@ -1,6 +1,8 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
+import lombok.NoArgsConstructor;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -10,6 +12,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@Component
 public class GoogleEarthHandler {
 	
 	private Document document;
@@ -27,6 +31,9 @@ public class GoogleEarthHandler {
 		return this.document;
 	}
 	
+	/**
+	 * Applies only to existing <IconStyle> tags.
+	 */
 	private void setPointsIconsSize(Element documentRoot, MultipartDto multipartDto) {
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		NodeList iconStyles = documentRoot.getElementsByTagName("IconStyle");
@@ -34,6 +41,10 @@ public class GoogleEarthHandler {
 		scales.forEach(scaleNode -> scaleNode.setTextContent(scale));
 	}
 	
+	/**
+	 * Either applies to existing <LabelStyle> tags or a new ones will be created for every <Style>.
+	 * Because <LabelStyle> automatically displays <name> content from <Placemark>s.
+	 */
 	private void setPointTextSize(Element documentRoot, MultipartDto multipartDto) {
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		NodeList styles = documentRoot.getElementsByTagName("Style");
@@ -49,7 +60,7 @@ public class GoogleEarthHandler {
 			
 			NodeList iconStyleChildNodes = iconStyle.getChildNodes();
 			Node scale = null;
-			//Look through every Style direct children
+			//Look through every IconStyle direct children
 			for (int j = 0; j < iconStyleChildNodes.getLength(); j++) {
 				if (iconStyleChildNodes.item(j).getNodeType() != Node.ELEMENT_NODE) continue;
 				//Scale tag is presented, just insert a new value

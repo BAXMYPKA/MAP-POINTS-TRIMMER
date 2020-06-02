@@ -21,8 +21,8 @@ public class KmlHandler extends XmlHandler {
 	
 	private Document document;
 	
-	public KmlHandler(HtmlHandler htmlHandler) {
-		super(htmlHandler);
+	public KmlHandler(HtmlHandler htmlHandler, GoogleEarthHandler googleEarthHandler) {
+		super(htmlHandler, googleEarthHandler);
 	}
 	
 	

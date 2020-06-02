@@ -105,7 +105,7 @@ public class MultipartDto implements Serializable {
 	private Integer pointTextSize;
 	
 	private boolean isScaleCorrect(Double scale) {
-		return Double.toString(scale).matches("\\d\\.\\d") && scale.compareTo(3.0) > 0;
+		return Double.toString(scale).matches("\\d\\.\\d") && scale.compareTo(3.0) <= 0;
 	}
 	
 	public void setPathType(@Nullable String pathType) {
@@ -167,7 +167,7 @@ public class MultipartDto implements Serializable {
 	public void setPointIconSizeScaled(@Nullable Double pointIconSizeScaled) throws NumberFormatException {
 		if (pointIconSizeScaled == null) {
 			this.pointIconSize = null;
-		} else if (isScaleCorrect(pointIconSizeScaled)) {
+		} else if (!isScaleCorrect(pointIconSizeScaled)) {
 			throw new NumberFormatException("Scale has to be represented as value from 0.0 to 3.0 with the step of 0.1");
 		} else {
 			BigDecimal bigDecimal = BigDecimal.valueOf(pointIconSizeScaled).setScale(1, RoundingMode.DOWN);
@@ -185,7 +185,7 @@ public class MultipartDto implements Serializable {
 	public void setPointTextSizeScaled(@Nullable Double pointTextSizeScaled) throws NumberFormatException {
 		if (pointTextSizeScaled == null) {
 			this.pointTextSize = null;
-		} else if (isScaleCorrect(pointTextSizeScaled)) {
+		} else if (!isScaleCorrect(pointTextSizeScaled)) {
 			throw new NumberFormatException("Scale has to be represented as value from 0.0 to 3.0 with the step of 0.1");
 		} else {
 			BigDecimal bigDecimal = BigDecimal.valueOf(pointTextSizeScaled).setScale(1, RoundingMode.DOWN);
