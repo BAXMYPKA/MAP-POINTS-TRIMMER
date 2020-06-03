@@ -8,7 +8,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +27,13 @@ public class GoogleEarthHandler {
 		if (multipartDto.getPointTextSize() != null) {
 			setPointTextSize(documentRoot, multipartDto);
 		}
+		if (multipartDto.getPointTextColor() != null) {
+			setPointTextColor(documentRoot, multipartDto);
+		}
 		return this.document;
 	}
+	
+	//TODO: to use XPath to select only <Style/>'s with attribute id=""
 	
 	/**
 	 * Applies only to existing <IconStyle> tags.
@@ -46,42 +50,134 @@ public class GoogleEarthHandler {
 	 * Because <LabelStyle> automatically displays <name> content from <Placemark>s.
 	 */
 	private void setPointTextSize(Element documentRoot, MultipartDto multipartDto) {
-		String scale = multipartDto.getPointIconSizeScaled().toString();
+		String scale = multipartDto.getPointTextSizeScaled().toString();
 		NodeList styles = documentRoot.getElementsByTagName("Style");
 		List<Node> scales = getLabelStylesScales(styles);
 		scales.forEach(scaleNode -> scaleNode.setTextContent(scale));
 	}
 	
+	private void setPointTextColor(Element documentRoot, MultipartDto multipartDto) {
+		String color = multipartDto.getPointTextColor();
+		NodeList styles = documentRoot.getElementsByTagName("Style");
+		List<Node> colors = getLabelStylesColors(styles);
+		colors.forEach(colorNode -> colorNode.setTextContent(color));
+	}
+	
+	/**
+	 * @param iconStyles {@link NodeList} from all presented <Style/>'s within xml Document.
+	 * @return <scale/> of every <IconStyle/> from every <Style/>
+	 */
 	private List<Node> getIconStylesScales(NodeList iconStyles) {
 		List<Node> scales = new ArrayList<>();
 		//Look through every <IconStyle>
+		iconStyles:
 		for (int i = 0; i < iconStyles.getLength(); i++) {
 			Node iconStyle = iconStyles.item(i);
 			
 			NodeList iconStyleChildNodes = iconStyle.getChildNodes();
-			Node scale = null;
-			//Look through every IconStyle direct children
 			for (int j = 0; j < iconStyleChildNodes.getLength(); j++) {
 				if (iconStyleChildNodes.item(j).getNodeType() != Node.ELEMENT_NODE) continue;
 				//Scale tag is presented, just insert a new value
 				if (iconStyleChildNodes.item(j).getLocalName().equals("scale")) {
-					scale = iconStyleChildNodes.item(j);
-					scales.add(scale);
-					break;
+					scales.add(iconStyleChildNodes.item(j));
+					continue iconStyles;
 				}
 			}
-			//Scale tag not presented, we have to create and append a new one
-			if (scale == null) {
-				Element newScale = document.createElement("scale");
-				iconStyle.appendChild(newScale);
-				scales.add(newScale);
-			}
+			//Scale tag not presented, create a new one, append it to parent and add to the resulting List
+			Element scale = document.createElement("scale");
+			iconStyle.appendChild(scale);
+			scales.add(scale);
 		}
 		return scales;
 	}
 	
+	/**
+	 * @param styles {@link NodeList} with all presented <Style/>'s within xml Document.
+	 * @return <scale/> of every <LabelStyle/> from every <Style/>
+	 */
 	private List<Node> getLabelStylesScales(NodeList styles) {
 		List<Node> scales = new ArrayList<>();
+		List<Node> labelStyles = getLabelStyles(styles);
+		
+		labelStyles.forEach(labelStyle -> {
+			NodeList labelStyleChildNodes = labelStyle.getChildNodes();
+			for (int i = 0; i < labelStyleChildNodes.getLength(); i++) {
+				if (labelStyleChildNodes.item(i).getNodeType() != Node.ELEMENT_NODE) continue;
+				if (labelStyleChildNodes.item(i).getLocalName().equals("scale")) {
+					scales.add(labelStyleChildNodes.item(i));
+					return;
+				}
+			}
+			//<scale> isn't presented
+			Node scale = document.createElement("scale");
+			labelStyle.appendChild(scale);
+			scales.add(scale);
+		});
+		
+		return scales;
+	}
+	
+	/**
+	 * @param styles {@link NodeList} with all presented <Style/>'s within xml Document.
+	 * @return <color/> of every <LabelStyle/> from every <Style/>
+	 */
+	private List<Node> getLabelStylesColors(NodeList styles) {
+		List<Node> colors = new ArrayList<>();
+		List<Node> labelStyles = getLabelStyles(styles);
+		
+		labelStyles.forEach(labelStyle -> {
+			NodeList labelStyleChildNodes = labelStyle.getChildNodes();
+			for (int i = 0; i < labelStyleChildNodes.getLength(); i++) {
+				if (labelStyleChildNodes.item(i).getNodeType() != Node.ELEMENT_NODE) continue;
+				if (labelStyleChildNodes.item(i).getLocalName().equals("color")) {
+					colors.add(labelStyleChildNodes.item(i));
+					return;
+				}
+			}
+			//<color> isn't presented within <LabelStyle/>
+			Node color = document.createElement("color");
+			labelStyle.appendChild(color);
+			colors.add(color);
+		});
+		
+		return colors;
+	}
+	
+	/**
+	 * Looks through every <Style/>.
+	 * If <Style/> contains <LabelStyle/> it will be added into the resulting List<Node>.
+	 * Otherwise <LabelStyle/> will be created, appended as a child to the existing <Style/> and added into the resulting list.
+	 *
+	 * @return List of <LabelStyle/> from <Style/>
+	 */
+	private List<Node> getLabelStyles(NodeList styles) {
+		List<Node> labelStyles = new ArrayList<>();
+		style:
+		for (int i = 0; i < styles.getLength(); i++) {
+			Node style = styles.item(i);
+			
+			NodeList styleChildNodes = style.getChildNodes();
+			for (int j = 0; j < styleChildNodes.getLength(); j++) {
+				if (styleChildNodes.item(j).getNodeType() != Node.ELEMENT_NODE) continue;
+				if (styleChildNodes.item(j).getLocalName().equals("LabelStyle")) {
+					labelStyles.add(styleChildNodes.item(j));
+					continue style;
+				}
+			}
+			//<LabelStyle> isn't presented within <Style> parent. Create a new one and append it to <Style> parent
+			Node labelStyle = document.createElement("LabelStyle");
+			style.appendChild(labelStyle);
+			labelStyles.add(labelStyle);
+		}
+		return labelStyles;
+	}
+	
+	//The template of old ugly style
+/*
+	private List<Node> getLabelStylesScales(NodeList styles) {
+		List<Node> scales = new ArrayList<>();
+		List<Node> labelStyles = getLabelStyles(styles);
+		
 		//Look through every <Style>
 		for (int i = 0; i < styles.getLength(); i++) {
 			Node style = styles.item(i);
@@ -128,4 +224,5 @@ public class GoogleEarthHandler {
 		}
 		return scales;
 	}
+*/
 }

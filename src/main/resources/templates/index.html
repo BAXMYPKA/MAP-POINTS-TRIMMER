@@ -255,14 +255,27 @@
 				<input id="setPointTextSize" type="checkbox">
 				<label for="setPointTextSize" class="loadForm__label"
 					   th:text="#{html.label.locusAsAttachments}">
-					Point labels text size
+					Set point labels text size
 				</label>
 				<div class="interrogation" title="Description"
 					 th:title="#{commonMessages.interrogationAsDescription.asAttachmentInLocus}">
 					?
 				</div>
+				
 				<br>
 			
+				<input id="pointTextColor" class="loadForm_percentageInput" name="pointTextColor"
+					   type="color" disabled>
+				<input id="setPointTextColor" type="checkbox">
+				<label for="setPointTextColor" class="loadForm__label"
+					   th:text="#{html.label.locusAsAttachments}">
+					Set point labels text color
+				</label>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.asAttachmentInLocus}">
+					?
+				</div>
+				
 			</fieldset>
 			
 			<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">

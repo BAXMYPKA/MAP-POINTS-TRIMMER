@@ -137,7 +137,7 @@ class KmlKmzServiceTest {
 		
 		//THEN The resulting 'doc.kml' should be the same
 		assertAll(
-			() -> assertTrue(kmlResult.startsWith("<?xml version=\"1.0\" encoding=\"utf-8\"?>")),
+			() -> assertTrue(kmlResult.startsWith("<?xml version=\"1.0\" encoding=\"utf-8\"")),
 			() -> assertTrue(kmlResult.endsWith("</Placemark>\n" +
 				"</Document>\n" +
 				"</kml>"))

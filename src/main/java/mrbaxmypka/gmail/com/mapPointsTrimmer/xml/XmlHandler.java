@@ -41,7 +41,7 @@ public abstract class XmlHandler {
 	public abstract String processXml(MultipartDto multipartDto)
 		throws IOException, ParserConfigurationException, SAXException, TransformerException;
 	
-	Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
+	protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -69,7 +69,7 @@ public abstract class XmlHandler {
 	 * before returning the resulting String is checked with "&gt;\t" regexp (or {@code '\\s*>\\s*'} within original
 	 * kml for those signs to be deleted.
 	 */
-	String writeTransformedDocument(Document document) throws TransformerException {
+	protected String writeTransformedDocument(Document document) throws TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		DOMSource domSource = new DOMSource(document);
 		Transformer transformer = transformerFactory.newTransformer();
@@ -109,7 +109,7 @@ public abstract class XmlHandler {
 		return new ByteArrayInputStream(kml.getBytes(StandardCharsets.UTF_8));
 	}
 	
-	void validateDocument(Document document, File schemaFile) throws SAXException, IOException {
+	protected void validateDocument(Document document, File schemaFile) throws SAXException, IOException {
 		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema = factory.newSchema(schemaFile);
 		Validator validator = schema.newValidator();

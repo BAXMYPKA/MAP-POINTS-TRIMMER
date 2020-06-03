@@ -109,11 +109,20 @@
 		})
 		
 		document.getElementById("setPointTextSize").addEventListener('change', ev => {
-			const pointsIconSizeInput = document.getElementById("pointTextSize");
+			const pointsTextSizeInput = document.getElementById("pointTextSize");
 			if (ev.target.checked) {
-				pointsIconSizeInput.disabled = false;
+				pointsTextSizeInput.disabled = false;
 			} else {
-				pointsIconSizeInput.disabled = true;
+				pointsTextSizeInput.disabled = true;
+			}
+		})
+		
+		document.getElementById("setPointTextColor").addEventListener('change', ev => {
+			const pointsTextColorInput = document.getElementById("pointTextColor");
+			if (ev.target.checked) {
+				pointsTextColorInput.disabled = false;
+			} else {
+				pointsTextColorInput.disabled = true;
 			}
 		})
 		
