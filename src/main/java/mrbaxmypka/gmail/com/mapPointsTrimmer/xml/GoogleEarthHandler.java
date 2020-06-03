@@ -57,7 +57,7 @@ public class GoogleEarthHandler {
 	}
 	
 	private void setPointTextColor(Element documentRoot, MultipartDto multipartDto) {
-		String color = multipartDto.getPointTextColor();
+		String color = getKmlColor(multipartDto.getPointTextColor());
 		NodeList styles = documentRoot.getElementsByTagName("Style");
 		List<Node> colors = getLabelStylesColors(styles);
 		colors.forEach(colorNode -> colorNode.setTextContent(color));
@@ -170,6 +170,35 @@ public class GoogleEarthHandler {
 			labelStyles.add(labelStyle);
 		}
 		return labelStyles;
+	}
+	
+	/**
+	 * https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * <color>
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff).
+	 * For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr,
+	 * where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * <color>7fff0000</color>, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 * <p>
+	 * * Typical RGB incoming from HTML color picker list (as #rrggbb):
+	 * * HEX COLOR : #ff0000
+	 * * HEX COLOR : #000000
+	 * * HEX COLOR : #ffffff
+	 * * HEX COLOR : #8e4848
+	 *
+	 * @param hexColor "#rrggbb" (reg, green, blue) natural input from HTML color picker in hex
+	 * @return kml specific color with opacity (alpha-channel) as "aabbggrr" (alpha, blue, green,red)
+	 * witch is corresponds to KML specification.
+	 */
+	protected String getKmlColor(String hexColor) throws IllegalArgumentException {
+		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
+			throw new IllegalArgumentException(
+				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
+		}
+		return "ff" + hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
 	}
 	
 	//The template of old ugly style
