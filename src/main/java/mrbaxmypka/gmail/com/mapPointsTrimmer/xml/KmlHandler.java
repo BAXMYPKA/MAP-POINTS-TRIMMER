@@ -10,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.events.*;
 import javax.xml.transform.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,36 @@ public class KmlHandler extends XmlHandler {
 	
 	public KmlHandler(HtmlHandler htmlHandler, GoogleEarthHandler googleEarthHandler) {
 		super(htmlHandler, googleEarthHandler);
+	}
+	
+	/**
+	 * All the additional information for a User (preview size, outdated descriptions etc) are placed inside the
+	 * CDATA[[]] as an HTML markup.
+	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
+	 */
+	public String processXml_2(InputStream kmlInputStream, MultipartDto multipartDto)
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		
+		document = getDocument(kmlInputStream);
+		Element documentRoot = document.getDocumentElement();
+		//Processing Google Earth specific options
+		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
+		googleEarthHandler.processXml(document, multipartDto);
+		
+		if (multipartDto.isSetPath()) {
+			processHref(documentRoot, multipartDto);
+		}
+		//Processing the further text options regarding to inner CDATA or plain text from <description>s
+		processDescriptionsTexts(documentRoot, multipartDto);
+		
+		if (multipartDto.isAsAttachmentInLocus()) {
+			processLocusAttachments(documentRoot, multipartDto);
+		}
+		if (multipartDto.isTrimXml()) {
+			trimWhitespaces(documentRoot);
+		}
+		
+		return writeTransformedDocument(document);
 	}
 	
 	
