@@ -8,6 +8,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +59,7 @@ public class GoogleEarthHandler {
 	}
 	
 	private void setPointTextColor(Element documentRoot, MultipartDto multipartDto) {
-		String color = getKmlColor(multipartDto.getPointTextColor());
+		String color = getKmlColor(multipartDto.getPointTextColor(), multipartDto);
 		NodeList styles = documentRoot.getElementsByTagName("Style");
 		List<Node> colors = getLabelStylesColors(styles);
 		colors.forEach(colorNode -> colorNode.setTextContent(color));
@@ -193,12 +195,35 @@ public class GoogleEarthHandler {
 	 * @return kml specific color with opacity (alpha-channel) as "aabbggrr" (alpha, blue, green,red)
 	 * witch is corresponds to KML specification.
 	 */
-	protected String getKmlColor(String hexColor) throws IllegalArgumentException {
+	protected String getKmlColor(String hexColor, MultipartDto multipartDto) throws IllegalArgumentException {
 		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
 			throw new IllegalArgumentException(
 				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
 		}
-		return "ff" + hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
+		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
+		
+		if (multipartDto.getPointTextOpacity() != null) {
+			String opacity = getHexFromPercentage(multipartDto.getPointTextOpacity());
+			return opacity + kmlColor;
+		} else {
+			return "ff" + kmlColor;
+		}
+	}
+	
+	/**
+	 * Convert incoming percentage value 0 - 100% to an integer in base sixteen 00 - FF (0 - 255).
+	 * Where 100% = 255 and 1% = 2.55 (Rounding.HALF_UP) accordingly but as two hex digits (e.g.  00, 03, 7F, FF)
+	 *
+	 * @param percentage 0 - 100%
+	 * @return Hexadecimal representation from 00 to FF as two hex digits.
+	 * @throws IllegalArgumentException if a given percentage below 0 or above 100%
+	 */
+	String getHexFromPercentage(Integer percentage) throws IllegalArgumentException {
+		if (percentage < 0 || percentage > 100) {
+			throw new IllegalArgumentException("Percentage has to be from 0 to 100%!");
+		}
+		BigDecimal hexPercentage = new BigDecimal(percentage * 2.55).setScale(0, RoundingMode.HALF_UP);
+		return String.format("%02x", hexPercentage.toBigInteger());
 	}
 	
 	//The template of old ugly style

@@ -3,7 +3,6 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.data.auditing.IsNewAwareAuditingHandler;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -17,7 +16,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -395,7 +393,7 @@ class GoogleEarthHandlerTest {
 //		System.out.println(processedKml);
 		
 		//THEN
-		String kmlColor = googleEarthHandler.getKmlColor(multipartDto.getPointTextColor());
+		String kmlColor = googleEarthHandler.getKmlColor(multipartDto.getPointTextColor(), multipartDto);
 //		System.out.println("HEX COLOR : " + hexColor);
 //		System.out.println("KML COLOR : " + kmlColor);
 		
@@ -478,7 +476,7 @@ class GoogleEarthHandlerTest {
 //		System.out.println(processedKml);
 		
 		//THEN
-		String kmlColor = googleEarthHandler.getKmlColor(multipartDto.getPointTextColor());
+		String kmlColor = googleEarthHandler.getKmlColor(multipartDto.getPointTextColor(), multipartDto);
 //		System.out.println("HEX COLOR : " + hexColor);
 //		System.out.println("KML COLOR : " + kmlColor);
 		
@@ -510,9 +508,10 @@ class GoogleEarthHandlerTest {
 	@ValueSource(strings = {"#112233", "#ff10ab", "#affbfc", "#374b5c"})
 	public void incoming_Hex_Input_as_RRGGBB_Colors_Should_Be_Converted_To_Kml_Colors_as_AABBGGRR(String hexColor) {
 		//GIVEN input hex colors from HTML color picker as #rrggbb
+		multipartDto = new MultipartDto(new MockMultipartFile("name", new byte[]{}));
 		
 		//WHEN
-		String kmlColor = googleEarthHandler.getKmlColor(hexColor);
+		String kmlColor = googleEarthHandler.getKmlColor(hexColor, multipartDto);
 		
 		//THEN
 //		System.out.println("HEX COLOR : " + hexColor);
@@ -526,13 +525,98 @@ class GoogleEarthHandlerTest {
 	@ValueSource(strings = {"#1112233", "#ff10abc", "affbfc", "#374g5c"})
 	public void incoming_Incorrect_Hex_Input_Colors_Should_Throw_IllegalArgException(String hexColor) {
 		//GIVEN input hex colors from HTML color picker as #rrggbb
+		multipartDto = new MultipartDto(new MockMultipartFile("name", new byte[]{}));
 		
 		//WHEN
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-			() -> googleEarthHandler.getKmlColor(hexColor));
+			() -> googleEarthHandler.getKmlColor(hexColor, multipartDto));
 		
 		//THEN
 		assertEquals("Color value is not correct! (It has to correspond to '#rrggbb' hex pattern", exception.getMessage());
+	}
+	
+	/**
+	 * Convert incoming percentage value 0 - 100% to an integer in base sixteen 00 - FF (0 - 255).
+	 * Where 100% = 255 and 1% = 2.55 (Rounding.HALF_UP) accordingly but as two hex digits (e.g.  00, 03, 7F, FF)
+	 */
+	@ParameterizedTest
+	@ValueSource(ints = {0, 1, 2, 50, 73, 99, 100})
+	public void percentage_Conversion_Into_Hex_Should_Be_Correct(Integer percent) {
+		//GIVEN
+		// 100% = 255(hex)
+		// 1% = 2.55(Rounded.HALF_UP) as two hex digits (e.g. 00, 03, 7F, FF)
+		// WHERE: 0 = 00, 1 = 03, 2 = 05, 50 = 127, 99 = FC, 100 = FF
+		
+/*
+		BigDecimal hex = new BigDecimal(percent * 2.55).setScale(0, RoundingMode.HALF_UP);
+		String hexFormat = String.format("%02x", hex.toBigInteger());
+		
+		System.out.printf("\nPERCENT : %s", percent);
+		System.out.printf("\nHEX PERCENT : %s", hex);
+		System.out.printf("\nHEX : %s", hexFormat);
+*/
+		
+		//WHEN
+		String hexRepresentation = googleEarthHandler.getHexFromPercentage(percent);
+		
+		//THEN
+		assertTrue(hexRepresentation.equalsIgnoreCase("00") || hexRepresentation.equalsIgnoreCase("03") ||
+			hexRepresentation.equalsIgnoreCase("05") || hexRepresentation.equalsIgnoreCase("7F") ||
+			hexRepresentation.equalsIgnoreCase("BA") || hexRepresentation.equalsIgnoreCase("FC") ||
+			hexRepresentation.equalsIgnoreCase("FF"));
+	}
+	
+	/**
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff).
+	 * For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay,
+	 * you would specify the following: <color>7fff0000</color>, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 */
+	@ParameterizedTest
+	@ValueSource(strings = {"#000088", "#ff0000", "#ffffff", "#374b5c"})
+	public void pointTextColors_Without_setTextOpacity_Should_Starts_With_Max_Opacity_Value_FF(String hexColor)
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		//GIVEN
+		multipartFile = new MockMultipartFile("TestPoi.kml", new byte[]{});
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointTextColor(hexColor);
+		
+		//WHEN
+		String kmlColorWithOpacity = googleEarthHandler.getKmlColor(multipartDto.getPointTextColor(), multipartDto);
+		
+		//THEN
+		System.out.println(kmlColorWithOpacity);
+		
+		assertTrue(kmlColorWithOpacity.startsWith("ff"));
+	}
+	
+	/**
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff).
+	 * For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay,
+	 * you would specify the following: <color>7fff0000</color>, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 */
+	@ParameterizedTest
+	@ValueSource(strings = {"#000088", "#ff0000", "#ffffff", "#374b5c"})
+	public void pointTextColors_With_setTextOpacity_Should_Starts_With_Opacity_Value_But_Not_Default_FF(String hexColor)
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		//GIVEN
+		multipartFile = new MockMultipartFile("TestPoi.kml", new byte[]{});
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointTextColor(hexColor);
+		multipartDto.setPointTextOpacity((int) (Math.random() * 100 + 1));
+		
+		//WHEN
+		String kmlColorWithOpacity = googleEarthHandler.getKmlColor(multipartDto.getPointTextColor(), multipartDto);
+		String separateHexOpacityValue = googleEarthHandler.getHexFromPercentage(multipartDto.getPointTextOpacity());
+		
+		//THEN
+		assertFalse(kmlColorWithOpacity.startsWith("ff"));
+		assertTrue(kmlColorWithOpacity.startsWith(separateHexOpacityValue));
 	}
 	
 	private Document getDocument(MultipartDto multipartDto) throws ParserConfigurationException, IOException, SAXException {

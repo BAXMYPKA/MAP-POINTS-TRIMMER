@@ -6,10 +6,11 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 
 @NoArgsConstructor
@@ -21,6 +22,8 @@ import java.math.RoundingMode;
 public class MultipartDto implements Serializable {
 	
 	static final long serialVersionUID = 3L;
+	
+	//TODO: to i18n validation messages
 	
 	@NonNull //Lombok required arg for the constructor
 	@NotNull
@@ -115,6 +118,25 @@ public class MultipartDto implements Serializable {
 	@Nullable
 	private String pointTextColor;
 	
+	/**
+	 * <p>For User's convenience it represents a percentage input as 0 - 100%.</p>
+	 * <p>(Internally it will be converted into hexadecimal representation as 00 - FF (0 - 255).)</p>
+	 * <p>********* FROM THE KML DOCUMENTATION ************************
+	 * <color/>
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * <color>7fff0000</color>, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00
+	 * </p>
+	 * Source: https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * **************************************************************
+	 */
+	@Nullable
+	@PositiveOrZero
+	@Max(100)
+	private Integer pointTextOpacity;
+	
 	private boolean isScaleCorrect(Double scale) {
 		return Double.toString(scale).matches("\\d\\.\\d") && scale.compareTo(3.0) <= 0;
 	}
@@ -139,33 +161,13 @@ public class MultipartDto implements Serializable {
 	}
 	
 	/**
-	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
-	 * Where 1.0 is the scale of default window font.
-	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
-	 * 10% is "scale = '0.1'",
-	 * 90% is "scale = '0.9'" etc.
+	 * @return Essential scale CSS parameter from 0.0 to 3.0 (max) with the step of 0.1
 	 */
-	public void setPointIconSize(@Nullable Integer pointIconSize) {
-		if (pointIconSize != null && pointIconSize > 300) {
-			throw new NumberFormatException("Point Icon Size cannot exceed 300%!");
-		} else {
-			this.pointIconSize = pointIconSize;
+	public BigDecimal getPointIconSizeScaled() {
+		if (this.pointIconSize != null) {
+			return new BigDecimal(String.valueOf(this.pointIconSize)).divide(BigDecimal.valueOf(100), 1, RoundingMode.DOWN);
 		}
-	}
-	
-	/**
-	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
-	 * Where 1.0 is the scale of default window font.
-	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
-	 * 10% is "scale = '0.1'",
-	 * 90% is "scale = '0.9'" etc.
-	 */
-	public void setPointTextSize(@Nullable Integer pointTextSize) {
-		if (pointTextSize != null && pointTextSize > 300) {
-			throw new NumberFormatException("Point Text Size cannot exceed 300%!");
-		} else {
-			this.pointTextSize = pointTextSize;
-		}
+		return null;
 	}
 	
 	/**
@@ -184,6 +186,17 @@ public class MultipartDto implements Serializable {
 			BigDecimal bigDecimal = BigDecimal.valueOf(pointIconSizeScaled).setScale(1, RoundingMode.DOWN);
 			this.pointIconSize = bigDecimal.multiply(BigDecimal.valueOf(100)).intValue();
 		}
+	}
+	
+	/**
+	 * @return Essential scale CSS parameter from 0.0 to 3.0 (max) with the step of 0.1
+	 */
+	public BigDecimal getPointTextSizeScaled() {
+		if (this.pointTextSize != null) {
+			return new BigDecimal(String.valueOf(this.pointTextSize)).divide(BigDecimal.valueOf(100), 1, RoundingMode.DOWN);
+		}
+		return null;
+		
 	}
 	
 	/**
@@ -206,27 +219,6 @@ public class MultipartDto implements Serializable {
 	}
 	
 	/**
-	 * @return Essential scale CSS parameter from 0.0 to 3.0 (max) with the step of 0.1
-	 */
-	public BigDecimal getPointIconSizeScaled() {
-		if (this.pointIconSize != null) {
-			return new BigDecimal(String.valueOf(this.pointIconSize)).divide(BigDecimal.valueOf(100), 1, RoundingMode.DOWN);
-		}
-		return null;
-	}
-	
-	/**
-	 * @return Essential scale CSS parameter from 0.0 to 3.0 (max) with the step of 0.1
-	 */
-	public BigDecimal getPointTextSizeScaled() {
-		if (this.pointTextSize != null) {
-			return new BigDecimal(String.valueOf(this.pointTextSize)).divide(BigDecimal.valueOf(100), 1, RoundingMode.DOWN);
-		}
-		return null;
-		
-	}
-	
-	/**
 	 * @see #getPointIconSizeScaled()
 	 */
 	@Nullable
@@ -236,11 +228,41 @@ public class MultipartDto implements Serializable {
 	}
 	
 	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
+	public void setPointIconSize(@Nullable Integer pointIconSize) {
+		if (pointIconSize != null && pointIconSize > 300) {
+			throw new NumberFormatException("Point Icon Size cannot exceed 300%!");
+		} else {
+			this.pointIconSize = pointIconSize;
+		}
+	}
+	
+	/**
 	 * @see #getPointTextSizeScaled()
 	 */
 	@Nullable
 	@Deprecated
 	public Integer getPointTextSize() {
 		return this.pointTextSize;
+	}
+	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
+	public void setPointTextSize(@Nullable Integer pointTextSize) {
+		if (pointTextSize != null && pointTextSize > 300) {
+			throw new NumberFormatException("Point Text Size cannot exceed 300%!");
+		} else {
+			this.pointTextSize = pointTextSize;
+		}
 	}
 }

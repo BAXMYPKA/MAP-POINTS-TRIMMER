@@ -331,6 +331,10 @@ input[type=radio] {
 .loadForm_percentageInput {
 	width: 3em;
 }
+.loadForm_colorInput {
+	width: 3.2em;
+	/*border: 0.2em;*/
+}
 
 /*
 .loadForm_percentageInput::after {

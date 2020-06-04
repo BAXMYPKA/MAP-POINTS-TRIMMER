@@ -137,8 +137,8 @@
 					?
 				</div>
 				<br>
-				<input id="previewSize" name="previewSize" type="number" placeholder="640" value="640"
-					   min="0" max="2440" class="loadForm_previewSizeInput" disabled>
+				<input id="previewSize" name="previewSize" type="number" placeholder="600" value="600"
+					   min="0" max="2440" step="50" class="loadForm_previewSizeInput" disabled>
 				<select id="previewSizeUnits" name="previewSizeUnit">
 					<option value="pixels" selected th:title="#{html.span.px}">px</option>
 					<option value="percentage">%</option>
@@ -264,7 +264,7 @@
 				
 				<br>
 			
-				<input id="pointTextColor" class="loadForm_percentageInput" name="pointTextColor"
+				<input id="pointTextColor" class="loadForm_colorInput" name="pointTextColor"
 					   type="color" disabled>
 				<input id="setPointTextColor" type="checkbox">
 				<label for="setPointTextColor" class="loadForm__label"
@@ -276,6 +276,22 @@
 					?
 				</div>
 				
+				<br>
+				
+				<input id="pointTextOpacity" class="loadForm_percentageInput" name="pointTextOpacity"
+					   type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%" disabled>
+				<input id="setPointTextOpacity" type="checkbox">
+				<label for="setPointTextOpacity" class="loadForm__label"
+					   th:text="#{html.label.locusAsAttachments}">
+					Set point icons text opacity
+				</label>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.asAttachmentInLocus}">
+					?
+				</div>
+				
+				<br>
+			
 			</fieldset>
 			
 			<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
