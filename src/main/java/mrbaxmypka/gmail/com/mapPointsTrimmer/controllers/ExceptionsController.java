@@ -66,7 +66,7 @@ public class ExceptionsController {
 	 */
 	@ExceptionHandler(InterruptedException.class)
 	public ModelAndView interruptedException(InterruptedException ie, Locale locale) {
-		String shutdownFailureMessage = messageSource.getMessage("exception.shutdownFaulire", null, locale);
+		String shutdownFailureMessage = messageSource.getMessage("exception.shutdownFailure", null, locale);
 		return returnRedirectIndexPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, shutdownFailureMessage);
 //		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(shutdownFailureMessage);
 	}
