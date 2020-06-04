@@ -22,6 +22,7 @@
 * Intel/AMD Dual Core CPU with 2.0GHz+
 * 4Gb+ RAM
 * Установленная Ява JVM версии не ниже [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") или последняя [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
+* Крайне желательна последняя версия любого интернет браузера.
  
 ## В проекте
 

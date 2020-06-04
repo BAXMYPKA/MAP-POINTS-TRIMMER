@@ -7,6 +7,7 @@
 	<link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
 		  th:href="@{/img/favicon32x32.png}">
 	<link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
+	<script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}" defer></script>
 	<script src="../static/scripts/index.js" th:src="@{scripts/index.js}" defer></script>
 	<script th:inline="javascript">
 		/*<![CDATA[*/
@@ -330,11 +331,11 @@
 	
 	<footer class="mainFooter">
 		
-		<div id="aboutItem" class="mainFooter__item">About</div>
+		<div id="aboutItem" class="mainFooter__item" th:text="#{html.text.about}">About</div>
 		
 		<div>
 			<ul class="listSmall">
-				<li title="Deleloper's Github" th:title="#{html.title.footer.contacts.github}">
+				<li title="Developer's Github" th:title="#{html.title.footer.contacts.github}">
 					<a href="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases" target="_blank"
 					   class="mainFooter__item_smaller">
 						Github
@@ -350,7 +351,6 @@
 		</div>
 	
 	</footer>
-
 
 </div>
 
