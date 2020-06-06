@@ -477,3 +477,7 @@ input[type=radio] {
 	transition-duration: 0.3s;
 	transform: scale(12);
 }
+
+.select_kmlDefault:hover {
+	background-color: blue;
+}

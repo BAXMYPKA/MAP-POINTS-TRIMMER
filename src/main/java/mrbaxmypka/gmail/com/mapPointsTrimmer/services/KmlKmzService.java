@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import lombok.Getter;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.FileTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -50,7 +51,7 @@ public class KmlKmzService {
 	 * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
 	 */
 	public Path processMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		
 		locale = locale == null ? this.defaultLocale : locale;
 		String processedKml;
@@ -106,7 +107,7 @@ public class KmlKmzService {
 	///////////////////////////////////
 	
 	public Path processMultipartDto_2(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		
 		locale = locale == null ? this.defaultLocale : locale;
 		String processedKml;
@@ -155,7 +156,7 @@ public class KmlKmzService {
 			 ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(tmpZip))) {
 			ZipEntry zipEntry;
 			while ((zipEntry = zis.getNextEntry()) != null) {
-				if (isGetZip) {
+				if (multipartDto.getDownloadAs().equals(FileTypes.KMZ)) {
 					zos.putNextEntry(zipEntry);
 				}
 				if (zipEntry.getName().endsWith(xmlFileExtension)) {

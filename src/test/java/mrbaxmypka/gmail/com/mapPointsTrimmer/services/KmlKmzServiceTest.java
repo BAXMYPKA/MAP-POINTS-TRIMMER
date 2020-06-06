@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.FileTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.GoogleEarthHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
@@ -148,6 +149,9 @@ class KmlKmzServiceTest {
 		//GIVEN
 //		String newString = "///NEW STRING///";
 //		ByteArrayInputStream is = new ByteArrayInputStream(newString.getBytes());
+		
+		System.out.println(FileTypes.valueOf("KML"));
+		System.out.println(FileTypes.getValue("kmz"));
 		
 		Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
 		Path existingZip2 = Paths.get(tempDir + "/Readme2.zip");

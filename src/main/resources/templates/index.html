@@ -302,9 +302,9 @@
 					   th:value="#{html.input.value.convert}">
 				
 				<select name="downloadAs" class="loadForm__selectDownloadAs"
-						title="For now only '.kml' files are supported">
-					<option selected>Download as...</option>
-					<option value="kml" title="A processed file with the points and tracks inside."
+						title="Download as... (.kml by default)">
+<!--					<option selected>Download as...</option>-->
+					<option value="kml" selected title="A processed file with the points and tracks inside."
 							th:title="#{html.title.select.downloadAsKml}">
 						.kml
 					</option>
@@ -313,6 +313,11 @@
 						.kmz
 					</option>
 				</select>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.downloadAs}">
+					?
+				</div>
+				
 				
 				<span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					Download
