@@ -146,22 +146,35 @@ public class KmlKmzService {
 	 */
 	private InputStream getXmlFromZip_2(MultipartDto multipartDto, String xmlFileExtension, Locale locale)
 		throws IOException {
-		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream())) {
+		File tmpZip = new File(tempDir + multipartDto.getMultipartFile().getOriginalFilename());
+		//TODO: get as kml or gpz
+		boolean isGetZip = multipartDto.getPointTextColor() != null;
+		ByteArrayInputStream xmlInputStream = null;
+		
+		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream());
+			 ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(tmpZip))) {
 			ZipEntry zipEntry;
 			while ((zipEntry = zis.getNextEntry()) != null) {
+				if (isGetZip) {
+					zos.putNextEntry(zipEntry);
+				}
 				if (zipEntry.getName().endsWith(xmlFileExtension)) {
 					//Size may be unknown if entry isn't written to disk!
 //					byte[] buffer = new byte[(int) zipEntry.getSize()];
 // 					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
 					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 					buffer.writeBytes(zis.readAllBytes());
-					return new ByteArrayInputStream(buffer.toByteArray());
+					xmlInputStream = new ByteArrayInputStream(buffer.toByteArray());
 				}
 			}
 		}
-		//TODO: to remake "exception.kmzNoKml" message
-		throw new IllegalArgumentException(messageSource.getMessage("exception.kmzNoKml",
-			new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
+		if (xmlInputStream == null) {
+			//TODO: to remake "exception.kmzNoKml" message
+			throw new IllegalArgumentException(messageSource.getMessage("exception.kmzNoKml",
+				new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
+		} else {
+			return xmlInputStream;
+		}
 	}
 	
 	//https://stackoverflow.com/a/43836969/11592202
@@ -175,7 +188,7 @@ public class KmlKmzService {
 				if (zipEntryIn.getName().endsWith(xmlFileExtension)) {
 					zos.putNextEntry(zipEntryIn);
 					//multipartFileWithKmz = new MockMultipartFile(
-				//zipEntry.getName(), zipEntry.getName(), "text/plain", buffer.toByteArray());
+					//zipEntry.getName(), zipEntry.getName(), "text/plain", buffer.toByteArray());
 				}
 			}
 		}

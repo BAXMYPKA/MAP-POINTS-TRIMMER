@@ -18,14 +18,13 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,7 +58,7 @@ class KmlKmzServiceTest {
 	
 	/**
 	 * In reality a temporary file has to be deleted by
-	 * {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.ShutdownController#shutdownApp(Model, RedirectAttributes, Locale)}
+	 * {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.ShutdownController#shutdownApp(RedirectAttributes, Locale)}
 	 * when called. That controller obtains the {@link Path} by {@link KmlKmzService#getTempKmlFile()} and deletes it
 	 * in same manner.
 	 */
@@ -142,5 +141,36 @@ class KmlKmzServiceTest {
 				"</Document>\n" +
 				"</kml>"))
 		);
+	}
+	
+	@Test
+	public void testing() throws IOException {
+		//GIVEN
+//		String newString = "///NEW STRING///";
+//		ByteArrayInputStream is = new ByteArrayInputStream(newString.getBytes());
+		
+		Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
+		Path existingZip2 = Paths.get(tempDir + "/Readme2.zip");
+		
+		try (FileSystem existingZipFs2 = FileSystems.newFileSystem(existingZip2, getClass().getClassLoader());) {
+			
+			Files.walk(existingZipFs2.getRootDirectories().iterator().next())
+				.filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("st.txt"))
+				.forEach(path -> {
+					try {
+						Files.copy(Paths.get(tempDir + "/test.txt"), path, StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException ioException) {
+						ioException.printStackTrace();
+					}
+				});
+			
+/*
+			for (Path path : existingZipFs2.getRootDirectories().iterator().next()) {
+				if (Files.isRegularFile(path) && path.getFileName().toString().endsWith("st.txt")) {
+					Files.copy(Paths.get(tempDir + "/test.txt"), path, StandardCopyOption.REPLACE_EXISTING);
+				}
+*/
+		}
+		
 	}
 }
