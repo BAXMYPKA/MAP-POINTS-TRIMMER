@@ -12,7 +12,7 @@ class FileTypesTest {
 	public void filename_With_Correct_Extension_Kml_Should_Return_True(String filename) {
 		//GIVEN
 		//WHEN
-		boolean sameExtension = FileTypes.KML.isSameExtension(filename);
+		boolean sameExtension = FileTypes.KML.hasSameExtension(filename);
 		
 		//THEN
 		assertTrue(sameExtension);
@@ -23,7 +23,7 @@ class FileTypesTest {
 	public void filename_With_Incorrect_Extension_Kml_Should_Return_False(String filename) {
 		//GIVEN
 		//WHEN
-		boolean sameExtension = FileTypes.KML.isSameExtension(filename);
+		boolean sameExtension = FileTypes.KML.hasSameExtension(filename);
 		
 		//THEN
 		assertFalse(sameExtension);
@@ -34,7 +34,7 @@ class FileTypesTest {
 	public void filename_With_Correct_Extension_Kmz_Should_Return_True(String filename) {
 		//GIVEN
 		//WHEN
-		boolean sameExtension = FileTypes.KMZ.isSameExtension(filename);
+		boolean sameExtension = FileTypes.KMZ.hasSameExtension(filename);
 		
 		//THEN
 		assertTrue(sameExtension);
@@ -45,7 +45,7 @@ class FileTypesTest {
 	public void filename_With_Incorrect_Extension_Kmz_Should_Return_False(String filename) {
 		//GIVEN
 		//WHEN
-		boolean sameExtension = FileTypes.KML.isSameExtension(filename);
+		boolean sameExtension = FileTypes.KML.hasSameExtension(filename);
 		
 		//THEN
 		assertFalse(sameExtension);

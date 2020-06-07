@@ -21,7 +21,9 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,27 +33,35 @@ class KmlKmzServiceTest {
 	private static KmlKmzService kmlKmzService;
 	private static MessageSource messageSource;
 	private static MultipartDto multipartDto;
-	private static Path tmpKmlFile;
-	private static String testKml;
-	private static InputStream inputStream = new ByteArrayInputStream(new byte[]{});
+	private static Path tmpFile;
+	private static String testKml = "<kml>test</kml>";
+	;
 	private static MultipartFile multipartFile;
+	private static Path kmzPath = Paths.get("src/test/java/resources/LocusTestKmz.kmz");
+	
 	
 	@BeforeAll
-	public static void beforeAll() {
+	public static void beforeAll() throws ParserConfigurationException, TransformerException, SAXException, IOException {
 		messageSource = Mockito.mock(MessageSource.class);
 		Mockito.when(messageSource.getMessage("exception.nullFilename", null, null))
 			.thenReturn("Filename cannot be null!");
+		
 		kmlHandler = Mockito.mock(KmlHandler.class);
+		Mockito.when(kmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartDto.class))).thenReturn(testKml);
+		
 		kmlKmzService = new KmlKmzService(kmlHandler, messageSource);
-		testKml = "<kml>test</kml>";
+		;
+		
 		multipartFile = new MockMultipartFile(
 			"MockKml.kml", "MockKml.kml", null, testKml.getBytes());
+		
 		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setDownloadAs(FileTypes.KML);
 	}
 	
 	@AfterEach
 	public void afterEach() throws IOException {
-		Files.deleteIfExists(tmpKmlFile);
+		Files.deleteIfExists(tmpFile);
 	}
 	
 	/**
@@ -62,34 +72,34 @@ class KmlKmzServiceTest {
 	 */
 	@Test
 	public void kml_File_Should_Be_Saved_Temporarily_then_Deleted()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, TransformerException, ParserConfigurationException, SAXException {
 		// GIVEN
-		Mockito.when(kmlHandler.processXml(inputStream, multipartDto)).thenReturn(testKml);
+		Mockito.when(kmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartDto.class))).thenReturn(testKml);
 		
 		//WHEN
-		tmpKmlFile = kmlKmzService.processMultipartDto_2(multipartDto, null);
+		tmpFile = kmlKmzService.processMultipartDto_2(multipartDto, null);
 		
 		//THEN
-		assertEquals(tmpKmlFile, kmlKmzService.getTempFile());
-		assertTrue(Files.isReadable(tmpKmlFile));
+		assertEquals(tmpFile, kmlKmzService.getTempFile());
+		assertTrue(Files.isReadable(tmpFile));
 		
-		Files.deleteIfExists(tmpKmlFile);
+		Files.deleteIfExists(tmpFile);
 		
 		//Temp .kml file should be deleted
-		assertFalse(Files.isReadable(tmpKmlFile));
+		assertFalse(Files.isReadable(tmpFile));
 	}
 	
 	@Test
 	public void kml_File_Should_Be_Returned_Same()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
+		throws IOException, TransformerException, ParserConfigurationException, SAXException {
 		// GIVEN
-		Mockito.when(kmlHandler.processXml(inputStream, multipartDto)).thenReturn(testKml);
+		Mockito.when(kmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartDto.class))).thenReturn(testKml);
 		
 		//WHEN
-		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
+		tmpFile = kmlKmzService.processMultipartDto(multipartDto, null);
 		
 		//THEN
-		assertEquals(testKml, Files.readString(tmpKmlFile, StandardCharsets.UTF_8));
+		assertEquals(testKml, Files.readString(tmpFile, StandardCharsets.UTF_8));
 	}
 	
 	@Test
@@ -102,11 +112,11 @@ class KmlKmzServiceTest {
 		multipartDto = new MultipartDto(multipartFileWIthKmz);
 		
 		String kmlTest = "<kml>success</kml>";
-		Mockito.when(kmlHandler.processXml(inputStream, multipartDto)).thenReturn(kmlTest);
+		Mockito.when(kmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartDto.class))).thenReturn(kmlTest);
 		
 		//WHEN
-		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
-		String kmlResult = Files.readString(tmpKmlFile, StandardCharsets.UTF_8);
+		tmpFile = kmlKmzService.processMultipartDto(multipartDto, null);
+		String kmlResult = Files.readString(tmpFile, StandardCharsets.UTF_8);
 		
 		//THEN
 		assertAll(
@@ -129,8 +139,8 @@ class KmlKmzServiceTest {
 		kmlKmzService = new KmlKmzService(kmlHandler, messageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
-		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
-		String kmlResult = Files.readString(tmpKmlFile, StandardCharsets.UTF_8);
+		tmpFile = kmlKmzService.processMultipartDto(multipartDto, null);
+		String kmlResult = Files.readString(tmpFile, StandardCharsets.UTF_8);
 		
 		//THEN The resulting 'doc.kml' should be the same
 		assertAll(
@@ -142,36 +152,80 @@ class KmlKmzServiceTest {
 	}
 	
 	@Test
-	public void testing() throws IOException {
-		//GIVEN
-//		String newString = "///NEW STRING///";
-//		ByteArrayInputStream is = new ByteArrayInputStream(newString.getBytes());
+	public void downloadAsKmz_File_Should_Be_Saved_Temporarily_then_Deleted()
+		throws IOException, TransformerException, ParserConfigurationException, SAXException {
+		// GIVEN kmz file
+		multipartFile = new MockMultipartFile(
+			"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(kmzPath));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setDownloadAs(FileTypes.KMZ);
 		
-		System.out.println(FileTypes.valueOf("KML"));
-		System.out.println(FileTypes.getValue("kmz"));
+		//WHEN
+		tmpFile = kmlKmzService.processMultipartDto_2(multipartDto, null);
 		
-		Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
-		Path existingZip2 = Paths.get(tempDir + "/Readme2.zip");
+		//THEN
+		assertEquals(tmpFile, kmlKmzService.getTempFile());
+		assertTrue(Files.isReadable(tmpFile));
 		
-		try (FileSystem existingZipFs2 = FileSystems.newFileSystem(existingZip2, getClass().getClassLoader());) {
-			
-			Files.walk(existingZipFs2.getRootDirectories().iterator().next())
-				.filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith("st.txt"))
-				.forEach(path -> {
-					try {
-						Files.copy(Paths.get(tempDir + "/test.txt"), path, StandardCopyOption.REPLACE_EXISTING);
-					} catch (IOException ioException) {
-						ioException.printStackTrace();
-					}
-				});
-			
-/*
-			for (Path path : existingZipFs2.getRootDirectories().iterator().next()) {
-				if (Files.isRegularFile(path) && path.getFileName().toString().endsWith("st.txt")) {
-					Files.copy(Paths.get(tempDir + "/test.txt"), path, StandardCopyOption.REPLACE_EXISTING);
+		Files.deleteIfExists(tmpFile);
+		
+		//Temp .kml file should be deleted
+		assertFalse(Files.isReadable(tmpFile));
+	}
+	
+	@Test
+	public void kml_In_Kmz_MultipartFile_Should_Be_Returned_Same()
+		throws IOException, TransformerException, ParserConfigurationException, SAXException {
+		//WHEN
+		multipartFile = new MockMultipartFile(
+			"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(kmzPath));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setDownloadAs(FileTypes.KMZ);
+		
+		//WHEN
+		tmpFile = kmlKmzService.processMultipartDto_2(multipartDto, null);
+		String processedKml = null;
+		FileSystem zip = FileSystems.newFileSystem(tmpFile, this.getClass().getClassLoader());
+		rootDir:
+		for (Path rootPath : zip.getRootDirectories()) {
+			for (Path zipPath : Files.walk(rootPath).collect(Collectors.toCollection(ArrayList::new))) {
+				if (Files.isRegularFile(zipPath) && FileTypes.KML.hasSameExtension(zipPath.getFileName().toString())) {
+					processedKml = String.join("", Files.readAllLines(zipPath, StandardCharsets.UTF_8));
+					break rootDir;
 				}
-*/
+			}
 		}
 		
+		//THEN
+		assertEquals(processedKml, testKml);
 	}
+	
+	@Test
+	public void kmz_MultipartFile_Should_Contain_All_The_Initial_Files()
+		throws IOException, TransformerException, ParserConfigurationException, SAXException {
+		//WHEN
+		multipartFile = new MockMultipartFile(
+			"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(kmzPath));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setDownloadAs(FileTypes.KMZ);
+		
+		//WHEN
+		tmpFile = kmlKmzService.processMultipartDto_2(multipartDto, null);
+		String processedKml = null;
+		FileSystem zip = FileSystems.newFileSystem(tmpFile, this.getClass().getClassLoader());
+		rootDir:
+		for (Path rootPath : zip.getRootDirectories()) {
+			for (Path zipPath : Files.walk(rootPath).collect(Collectors.toCollection(ArrayList::new))) {
+				if (Files.isRegularFile(zipPath) && FileTypes.KML.hasSameExtension(zipPath.getFileName().toString())) {
+					processedKml = String.join("", Files.readAllLines(zipPath, StandardCharsets.UTF_8));
+					break rootDir;
+				}
+			}
+		}
+		
+		//THEN
+		assertEquals(processedKml, testKml);
+	}
+	
+	//TODO: to test out the deleting of temp file when close unexpectedly
 }

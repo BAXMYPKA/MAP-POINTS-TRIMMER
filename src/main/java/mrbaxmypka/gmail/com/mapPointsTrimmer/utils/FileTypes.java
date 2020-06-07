@@ -22,7 +22,7 @@ public enum FileTypes {
 	 * @param filename The name of the file to extract its extension and compare with the current {@link FileTypes}
 	 * @return true if the given 'Filename' has same extension, otherwise 'false'.
 	 */
-	public boolean isSameExtension(String filename) {
+	public boolean hasSameExtension(String filename) {
 		try {
 			String originalExtension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
 			return ".".concat(this.name()).toLowerCase().equals(originalExtension);

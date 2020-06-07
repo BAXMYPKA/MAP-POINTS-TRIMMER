@@ -22,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -102,6 +101,14 @@ public class KmlKmzService {
 			new Object[]{multipartFileWithKmz.getOriginalFilename()}, locale));
 	}
 	
+	private Path writeTempKmlFile(String kmlDoc, MultipartDto multipartDto) throws IOException {
+		Path tempFilePath = Paths.get(tempDir.concat(multipartDto.getMultipartFile().getOriginalFilename()));
+		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFilePath, StandardCharsets.UTF_8)) {
+			bufferedWriter.write(kmlDoc);
+			return tempFilePath;
+		}
+	}
+	
 	////////////////////////////////////
 	////////////////////////////////////
 	///////////////////////////////////
@@ -112,9 +119,9 @@ public class KmlKmzService {
 		locale = locale == null ? this.defaultLocale : locale;
 		String processedXml;
 		
-		if (FileTypes.KML.isSameExtension(multipartDto.getMultipartFile().getOriginalFilename())) {
+		if (FileTypes.KML.hasSameExtension(multipartDto.getMultipartFile().getOriginalFilename())) {
 			processedXml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
-		} else if (FileTypes.KMZ.isSameExtension(multipartDto.getMultipartFile().getOriginalFilename())) {
+		} else if (FileTypes.KMZ.hasSameExtension(multipartDto.getMultipartFile().getOriginalFilename())) {
 			InputStream kmlInputStream = getXmlFromZip_2(multipartDto, FileTypes.KML, locale);
 			processedXml = kmlHandler.processXml(kmlInputStream, multipartDto);
 		} else {
@@ -140,7 +147,7 @@ public class KmlKmzService {
 		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream())) {
 			ZipEntry zipEntry;
 			while ((zipEntry = zis.getNextEntry()) != null) {
-				if (xmlFileExtension.isSameExtension(zipEntry.getName())) {
+				if (xmlFileExtension.hasSameExtension(zipEntry.getName())) {
 					//Size may be unknown if entry isn't written to disk!
 //					byte[] buffer = new byte[(int) zipEntry.getSize()];
 // 					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
@@ -164,7 +171,7 @@ public class KmlKmzService {
 	 * @return {@link Path} to a temp file to be returned to a User.
 	 * @throws IOException With the localized message to be returned to a User if the temp file writing is failed.
 	 */
-	private Path writeTempZip(String processedXml, String xmlFileExtension, MultipartDto multipartDto, Locale locale)
+	private Path writeTempZip(String processedXml, FileTypes xmlFileExtension, MultipartDto multipartDto, Locale locale)
 		throws IOException {
 		String originalFilename = multipartDto.getMultipartFile().getOriginalFilename();
 		
@@ -172,20 +179,25 @@ public class KmlKmzService {
 		
 		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream());
 			 ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile))) {
-			ZipEntry zipEntryIn;
-			while ((zipEntryIn = zis.getNextEntry()) != null) {
+			ZipEntry zipInEntry;
+			while ((zipInEntry = zis.getNextEntry()) != null) {
+				
+				ZipEntry zipOutEntry = new ZipEntry(zipInEntry.getName());
+				zipOutEntry.setComment(zipInEntry.getComment());
+				zipOutEntry.setExtra(zipInEntry.getExtra());
 				
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				
 				//Replace existing file with the new one
-				if (zipEntryIn.getName().endsWith(xmlFileExtension)) {
-					zos.putNextEntry(new ZipEntry(zipEntryIn.getName()));
+				if (xmlFileExtension.hasSameExtension(zipInEntry.getName())) {
+					zos.putNextEntry(zipOutEntry);
 					buffer.writeBytes(processedXml.getBytes(StandardCharsets.UTF_8));
 				} else {
-					zos.putNextEntry(zipEntryIn);
+					zos.putNextEntry(zipOutEntry);
 					buffer.writeBytes(zis.readAllBytes());
 				}
 				zos.write(buffer.toByteArray());
+				zos.closeEntry();
 			}
 		} catch (Exception e) {
 			//TODO: exception.fileException(1) to be created
@@ -198,10 +210,9 @@ public class KmlKmzService {
 	
 	private Path writeTempFile_2(String processedXml, MultipartDto multipartDto, Locale locale) throws IOException {
 		String originalFilename = multipartDto.getMultipartFile().getOriginalFilename();
-		Path tempFile;
 		
-		if (FileTypes.KML.isSameExtension(originalFilename) ||
-			(FileTypes.KMZ.isSameExtension(originalFilename) && multipartDto.getDownloadAs().equals(FileTypes.KML))) {
+		if (FileTypes.KML.hasSameExtension(originalFilename) ||
+			(FileTypes.KMZ.hasSameExtension(originalFilename) && multipartDto.getDownloadAs().equals(FileTypes.KML))) {
 			
 			tempFile = Paths.get(tempDir.concat(originalFilename));
 			try (BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8)) {
@@ -212,8 +223,8 @@ public class KmlKmzService {
 					messageSource.getMessage("exception.fileException(1)", new Object[]{e.getMessage()}, locale),
 					e);
 			}
-		} else if (FileTypes.KMZ.isSameExtension(originalFilename) && FileTypes.KMZ.equals(multipartDto.getDownloadAs())) {
-			tempFile = writeTempZip(processedXml, FileTypes.KML.name(), multipartDto, locale);
+		} else if (FileTypes.KMZ.hasSameExtension(originalFilename) && FileTypes.KMZ.equals(multipartDto.getDownloadAs())) {
+			tempFile = writeTempZip(processedXml, FileTypes.KML, multipartDto, locale);
 		} else {
 			//TODO: exception.unexpectedException to be created
 			throw new IOException(
@@ -222,11 +233,4 @@ public class KmlKmzService {
 		return tempFile;
 	}
 	
-	private Path writeTempKmlFile(String kmlDoc, MultipartDto multipartDto) throws IOException {
-		Path tempFilePath = Paths.get(tempDir.concat(multipartDto.getMultipartFile().getOriginalFilename()));
-		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFilePath, StandardCharsets.UTF_8)) {
-			bufferedWriter.write(kmlDoc);
-			return tempFilePath;
-		}
-	}
 }
