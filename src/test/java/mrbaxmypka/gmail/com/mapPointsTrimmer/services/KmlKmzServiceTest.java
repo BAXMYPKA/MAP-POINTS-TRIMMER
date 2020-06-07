@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xml.sax.SAXException;
@@ -20,12 +19,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +33,7 @@ class KmlKmzServiceTest {
 	private static MultipartDto multipartDto;
 	private static Path tmpKmlFile;
 	private static String testKml;
+	private static InputStream inputStream = new ByteArrayInputStream(new byte[]{});
 	private static MultipartFile multipartFile;
 	
 	@BeforeAll
@@ -60,20 +57,20 @@ class KmlKmzServiceTest {
 	/**
 	 * In reality a temporary file has to be deleted by
 	 * {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.ShutdownController#shutdownApp(RedirectAttributes, Locale)}
-	 * when called. That controller obtains the {@link Path} by {@link KmlKmzService#getTempKmlFile()} and deletes it
+	 * when called. That controller obtains the {@link Path} by {@link KmlKmzService#getTempFile()} and deletes it
 	 * in same manner.
 	 */
 	@Test
 	public void kml_File_Should_Be_Saved_Temporarily_then_Deleted()
 		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
 		// GIVEN
-		Mockito.when(kmlHandler.processXml(multipartDto)).thenReturn(testKml);
+		Mockito.when(kmlHandler.processXml(inputStream, multipartDto)).thenReturn(testKml);
 		
 		//WHEN
-		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
+		tmpKmlFile = kmlKmzService.processMultipartDto_2(multipartDto, null);
 		
 		//THEN
-		assertEquals(tmpKmlFile, kmlKmzService.getTempKmlFile());
+		assertEquals(tmpKmlFile, kmlKmzService.getTempFile());
 		assertTrue(Files.isReadable(tmpKmlFile));
 		
 		Files.deleteIfExists(tmpKmlFile);
@@ -86,7 +83,7 @@ class KmlKmzServiceTest {
 	public void kml_File_Should_Be_Returned_Same()
 		throws IOException, TransformerException, ParserConfigurationException, SAXException, XMLStreamException {
 		// GIVEN
-		Mockito.when(kmlHandler.processXml(multipartDto)).thenReturn(testKml);
+		Mockito.when(kmlHandler.processXml(inputStream, multipartDto)).thenReturn(testKml);
 		
 		//WHEN
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);
@@ -105,7 +102,7 @@ class KmlKmzServiceTest {
 		multipartDto = new MultipartDto(multipartFileWIthKmz);
 		
 		String kmlTest = "<kml>success</kml>";
-		Mockito.when(kmlHandler.processXml(multipartDto)).thenReturn(kmlTest);
+		Mockito.when(kmlHandler.processXml(inputStream, multipartDto)).thenReturn(kmlTest);
 		
 		//WHEN
 		tmpKmlFile = kmlKmzService.processMultipartDto(multipartDto, null);

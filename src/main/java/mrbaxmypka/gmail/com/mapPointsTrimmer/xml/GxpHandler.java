@@ -8,13 +8,16 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.io.InputStream;
 
 @NoArgsConstructor
 @Component
 public class GxpHandler extends XmlHandler{
 	
 	@Override
-	public String processXml(MultipartDto multipartDto) throws IOException, ParserConfigurationException, SAXException, TransformerException {
+	public String processXml(InputStream inputStream, MultipartDto multipartDto) throws IOException,
+		ParserConfigurationException,
+		SAXException, TransformerException {
 		return null;
 	}
 }

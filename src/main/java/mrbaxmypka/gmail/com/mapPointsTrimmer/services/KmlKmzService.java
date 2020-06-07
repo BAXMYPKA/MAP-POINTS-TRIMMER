@@ -14,7 +14,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -31,13 +30,11 @@ import java.util.zip.ZipOutputStream;
 public class KmlKmzService {
 	
 	private final String tempDir = System.getProperty("java.io.tmpdir");
-	private final String KMZ_EXTENSION = ".kmz";
-	private final String KML_EXTENSION = ".kml";
-	private Locale defaultLocale = Locale.ENGLISH;
-	private MessageSource messageSource;
-	private KmlHandler kmlHandler;
+	private final Locale defaultLocale = Locale.ENGLISH;
+	private final MessageSource messageSource;
+	private final KmlHandler kmlHandler;
 	@Getter
-	private Path tempKmlFile;
+	private Path tempFile;
 	
 	@Autowired
 	public KmlKmzService(KmlHandler kmlHandler, MessageSource messageSource) {
@@ -57,16 +54,19 @@ public class KmlKmzService {
 		String processedKml;
 		
 		if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kml")) {
-//			processedKml = kmlHandler.processKml(multipartDto);
-			processedKml = kmlHandler.processXml(multipartDto);
-			tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
-			return tempKmlFile;
+			processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+			tempFile = writeTempKmlFile(processedKml, multipartDto);
+			return tempFile;
 		} else if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(".kmz")) {
 			MultipartFile multipartWithKml = getMultipartFileWithKml(multipartDto.getMultipartFile(), locale);
 			multipartDto.setMultipartFile(multipartWithKml);
-			processedKml = kmlHandler.processXml(multipartDto);
-			tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
-			return tempKmlFile;
+			
+			///////////////////////////////////////WRONG METHOD /////////////////////////////////
+			
+			
+			processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+			tempFile = writeTempKmlFile(processedKml, multipartDto);
+			return tempFile;
 		} else {
 			throw new IllegalArgumentException(messageSource.getMessage(
 				"exception.fileExtensionNotSupported",
@@ -110,97 +110,116 @@ public class KmlKmzService {
 		throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		
 		locale = locale == null ? this.defaultLocale : locale;
-		String processedKml;
+		String processedXml;
 		
-		if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(KML_EXTENSION)) {
-			processedKml = kmlHandler.processXml_2(multipartDto.getMultipartFile().getInputStream(), multipartDto);
-			tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
-			return tempKmlFile;
-		} else if (multipartDto.getMultipartFile().getOriginalFilename().endsWith(KMZ_EXTENSION)) {
-			InputStream kmlInputStream = getXmlFromZip_2(multipartDto, KML_EXTENSION, locale);
-			processedKml = kmlHandler.processXml_2(kmlInputStream, multipartDto);
-			
-			//Here must be multipartDto.downloadAs() kml kmz gpz
-			if (multipartDto.getPath() != null && multipartDto.getPath().equals(KMZ_EXTENSION)) {
-				setNewXmlToZip(processedKml, KML_EXTENSION, multipartDto, locale);
-			}
-			
-			//writeTempFile(multipartDto)
-			
-			tempKmlFile = writeTempKmlFile(processedKml, multipartDto);
-			return tempKmlFile;
+		if (FileTypes.KML.isSameExtension(multipartDto.getMultipartFile().getOriginalFilename())) {
+			processedXml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		} else if (FileTypes.KMZ.isSameExtension(multipartDto.getMultipartFile().getOriginalFilename())) {
+			InputStream kmlInputStream = getXmlFromZip_2(multipartDto, FileTypes.KML, locale);
+			processedXml = kmlHandler.processXml(kmlInputStream, multipartDto);
 		} else {
 			throw new IllegalArgumentException(messageSource.getMessage(
 				"exception.fileExtensionNotSupported",
 				new Object[]{multipartDto.getMultipartFile().getOriginalFilename()},
 				locale));
 		}
+		return writeTempFile_2(processedXml, multipartDto, locale);
 	}
 	
 	/**
-	 * @param multipartDto     Which contains .gpz, .kmz or any other ZIP archives
+	 * @param multipartDto           Which contains .gpz, .kmz or any other ZIP archives
 	 * @param xmlFileExtension .kml, .gpx or any possible extension of the file to be extracted from the given ZIP
-	 *                         archive as it must be a single one inside.
-	 * @param locale           To send a localized error messages.
-	 * @return {@link InputStream} from the file with the given file extension.
+	 *                               archive as it must be a single one inside.
+	 * @param locale                 To send a localized error messages.
+	 * @return {@link InputStream} from the file with the given file extension (.kml as usual).
 	 * @throws IOException
 	 */
-	private InputStream getXmlFromZip_2(MultipartDto multipartDto, String xmlFileExtension, Locale locale)
+	private InputStream getXmlFromZip_2(MultipartDto multipartDto, FileTypes xmlFileExtension, Locale locale)
 		throws IOException {
-		File tmpZip = new File(tempDir + multipartDto.getMultipartFile().getOriginalFilename());
-		//TODO: get as kml or gpz
-		boolean isGetZip = multipartDto.getPointTextColor() != null;
-		ByteArrayInputStream xmlInputStream = null;
 		
-		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream());
-			 ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(tmpZip))) {
+		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream())) {
 			ZipEntry zipEntry;
 			while ((zipEntry = zis.getNextEntry()) != null) {
-				if (multipartDto.getDownloadAs().equals(FileTypes.KMZ)) {
-					zos.putNextEntry(zipEntry);
-				}
-				if (zipEntry.getName().endsWith(xmlFileExtension)) {
+				if (xmlFileExtension.isSameExtension(zipEntry.getName())) {
 					//Size may be unknown if entry isn't written to disk!
 //					byte[] buffer = new byte[(int) zipEntry.getSize()];
 // 					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
 					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 					buffer.writeBytes(zis.readAllBytes());
-					xmlInputStream = new ByteArrayInputStream(buffer.toByteArray());
+					return new ByteArrayInputStream(buffer.toByteArray());
 				}
 			}
 		}
-		if (xmlInputStream == null) {
-			//TODO: to remake "exception.kmzNoKml" message
-			throw new IllegalArgumentException(messageSource.getMessage("exception.kmzNoKml",
-				new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
-		} else {
-			return xmlInputStream;
-		}
+		throw new IllegalArgumentException(messageSource.getMessage("exception.kmzNoKml",
+			new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
 	}
 	
-	//https://stackoverflow.com/a/43836969/11592202
-	private void setNewXmlToZip(String processedXml, String xmlFileExtension, MultipartDto multipartDto, Locale locale)
+	/**
+	 * https://stackoverflow.com/a/43836969/11592202
+	 *
+	 * @param processedXml     A processed xml String to be written to the resulting file.
+	 * @param xmlFileExtension The extension of a future xml file.
+	 * @param multipartDto
+	 * @param locale           To return a locale-oriented messages
+	 * @return {@link Path} to a temp file to be returned to a User.
+	 * @throws IOException With the localized message to be returned to a User if the temp file writing is failed.
+	 */
+	private Path writeTempZip(String processedXml, String xmlFileExtension, MultipartDto multipartDto, Locale locale)
 		throws IOException {
-		ZipFile zipFile = new ZipFile(new File(tempDir.concat(multipartDto.getMultipartFile().getOriginalFilename())));
+		String originalFilename = multipartDto.getMultipartFile().getOriginalFilename();
+		
+		Path tempFile = Paths.get(tempDir.concat(originalFilename));
+		
 		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream());
-			 ZipOutputStream zos = new ZipOutputStream(new FileOutputStream("tempZip.zip"))) {
+			 ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile))) {
 			ZipEntry zipEntryIn;
 			while ((zipEntryIn = zis.getNextEntry()) != null) {
+				
+				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+				
+				//Replace existing file with the new one
 				if (zipEntryIn.getName().endsWith(xmlFileExtension)) {
+					zos.putNextEntry(new ZipEntry(zipEntryIn.getName()));
+					buffer.writeBytes(processedXml.getBytes(StandardCharsets.UTF_8));
+				} else {
 					zos.putNextEntry(zipEntryIn);
-					//multipartFileWithKmz = new MockMultipartFile(
-					//zipEntry.getName(), zipEntry.getName(), "text/plain", buffer.toByteArray());
+					buffer.writeBytes(zis.readAllBytes());
 				}
+				zos.write(buffer.toByteArray());
 			}
+		} catch (Exception e) {
+			//TODO: exception.fileException(1) to be created
+			throw new IOException(
+				messageSource.getMessage("exception.fileException(1)", new Object[]{e.getMessage()}, locale),
+				e);
 		}
+		return tempFile;
 	}
 	
-	private Path writeTempFile_2(String kmlDoc, MultipartDto multipartDto) throws IOException {
-		Path tempFilePath = Paths.get(tempDir.concat(multipartDto.getMultipartFile().getOriginalFilename()));
-		try (BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFilePath, StandardCharsets.UTF_8)) {
-			bufferedWriter.write(kmlDoc);
-			return tempFilePath;
+	private Path writeTempFile_2(String processedXml, MultipartDto multipartDto, Locale locale) throws IOException {
+		String originalFilename = multipartDto.getMultipartFile().getOriginalFilename();
+		Path tempFile;
+		
+		if (FileTypes.KML.isSameExtension(originalFilename) ||
+			(FileTypes.KMZ.isSameExtension(originalFilename) && multipartDto.getDownloadAs().equals(FileTypes.KML))) {
+			
+			tempFile = Paths.get(tempDir.concat(originalFilename));
+			try (BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8)) {
+				bufferedWriter.write(processedXml);
+			} catch (Exception e) {
+				//TODO: exception.fileException(1) to be created
+				throw new IOException(
+					messageSource.getMessage("exception.fileException(1)", new Object[]{e.getMessage()}, locale),
+					e);
+			}
+		} else if (FileTypes.KMZ.isSameExtension(originalFilename) && FileTypes.KMZ.equals(multipartDto.getDownloadAs())) {
+			tempFile = writeTempZip(processedXml, FileTypes.KML.name(), multipartDto, locale);
+		} else {
+			//TODO: exception.unexpectedException to be created
+			throw new IOException(
+				messageSource.getMessage("exception.unexpectedException", null, locale));
 		}
+		return tempFile;
 	}
 	
 	private Path writeTempKmlFile(String kmlDoc, MultipartDto multipartDto) throws IOException {

@@ -226,57 +226,19 @@ public class GoogleEarthHandler {
 		return String.format("%02x", hexPercentage.toBigInteger());
 	}
 	
-	//The template of old ugly style
-/*
-	private List<Node> getLabelStylesScales(NodeList styles) {
-		List<Node> scales = new ArrayList<>();
-		List<Node> labelStyles = getLabelStyles(styles);
-		
-		//Look through every <Style>
-		for (int i = 0; i < styles.getLength(); i++) {
-			Node style = styles.item(i);
-			
-			Node labelStyle = null;
-			Node scale = null;
-			NodeList styleChildNodes = style.getChildNodes();
-			
-			//Look through <Style> children
-			for (int j = 0; j < styleChildNodes.getLength(); j++) {
-				if (styleChildNodes.item(j).getNodeType() != Node.ELEMENT_NODE) continue;
-				if (styleChildNodes.item(j).getLocalName().equals("LabelStyle")) {
-					labelStyle = styleChildNodes.item(j);
-					
-					NodeList labelStyleChildNodes = labelStyle.getChildNodes();
-					//Look through <LabelStyle> children
-					for (int k = 0; k < labelStyleChildNodes.getLength(); k++) {
-						if (labelStyleChildNodes.item(k).getNodeType() != Node.ELEMENT_NODE) continue;
-						//Look through for <LabelStyle> -> <scale>
-						if (labelStyleChildNodes.item(k).getLocalName().equals("scale")) {
-							scale = labelStyleChildNodes.item(k);
-							//<scale> is presented within parent's <LabelStyle> and just has to be added
-							scales.add(scale);
-							break;
-						}
-					}
-					//<scale> isn't presented, create a new one
-					if (scale == null) {
-						scale = document.createElement("scale");
-						labelStyle.appendChild(scale);
-						scales.add(scale);
-					}
-				}
-			}
-			//<LabelStyle> isn't presented within <Style> parent. Create a new one, append a new <scale> to it
-			// and append all them to <Style> parent before returning
-			if (labelStyle == null) {
-				labelStyle = document.createElement("LabelStyle");
-				scale = document.createElement("scale");
-				labelStyle.appendChild(scale);
-				style.appendChild(labelStyle);
-				scales.add(scale);
-			}
-		}
-		return scales;
+	/**
+	 * Some programs as Google Earth has special href they internally redirect to their local image store.
+	 * It is not recommended to change those type of hrefs.
+	 * Evaluates a given "href" or "src" not to start with "http://maps.google.com" as those types of hrefs are
+	 * Google Earth Pro specific and cannot be replaced with the new links.
+	 *
+	 * @param href Href or src to be evaluated
+	 * @return If the given href is Google Earth specific and cannot be replaced with a new href or not.
+	 */
+	//TODO: to download special GE images
+	boolean isImageHrefChangeable(String href) {
+		String googleMapSpecialUrl = "http://maps.google.com/";
+		return !href.startsWith(googleMapSpecialUrl);
 	}
-*/
+	
 }

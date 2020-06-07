@@ -38,7 +38,12 @@ public abstract class XmlHandler {
 		this.googleEarthHandler = googleEarthHandler;
 	}
 	
-	public abstract String processXml(MultipartDto multipartDto)
+	/**
+	 * @param inputStream An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartDto}
+	 * @param multipartDto
+	 * @return
+	 */
+	public abstract String processXml(InputStream inputStream, MultipartDto multipartDto)
 		throws IOException, ParserConfigurationException, SAXException, TransformerException;
 	
 	protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {

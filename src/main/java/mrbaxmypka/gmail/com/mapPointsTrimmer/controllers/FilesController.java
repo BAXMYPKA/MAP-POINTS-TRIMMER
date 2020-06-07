@@ -1,4 +1,4 @@
-package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.rest;
+package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.KmlKmzService;
@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 
 @RestController
-public class KmlController {
+public class FilesController {
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -33,19 +33,20 @@ public class KmlController {
 	private KmlKmzService kmlKmzService;
 	
 	/**
-	 * @param poiFile Can receive .kml or .kmz files only
+	 * @param file Can receive .kml or .kmz files only
 	 * @param locale  For defining a User language
 	 * @return
 	 */
 	@PostMapping(path = "/poi",
 				 consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
 				 produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<FileSystemResource> postKml(@Valid @ModelAttribute MultipartDto poiFile, Locale locale)
+	public ResponseEntity<FileSystemResource> postKml(@Valid @ModelAttribute MultipartDto file, Locale locale)
 		throws IOException, SAXException, ParserConfigurationException, XMLStreamException, TransformerException {
 		
-		Path tmpFile = kmlKmzService.processMultipartDto(poiFile, locale);
-		FileSystemResource resource = new FileSystemResource(tmpFile);
+//		Path tempFile = kmlKmzService.processMultipartDto(file, locale);
+		Path tempFile = kmlKmzService.processMultipartDto_2(file, locale);
+		FileSystemResource resource = new FileSystemResource(tempFile);
 		return ResponseEntity.ok()
-			.header("Content-Disposition", "attachment; filename=" + tmpFile.getFileName()).body(resource);
+			.header("Content-Disposition", "attachment; filename=" + tempFile.getFileName()).body(resource);
 	}
 }

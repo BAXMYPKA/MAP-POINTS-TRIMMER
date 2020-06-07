@@ -128,7 +128,7 @@ class KmlHandlerTest {
 		multipartDto.setPathType("absolute");
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 		
 		//THEN
 		assertTrue(processedKml.contains("<href>file:///C:/MyPoi/MyPoiImages/file-sdcardLocuscacheimages1571471453728.png</href>"));
@@ -154,7 +154,7 @@ class KmlHandlerTest {
 		multipartDto.setPathType("absolute");
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 		
 		//THEN
 		//Special GoogleEarth icons paths should be preserved
@@ -174,7 +174,7 @@ class KmlHandlerTest {
 		multipartDto.setPathType("absolute");
 		
 		//WHEN
-		String processedHtml = kmlHandler.processXml(multipartDto);
+		String processedHtml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 		
 		//THEN All whitespaces should be replaced with URL '%20' sign
 		assertAll(
@@ -235,7 +235,7 @@ class KmlHandlerTest {
 		multipartDto.setTrimXml(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 		
 		//THEN xml tags are without whitespaces but CDATA starts and ends with them
 		assertAll(
@@ -296,7 +296,7 @@ class KmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 
 		//THEN <ExtendedData> ans <lc:attachment xmlns:lc="http://www.locusmap.eu"> has to be created
 		assertAll(
@@ -353,7 +353,7 @@ class KmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 		
 		//THEN <lc:attachments> text has to be replaced from description one
 		assertTrue(processedKml.contains("<ExtendedData xmlns:lc=\"http://www.locusmap.eu\""));//Just a check
@@ -409,7 +409,7 @@ class KmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertFalse(processedKml.contains("<lc:attachment>files/_1318431492316.jpg</lc:attachment>"));
@@ -489,7 +489,7 @@ class KmlHandlerTest {
 		multipartDto.setPreviewSizeUnit(PreviewSizeUnits.PIXELS);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(
@@ -555,7 +555,7 @@ class KmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 		
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(
@@ -638,7 +638,7 @@ class KmlHandlerTest {
 		multipartDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto);
+		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 		
 		//THEN <kml (...) xmlns:lc="http://www.locusmap.eu"> namespace in the header has to be created
 		assertAll(

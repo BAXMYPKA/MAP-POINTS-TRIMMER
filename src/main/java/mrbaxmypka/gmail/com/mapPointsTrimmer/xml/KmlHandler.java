@@ -31,41 +31,10 @@ public class KmlHandler extends XmlHandler {
 	 * CDATA[[]] as an HTML markup.
 	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
 	 */
-	public String processXml_2(InputStream kmlInputStream, MultipartDto multipartDto)
+	public String processXml(InputStream kmlInputStream, MultipartDto multipartDto)
 		throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		
 		document = getDocument(kmlInputStream);
-		Element documentRoot = document.getDocumentElement();
-		//Processing Google Earth specific options
-		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
-		googleEarthHandler.processXml(document, multipartDto);
-		
-		if (multipartDto.isSetPath()) {
-			processHref(documentRoot, multipartDto);
-		}
-		//Processing the further text options regarding to inner CDATA or plain text from <description>s
-		processDescriptionsTexts(documentRoot, multipartDto);
-		
-		if (multipartDto.isAsAttachmentInLocus()) {
-			processLocusAttachments(documentRoot, multipartDto);
-		}
-		if (multipartDto.isTrimXml()) {
-			trimWhitespaces(documentRoot);
-		}
-		
-		return writeTransformedDocument(document);
-	}
-	
-	
-	/**
-	 * All the additional information for a User (preview size, outdated descriptions etc) are placed inside the
-	 * CDATA[[]] as an HTML markup.
-	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
-	 */
-	public String processXml(MultipartDto multipartDto)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException {
-		
-		document = getDocument(multipartDto.getMultipartFile().getInputStream());
 		Element documentRoot = document.getDocumentElement();
 		//Processing Google Earth specific options
 		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
@@ -109,7 +78,7 @@ public class KmlHandler extends XmlHandler {
 		for (int i = 0; i < hrefs.getLength(); i++) {
 			Node node = hrefs.item(i);
 			String oldHrefWithFilename = node.getTextContent();
-			if (isChangeable(oldHrefWithFilename)) {
+			if (googleEarthHandler.isImageHrefChangeable(oldHrefWithFilename)) {
 				String newHrefWithOldFilename = getHtmlHandler().getNewHrefWithOldFilename(
 					oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
 				node.setTextContent(newHrefWithOldFilename);
@@ -300,19 +269,6 @@ public class KmlHandler extends XmlHandler {
 //		Element extendedData = document.createElementNS("http://www.locusmap.eu", "ExtendedData");
 		elementsToBeInside.forEach(extendedData::appendChild);
 		return extendedData;
-	}
-	//TODO: to move to GoogleEarthHandler
-	
-	/**
-	 * Some programs as Google Earth has special href they internally redirect to their local image store.
-	 * It is not recommended to change those type of hrefs.
-	 *
-	 * @param oldHrefWithFilename The existing <href>path to image</href> to be verified.
-	 * @return 'True' if existing href is not recommended to change. Otherwise 'false'.
-	 */
-	private boolean isChangeable(String oldHrefWithFilename) {
-		String googleMapSpecialUrl = "http://maps.google.com/";
-		return !oldHrefWithFilename.startsWith(googleMapSpecialUrl);
 	}
 	
 	/**

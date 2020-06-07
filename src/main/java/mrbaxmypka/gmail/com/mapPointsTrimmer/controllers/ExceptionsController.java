@@ -59,7 +59,7 @@ public class ExceptionsController {
 	}
 	
 	/**
-	 * @param ie Occurs only in case of {@link ShutdownController#shutdownApp(Model, RedirectAttributes, Locale)} cant shut the
+	 * @param ie Occurs only in case of {@link ShutdownController#shutdownApp(RedirectAttributes, Locale)} cant shut the
 	 *              application down.
 	 * @return {@link HttpStatus#INTERNAL_SERVER_ERROR} with the information how a User can shut the application down
 	 * manually.

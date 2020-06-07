@@ -32,7 +32,7 @@ public class ShutdownController {
 	@GetMapping(path = "/shutdown")
 	public String shutdownApp(RedirectAttributes redirectAttributes, Locale locale) {
 		try {
-			Files.deleteIfExists(kmlKmzService.getTempKmlFile());
+			Files.deleteIfExists(kmlKmzService.getTempFile());
 		} finally {
 			Thread thread = new Thread(() -> {
 				try {
