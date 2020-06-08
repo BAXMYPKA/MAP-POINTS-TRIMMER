@@ -11,14 +11,14 @@ You can set a desired preview size, delete the unnecessary garbage from descript
 
 First of all it's been developed for Locus Map Pro and Google Earth Pro for desktop.
 Examples:
-<p align="center">
-  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" width="420" alt="Locus Map Pro point with photo" title="Locus Map Pro point with photo">
-  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg" width="600" alt="Google Earth Pro photo display" title="Google Earth Pro photo display">
-</p>
+![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg)
+![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg)
+
 [Application releases list](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
- 
+
 ## How to use it
-Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v1.0/MAP-POINTS-TRIMMER.zip).
+
+Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v1.0/MAP-POINTS-TRIMMER.zip)
 
 When the application start use your browser to visit: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
