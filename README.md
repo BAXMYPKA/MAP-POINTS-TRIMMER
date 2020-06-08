@@ -10,9 +10,11 @@ Also it proposes a few additional options.
 You can set a desired preview size, delete the unnecessary garbage from descriptions, set any path to all your photos etc.
 
 First of all it's been developed for Locus Map Pro and Google Earth Pro for desktop.
+
+[Application releases list](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
  
 ## How to use it
-Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/files/4696182/MAP-POINTS-TRIMMER.zip).
+Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v1.0/MAP-POINTS-TRIMMER.zip).
 
 When the application start use your browser to visit: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
@@ -31,12 +33,12 @@ The support of .gpx format is being considered but I'm hesitating if it will be 
  
 ## In the project
 
-* Scalability for icons and their text in .kml files as Google Earth Pro doesn't allow to scale all icons without keeping their individual image.
+* Dynamic points displaying, i.e. increase an icon when hovering a cursor over it, show point name only on mouseover.
 * .gpx format support
 
 ##  Features
 
-This is the first application version, use it with caution.
+Use it with caution.
 
 ## TECH INFO
 

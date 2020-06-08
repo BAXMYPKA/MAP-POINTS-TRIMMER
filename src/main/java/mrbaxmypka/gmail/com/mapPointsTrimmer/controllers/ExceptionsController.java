@@ -80,7 +80,6 @@ public class ExceptionsController {
 	
 	@ExceptionHandler(IOException.class)
 	public ModelAndView ioException(IOException io, Locale locale) {
-		//TODO: exception.fileException(1) to be created
 		String fileSavingFailure = messageSource.getMessage(
 			"exception.fileException(1)", new Object[]{io.getMessage()}, locale);
 		return returnRedirectIndexPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, fileSavingFailure);

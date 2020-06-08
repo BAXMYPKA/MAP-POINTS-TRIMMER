@@ -139,7 +139,7 @@
 				</div>
 				<br>
 				<input id="previewSize" name="previewSize" type="number" placeholder="600" value="600"
-					   min="0" max="2440" step="50" class="loadForm_previewSizeInput" disabled>
+					   min="0" max="2440" step="20" class="loadForm_previewSizeInput" disabled>
 				<select id="previewSizeUnits" name="previewSizeUnit">
 					<option value="pixels" selected th:title="#{html.span.px}">px</option>
 					<option value="percentage">%</option>
@@ -264,7 +264,7 @@
 				</div>
 				
 				<br>
-			
+				
 				<input id="pointTextColor" class="loadForm_colorInput" name="pointTextColor"
 					   type="color" disabled>
 				<input id="setPointTextColor" type="checkbox">
@@ -302,13 +302,13 @@
 					   th:value="#{html.input.value.convert}">
 				
 				<select name="downloadAs" class="loadForm__selectDownloadAs"
+						th:title="#{html.title.select.downloadAs}"
 						title="Download as... (.kml by default)">
-<!--					<option selected>Download as...</option>-->
 					<option value="kml" selected title="A processed file with the points and tracks inside."
 							th:title="#{html.title.select.downloadAsKml}">
 						.kml
 					</option>
-					<option value="kmz" title="A full archive with photos and the processed .kml file inside." disabled
+					<option value="kmz" title="A full archive with photos and the processed .kml file inside."
 							th:title="#{html.title.select.downloadAsKmz}">
 						.kmz
 					</option>
