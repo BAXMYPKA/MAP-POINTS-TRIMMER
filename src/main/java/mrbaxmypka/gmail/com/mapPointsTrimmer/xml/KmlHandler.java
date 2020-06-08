@@ -136,18 +136,21 @@ public class KmlHandler extends XmlHandler {
 			
 			//Derive <description> and <ExtendedData> from Placemark
 			for (int j = 0; j < placemarksChildNodes.getLength(); j++) {
-				if (placemarksChildNodes.item(j).getNodeType() != Node.ELEMENT_NODE) continue;
-				if (placemarksChildNodes.item(j).getLocalName().equals("description")) {
-					descriptionText = placemarksChildNodes.item(j).getTextContent();
+				Node placemarkChild = placemarksChildNodes.item(j);
+				if (placemarkChild.getNodeType() != Node.ELEMENT_NODE || placemarkChild.getLocalName() == null) continue;
+				if (placemarkChild.getLocalName().equals("description")) {
+					descriptionText = placemarkChild.getTextContent();
 					imgSrcFromDescription = htmlHandler.getAllImagesFromDescription(descriptionText);
-				} else if (placemarksChildNodes.item(j).getLocalName().equals("ExtendedData")) {
+				} else if (placemarkChild.getLocalName().equals("ExtendedData")) {
 					
 					//<ExtendedData> is the parent for every <attachment>
 					NodeList extendedDataChildNodes = placemarksChildNodes.item(j).getChildNodes();
 					for (int k = 0; k < extendedDataChildNodes.getLength(); k++) {
-						if (extendedDataChildNodes.item(k).getNodeType() != Node.ELEMENT_NODE) continue;
-						if (extendedDataChildNodes.item(k).getLocalName().equals("attachment")) {
-							attachments.add(extendedDataChildNodes.item(k));
+						Node extendedDataChild = extendedDataChildNodes.item(k);
+						if (extendedDataChild.getNodeType() != Node.ELEMENT_NODE ||
+							extendedDataChild.getLocalName() == null) continue;
+						if (extendedDataChild.getLocalName().equals("attachment")) {
+							attachments.add(extendedDataChild);
 						}
 					}
 				}
