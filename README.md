@@ -10,9 +10,17 @@ Also it proposes a few additional options.
 You can set a desired preview size, delete the unnecessary garbage from descriptions, set any path to all your photos etc.
 
 First of all it's been developed for Locus Map Pro and Google Earth Pro for desktop.
- 
+
+The examples of map points displaying for **Locus Map Pro** and **Google Earth Pro**:
+
+![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg)
+![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg)
+
+[Application releases list](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
+
 ## How to use it
-Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/files/4696182/MAP-POINTS-TRIMMER.zip).
+
+Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v1.0/MAP-POINTS-TRIMMER.zip)
 
 When the application start use your browser to visit: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
@@ -26,16 +34,17 @@ The support of .gpx format is being considered but I'm hesitating if it will be 
 * Windows 7/Linux
 * Intel/AMD Dual Core CPU with 2.0GHz+
 * 4Gb+ RAM
-* Preinstalled Java JVM with a minimum versiont [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") or the latest [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
+* Preinstalled Java JVM with a minimum version [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") or the latest [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
+* It is expected you use not an outdated version of any Internet browser
  
 ## In the project
 
-* Scalability for icons and their text in .kml files as Google Earth Pro doesn't allow to scale all icons without keeping their individual image.
+* Dynamic points displaying, i.e. increase an icon when hovering a cursor over it, show point name only on mouseover.
 * .gpx format support
 
 ##  Features
 
-This is the first application version, use it with caution.
+Use it with caution.
 
 ## TECH INFO
 

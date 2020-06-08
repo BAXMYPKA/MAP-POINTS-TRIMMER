@@ -5,14 +5,24 @@
 
 Программа позволяет переносить все ваши сохраненные точки на карте (POI) с вложенными фотографиями местности из одной программы работы с картами в другую (в первую очередь, между Locus Map Pro и Google Earth Pro для десктопа).
 Фотографиям можно сделать правильный предпросмотр, удалить ненужную историю сохранений, выставить любой путь до фотографий и т.п.
+<<<<<<< HEAD
 
 Примеры результатов обработки в **Locus Map Pro** и **Google Earth Pro**:
 
 ![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg)
 ![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg)
+=======
+Примеры:
+<p align="center">
+  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" width="420" alt="Locus Map Pro point with photo" title="Locus Map Pro point with photo">
+  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg" width="600" alt="Google Earth Pro photo display" title="Google Earth Pro photo display">
+</p>
+[Список версий программы](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
+
+>>>>>>> develop
 
 ## Как использовать
-Скачать готовую для автозапуска программу можно [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/files/4696182/MAP-POINTS-TRIMMER.zip).
+Скачать готовую для автозапуска программу можно [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v2.0/MAP-POINTS-TRIMMER.zip).
 
 После запуска заходите в приложение через любой браузер по адресу: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
@@ -27,15 +37,14 @@
 * Intel/AMD Dual Core CPU with 2.0GHz+
 * 4Gb+ RAM
 * Установленная Ява JVM версии не ниже [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") или последняя [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
+* Крайне желательна последняя версия любого интернет браузера.
  
 ## В проекте
 
-* Масштабирование иконок и подписей к ним в файлах .kml. Если иконок много, уменьшать каждую вручную глупо, а Google Earth Pro позволяет присвоить только одну иконку для всех точек в папке и настроить масштаб.
+* Динамическое отображение иконок и текста на Google Earth карте, т.е., увеличение иконки при наведении, отображение названия точки только при наведении.
 * Поддержка формата .gpx. Пока под вопросом, т.к. не до конца решил, нужно ли это.
 
 ##  Особенности
-
-Это первая версия, возможны баги.
 
 Используйте на свой страх и риск )))
 

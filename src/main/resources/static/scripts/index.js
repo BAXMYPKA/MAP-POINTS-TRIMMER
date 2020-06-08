@@ -1,6 +1,7 @@
 (function () {
 		
 		const userMessage = document.querySelector("#userMessage");
+		const previewSize = document.getElementById("previewSize");
 		
 		let userMessageClose = document.querySelector(".userMessage__close");
 		if (userMessageClose !== null) {
@@ -21,7 +22,6 @@
 		});
 		
 		document.getElementById('setPreviewSize').addEventListener('change', ev => {
-				const previewSize = document.getElementById("previewSize");
 				if (ev.target.checked) {
 					previewSize.disabled = false;
 				} else {
@@ -30,6 +30,13 @@
 			}
 		);
 		
+		document.getElementById("previewSizeUnits").addEventListener('change', ev => {
+			if (ev.target.value === "percentage") {
+				previewSize.value = "100";
+			} else if (ev.target.value === "pixels") {
+				previewSize.value = "600";
+			}
+		});
 		document.querySelector(".article__section_closed").addEventListener('click', ev => {
 			if (document.getElementById("closableSection").classList.contains("article__section_closed")) {
 				document.getElementById("closableSection").classList.toggle("article__section_closed");
@@ -92,10 +99,48 @@
 		});
 		
 		document.getElementById("trim").addEventListener('click', ev => {
-			if (document.getElementById('locusFile').files.length !== 0) {
-				document.querySelector('.downloadMessage').hidden = false;
-				document.querySelector('.loadForm').submit();
-				// document.getElementById("locusFile").value = null;
+			//Checks for all the inputs on page for HTML5 inner validation
+			for (const value of document.querySelectorAll("input")) {
+				if (!value.checkValidity()) {
+					return;
+				}
+			}
+			document.querySelector('.loadForm').submit();
+		});
+		
+		document.getElementById("setPointIconSize").addEventListener('change', ev => {
+			const pointsIconSizeInput = document.getElementById("pointIconSize");
+			if (ev.target.checked) {
+				pointsIconSizeInput.disabled = false;
+			} else {
+				pointsIconSizeInput.disabled = true;
+			}
+		});
+		
+		document.getElementById("setPointTextSize").addEventListener('change', ev => {
+			const pointsTextSizeInput = document.getElementById("pointTextSize");
+			if (ev.target.checked) {
+				pointsTextSizeInput.disabled = false;
+			} else {
+				pointsTextSizeInput.disabled = true;
+			}
+		});
+		
+		document.getElementById("setPointTextColor").addEventListener('change', ev => {
+			const pointsTextColorInput = document.getElementById("pointTextColor");
+			if (ev.target.checked) {
+				pointsTextColorInput.disabled = false;
+			} else {
+				pointsTextColorInput.disabled = true;
+			}
+		});
+		
+		document.getElementById("setPointTextOpacity").addEventListener('change', ev => {
+			const pointTextTransparencyInput = document.getElementById("pointTextOpacity");
+			if (ev.target.checked) {
+				pointTextTransparencyInput.disabled = false;
+			} else {
+				pointTextTransparencyInput.disabled = true;
 			}
 		});
 		

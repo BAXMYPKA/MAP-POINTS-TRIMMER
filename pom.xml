@@ -10,9 +10,16 @@
 	</parent>
 	<groupId>mrbaxmypka.gmail.com</groupId>
 	<artifactId>Map-Points-Trimmer</artifactId>
-	<version>1.0</version>
+	<version>2.0</version>
 	<name>Map Points Trimmer</name>
 	<description>The trimmer for custom map points as the client-server application based on Spring Boot</description>
+	<developers>
+		<developer>
+			<name>BAXMYPKA</name>
+			<email>mrbaxmypka@yandex.ru</email>
+			<timezone>UTC +3</timezone>
+		</developer>
+	</developers>
 
 	<properties>
 		<java.version>11</java.version>
