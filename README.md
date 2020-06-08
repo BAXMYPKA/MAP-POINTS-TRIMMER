@@ -10,7 +10,9 @@ Also it proposes a few additional options.
 You can set a desired preview size, delete the unnecessary garbage from descriptions, set any path to all your photos etc.
 
 First of all it's been developed for Locus Map Pro and Google Earth Pro for desktop.
+
 Examples:
+
 ![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg)
 ![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg)
 
