@@ -7,6 +7,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -39,6 +40,8 @@ public abstract class XmlHandler {
 	}
 	
 	/**
+	 * {@link DocumentBuilderFactory#setNamespaceAware(boolean)} true is crucial for getting
+	 * {@link Node#getLocalName()}!
 	 * @param inputStream  An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartDto}
 	 * @param multipartDto
 	 * @return
@@ -48,6 +51,7 @@ public abstract class XmlHandler {
 	
 	protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		//IMPORTANT! This is essential part of getting localNames of xml tags.
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		Document document;
