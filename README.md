@@ -11,7 +11,7 @@ You can set a desired preview size, delete the unnecessary garbage from descript
 
 First of all it's been developed for Locus Map Pro and Google Earth Pro for desktop.
 
-Examples:
+The examples of map points displaying for **Locus Map Pro** and **Google Earth Pro**:
 
 ![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg)
 ![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg)
