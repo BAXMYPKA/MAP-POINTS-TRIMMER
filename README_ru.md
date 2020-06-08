@@ -5,21 +5,13 @@
 
 Программа позволяет переносить все ваши сохраненные точки на карте (POI) с вложенными фотографиями местности из одной программы работы с картами в другую (в первую очередь, между Locus Map Pro и Google Earth Pro для десктопа).
 Фотографиям можно сделать правильный предпросмотр, удалить ненужную историю сохранений, выставить любой путь до фотографий и т.п.
-<<<<<<< HEAD
 
 Примеры результатов обработки в **Locus Map Pro** и **Google Earth Pro**:
 
 ![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg)
 ![img](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg)
-=======
-Примеры:
-<p align="center">
-  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" width="420" alt="Locus Map Pro point with photo" title="Locus Map Pro point with photo">
-  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg" width="600" alt="Google Earth Pro photo display" title="Google Earth Pro photo display">
-</p>
-[Список версий программы](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
 
->>>>>>> develop
+[Список версий программы](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
 
 ## Как использовать
 Скачать готовую для автозапуска программу можно [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v2.0/MAP-POINTS-TRIMMER.zip).
