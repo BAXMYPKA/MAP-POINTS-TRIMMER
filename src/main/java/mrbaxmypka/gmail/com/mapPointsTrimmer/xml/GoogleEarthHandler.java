@@ -78,10 +78,11 @@ public class GoogleEarthHandler {
 			
 			NodeList iconStyleChildNodes = iconStyle.getChildNodes();
 			for (int j = 0; j < iconStyleChildNodes.getLength(); j++) {
-				if (iconStyleChildNodes.item(j).getNodeType() != Node.ELEMENT_NODE) continue;
+				Node iconStyleChild = iconStyleChildNodes.item(j);
+				if (iconStyleChild.getNodeType() != Node.ELEMENT_NODE || iconStyleChild.getNodeName() == null) continue;
 				//Scale tag is presented, just insert a new value
-				if (iconStyleChildNodes.item(j).getLocalName().equals("scale")) {
-					scales.add(iconStyleChildNodes.item(j));
+				if (iconStyleChild.getNodeName().equals("scale")) {
+					scales.add(iconStyleChild);
 					continue iconStyles;
 				}
 			}
@@ -104,9 +105,10 @@ public class GoogleEarthHandler {
 		labelStyles.forEach(labelStyle -> {
 			NodeList labelStyleChildNodes = labelStyle.getChildNodes();
 			for (int i = 0; i < labelStyleChildNodes.getLength(); i++) {
-				if (labelStyleChildNodes.item(i).getNodeType() != Node.ELEMENT_NODE) continue;
-				if (labelStyleChildNodes.item(i).getLocalName().equals("scale")) {
-					scales.add(labelStyleChildNodes.item(i));
+				Node labelStyleChild = labelStyleChildNodes.item(i);
+				if (labelStyleChild.getNodeType() != Node.ELEMENT_NODE || labelStyleChild.getNodeName() == null) continue;
+				if (labelStyleChild.getNodeName().equals("scale")) {
+					scales.add(labelStyleChild);
 					return;
 				}
 			}
@@ -130,9 +132,10 @@ public class GoogleEarthHandler {
 		labelStyles.forEach(labelStyle -> {
 			NodeList labelStyleChildNodes = labelStyle.getChildNodes();
 			for (int i = 0; i < labelStyleChildNodes.getLength(); i++) {
-				if (labelStyleChildNodes.item(i).getNodeType() != Node.ELEMENT_NODE) continue;
-				if (labelStyleChildNodes.item(i).getLocalName().equals("color")) {
-					colors.add(labelStyleChildNodes.item(i));
+				Node labelStyleChild = labelStyleChildNodes.item(i);
+				if (labelStyleChild.getNodeType() != Node.ELEMENT_NODE || labelStyleChild.getNodeName() == null) continue;
+				if (labelStyleChild.getNodeName().equals("color")) {
+					colors.add(labelStyleChild);
 					return;
 				}
 			}
@@ -160,9 +163,10 @@ public class GoogleEarthHandler {
 			
 			NodeList styleChildNodes = style.getChildNodes();
 			for (int j = 0; j < styleChildNodes.getLength(); j++) {
-				if (styleChildNodes.item(j).getNodeType() != Node.ELEMENT_NODE) continue;
-				if (styleChildNodes.item(j).getLocalName().equals("LabelStyle")) {
-					labelStyles.add(styleChildNodes.item(j));
+				Node styleChild = styleChildNodes.item(j);
+				if (styleChild.getNodeType() != Node.ELEMENT_NODE) continue;
+				if (styleChild.getNodeName().equals("LabelStyle")) {
+					labelStyles.add(styleChild);
 					continue style;
 				}
 			}
@@ -176,14 +180,13 @@ public class GoogleEarthHandler {
 	
 	/**
 	 * https://developers.google.com/kml/documentation/kmlreference#colorstyle
-	 * <color>
 	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
 	 * The range of values for any one color is 0 to 255 (00 to ff).
 	 * For alpha, 00 is fully transparent and ff is fully opaque.
 	 * The order of expression is aabbggrr,
 	 * where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
 	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
-	 * <color>7fff0000</color>, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 * {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
 	 * <p>
 	 * * Typical RGB incoming from HTML color picker list (as #rrggbb):
 	 * * HEX COLOR : #ff0000

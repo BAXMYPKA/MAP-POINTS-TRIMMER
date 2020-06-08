@@ -40,7 +40,7 @@ public class KmlHandler extends XmlHandler {
 		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
 		googleEarthHandler.processXml(document, multipartDto);
 		
-		if (multipartDto.isSetPath()) {
+		if (multipartDto.getPath() != null) {
 			processHref(documentRoot, multipartDto);
 		}
 		//Processing the further text options regarding to inner CDATA or plain text from <description>s

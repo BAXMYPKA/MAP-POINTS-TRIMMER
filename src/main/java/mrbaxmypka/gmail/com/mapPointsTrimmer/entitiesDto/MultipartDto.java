@@ -48,35 +48,31 @@ public class MultipartDto implements Serializable {
 	private boolean validateXml;
 	
 	/**
-	 * Enables or disables using of {@link #path}
+	 * {@link Nullable}. If null {@link PathTypes#RELATIVE} will be used.
 	 */
-	private boolean setPath;
-	
 	@Nullable
-	private PathTypes pathType;
+	private PathTypes pathType = PathTypes.RELATIVE;
 	
 	/**
 	 * Local or Http path to all the attachments inside HTML descriptions
+	 * {@link Nullable}. If it is empty, all the paths will be erased.
 	 */
 	@Nullable
 	private String path;
 	
 	/**
-	 * Enables or disables using {@link #previewSize}
-	 */
-	@Nullable
-	private boolean setPreviewSize;
-	
-	/**
 	 * Defines units for images size (percentage or pixels);
 	 * If null, {@link PreviewSizeUnits#PIXELS} will be used
 	 */
-	private PreviewSizeUnits previewSizeUnit;
+	@Nullable
+	private PreviewSizeUnits previewSizeUnit = PreviewSizeUnits.PIXELS;
 	
 	/**
 	 * Attached photos preview size (in width) in pixels
 	 */
 	@Nullable
+	@PositiveOrZero
+	@Max(3000)
 	private Integer previewSize;
 	
 	/**
@@ -114,7 +110,7 @@ public class MultipartDto implements Serializable {
 	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
 	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
 	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay,
-	 * you would specify the following: <color>7fff0000</color>, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 * you would specify the following: {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
 	 */
 	@Nullable
 	private String pointTextColor;
@@ -123,12 +119,11 @@ public class MultipartDto implements Serializable {
 	 * <p>For User's convenience it represents a percentage input as 0 - 100%.</p>
 	 * <p>(Internally it will be converted into hexadecimal representation as 00 - FF (0 - 255).)</p>
 	 * <p>********* FROM THE KML DOCUMENTATION ************************
-	 * <color/>
 	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
 	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
 	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
 	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
-	 * <color>7fff0000</color>, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00
+	 * {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00
 	 * </p>
 	 * Source: https://developers.google.com/kml/documentation/kmlreference#colorstyle
 	 * **************************************************************
@@ -200,7 +195,6 @@ public class MultipartDto implements Serializable {
 			return new BigDecimal(String.valueOf(this.pointTextSize)).divide(BigDecimal.valueOf(100), 1, RoundingMode.DOWN);
 		}
 		return null;
-		
 	}
 	
 	/**
@@ -218,7 +212,6 @@ public class MultipartDto implements Serializable {
 		} else {
 			BigDecimal bigDecimal = BigDecimal.valueOf(pointTextSizeScaled).setScale(1, RoundingMode.DOWN);
 			this.pointTextSize = bigDecimal.multiply(BigDecimal.valueOf(100)).intValue();
-			
 		}
 	}
 	

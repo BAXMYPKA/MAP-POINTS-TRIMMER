@@ -5,7 +5,11 @@
 
 Программа позволяет переносить все ваши сохраненные точки на карте (POI) с вложенными фотографиями местности из одной программы работы с картами в другую (в первую очередь, между Locus Map Pro и Google Earth Pro для десктопа).
 Фотографиям можно сделать правильный предпросмотр, удалить ненужную историю сохранений, выставить любой путь до фотографий и т.п.
-
+Примеры:
+<p align="center">
+  <img src="img/locusScreenshot420x700.jpg" width="600" title="hover text">
+  <img src="../static/img/GEscreenshot1060x700.jpg" width="800" alt="accessibility text">
+</p>
 [Список версий программы](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
 
 

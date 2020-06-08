@@ -30,8 +30,15 @@ public class MultipartFileService {
 	private final Locale defaultLocale = Locale.ENGLISH;
 	private final MessageSource messageSource;
 	private final KmlHandler kmlHandler;
+	/**
+	 * The temp file which is stored in a system temp directory
+	 */
 	@Getter
 	private Path tempFile;
+	/**
+	 * To store the inner kml or gpx filename from archive
+	 */
+	private String xmlFileName = "";
 	
 	@Autowired
 	public MultipartFileService(KmlHandler kmlHandler, MessageSource messageSource) {
@@ -49,8 +56,9 @@ public class MultipartFileService {
 		
 		locale = locale == null ? this.defaultLocale : locale;
 		String processedXml;
-		
+		//Determine the extension of a given filename
 		if (DownloadAs.KML.hasSameExtension(multipartDto.getMultipartFile().getOriginalFilename())) {
+			xmlFileName = multipartDto.getMultipartFile().getOriginalFilename();
 			processedXml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
 		} else if (DownloadAs.KMZ.hasSameExtension(multipartDto.getMultipartFile().getOriginalFilename())) {
 			InputStream kmlInputStream = getXmlFromZip(multipartDto, DownloadAs.KML, locale);
@@ -82,6 +90,7 @@ public class MultipartFileService {
 					//Size may be unknown if entry isn't written to disk!
 //					byte[] buffer = new byte[(int) zipEntry.getSize()];
 // 					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
+					xmlFileName = zipEntry.getName(); //To store it if .kml has to be returned
 					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 					buffer.writeBytes(zis.readAllBytes());
 					return new ByteArrayInputStream(buffer.toByteArray());
@@ -107,10 +116,10 @@ public class MultipartFileService {
 	private void processTempZip(
 		String processedXml, DownloadAs xmlFileExtension, MultipartDto multipartDto, Locale locale) throws IOException {
 		
-		String originalFilename = multipartDto.getMultipartFile().getOriginalFilename();
+		String originalZipFilename = multipartDto.getMultipartFile().getOriginalFilename();
 		
 		//It is important to save tempFile as the field to get an opportunity to delete it case of app crashing
-		tempFile = Paths.get(tempDir.concat(originalFilename));
+		tempFile = Paths.get(tempDir.concat(originalZipFilename));
 		
 		ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream());
 		ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
@@ -143,8 +152,8 @@ public class MultipartFileService {
 		
 		if (DownloadAs.KML.hasSameExtension(originalFilename) ||
 			(DownloadAs.KMZ.hasSameExtension(originalFilename) && multipartDto.getDownloadAs().equals(DownloadAs.KML))) {
-			
-			tempFile = Paths.get(tempDir.concat(originalFilename));
+			//Return .kml file
+			tempFile = Paths.get(tempDir.concat(xmlFileName));
 			BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8);
 			bufferedWriter.write(processedXml);
 			bufferedWriter.close();

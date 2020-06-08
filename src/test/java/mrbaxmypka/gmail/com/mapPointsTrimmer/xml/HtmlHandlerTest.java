@@ -69,7 +69,6 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
@@ -95,7 +94,6 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
@@ -123,7 +121,6 @@ class HtmlHandlerTest {
 		MultipartFile multipartFile = new MockMultipartFile(
 			"html", withoutDescUserComments.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(400);
 		
 		//WHEN
@@ -152,7 +149,6 @@ class HtmlHandlerTest {
 		MultipartFile multipartFile = new MockMultipartFile(
 			"html", withDescUserCommentsAndText.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(400);
 		
 		//WHEN
@@ -194,7 +190,6 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", oldStyleCdata.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(400);
 		
 		//WHEN
@@ -212,7 +207,6 @@ class HtmlHandlerTest {
 	@Test
 	public void setPath_and_ClearDescription_for_Old_Style_Placemarks_Should_Embrace_Images_And_Data_Within_DescUserStart_And_DescUserEnd_Comments_With_them_Initially() {
 		//GIVEN CDATA with image and user descriptions within <!-- desc_user:start --> and <!-- desc_user:end -->
-		multipartDto.setSetPath(true);
 		multipartDto.setPathType("relative");
 		multipartDto.setPath("../myFiles");
 		
@@ -254,7 +248,6 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
@@ -275,19 +268,18 @@ class HtmlHandlerTest {
 	}
 	
 	@Test
-	public void setPreviewSize_With_Null_Integer_Should_Set_All_Img_Widths_Attributes_To_0() {
+	public void setPreviewSize_With_Null_Integer_Should_Left_All_Img_Widths_Attributes_As_They_Were_Before() {
 		//GIVEN
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(null);
 		
 		//WHEN
 		
 		String processedKml = htmlHandler.processDescriptionText(html, multipartDto);
-		
+		System.out.println(processedKml);
 		//THEN
 		
-		assertFalse(processedKml.contains("width=\"330px\""));
-		assertTrue(processedKml.contains("width=\"0px\""));
+		assertTrue(processedKml.contains("width=\"330px\""));
+		assertFalse(processedKml.contains("width=\"0px\""));
 	}
 	
 	@Test
@@ -327,7 +319,6 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", outdatedDescription.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
@@ -375,7 +366,6 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(90);
 		multipartDto.setPreviewUnit("%");
 		
@@ -439,10 +429,8 @@ class HtmlHandlerTest {
 			"</div><!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(100);
 		multipartDto.setPreviewUnit("%");
-		multipartDto.setSetPath(true);
 		multipartDto.setPath("/storage/");
 		multipartDto.setAsAttachmentInLocus(true);
 		multipartDto.setClearOutdatedDescriptions(true);
@@ -457,7 +445,6 @@ class HtmlHandlerTest {
 	@Test
 	public void set_Relative_Path_Should_Set_Relative_Path_Type() {
 		//GIVEN
-		multipartDto.setSetPath(true);
 		multipartDto.setPathType("relative");
 		multipartDto.setPath("../myFiles");
 		
@@ -481,7 +468,6 @@ class HtmlHandlerTest {
 	@Test
 	public void set_Absolute_Windows_Path_Without_Whitespaces_Should_Set_Correct_Absolute_Path_Type() {
 		//GIVEN
-		multipartDto.setSetPath(true);
 		multipartDto.setPathType("Absolute");
 		multipartDto.setPath("D:\\MyFolder\\MyPOI");
 		
@@ -506,7 +492,6 @@ class HtmlHandlerTest {
 	public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded() {
 		//GIVEN
 		String pathWithWhitespaces = "D:\\My Folder\\My POI";
-		multipartDto.setSetPath(true);
 		multipartDto.setPathType("Absolute");
 		multipartDto.setPath(pathWithWhitespaces);
 		
@@ -530,7 +515,6 @@ class HtmlHandlerTest {
 	@Test
 	public void set_Web_Path_Should_Set_Correct_HTTP_Path_Type() {
 		//GIVEN
-		multipartDto.setSetPath(true);
 		multipartDto.setPathType("wEb");
 		multipartDto.setPath("http://www.mysite.com/my images");
 		
@@ -567,9 +551,7 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", descriptionCdata.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(400);
-		multipartDto.setSetPath(true);
 		multipartDto.setPathType("relAtive");
 		//Wrong backslash
 		multipartDto.setPath("..My maps\\my folder");
@@ -644,8 +626,8 @@ class HtmlHandlerTest {
 			"Plain text description";
 		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPath(true);
-		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPath("files");
+		multipartDto.setPreviewSize(300);
 		multipartDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
@@ -711,10 +693,8 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(800);
 		multipartDto.setPreviewUnit("px");
-		multipartDto.setSetPath(true);
 		multipartDto.setPath("/storage/");
 		multipartDto.setClearOutdatedDescriptions(true);
 		
@@ -746,8 +726,6 @@ class HtmlHandlerTest {
 		String plainTextDescription = "Plain text description";
 		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPath(true);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
@@ -758,7 +736,8 @@ class HtmlHandlerTest {
 	}
 	
 	/**
-	 * Google Earth images for POI may contain only <img></img>. So we need to set them into <a><img></img></a>
+	 * Google Earth images for POI may contain only {@literal <img></img>}. So we need to set them into
+	 * {@literal <a><img></img></a>}
 	 */
 	@Test
 	public void setPreviewSize_for_Pure_Img_Should_Be_Transformed_Into_Img_Within_A_Links() {
@@ -771,7 +750,6 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoPureImgs.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(750);
 		
 		//WHEN
@@ -791,8 +769,8 @@ class HtmlHandlerTest {
 		String plainTextDescription = "Plain text description";
 		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPath(true);
-		multipartDto.setSetPreviewSize(true);
+		multipartDto.setPath("file");
+		multipartDto.setPreviewSize(300);
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);

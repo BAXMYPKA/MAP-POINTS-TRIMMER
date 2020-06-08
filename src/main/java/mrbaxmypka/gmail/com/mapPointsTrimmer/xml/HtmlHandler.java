@@ -29,7 +29,8 @@ import java.util.stream.Collectors;
 public class HtmlHandler {
 	
 	/**
-	 * @param description  Receives inner text from <description>...</description> which in fact is the HTML markup
+	 * @param description  Receives inner text from {@literal <description>...</description>} which in fact is the
+	 *                        HTML markup
 	 * @param multipartDto To determine all other conditions to be processed on CDATA HTML
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
@@ -49,10 +50,10 @@ public class HtmlHandler {
 		if (multipartDto.isClearOutdatedDescriptions()) {
 			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
 		}
-		if (multipartDto.isSetPath()) {
+		if (multipartDto.getPath() != null) {
 			setPath(parsedHtmlFragment, multipartDto.getPathType(), multipartDto.getPath());
 		}
-		if (multipartDto.isSetPreviewSize()) {
+		if (multipartDto.getPreviewSize() != null) {
 			setPreviewSize(parsedHtmlFragment, multipartDto);
 		}
 		addStartEndComments(parsedHtmlFragment);
@@ -93,20 +94,17 @@ public class HtmlHandler {
 	 * I.e. old path {@code <a href="files:/_1404638472855.jpg"></>}
 	 * can be replaced with {@code <a href="C:/files:/a new path/_1404638472855.jpg"></>}
 	 */
-	private void setPath(Element parsedHtmlFragment, @Nullable PathTypes pathType, @Nullable String path) {
+	private void setPath(Element parsedHtmlFragment, PathTypes pathType, String path) {
 		
 		Elements aElements = parsedHtmlFragment.select("a[href]");
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		
-		final PathTypes type = pathType == null ? PathTypes.RELATIVE : pathType;
-		final String hrefPath = path == null ? "" : path;
-		
 		aElements.forEach((a) -> {
-			String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), type, hrefPath);
+			String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), pathType, path);
 			a.attr("href", newPathWithFilename);
 		});
 		imgElements.forEach((img) -> {
-			String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), type, hrefPath);
+			String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), pathType, path);
 			img.attr("src", newPathWithFilename);
 		});
 	}
@@ -117,14 +115,12 @@ public class HtmlHandler {
 	 */
 	String getNewHrefWithOldFilename(@Nullable String oldHrefWithFilename, PathTypes pathType, String newHrefWithoutFilename) {
 		oldHrefWithFilename = oldHrefWithFilename == null || oldHrefWithFilename.isEmpty() ? "" : oldHrefWithFilename;
+		
 		//User may want to erase <href>
 		if (newHrefWithoutFilename.isBlank()) {
 			return "";
 		}
-		if (pathType == null) {
-			throw new IllegalArgumentException("PathTypes cannot be null!");
-		}
-		String newHrefWithOldFilename;
+		String newHrefWithOldFilename = "";
 		
 		if (pathType.equals(PathTypes.RELATIVE)) {
 			newHrefWithOldFilename = getNewRelativeHref(oldHrefWithFilename, newHrefWithoutFilename);
@@ -132,8 +128,6 @@ public class HtmlHandler {
 			newHrefWithOldFilename = getNewAbsoluteHref(oldHrefWithFilename, newHrefWithoutFilename);
 		} else if (pathType.equals(PathTypes.WEB)) {
 			newHrefWithOldFilename = getNewWebHref(oldHrefWithFilename, newHrefWithoutFilename);
-		} else {
-			throw new IllegalArgumentException("The PathTypes.getType cannot be recognized!");
 		}
 		return newHrefWithOldFilename;
 	}
@@ -146,8 +140,8 @@ public class HtmlHandler {
 	}
 	
 	/**
-	 * Locus Map <lc:attachment></lc:attachment> receives only {@link PathTypes#RELATIVE} or {@link PathTypes#ABSOLUTE}
-	 * without (!) 'file:///' prefix.
+	 * Locus Map {@literal <lc:attachment></lc:attachment>} receives only {@link PathTypes#RELATIVE} or
+	 * {@link PathTypes#ABSOLUTE} without (!) 'file:///' prefix.
 	 *
 	 * @return 1) Locus specific absolute type of path like: '/sdcard/Locus/photos/'
 	 * 2) Relative type of path (starting with '../', '/' or folder name like 'Locus/photos/'
@@ -220,16 +214,12 @@ public class HtmlHandler {
 	 * with User's text and images.
 	 * For Locus Pro {@code <!-- desc_user:start -->} and {@code <!-- desc_user:end -->} are the markers
 	 * for displaying all inner data and text on POI screen (description text, photo, photo data etc).
-	 * So when {@link MultipartDto#isSetPreviewSize() = true} to display it on the screen these comments
+	 * So when {@link MultipartDto#getPreviewSize()} != null to display it on the screen these comments
 	 * have to embrace all the description.
 	 */
 	private void setPreviewSize(Element parsedHtmlFragment, MultipartDto multipartDto) {
 		
-		int previewSize = multipartDto.getPreviewSize() == null ? 0 : multipartDto.getPreviewSize();
-		PreviewSizeUnits sizeUnit = multipartDto.getPreviewSizeUnit() != null ?
-			multipartDto.getPreviewSizeUnit() : PreviewSizeUnits.PIXELS;
-		
-		String previewValue = previewSize + sizeUnit.getUnit();
+		String previewValue = multipartDto.getPreviewSize() + multipartDto.getPreviewSizeUnit().getUnit();
 		
 		Elements imgElements = parsedHtmlFragment.select("img");
 //		Elements imgElements = parsedHtmlFragment.select("img[src]");
@@ -242,7 +232,7 @@ public class HtmlHandler {
 			}
 			//GoogleEarth add "max-width" attribute in style
 			if (img.hasAttr("style")) {
-				setPreviewSizeInStyles(img, previewSize, sizeUnit);
+				setPreviewSizeInStyles(img, multipartDto.getPreviewSize(), multipartDto.getPreviewSizeUnit());
 			} else {
 				setStyleToElement(img, "width", previewValue);
 			}
@@ -394,19 +384,19 @@ public class HtmlHandler {
 	/**
 	 * For Locus Pro {@code <!-- desc_user:start -->} and {@code <!-- desc_user:end -->} are the markers
 	 * for displaying all inner data and text on POI screen (description text, photo, photo data etc).
-	 * So when {@link MultipartDto#isSetPreviewSize() = true} to display it on the screen these comments
+	 * So when {@link MultipartDto#getPreviewSize()}  != null} to display it on the screen these comments
 	 * have to embrace all the description.
 	 * Otherwise only description text will be visible.
 	 *
 	 * @return A {@code <div></div>} Element with a new table with tbody embraced with "desc_user" comments
-	 * or just a new table with tbody for a data if {@link MultipartDto#isSetPreviewSize()} not set.
+	 * or just a new table with tbody for a data if {@link MultipartDto#getPreviewSize()} not set.
 	 */
 	private Element createNewHtmlDescription(String userDescription, MultipartDto multipartDto) {
 		Element table = new Element("table")
 			.attr("width", "100%").attr("style", "color:black");
 		table.appendChild(new Element("tbody"));
 		//'setPath' option for photos and any user description texts in Locus have to be within special comments
-		if (multipartDto.isSetPreviewSize() || !userDescription.isBlank()) {
+		if (multipartDto.getPreviewSize() != null || !userDescription.isBlank()) {
 			String descUserStart = " desc_user:start ";
 			String descUserEnd = " desc_user:end ";
 			Element divElement = new Element("div").appendChild(new Comment(descUserStart));

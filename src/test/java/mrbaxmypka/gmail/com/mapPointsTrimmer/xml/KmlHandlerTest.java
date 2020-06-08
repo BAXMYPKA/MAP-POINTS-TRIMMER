@@ -123,7 +123,6 @@ class KmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPoi.kml", "LocusTestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPath(true);
 		multipartDto.setPath(newPath);
 		multipartDto.setPathType("absolute");
 		
@@ -140,7 +139,7 @@ class KmlHandlerTest {
 	
 	/**
 	 * Google Earth has some special http links to icons which it treats as local.
-	 * So those types of <href></href> have not to be changed.
+	 * So those types of {@literal <href></href>} have not to be changed.
 	 */
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body_Except_Special_GoogleEarth_Web_Links()
@@ -149,7 +148,6 @@ class KmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPath(true);
 		multipartDto.setPath("C:\\MyPoi\\MyPoiImages");
 		multipartDto.setPathType("absolute");
 		
@@ -169,7 +167,6 @@ class KmlHandlerTest {
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setSetPath(true);
 		multipartDto.setPath(pathWithWhitespaces);
 		multipartDto.setPathType("absolute");
 		
@@ -484,7 +481,6 @@ class KmlHandlerTest {
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locus.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setAsAttachmentInLocus(true);
-		multipartDto.setSetPreviewSize(true);
 		multipartDto.setPreviewSize(640);
 		multipartDto.setPreviewSizeUnit(PreviewSizeUnits.PIXELS);
 		
