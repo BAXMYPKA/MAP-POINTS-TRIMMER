@@ -1,7 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.FileTypes;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.springframework.lang.Nullable;
@@ -139,7 +139,7 @@ public class MultipartDto implements Serializable {
 	private Integer pointTextOpacity;
 	
 	@NotNull
-	private FileTypes downloadAs;
+	private DownloadAs downloadAs;
 	
 	private boolean isScaleCorrect(Double scale) {
 		return Double.toString(scale).matches("\\d\\.\\d") && scale.compareTo(3.0) <= 0;

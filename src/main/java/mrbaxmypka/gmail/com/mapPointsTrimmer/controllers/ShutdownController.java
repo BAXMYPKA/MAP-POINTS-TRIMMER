@@ -1,6 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.services.KmlKmzService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.MessageSource;
@@ -22,7 +22,7 @@ public class ShutdownController {
 	private MessageSource messageSource;
 	
 	@Autowired
-	private KmlKmzService kmlKmzService;
+	private MultipartFileService multipartFileService;
 	
 	/**
 	 * Attribute for index.html to apply this css className to make the 'Shutdown' button grey.
@@ -32,7 +32,7 @@ public class ShutdownController {
 	@GetMapping(path = "/shutdown")
 	public String shutdownApp(RedirectAttributes redirectAttributes, Locale locale) {
 		try {
-			Files.deleteIfExists(kmlKmzService.getTempFile());
+			Files.deleteIfExists(multipartFileService.getTempFile());
 		} finally {
 			Thread thread = new Thread(() -> {
 				try {

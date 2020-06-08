@@ -5,14 +5,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileTypesTest {
+class DownloadAsTest {
 	
 	@ParameterizedTest
 	@ValueSource(strings = {"TeSt.KML", "test.kml", "test_Again.kMl", "t.e.s-t.ing.kmL"})
 	public void filename_With_Correct_Extension_Kml_Should_Return_True(String filename) {
 		//GIVEN
 		//WHEN
-		boolean sameExtension = FileTypes.KML.hasSameExtension(filename);
+		boolean sameExtension = DownloadAs.KML.hasSameExtension(filename);
 		
 		//THEN
 		assertTrue(sameExtension);
@@ -23,7 +23,7 @@ class FileTypesTest {
 	public void filename_With_Incorrect_Extension_Kml_Should_Return_False(String filename) {
 		//GIVEN
 		//WHEN
-		boolean sameExtension = FileTypes.KML.hasSameExtension(filename);
+		boolean sameExtension = DownloadAs.KML.hasSameExtension(filename);
 		
 		//THEN
 		assertFalse(sameExtension);
@@ -34,7 +34,7 @@ class FileTypesTest {
 	public void filename_With_Correct_Extension_Kmz_Should_Return_True(String filename) {
 		//GIVEN
 		//WHEN
-		boolean sameExtension = FileTypes.KMZ.hasSameExtension(filename);
+		boolean sameExtension = DownloadAs.KMZ.hasSameExtension(filename);
 		
 		//THEN
 		assertTrue(sameExtension);
@@ -45,7 +45,7 @@ class FileTypesTest {
 	public void filename_With_Incorrect_Extension_Kmz_Should_Return_False(String filename) {
 		//GIVEN
 		//WHEN
-		boolean sameExtension = FileTypes.KML.hasSameExtension(filename);
+		boolean sameExtension = DownloadAs.KML.hasSameExtension(filename);
 		
 		//THEN
 		assertFalse(sameExtension);
@@ -56,10 +56,10 @@ class FileTypesTest {
 	public void any_Correct_Value_Should_Return_Correct_FileTypes(String value) {
 		//GIVEN
 		//WHEN
-		FileTypes kml = FileTypes.getValue(value);
+		DownloadAs kml = DownloadAs.getValue(value);
 		
 		//THEN
-		assertEquals(FileTypes.KML, kml);
+		assertEquals(DownloadAs.KML, kml);
 	}
 	
 }
