@@ -4,7 +4,7 @@ public enum PreviewSizeUnits {
 	PIXELS("px"),
 	PERCENTAGE("%");
 	
-	private String unit;
+	private final String unit;
 	
 	PreviewSizeUnits(String unit) {
 		this.unit = unit;

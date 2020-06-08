@@ -15,19 +15,16 @@ import java.util.Locale;
 @Controller
 public class ShutdownController {
 	
-	@Autowired
-	private WebApplicationContext applicationContext;
-	
-	@Autowired
-	private MessageSource messageSource;
-	
-	@Autowired
-	private MultipartFileService multipartFileService;
-	
 	/**
 	 * Attribute for index.html to apply this css className to make the 'Shutdown' button grey.
 	 */
 	private final String SHUTDOWN_BTN_CLASS = "rightHeaderGroup__shutdownButtonOn_img_shutDown";
+	@Autowired
+	private WebApplicationContext applicationContext;
+	@Autowired
+	private MessageSource messageSource;
+	@Autowired
+	private MultipartFileService multipartFileService;
 	
 	@GetMapping(path = "/shutdown")
 	public String shutdownApp(RedirectAttributes redirectAttributes, Locale locale) {

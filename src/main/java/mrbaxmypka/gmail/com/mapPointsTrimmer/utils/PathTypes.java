@@ -17,14 +17,10 @@ public enum PathTypes {
 	 */
 	WEB("web");
 	
-	private String type;
+	private final String type;
 	
 	PathTypes(String type) {
 		this.type = type;
-	}
-	
-	public String getType() {
-		return type;
 	}
 	
 	public static PathTypes getByValue(String type) {
@@ -34,6 +30,10 @@ public enum PathTypes {
 			}
 		}
 		throw new IllegalArgumentException("No PathType found for value = " + type);
+	}
+	
+	public String getType() {
+		return type;
 	}
 	
 	@Override

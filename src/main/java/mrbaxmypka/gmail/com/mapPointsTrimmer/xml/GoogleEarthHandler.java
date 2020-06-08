@@ -106,7 +106,8 @@ public class GoogleEarthHandler {
 			NodeList labelStyleChildNodes = labelStyle.getChildNodes();
 			for (int i = 0; i < labelStyleChildNodes.getLength(); i++) {
 				Node labelStyleChild = labelStyleChildNodes.item(i);
-				if (labelStyleChild.getNodeType() != Node.ELEMENT_NODE || labelStyleChild.getNodeName() == null) continue;
+				if (labelStyleChild.getNodeType() != Node.ELEMENT_NODE || labelStyleChild.getNodeName() == null)
+					continue;
 				if (labelStyleChild.getNodeName().equals("scale")) {
 					scales.add(labelStyleChild);
 					return;
@@ -133,7 +134,8 @@ public class GoogleEarthHandler {
 			NodeList labelStyleChildNodes = labelStyle.getChildNodes();
 			for (int i = 0; i < labelStyleChildNodes.getLength(); i++) {
 				Node labelStyleChild = labelStyleChildNodes.item(i);
-				if (labelStyleChild.getNodeType() != Node.ELEMENT_NODE || labelStyleChild.getNodeName() == null) continue;
+				if (labelStyleChild.getNodeType() != Node.ELEMENT_NODE || labelStyleChild.getNodeName() == null)
+					continue;
 				if (labelStyleChild.getNodeName().equals("color")) {
 					colors.add(labelStyleChild);
 					return;

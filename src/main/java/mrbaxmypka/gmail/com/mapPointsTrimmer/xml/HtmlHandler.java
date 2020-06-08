@@ -30,7 +30,7 @@ public class HtmlHandler {
 	
 	/**
 	 * @param description  Receives inner text from {@literal <description>...</description>} which in fact is the
-	 *                        HTML markup
+	 *                     HTML markup
 	 * @param multipartDto To determine all other conditions to be processed on CDATA HTML
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
@@ -435,7 +435,7 @@ public class HtmlHandler {
 		
 		List<Node> nodesWithinUserDescComments = commentNode[0].parent().childNodes();
 		
-		StringBuilder textUserDescription = new StringBuilder("");
+		StringBuilder textUserDescription = new StringBuilder();
 		
 		for (int i = 0; i < nodesWithinUserDescComments.size(); i++) {
 			if (nodesWithinUserDescComments.get(i) instanceof Comment &&

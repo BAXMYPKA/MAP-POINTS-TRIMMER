@@ -29,8 +29,8 @@ public class FilesController {
 	private MultipartFileService multipartFileService;
 	
 	/**
-	 * @param file Can receive .kml or .kmz files only
-	 * @param locale  For defining a User language
+	 * @param file   Can receive .kml or .kmz files only
+	 * @param locale For defining a User language
 	 * @return
 	 */
 	@PostMapping(path = "/poi",

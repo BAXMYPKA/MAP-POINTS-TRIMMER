@@ -5,6 +5,7 @@ public enum DownloadAs {
 	
 	/**
 	 * Case insensitive method.
+	 *
 	 * @param value "kMl", "KMZ" string etc to be determined as a possible {@link DownloadAs}
 	 * @return Enum as the {@link DownloadAs} which is corresponds to a given string value.
 	 */
@@ -14,11 +15,12 @@ public enum DownloadAs {
 				return downloadAs;
 			}
 		}
-		throw new IllegalArgumentException("No such FileTypes for " + value+ " string found!");
+		throw new IllegalArgumentException("No such FileTypes for " + value + " string found!");
 	}
 	
 	/**
 	 * Case insensitive method.
+	 *
 	 * @param filename The name of the file to extract its extension and compare with the current {@link DownloadAs}
 	 * @return true if the given 'Filename' has same extension, otherwise 'false'.
 	 */

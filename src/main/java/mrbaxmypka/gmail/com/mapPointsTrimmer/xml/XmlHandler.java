@@ -39,7 +39,7 @@ public abstract class XmlHandler {
 	}
 	
 	/**
-	 * @param inputStream An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartDto}
+	 * @param inputStream  An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartDto}
 	 * @param multipartDto
 	 * @return
 	 */

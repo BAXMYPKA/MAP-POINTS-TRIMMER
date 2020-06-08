@@ -273,9 +273,8 @@ class HtmlHandlerTest {
 		multipartDto.setPreviewSize(null);
 		
 		//WHEN
-		
 		String processedKml = htmlHandler.processDescriptionText(html, multipartDto);
-		System.out.println(processedKml);
+
 		//THEN
 		
 		assertTrue(processedKml.contains("width=\"330px\""));

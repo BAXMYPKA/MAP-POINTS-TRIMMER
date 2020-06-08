@@ -7,8 +7,8 @@
 Фотографиям можно сделать правильный предпросмотр, удалить ненужную историю сохранений, выставить любой путь до фотографий и т.п.
 Примеры:
 <p align="center">
-  <img src="img/locusScreenshot420x700.jpg" width="600" title="hover text">
-  <img src="../static/img/GEscreenshot1060x700.jpg" width="800" alt="accessibility text">
+  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" width="420" alt="Locus Map Pro point with photo" title="Locus Map Pro point with photo">
+  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg" width="600" alt="Google Earth Pro photo display" title="Google Earth Pro photo display">
 </p>
 [Список версий программы](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
 

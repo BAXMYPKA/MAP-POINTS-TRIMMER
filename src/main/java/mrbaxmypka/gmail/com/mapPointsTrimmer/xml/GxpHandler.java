@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 @NoArgsConstructor
 @Component
-public class GxpHandler extends XmlHandler{
+public class GxpHandler extends XmlHandler {
 	
 	@Override
 	public String processXml(InputStream inputStream, MultipartDto multipartDto) throws IOException,

@@ -586,8 +586,6 @@ class GoogleEarthHandlerTest {
 		String kmlColorWithOpacity = googleEarthHandler.getKmlColor(multipartDto.getPointTextColor(), multipartDto);
 		
 		//THEN
-		System.out.println(kmlColorWithOpacity);
-		
 		assertTrue(kmlColorWithOpacity.startsWith("ff"));
 	}
 	

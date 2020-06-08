@@ -12,9 +12,8 @@ You can set a desired preview size, delete the unnecessary garbage from descript
 First of all it's been developed for Locus Map Pro and Google Earth Pro for desktop.
 Examples:
 <p align="center">
-  <img src="../static/img/locusScreenshot420x700.jpg" width="420" alt="Locus Map Pro point with photo" title="Locus Map Pro point with photo">
-  <img src="img/GEscreenshot1060x700.jpg" width="800" alt="Google Earth Pro photo display" title="Google Earth Pro photo display">
-  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" title="direct alt" width="800px">
+  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" width="420" alt="Locus Map Pro point with photo" title="Locus Map Pro point with photo">
+  <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg" width="600" alt="Google Earth Pro photo display" title="Google Earth Pro photo display">
 </p>
 [Application releases list](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
  
