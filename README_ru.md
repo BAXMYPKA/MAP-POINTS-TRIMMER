@@ -8,7 +8,7 @@
 
 Примеры результатов обработки в **Locus Map Pro** и **Google Earth Pro**:
 
-<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" width="220px"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg" width=240px"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshotPoints1060x700.jpg" width="240px">
+<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" width="250px"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg" width=280px"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshotPoints1060x700.jpg" width="280px">
 </p>
 
 [Список версий программы](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
