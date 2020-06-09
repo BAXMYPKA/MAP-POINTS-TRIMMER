@@ -448,6 +448,7 @@ input[type=radio] {
 }
 
 .imageInText {
+    z-index: 2;
     width: 3em;
     float: right;
     margin-left: 0.4em;
@@ -458,7 +459,11 @@ input[type=radio] {
     transition: all;
     transition-timing-function: ease-in;
     transition-duration: 0.3s;
-    transform: scale(9);
+    transform: translateX(-15em) translateY(5em) scale(12);
+}
+.imageInText__big:hover {
+    z-index: 2;
+    transform: translateX(-20em) translateY(5em) scale(23);
 }
 
 .select_kmlDefault:hover {
