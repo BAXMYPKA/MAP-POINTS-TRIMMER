@@ -13,8 +13,7 @@ First of all it's been developed for Locus Map Pro and Google Earth Pro for desk
 
 The examples of map points displaying for **Locus Map Pro** and **Google Earth Pro**:
 
-<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" width="130px"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg" width=160px"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshotPoints1060x700.jpg" width="160px">
-</p>
+<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusScreenshot420x700.jpg" width="260px" alt="Locus Map point with the photo in description" title="How Locus Map can display a photo right in a point description"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshot1060x700.jpg" width=310px" alt="How Google Earth Pro displays a point description with the photo inside it after it was clicked" title="How Google Earth Pro displays a point description with the photo inside it after it was clicked"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GEscreenshotPoints1060x700.jpg" width="310px" alt="An example of points icons and names with various colors and sizes on Google Earth satellite map" title="An example of points icons and names with various colors and sizes on Google Earth satellite map">
 
 [Application releases list](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
 
