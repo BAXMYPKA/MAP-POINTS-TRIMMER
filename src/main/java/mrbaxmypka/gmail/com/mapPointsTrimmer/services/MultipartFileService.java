@@ -1,6 +1,8 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
+import lombok.CustomLog;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
@@ -23,6 +25,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+@Slf4j
 @Service
 public class MultipartFileService {
 	

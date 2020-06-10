@@ -1,5 +1,8 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.utils;
 
+import lombok.ToString;
+
+@ToString
 public enum PreviewSizeUnits {
 	PIXELS("px"),
 	PERCENTAGE("%");

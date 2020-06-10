@@ -1,7 +1,10 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.utils;
 
+import lombok.ToString;
+
 import java.util.StringJoiner;
 
+@ToString
 public enum PathTypes {
 	
 	/**

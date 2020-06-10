@@ -18,6 +18,7 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = {"multipartFile"})
+@ToString
 @Getter
 @Setter
 public class MultipartDto implements Serializable {
