@@ -3,11 +3,9 @@
 # MAP POINTS TRIMMER
 **The convenient handler for your map points with photos**
 
-The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview and have the ability to be magnified by click. Also you can set any path to your photos within any device, delete outdated garbage from descriptions and so forth. For export to Google Earth the application proposes options for selecting size, color and opacity of icons and points names to be displayed on the map. 
+The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview and have the ability to be magnified by click. Also you can set any path to your photos within any device, delete outdated garbage from descriptions and so forth.
 
-Also it proposes a few additional options.
-
-You can set a desired preview size, delete the unnecessary garbage from descriptions, set any path to all your photos etc.
+For export to Google Earth the application proposes options for selecting size, color and opacity of icons and points names to be displayed on the map. 
 
 First of all it's been developed for Locus Map Pro and Google Earth Pro for desktop.
 
