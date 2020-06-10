@@ -1,5 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Locale;
 
+@Slf4j
 @RestController
 public class FilesController {
 	
@@ -38,6 +40,7 @@ public class FilesController {
 				 produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<FileSystemResource> postKml(@Valid @ModelAttribute MultipartDto file, Locale locale)
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		log.info( "{} fie received as: {}", MultipartDto.class.getCanonicalName(), file);
 		
 		Path tempFile = multipartFileService.processMultipartDto(file, locale);
 		FileSystemResource resource = new FileSystemResource(tempFile);

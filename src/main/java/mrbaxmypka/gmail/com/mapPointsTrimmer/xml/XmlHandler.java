@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import javax.xml.validation.Validator;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 @NoArgsConstructor
 @Component
 public abstract class XmlHandler {
@@ -50,6 +52,7 @@ public abstract class XmlHandler {
 		throws IOException, ParserConfigurationException, SAXException, TransformerException;
 	
 	protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
+		log.debug("Getting 'document' from InputStream from a MultipartFile...");
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		//IMPORTANT! This is essential part of getting localNames of xml tags.
 		documentBuilderFactory.setNamespaceAware(true);
@@ -59,6 +62,8 @@ public abstract class XmlHandler {
 			document = documentBuilder.parse(xmlInputStream);
 		} catch (SAXParseException e) {
 			if (e.getMessage().contains("The prefix \"lc\" for element \"lc:attachment\" is not bound")) {
+				log.info("The prefix 'lc' for element 'lc:attachment' is not bound within XML file." +
+					  " 'lc:' namespace will be added into xml header...");
 				xmlInputStream.reset();
 				xmlInputStream = fixNamespaceForLcPrefixMethod(xmlInputStream);
 				document = documentBuilder.parse(xmlInputStream);
@@ -67,6 +72,7 @@ public abstract class XmlHandler {
 			}
 		}
 		document.normalizeDocument();
+		log.info("Xml Document has been extracted and normalized.");
 		return document;
 	}
 	
@@ -80,6 +86,7 @@ public abstract class XmlHandler {
 	 * @throws TransformerException When xml is not valid
 	 */
 	protected String writeTransformedDocument(Document document) throws TransformerException {
+		log.debug("Getting the resulting document to be transformed and written as String...");
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		DOMSource domSource = new DOMSource(document);
 		Transformer transformer = transformerFactory.newTransformer();
@@ -91,6 +98,7 @@ public abstract class XmlHandler {
 		transformer.transform(domSource, result);
 		//The first condition checks "&gt;\t" regexp (or {@code '\\s*>\\s*'} within original kml from Locus)
 		// as Locus may spread those signs ">" occasionally (especially after {@code <ExtendedData> tag}).
+		log.info("The resulting XML String has been written into memory. After some cleaning it will be returned...");
 		return stringWriter.toString().replaceAll("\r\n", "\n").replaceAll("&gt;\t", "");
 	}
 	
@@ -111,11 +119,13 @@ public abstract class XmlHandler {
 		String kml = new String(xmlInputStream.readAllBytes(), StandardCharsets.UTF_8);
 		int firstHeaderIndex = kml.indexOf("<kml");
 		int lastHeaderIndex = kml.indexOf(">", firstHeaderIndex);
+		log.info("The xml header '{}' without 'lc:' prefix is being fixed...", kml.substring(firstHeaderIndex, lastHeaderIndex + 1));
 		String header = kml.substring(firstHeaderIndex, lastHeaderIndex + 1);
 		if (!header.contains("xmlns:lc=\"http://www.locusmap.eu\"")) {
 			String newHeader = header.replace(">", " xmlns:lc=\"http://www.locusmap.eu\">\n");
 			kml = kml.replace(header, newHeader);
 		}
+		log.info("Namespace 'lc:' has been fixed into XML header.");
 		return new ByteArrayInputStream(kml.getBytes(StandardCharsets.UTF_8));
 	}
 	
