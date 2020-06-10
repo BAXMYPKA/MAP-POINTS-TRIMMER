@@ -3,7 +3,7 @@
 # MAP POINTS TRIMMER
 **The convenient handler for your map points with photos**
 
-The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview and have the ability to be magnified by click. Also you can set any path to your photos within any device, delete outdated garbage from descriptions and so forth.
+The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview and have the ability to be magnified by click. Also you can set any path to your photos within any device, delete outdated garbage from descriptions and so forth. For export to Google Earth the application proposes options for selecting size, color and opacity of icons and points names to be displayed on the map. 
 
 Also it proposes a few additional options.
 
@@ -38,7 +38,7 @@ The support of .gpx format is being considered but I'm hesitating if it will be 
  
 ## In the project
 
-* Dynamic points displaying, i.e. increase an icon when hovering a cursor over it, show point name only on mouseover.
+* Dynamic points displaying, i.e. increase an icon when hovering a cursor over it, show point name only on mouseover etc.
 * .gpx format support
 
 ##  Features
