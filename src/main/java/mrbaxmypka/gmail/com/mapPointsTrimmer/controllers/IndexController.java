@@ -1,5 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.net.UnknownHostException;
 
+@Slf4j
 @Controller
 public class IndexController {
 	
@@ -22,6 +24,8 @@ public class IndexController {
 		model.addAttribute("poiFile", new MultipartDto());
 		model.addAttribute("maxFileSizeMb", maxFileSizeMb);
 		model.addAttribute("serverAddress", serverAddress);
+		log.debug("ServerAddress={}, maxFileSizeMb={} attributes have been added and the 'index' page is being returned.",
+			serverAddress, maxFileSizeMb);
 		return "index";
 	}
 	

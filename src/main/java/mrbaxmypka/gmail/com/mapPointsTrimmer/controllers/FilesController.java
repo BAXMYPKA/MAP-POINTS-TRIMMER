@@ -40,9 +40,10 @@ public class FilesController {
 				 produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<FileSystemResource> postKml(@Valid @ModelAttribute MultipartDto file, Locale locale)
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
-		log.info( "{} fie received as: {}", MultipartDto.class.getCanonicalName(), file);
+		log.info( "{} file has been received as: {}", MultipartDto.class.getCanonicalName(), file);
 		
 		Path tempFile = multipartFileService.processMultipartDto(file, locale);
+		log.info("Temp file={}", tempFile);
 		FileSystemResource resource = new FileSystemResource(tempFile);
 		return ResponseEntity.ok()
 			.header("Content-Disposition", "attachment; filename=" + tempFile.getFileName()).body(resource);

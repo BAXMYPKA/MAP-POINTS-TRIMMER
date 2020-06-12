@@ -76,10 +76,10 @@ public class HtmlHandler {
 	}
 	
 	List<String> getAllImagesFromDescription(String description) {
-		log.info("Getting all the images from a given description text...");
+		log.debug("Getting all the images from a given description text...");
 		Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
 		if (parsedHtmlFragment == null) {
-			log.info("No parsed HTML has been found, an empty Collection will be returned.");
+			log.debug("No parsed HTML has been found, an empty Collection will be returned.");
 			//No html markup found, cdata is a plain text
 			return Collections.emptyList();
 		}

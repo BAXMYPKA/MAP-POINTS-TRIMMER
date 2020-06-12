@@ -1,5 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
@@ -35,7 +36,7 @@ public class MultipartFileService {
 	/**
 	 * The temp file which is stored in a system temp directory
 	 */
-	@Getter
+	@Getter(value = AccessLevel.PACKAGE)
 	private Path tempFile;
 	/**
 	 * To store the inner kml or gpx filename from archive
@@ -54,7 +55,7 @@ public class MultipartFileService {
 	 * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
 	 */
 	public Path processMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
-		  throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		log.info("{} has been received. Locale = {}", multipartDto, locale);
 		
 		locale = locale == null ? this.defaultLocale : locale;
@@ -68,9 +69,9 @@ public class MultipartFileService {
 			processedXml = kmlHandler.processXml(kmlInputStream, multipartDto);
 		} else {
 			throw new IllegalArgumentException(messageSource.getMessage(
-				  "exception.fileExtensionNotSupported",
-				  new Object[]{multipartDto.getMultipartFile().getOriginalFilename()},
-				  locale));
+				"exception.fileExtensionNotSupported",
+				new Object[]{multipartDto.getMultipartFile().getOriginalFilename()},
+				locale));
 		}
 		log.info("Xml file has been successfully processed.");
 		return writeTempFile(processedXml, multipartDto, locale);
@@ -85,7 +86,7 @@ public class MultipartFileService {
 	 * @throws IOException
 	 */
 	private InputStream getXmlFromZip(MultipartDto multipartDto, DownloadAs xmlFileExtension, Locale locale)
-		  throws IOException {
+		throws IOException {
 		log.info("'{}' file is being extracted from the given MultipartDto", xmlFileExtension);
 		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream())) {
 			ZipEntry zipEntry;
@@ -103,7 +104,7 @@ public class MultipartFileService {
 			}
 		}
 		throw new IllegalArgumentException(messageSource.getMessage("exception.noXmlInZipFound",
-			  new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
+			new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
 	}
 	
 	/**
@@ -119,14 +120,14 @@ public class MultipartFileService {
 	 * @throws IOException With the localized message to be returned to a User if the temp file writing is failed.
 	 */
 	private void processTempZip(
-		  String processedXml, DownloadAs xmlFileExtension, MultipartDto multipartDto, Locale locale) throws IOException {
+		String processedXml, DownloadAs xmlFileExtension, MultipartDto multipartDto, Locale locale) throws IOException {
 		
 		String originalZipFilename = multipartDto.getMultipartFile().getOriginalFilename();
 		
 		//It is important to save tempFile as the field to get an opportunity to delete it case of app crashing
 		tempFile = Paths.get(tempDir.concat(originalZipFilename));
 		log.info("To be downloaded as '{}' the zip file '{}' has been prepared to be written to the temp dir",
-			  xmlFileExtension, tempFile);
+			xmlFileExtension, tempFile);
 		ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream());
 		ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
 		ZipEntry zipInEntry;
@@ -158,7 +159,7 @@ public class MultipartFileService {
 		String originalFilename = multipartDto.getMultipartFile().getOriginalFilename();
 		
 		if (DownloadAs.KML.hasSameExtension(originalFilename) ||
-			  (DownloadAs.KMZ.hasSameExtension(originalFilename) && multipartDto.getDownloadAs().equals(DownloadAs.KML))) {
+			(DownloadAs.KMZ.hasSameExtension(originalFilename) && multipartDto.getDownloadAs().equals(DownloadAs.KML))) {
 			log.info("Temp file will be written to the temp directory as '{}' before returning as it is.", xmlFileName);
 			//Return .kml file
 			tempFile = Paths.get(tempDir.concat(xmlFileName));
@@ -172,4 +173,13 @@ public class MultipartFileService {
 		}
 		return tempFile;
 	}
+	
+	public void deleteTempFile() {
+		try {
+			Files.deleteIfExists(tempFile);
+		} catch (IOException e) {
+			log.debug("Deleting temp file has caused an exception:\n", e);
+		}
+	}
+	
 }

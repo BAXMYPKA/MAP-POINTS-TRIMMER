@@ -124,23 +124,15 @@ public class ExceptionsController {
 	 * @param localizedErrorMessage To be returned to a User
 	 */
 	ModelAndView returnRedirectIndexPageWithError(HttpStatus httpStatus, String localizedErrorMessage) {
-		deleteTempFile();
+		multipartFileService.deleteTempFile();
 		ModelAndView mav = new ModelAndView("redirect:/trimmer", httpStatus);
 		mav.addObject("userMessage", localizedErrorMessage);
 		return mav;
 	}
 	
 	ModelAndView returnForwardErrorPageWithDebug(HttpStatus httpStatus) {
-		deleteTempFile();
+		multipartFileService.deleteTempFile();
 		ModelAndView mav = new ModelAndView("forward:/error", httpStatus);
 		return mav;
-	}
-	
-	private void deleteTempFile() {
-		try {
-			Files.deleteIfExists(multipartFileService.getTempFile());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

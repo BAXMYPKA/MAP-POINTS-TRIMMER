@@ -1,5 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
+import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Kml processing class based on the StAX xml-library.
  */
+@Slf4j
 @Component
 public class KmlHandler extends XmlHandler {
 	
@@ -36,7 +38,7 @@ public class KmlHandler extends XmlHandler {
 	 */
 	public String processXml(InputStream kmlInputStream, MultipartDto multipartDto)
 		throws IOException, ParserConfigurationException, SAXException, TransformerException {
-		
+		log.info("The given KML is being processed...");
 		document = getDocument(kmlInputStream);
 		Element documentRoot = document.getDocumentElement();
 		//Processing Google Earth specific options
@@ -44,18 +46,22 @@ public class KmlHandler extends XmlHandler {
 		googleEarthHandler.processXml(document, multipartDto);
 		
 		if (multipartDto.getPath() != null) {
+			log.info("Setting the new path to images...");
 			processHref(documentRoot, multipartDto);
 		}
+		log.info("Descriptions from KML are being processed...");
 		//Processing the further text options regarding to inner CDATA or plain text from <description>s
 		processDescriptionsTexts(documentRoot, multipartDto);
 		
 		if (multipartDto.isAsAttachmentInLocus()) {
+			log.info("Images are being attached for Locus...");
 			processLocusAttachments(documentRoot, multipartDto);
 		}
 		if (multipartDto.isTrimXml()) {
+			log.info("KML is being trimmed...");
 			trimWhitespaces(documentRoot);
 		}
-		
+		log.info("The KML has been processed");
 		return writeTransformedDocument(document);
 	}
 	
@@ -68,6 +74,7 @@ public class KmlHandler extends XmlHandler {
 			}
 			trimWhitespaces(childNode);
 		}
+		log.info("Whitespaces have been trimmed from KML");
 	}
 	
 	/**
@@ -85,8 +92,10 @@ public class KmlHandler extends XmlHandler {
 				String newHrefWithOldFilename = getHtmlHandler().getNewHrefWithOldFilename(
 					oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
 				node.setTextContent(newHrefWithOldFilename);
+				log.trace("<href> text has been replaced with '{}'", newHrefWithOldFilename);
 			}
 		}
+		log.info("All <href>'s within the given Document have been replaced with the new ones.");
 	}
 	
 	/**
@@ -102,6 +111,7 @@ public class KmlHandler extends XmlHandler {
 			
 			if (textContent == null || textContent.isBlank()) {
 				descriptionNode.setTextContent("");
+				log.trace("Description has been set as blank string");
 			} else {
 				//Obtain an inner CDATA text to treat as HTML elements or plain text
 				String processedHtmlCdata = htmlHandler.processDescriptionText(textContent, multipartDto);
@@ -109,8 +119,10 @@ public class KmlHandler extends XmlHandler {
 				CDATASection cdataSection = document.createCDATASection(processedHtmlCdata);
 				descriptionNode.setTextContent("");
 				descriptionNode.appendChild(cdataSection);
+				log.trace("Description has been processed and set");
 			}
 		}
+		log.info("All the <description> have been processed.");
 	}
 	
 	/**
@@ -137,7 +149,8 @@ public class KmlHandler extends XmlHandler {
 			//Derive <description> and <ExtendedData> from Placemark
 			for (int j = 0; j < placemarksChildNodes.getLength(); j++) {
 				Node placemarkChild = placemarksChildNodes.item(j);
-				if (placemarkChild.getNodeType() != Node.ELEMENT_NODE || placemarkChild.getLocalName() == null) continue;
+				if (placemarkChild.getNodeType() != Node.ELEMENT_NODE || placemarkChild.getLocalName() == null)
+					continue;
 				if (placemarkChild.getLocalName().equals("description")) {
 					descriptionText = placemarkChild.getTextContent();
 					imgSrcFromDescription = htmlHandler.getAllImagesFromDescription(descriptionText);
@@ -157,7 +170,7 @@ public class KmlHandler extends XmlHandler {
 			}
 			processImagesFromDescription(imgSrcFromDescription, attachments, placemark, multipartDto);
 		}
-		
+		log.info("All <attachment>'s for Locus has been processed and added.");
 	}
 	
 	/**
@@ -188,11 +201,13 @@ public class KmlHandler extends XmlHandler {
 	 */
 	private void processImagesFromDescription(
 		List<String> imgSrcFromDescription, List<Node> attachmentNodes, Node placemark, MultipartDto multipartDto) {
+		log.trace("'{}' images for '{}' attachments are being processed", imgSrcFromDescription.size(), attachmentNodes.size());
 		//No images from description to insert as attachments
 		if (imgSrcFromDescription.isEmpty()) {
 			return;
 			//WEB paths are not supported as attachments
 		} else if (multipartDto.getPathType() != null && multipartDto.getPathType().equals(PathTypes.WEB)) {
+			log.trace("Web type isn't supported for Locus <attachment>");
 			return;
 		}
 		//Turn all imgSrc into Locus specific paths
@@ -226,6 +241,7 @@ public class KmlHandler extends XmlHandler {
 				List<Element> newAttachments = getImagesSrcAsLcAttachments(locusAttachmentsHref);
 				Node parentExtendedData = attachmentNodes.get(0).getParentNode();
 				newAttachments.forEach(parentExtendedData::appendChild);
+				log.trace("A new <attachment>'s have been added for the images from the <description>");
 			}
 			//<ExtendedData> isn't presented within the <Placemark>
 		} else {
@@ -233,6 +249,7 @@ public class KmlHandler extends XmlHandler {
 			List<Element> imagesSrcAsLcAttachments = getImagesSrcAsLcAttachments(locusAttachmentsHref);
 			Node newExtendedData = getNewExtendedData(imagesSrcAsLcAttachments);
 			placemark.appendChild(newExtendedData);
+			log.trace("A new <ExtendedData> with <attachment>'s has been added for the images from the <description>");
 		}
 	}
 	
@@ -245,7 +262,7 @@ public class KmlHandler extends XmlHandler {
 			})
 			.filter(imgSrc -> !imgSrc.isBlank())
 			.collect(Collectors.toList());
-		
+		log.trace("{} processed 'src' for Locus <attachment> will be returned", imagesToAttach.size());
 		return imagesToAttach;
 	}
 	
@@ -261,6 +278,7 @@ public class KmlHandler extends XmlHandler {
 			attachment.setTextContent(img);
 			lcAttachments.add(attachment);
 		});
+		log.trace("{} <attachment>'s with the processed 'src' for images will be returned", lcAttachments.size());
 		return lcAttachments;
 	}
 	
@@ -274,6 +292,7 @@ public class KmlHandler extends XmlHandler {
 		Element extendedData = document.createElement("ExtendedData");
 //		Element extendedData = document.createElementNS("http://www.locusmap.eu", "ExtendedData");
 		elementsToBeInside.forEach(extendedData::appendChild);
+		log.trace("A new <ExtendedData> will be returned");
 		return extendedData;
 	}
 	
@@ -286,6 +305,7 @@ public class KmlHandler extends XmlHandler {
 		if (multipartDto.isTrimXml() && !multipartDto.isTrimDescriptions()) {
 			processedHtmlCdata = "\n" + processedHtmlCdata.concat("\n");
 		}
+		log.trace("CDATA from the <description> will be return as the prettyPrinted one");
 		return processedHtmlCdata;
 	}
 }
