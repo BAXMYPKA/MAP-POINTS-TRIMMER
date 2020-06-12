@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 /**
  * HTML processing class based on {@link org.jsoup.Jsoup} library to parse only CDATA as HTML.
  */
+@Slf4j
 @NoArgsConstructor
 @Component
 public class HtmlHandler {
@@ -35,12 +37,15 @@ public class HtmlHandler {
 	 * @return Fully processed HTML markup to be included in CDATA block.
 	 */
 	public String processDescriptionText(String description, MultipartDto multipartDto) {
+		log.debug("Description and '{}' are received", multipartDto);
 		Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
 		
 		if (parsedHtmlFragment == null) {
+			log.debug("HTML parsing has been impossible for this text, will be returned as it is.");
 			//No html markup found, cdata is a plain text
 			return description;
 		} else if (parsedHtmlFragment.childNodeSize() == 1 && parsedHtmlFragment.childNode(0) instanceof TextNode) {
+			log.debug("HTML parsing has returned only 0 or 1 Node parsed, so will be returned as it is.");
 			//The only child is a plain text
 			return description;
 		}
@@ -48,30 +53,38 @@ public class HtmlHandler {
 		String plainTextDescription = extractPlainTextDescriptions(parsedHtmlFragment).trim();
 		//MUST be the first treatment
 		if (multipartDto.isClearOutdatedDescriptions()) {
+			log.debug("Outdated descriptions will be cleared...");
 			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
 		}
 		if (multipartDto.getPath() != null) {
+			log.debug("The new path for the images will be set...");
 			setPath(parsedHtmlFragment, multipartDto.getPathType(), multipartDto.getPath());
 		}
 		if (multipartDto.getPreviewSize() != null) {
+			log.debug("The new preview size for the images will be set...");
 			setPreviewSize(parsedHtmlFragment, multipartDto);
 		}
 		addStartEndComments(parsedHtmlFragment);
 		// MUST be the last treatment in all the conditions chain
 		if (multipartDto.isTrimDescriptions()) {
+			log.debug("The description will be cleared...");
 			return trimDescriptions(parsedHtmlFragment);
 		}
 		parsedHtmlFragment.prependText(plainTextDescription);
+		log.info("The fully processed description is being returned...");
 		return parsedHtmlFragment.html();
 	}
 	
 	List<String> getAllImagesFromDescription(String description) {
+		log.info("Getting all the images from a given description text...");
 		Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
 		if (parsedHtmlFragment == null) {
+			log.info("No parsed HTML has been found, an empty Collection will be returned.");
 			//No html markup found, cdata is a plain text
 			return Collections.emptyList();
 		}
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
+		log.info("A Collection of found [src] attributes will be returned...");
 		return imgElements.stream().map(img -> img.attr("src")).collect(Collectors.toList());
 	}
 	
@@ -82,6 +95,7 @@ public class HtmlHandler {
 	 * @return Extracted plain text or empty string.
 	 */
 	private String extractPlainTextDescriptions(Element parsedHtmlFragment) {
+		log.trace("Extracting plain text as the part of the given description...");
 		//A possible User Text Description as TextNode is strictly one of the children.
 		return parsedHtmlFragment.childNodes().stream()
 			.filter(node -> node instanceof TextNode)
@@ -95,7 +109,7 @@ public class HtmlHandler {
 	 * can be replaced with {@code <a href="C:/files:/a new path/_1404638472855.jpg"></>}
 	 */
 	private void setPath(Element parsedHtmlFragment, PathTypes pathType, String path) {
-		
+		log.trace("Setting the new path to images...");
 		Elements aElements = parsedHtmlFragment.select("a[href]");
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
 		
@@ -107,6 +121,7 @@ public class HtmlHandler {
 			String newPathWithFilename = getNewHrefWithOldFilename(img.attr("src"), pathType, path);
 			img.attr("src", newPathWithFilename);
 		});
+		log.trace("New path has been set.");
 	}
 	
 	/**
@@ -115,27 +130,32 @@ public class HtmlHandler {
 	 */
 	String getNewHrefWithOldFilename(@Nullable String oldHrefWithFilename, PathTypes pathType, String newHrefWithoutFilename) {
 		oldHrefWithFilename = oldHrefWithFilename == null || oldHrefWithFilename.isEmpty() ? "" : oldHrefWithFilename;
-		
+		log.trace("Old href with the filename is {}", oldHrefWithFilename);
 		//User may want to erase <href>
 		if (newHrefWithoutFilename.isBlank()) {
+			log.trace("New href is blank");
 			return "";
 		}
 		String newHrefWithOldFilename = "";
 		
 		if (pathType.equals(PathTypes.RELATIVE)) {
+			log.trace("Getting relative type of the new href...");
 			newHrefWithOldFilename = getNewRelativeHref(oldHrefWithFilename, newHrefWithoutFilename);
 		} else if (pathType.equals(PathTypes.ABSOLUTE)) {
+			log.trace("Getting absolute type of the new href...");
 			newHrefWithOldFilename = getNewAbsoluteHref(oldHrefWithFilename, newHrefWithoutFilename);
 		} else if (pathType.equals(PathTypes.WEB)) {
+			log.trace("Getting web type of the new href...");
 			newHrefWithOldFilename = getNewWebHref(oldHrefWithFilename, newHrefWithoutFilename);
 		}
+		log.debug("A new href with the old name will be returned as '{}'", newHrefWithOldFilename);
 		return newHrefWithOldFilename;
 	}
 	
 	private String getNewRelativeHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
 		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
 		String filename = getFileName(oldHrefWithFilename);
-		
+		log.trace("The new relative href will be returned as '{}'", newHrefWithoutFilename.concat(filename));
 		return newHrefWithoutFilename.concat(filename);
 	}
 	
@@ -149,6 +169,7 @@ public class HtmlHandler {
 	 */
 	String getLocusAttachmentAbsoluteHref(String oldHrefAbsoluteTypeWithFilename, MultipartDto multipartDto) {
 		if (oldHrefAbsoluteTypeWithFilename.startsWith("http") || oldHrefAbsoluteTypeWithFilename.startsWith("www")) {
+			log.debug("Locus doesn't accept web types of href for <attachment>, blank string will be returned");
 			return "";
 		}
 		String locusHref = oldHrefAbsoluteTypeWithFilename.trim().replace("file:///", "");
@@ -157,6 +178,7 @@ public class HtmlHandler {
 			locusHref = "/" + locusHref;
 		}//Relative type of path can start from "/" or "..." so we ignore that type
 		locusHref = locusHref.replaceAll("\\\\", "/").replaceAll("//", "/");
+		log.debug("Locus attachment absolute type href will be returned as '{}'", locusHref);
 		return locusHref;
 	}
 	
@@ -164,15 +186,17 @@ public class HtmlHandler {
 		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
 		newHrefWithoutFilename = newHrefWithoutFilename.replaceAll("\\\\", "/");
 		String filename = getFileName(oldHrefWithFilename);
-		
-		return "file:///" + newHrefWithoutFilename + filename;
+		String newAbsoluteHref = "file:///" + newHrefWithoutFilename + filename;
+		log.trace("Absolute type href will be returned as '{}'", newAbsoluteHref);
+		return newAbsoluteHref;
 	}
 	
 	private String getNewWebHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
 		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
 		String filename = getFileName(oldHrefWithFilename);
-		
-		return newHrefWithoutFilename + filename;
+		String newWebHref = newHrefWithoutFilename + filename;
+		log.trace("Web type href will be returned as '{}'", newWebHref);
+		return newWebHref;
 	}
 	
 	/**
@@ -188,6 +212,7 @@ public class HtmlHandler {
 			oldHrefWithFilename.lastIndexOf("/") :
 			oldHrefWithFilename.lastIndexOf("\\");
 		String filename = oldHrefWithFilename.substring(lastIndexOFSlash + 1);
+		log.trace("Filename as '{}' will be returned", filename);
 		return filename.isBlank() ? "" : filename;
 	}
 	
@@ -202,7 +227,7 @@ public class HtmlHandler {
 		newHrefWithoutFilename = newHrefWithoutFilename
 			.replaceAll("\\s", "%20")
 			.replaceAll("\\\\", "/");
-		
+		log.trace("Trimmed href without filename will be returned as '{}'", newHrefWithoutFilename);
 		return newHrefWithoutFilename;
 	}
 	
@@ -223,22 +248,29 @@ public class HtmlHandler {
 		
 		Elements imgElements = parsedHtmlFragment.select("img");
 //		Elements imgElements = parsedHtmlFragment.select("img[src]");
-		if (imgElements.size() == 0) return;
+		if (imgElements.size() == 0) {
+			log.debug("No 'img' Elements found within description HTML");
+			return;
+		}
 		
 		imgElements.forEach(img -> {
 			//Standard attr (given from Locus as usual)
 			if (img.hasAttr("width")) {
+				log.trace("Width '{}' will be reset into existing 'width' attribute", previewValue);
 				img.attr("width", previewValue);
 			}
 			//GoogleEarth add "max-width" attribute in style
 			if (img.hasAttr("style")) {
+				log.trace("Width '{}' will be reset within existing 'style' attribute", previewValue);
 				setPreviewSizeInStyles(img, multipartDto.getPreviewSize(), multipartDto.getPreviewSizeUnit());
 			} else {
+				log.trace("New attribute 'width={}' will be set into 'img'", previewValue);
 				setStyleToElement(img, "width", previewValue);
 			}
 		});
-		//No <img> with [src] attribures
+		//No <img> with [src] attributes
 		//Remake imgs into a links if they aren't.
+		log.debug("Turning <img>'s into <a><img></a> if they aren't...");
 		imgElements.stream()
 			.filter(Node::hasParent)
 			.filter(element -> !element.parent().tagName().equalsIgnoreCase("a"))
@@ -246,6 +278,7 @@ public class HtmlHandler {
 		//Finally creates a new User description within <!-- desc_user:start --> ... <!-- desc_user:end -->
 		// with User's text and images inside it.
 		if (!multipartDto.isClearOutdatedDescriptions()) {
+			log.trace("Clearing outdated description as this option isn't presented in MultipartDto...");
 			//All is not clear and need to be placed within UserDescStartEnd comments
 			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
 		}
@@ -262,7 +295,7 @@ public class HtmlHandler {
 	 */
 	private void setStyleToElement(Element element, String key, String value) {
 		Map<String, String> stylesKeyMap = getStylesKeyMap(element);
-		
+		log.trace("Setting additional attributes into existing 'style' as key={}, value={}", key, value);
 		stylesKeyMap.put(key.trim(), value.trim());
 		
 		String newStyles = stylesKeyMap.entrySet().stream()
@@ -280,7 +313,8 @@ public class HtmlHandler {
 	private void setPreviewSizeInStyles(Element imgElement, int previewSize, PreviewSizeUnits sizeUnit) {
 		String styleKeyValue = previewSize + sizeUnit.getUnit();
 		Map<String, String> stylesKeyMap = getStylesKeyMap(imgElement);
-		
+		log.trace("Setting additional attributes into existing 'style' with previewSize={}, sizeUnit={}",
+			previewSize, sizeUnit);
 		if (stylesKeyMap.containsKey("max-width")) {
 			stylesKeyMap.put("max-width", styleKeyValue);
 		} else {
@@ -306,6 +340,7 @@ public class HtmlHandler {
 				stylesKeyMap.put(keys[i].trim(), keys[i + 1].trim());
 			}
 		}
+		log.trace("Attribute 'style' keys and values will be returned as '{}'", stylesKeyMap);
 		return stylesKeyMap;
 	}
 	
@@ -313,6 +348,7 @@ public class HtmlHandler {
 	 * @return Trimmed String inline without redundant whitespaces and line breaks.
 	 */
 	private String trimDescriptions(Element parsedHtmlFragment) {
+		log.debug("Description is being trimmed...");
 		//Deletes 2 or more whitespaces in a row
 		return parsedHtmlFragment.html()
 			.replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
@@ -323,7 +359,7 @@ public class HtmlHandler {
 	 * MUST be the last method in a chain.
 	 */
 	private void clearOutdatedDescriptions(Element parsedHtmlFragment, MultipartDto multipartDto) {
-		
+		log.debug("The description is being cleared...");
 		deleteImagesDuplicates(parsedHtmlFragment);
 		
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
@@ -352,6 +388,7 @@ public class HtmlHandler {
 		}
 		clearEmptyTables(newHtmlDescription);
 		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
+		log.info("The description has been cleared.");
 	}
 	
 	/**
@@ -359,6 +396,7 @@ public class HtmlHandler {
 	 * @return New <a></a> Element with the copy of given <img></img> Element
 	 */
 	private Element getAElementWithInnerImgElement(Element imgElement) {
+		log.trace("Getting all <a> elements which contains <img> elements inside...");
 		String src = imgElement.attr("src");
 		Element newImgElement = new Element(imgElement.tagName());
 		newImgElement.attributes().addAll(imgElement.attributes());
@@ -367,6 +405,7 @@ public class HtmlHandler {
 	}
 	
 	private Elements getAElementsWithInnerImgElement(Elements imgElements) {
+		log.trace("Getting all <a> elements which contains <img> elements inside...");
 		return imgElements.stream()
 			.map(imgElement -> {
 				String src = imgElement.attr("src");
@@ -403,6 +442,7 @@ public class HtmlHandler {
 			if (!userDescription.isBlank()) divElement.appendText(userDescription);
 			return divElement.appendChild(table).appendChild(new Comment(descUserEnd));
 		}
+		log.trace("New HTML description has been created");
 		return table;
 	}
 	
@@ -416,6 +456,7 @@ public class HtmlHandler {
 	 * @return Derived text between xml tags or empty String if nothing found.
 	 */
 	private String getUserDescriptionText(Element parsedHtmlFragment) {
+		log.debug("Getting a User description plain text from the given HTML...");
 		//This Comment has Parent with all the children for extracting text with User's descriptions
 		final Comment[] commentNode = new Comment[1];//To be modified from within anonymous class or lambda
 		parsedHtmlFragment.traverse(new NodeVisitor() {
@@ -451,11 +492,13 @@ public class HtmlHandler {
 					//... Until find the end marker
 					if (nodesWithinUserDescComments.get(j) instanceof Comment &&
 						((Comment) nodesWithinUserDescComments.get(j)).getData().contains("desc_user:end")) {
+						log.debug("Description has been found within 'desc_user:start-end' Locus Map comments");
 						return textUserDescription.toString();
 					}
 				}
 			}
 		}
+		log.debug("Description hasn't been found, empty string will be returned");
 		return "";
 	}
 	
@@ -467,6 +510,7 @@ public class HtmlHandler {
 	 * or empty {@link Elements} collection (.size() == 0)
 	 */
 	private Elements getTableRowsWithMinDateTime(Elements htmlElements) {
+		log.trace("Getting a table row with the minimum DataTime within the given HTML...");
 		Elements tdElementsWithDescription = htmlElements.select("td");
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		Element tdElementWithMinimumDateTime = tdElementsWithDescription.stream()
@@ -488,9 +532,11 @@ public class HtmlHandler {
 			})
 			.orElse(new Element("empty"));
 		if (tdElementWithMinimumDateTime.hasParent()) {
+			log.trace("The minimum DateTime found and the table with those data will be returned");
 			//<tr> is the first parent, <tbody> or <table> is the second which contains all the <tr> with descriptions
 			return tdElementWithMinimumDateTime.parent().parent().children();
 		} else {
+			log.trace("No DateTime data has been found, a new empty HTML will be returned");
 			//No dateTime's found, return empty tag
 			return new Elements();
 		}
@@ -504,6 +550,7 @@ public class HtmlHandler {
 		Element td = new Element("td").attr("colspan", "2");
 		td.appendChild(new Element("hr"));
 		tr.appendChild(td);
+		log.trace("A new table row with <hr> will be returned");
 		return tr; //Returns just <tr> with <td> with <hr> inside as a table rows separator
 	}
 	
@@ -516,6 +563,7 @@ public class HtmlHandler {
 			Elements tdElements = tr.select("td");
 			if (tdElements.stream().allMatch(td -> td.children().isEmpty())) tr.remove();
 		});
+		log.trace("Empty <td> and <tr> are eliminated from the given table");
 	}
 	
 	/**
@@ -537,6 +585,7 @@ public class HtmlHandler {
 			}
 			fileNames.add(fileName);
 		});
+		log.debug("Duplicated images have been eliminated from the description.");
 	}
 	
 	/**
@@ -564,5 +613,6 @@ public class HtmlHandler {
 		});
 		parsedHtmlFragment.prependChild(desc_gen_start);
 		parsedHtmlFragment.appendChild(desc_gen_end);
+		log.debug("{} and {} have been added around user description", desc_gen_start, desc_gen_end);
 	}
 }

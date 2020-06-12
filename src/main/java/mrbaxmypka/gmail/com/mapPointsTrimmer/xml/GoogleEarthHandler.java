@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -13,6 +14,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @NoArgsConstructor
 @Component
 public class GoogleEarthHandler {
@@ -22,7 +24,7 @@ public class GoogleEarthHandler {
 	Document processXml(Document document, MultipartDto multipartDto) {
 		this.document = document;
 		Element documentRoot = document.getDocumentElement();
-		
+		log.info("Document and {} are received", multipartDto);
 		if (multipartDto.getPointIconSize() != null) {
 			setPointsIconsSize(documentRoot, multipartDto);
 		}
@@ -41,10 +43,12 @@ public class GoogleEarthHandler {
 	 * Applies only to existing <IconStyle> tags.
 	 */
 	private void setPointsIconsSize(Element documentRoot, MultipartDto multipartDto) {
+		log.info("Setting the icons size...");
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		NodeList iconStyles = documentRoot.getElementsByTagName("IconStyle");
 		List<Node> scales = getIconStylesScales(iconStyles);
 		scales.forEach(scaleNode -> scaleNode.setTextContent(scale));
+		log.info("Icons size has been set.");
 	}
 	
 	/**
@@ -52,17 +56,21 @@ public class GoogleEarthHandler {
 	 * Because <LabelStyle> automatically displays <name> content from <Placemark>s.
 	 */
 	private void setPointTextSize(Element documentRoot, MultipartDto multipartDto) {
+		log.info("Setting the points names size...");
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		NodeList styles = documentRoot.getElementsByTagName("Style");
 		List<Node> scales = getLabelStylesScales(styles);
 		scales.forEach(scaleNode -> scaleNode.setTextContent(scale));
+		log.info("Points names size has been set.");
 	}
 	
 	private void setPointTextColor(Element documentRoot, MultipartDto multipartDto) {
+		log.info("Setting the names text color...");
 		String color = getKmlColor(multipartDto.getPointTextColor(), multipartDto);
 		NodeList styles = documentRoot.getElementsByTagName("Style");
 		List<Node> colors = getLabelStylesColors(styles);
 		colors.forEach(colorNode -> colorNode.setTextContent(color));
+		log.info("Names color has been set.");
 	}
 	
 	/**
@@ -83,6 +91,7 @@ public class GoogleEarthHandler {
 				//Scale tag is presented, just insert a new value
 				if (iconStyleChild.getNodeName().equals("scale")) {
 					scales.add(iconStyleChild);
+					log.trace("Existing <scale> has been found in <IconStyle>");
 					continue iconStyles;
 				}
 			}
@@ -90,7 +99,9 @@ public class GoogleEarthHandler {
 			Element scale = document.createElement("scale");
 			iconStyle.appendChild(scale);
 			scales.add(scale);
+			log.trace("The new <scale> has been added into <IconStyle>");
 		}
+		log.debug("All <scale>'s within <IconStyle>'s tags have been found or created");
 		return scales;
 	}
 	
@@ -110,6 +121,7 @@ public class GoogleEarthHandler {
 					continue;
 				if (labelStyleChild.getNodeName().equals("scale")) {
 					scales.add(labelStyleChild);
+					log.trace("Existing <scale> has been found in <LabelStyle>");
 					return;
 				}
 			}
@@ -117,8 +129,9 @@ public class GoogleEarthHandler {
 			Node scale = document.createElement("scale");
 			labelStyle.appendChild(scale);
 			scales.add(scale);
+			log.trace("The new <scale> has been added into <LabelStyle>");
 		});
-		
+		log.debug("All <scale>'s within <LabelStyle>'s tags have been found or created.");
 		return scales;
 	}
 	
@@ -138,6 +151,7 @@ public class GoogleEarthHandler {
 					continue;
 				if (labelStyleChild.getNodeName().equals("color")) {
 					colors.add(labelStyleChild);
+					log.trace("Existing <color> has been found in <LabelStyle>");
 					return;
 				}
 			}
@@ -145,8 +159,9 @@ public class GoogleEarthHandler {
 			Node color = document.createElement("color");
 			labelStyle.appendChild(color);
 			colors.add(color);
+			log.trace("The new <color> has been added into <LabelStyle>");
 		});
-		
+		log.debug("All <color>'s within <LabelStyle>'s tags have been found or created.");
 		return colors;
 	}
 	
@@ -169,6 +184,7 @@ public class GoogleEarthHandler {
 				if (styleChild.getNodeType() != Node.ELEMENT_NODE) continue;
 				if (styleChild.getNodeName().equals("LabelStyle")) {
 					labelStyles.add(styleChild);
+					log.trace("Existing <LabelStyle> has been found.");
 					continue style;
 				}
 			}
@@ -176,11 +192,15 @@ public class GoogleEarthHandler {
 			Node labelStyle = document.createElement("LabelStyle");
 			style.appendChild(labelStyle);
 			labelStyles.add(labelStyle);
+			log.trace("The new <LabelStyle> has been created and added.");
 		}
+		log.debug("All <LabelStyle>'s within Documents have been found or created.");
 		return labelStyles;
 	}
 	
 	/**
+	 * Converts standard HEX color from HTML User input into KML color standard.
+	 * ====================================================================
 	 * https://developers.google.com/kml/documentation/kmlreference#colorstyle
 	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
 	 * The range of values for any one color is 0 to 255 (00 to ff).
@@ -201,16 +221,19 @@ public class GoogleEarthHandler {
 	 * witch is corresponds to KML specification.
 	 */
 	protected String getKmlColor(String hexColor, MultipartDto multipartDto) throws IllegalArgumentException {
+		log.debug("Got '{}' hex color input", hexColor);
 		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
 			throw new IllegalArgumentException(
 				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
 		}
 		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
-		
+		log.debug("Hex color has been converted into '{}' KML color", kmlColor);
 		if (multipartDto.getPointTextOpacity() != null) {
 			String opacity = getHexFromPercentage(multipartDto.getPointTextOpacity());
+			log.info("KML color with opacity will be returned as '{}'", opacity + kmlColor);
 			return opacity + kmlColor;
 		} else {
+			log.info("KML color will be returned as '{}'", "ff" + kmlColor);
 			return "ff" + kmlColor;
 		}
 	}
@@ -224,11 +247,14 @@ public class GoogleEarthHandler {
 	 * @throws IllegalArgumentException if a given percentage below 0 or above 100%
 	 */
 	String getHexFromPercentage(Integer percentage) throws IllegalArgumentException {
+		log.debug("Got percentage as {}", percentage);
 		if (percentage < 0 || percentage > 100) {
 			throw new IllegalArgumentException("Percentage has to be from 0 to 100%!");
 		}
 		BigDecimal hexPercentage = new BigDecimal(percentage * 2.55).setScale(0, RoundingMode.HALF_UP);
-		return String.format("%02x", hexPercentage.toBigInteger());
+		String hexFormat = String.format("%02x", hexPercentage.toBigInteger());
+		log.info("Hex format '{}' will be returned", hexFormat);
+		return hexFormat;
 	}
 	
 	/**
@@ -242,6 +268,7 @@ public class GoogleEarthHandler {
 	 */
 	//TODO: to download special GE images
 	boolean isImageHrefChangeable(String href) {
+		log.trace("Href to evaluate as GoogleMap special = '{}'", href);
 		String googleMapSpecialUrl = "http://maps.google.com/";
 		return !href.startsWith(googleMapSpecialUrl);
 	}

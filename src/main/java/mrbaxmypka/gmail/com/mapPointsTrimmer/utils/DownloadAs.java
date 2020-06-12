@@ -1,7 +1,9 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.utils;
 
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @ToString
 public enum DownloadAs {
 	KML, KMZ;
@@ -32,6 +34,7 @@ public enum DownloadAs {
 			String originalExtension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
 			return ".".concat(this.name()).toLowerCase().equals(originalExtension);
 		} catch (Exception e) {
+			log.info("Filename {} is incorrect!", filename == null ? "null" : filename);
 //			e.printStackTrace();
 			return false;
 		}
