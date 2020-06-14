@@ -2,13 +2,76 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
+	<link rel="icon" type="image/png" sizes="32x32" href="../static/img/favicon32x32.png"
+		  th:href="@{/img/favicon32x32.png}">
+	<link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
+		  th:href="@{/img/favicon32x32.png}">
+	<link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		const serverAddress = [[${serverAddress}]];
+		/*]]>*/
+	</script>
 	<title th:text="#{html.title.errorPage}">Error page</title>
 </head>
 <body>
 
-<h1 th:utext="#{html.h1.error}">There is an error occurred in the application!</h1>
+<div id="main" class="main">
+	
+	<header class="mainHeader">
+		
+		<img src="../static/img/MapPointsTrimmerLogo.png" th:src="@{/img/MapPointsTrimmerLogo.png}" alt="logo"
+			 class="mainHeader__logoImg">
+		
+		<div class="nameHeaderGroup">
+			
+			<a href="/" th:href="@{/}" class="nameHeaderGroup__appName">
+				<h1 class="nameHeaderGroup__appName" th:utext="#{html.h1.header}">
+					MAP POINTS TRIMMER
+				</h1>
+			</a>
+			<h2 class="nameHeaderGroup__appSlogan" th:text="#{html.h2.slogan}">
+				The handler for your custom POI with photos
+			</h2>
+		
+		</div>
+		
+		
+		<div class="rightHeaderGroup">
+			
+			<select class="rightHeaderGroup__langSelector" onchange="location = this.value">
+				<option th:text="#{html.header.option.lang}">Language...</option>
+				<option th:value="@{/(lang=en)}">EN</option>
+				<option th:value="@{/(lang=ru)}">RU</option>
+			</select>
+			<img src="../static/img/turnOffBtn.png" alt="SHUTDOWN" class="rightHeaderGroup__shutdownButtonOn_img"
+				 th:alt="#{html.text.shutdown}" th:title="#{html.text.shutdown}"
+				 th:src="@{/img/turnOffBtn.png}"
+				 th:class="${#request.getAttribute('shutdownBtnClass')} != null ?
+				  ${#request.getAttribute('shutdownBtnClass')} : 'rightHeaderGroup__shutdownButtonOn_img'">
+		
+		</div>
+	
+	</header>
+	
+	<h1 th:utext="#{html.h1.error}">There is an error occurred in the application!</h1>
+	
+	<div class="userMessage" th:utext="#{userMessage.errorPageMessage}"></div>
+	
+	<main class="mainBody">
+		
+		<article class="article">
+			
+			<section id="closableSection" class="article__section article__section_closed"
+					 th:utext="#{commonMessages.article.scenarios}">
+				Processing log...
+			</section>
+			
+		</article>
+	
+	</main>
 
-<div class="userMessage" th:utext="#{userMessage.errorPageMessage}"></div>
+</div>
 
 </body>
 </html>

@@ -327,11 +327,24 @@ input[type=radio] {
     width: 3.2em;
 }
 
+.loadForm__fieldSet__debugFieldset {
+    margin-top: 0.5em;
+    text-align: end;
+}
+
 .inputButton {
     font-weight: bold;
     border: goldenrod 0.1em solid;
     border-radius: 0.2em;
 }
+
+/*
+#debugButton {
+    font-weight: bold;
+    border: goldenrod 0.1em solid;
+    border-radius: 0.2em;
+}
+*/
 
 #prevSize {
     width: 4em;

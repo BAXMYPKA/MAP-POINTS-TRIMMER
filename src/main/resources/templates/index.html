@@ -7,8 +7,9 @@
 	<link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
 		  th:href="@{/img/favicon32x32.png}">
 	<link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
-	<script src="../static/scripts/browserVersionCheck.js" th:src="@{../static/scripts/browserVersionCheck.js}" defer></script>
-	<script src="../static/scripts/index.js" th:src="@{../static/scripts/index.js}" defer></script>
+	<script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}"
+			defer></script>
+	<script src="../static/scripts/index.js" th:src="@{scripts/index.js}" defer></script>
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		const maxFileSizeMb = [[${maxFileSizeMb}]];
@@ -322,6 +323,17 @@
 				<span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					Download
 				</span>
+			
+			</fieldset>
+			
+			<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet__debugFieldset">
+				
+				<input type="checkbox" id="debugMode" th:utext="#{html.checkbox.debugMode}"><i> Debug mode</i></input>
+				
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.downloadAs}">
+					?
+				</div>
 			
 			</fieldset>
 		

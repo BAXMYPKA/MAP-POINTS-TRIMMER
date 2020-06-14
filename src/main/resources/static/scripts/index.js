@@ -12,6 +12,25 @@
 			});
 		}
 		
+		/**
+		 *
+		 * @param level TRACE, DEBUG, INFO, ERROR, WARN
+		 */
+		let setLoggingLevel = function (level) {
+			let logLevel = {
+				"configuredLevel": level
+			}
+			let setInfoLogLevel = fetch(serverAddress.concat("/actuator/loggers/mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication"), {
+				method: "POST",
+				body: JSON.stringify(logLevel),
+				headers: {
+					"Content-Type": "application/json;charset=utf-8"
+				}
+			});
+		};
+		
+		window.onload = setLoggingLevel("WARN");
+		
 		document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', (ev => {
 			ev.preventDefault();
 			window.location.href = serverAddress.concat('/shutdown');
@@ -162,5 +181,12 @@
 			}
 		});
 		
+		document.getElementById("debugMode").addEventListener('change', ev => {
+			if (ev.target.checked) {
+				setLoggingLevel("INFO");
+			} else {
+				setLoggingLevel("WARN");
+			}
+		});
 	}
 )();
