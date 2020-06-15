@@ -1,5 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
@@ -21,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @ControllerAdvice
 public class ExceptionsController {
 	
@@ -31,8 +33,6 @@ public class ExceptionsController {
 	@Autowired
 	private FileService fileService;
 	
-	//TODO: to make logging
-	
 	/**
 	 * @param npe {@link NullPointerException} from Service level
 	 * @return HttpStatus 428
@@ -40,7 +40,7 @@ public class ExceptionsController {
 	@ExceptionHandler({NullPointerException.class})
 	public ModelAndView nullPinterHandler(NullPointerException npe, Locale locale) {
 		//code 428
-		return returnPageWithError(HttpStatus.PRECONDITION_REQUIRED, npe.getMessage(), locale);
+		return returnPageWithError(HttpStatus.PRECONDITION_REQUIRED, npe.getMessage(), npe, locale);
 //		return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED).body(npe.getMessage());
 	}
 	
@@ -51,7 +51,7 @@ public class ExceptionsController {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ModelAndView illegalArgException(IllegalArgumentException iae, Locale locale) {
 		//code 406
-		return returnPageWithError(HttpStatus.NOT_ACCEPTABLE, iae.getMessage(), locale);
+		return returnPageWithError(HttpStatus.NOT_ACCEPTABLE, iae.getMessage(), iae, locale);
 //		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(iae.getMessage());
 	}
 	
@@ -63,7 +63,8 @@ public class ExceptionsController {
 	public ModelAndView xmlParsingException(Exception xmlError, Locale locale) {
 		//code 422
 		String xmlErrorPrefix = messageSource.getMessage("exception.xmlParseError", null, locale);
-		return returnPageWithError(HttpStatus.UNPROCESSABLE_ENTITY, xmlErrorPrefix + xmlError.getMessage(), locale);
+		return returnPageWithError(
+			HttpStatus.UNPROCESSABLE_ENTITY, xmlErrorPrefix + xmlError.getMessage(), xmlError, locale);
 //		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(sae.getMessage());
 	}
 	
@@ -76,7 +77,7 @@ public class ExceptionsController {
 	@ExceptionHandler(InterruptedException.class)
 	public ModelAndView interruptedException(InterruptedException ie, Locale locale) {
 		String shutdownFailureMessage = messageSource.getMessage("exception.shutdownFailure", null, locale);
-		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, shutdownFailureMessage, locale);
+		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, shutdownFailureMessage, ie, locale);
 //		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(shutdownFailureMessage);
 	}
 	
@@ -84,7 +85,7 @@ public class ExceptionsController {
 	public ModelAndView ioException(IOException io, Locale locale) {
 		String fileSavingFailure = messageSource.getMessage(
 			"exception.fileException(1)", new Object[]{io.getMessage()}, locale);
-		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, fileSavingFailure, locale);
+		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, fileSavingFailure, io, locale);
 //		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(shutdownFailureMessage);
 	}
 	
@@ -103,7 +104,7 @@ public class ExceptionsController {
 			.map(e ->
 				messageSource.getMessage("exception.fieldError(2)", new Object[]{e.getKey(), e.getValue()}, locale))
 			.collect(Collectors.joining());
-		return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, locale);
+		return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, ve, locale);
 //		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessages);
 	}
 	
@@ -112,9 +113,9 @@ public class ExceptionsController {
 	 * @return HttpStatus 500
 	 */
 	@ExceptionHandler(value = Exception.class)
-	public ModelAndView internalExceptions(Exception exception, Model model, Locale locale) {
+	public ModelAndView internalExceptions(Exception exception, Locale locale) {
 		//code 500
-		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), locale);
+		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception, locale);
 //		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
 	}
 	
@@ -127,10 +128,13 @@ public class ExceptionsController {
 	 * returns {@link ModelAndView} with redirecting to "/trimmer" page with just the
 	 * localized message for User and the given {@link HttpStatus}
 	 *
-	 * @param httpStatus            To be returned to a User
-	 * @param localizedErrorMessage To be returned to a User as the "userMessage" attribute
+	 * @param httpStatus            To be returned to a User page
+	 * @param localizedErrorMessage Prepared and localized message to be returned to a User as the "userMessage" attribute
+	 * @param throwable To be logged here
+	 * @param locale To send a possible localized message to the end User from this method.
 	 */
-	ModelAndView returnPageWithError(HttpStatus httpStatus, String localizedErrorMessage, Locale locale) {
+	ModelAndView returnPageWithError(HttpStatus httpStatus, String localizedErrorMessage, Throwable throwable, Locale locale) {
+		log.error(localizedErrorMessage, throwable);
 		multipartFileService.deleteTempFile();
 		ModelAndView mav = new ModelAndView();
 		mav.setStatus(httpStatus);
