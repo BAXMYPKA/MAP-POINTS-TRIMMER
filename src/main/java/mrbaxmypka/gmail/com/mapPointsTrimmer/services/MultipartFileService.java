@@ -37,7 +37,7 @@ public class MultipartFileService {
 	 * The temp file which is stored in a system temp directory
 	 */
 	@Getter(value = AccessLevel.PACKAGE)
-	private Path tempFile;
+	private Path tempFile = Paths.get("");
 	/**
 	 * To store the inner kml or gpx filename from archive
 	 */
@@ -181,5 +181,4 @@ public class MultipartFileService {
 			log.debug("Deleting temp file has caused an exception:\n", e);
 		}
 	}
-	
 }

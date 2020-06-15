@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,7 +43,7 @@ public class FileService {
 		
 		Callable<String> callLogFile = () -> {
 			try {
-				stackTrace = Files.readString(logFilePath);
+				stackTrace = String.join("<br>\n", Files.readAllLines(logFilePath, StandardCharsets.UTF_8));
 			} catch (IOException e) {
 				Thread.sleep(1500);
 				stackTrace = Files.readString(logFilePath);
@@ -56,8 +57,6 @@ public class FileService {
 		try {
 			return log.get(2, TimeUnit.SECONDS);
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			
-			//TODO: to create exceptions.logFileReadFailure(1)
 			
 			stackTrace = messageSource.getMessage(
 				"exceptions.logFileReadFailure(1)",	new Object[]{e.getMessage()}, locale);

@@ -6,7 +6,8 @@
 		  th:href="@{/img/favicon32x32.png}">
 	<link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
 		  th:href="@{/img/favicon32x32.png}">
-	<link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
+	<link rel="stylesheet" href="../static/css/error.css" th:href="@{css/error.css}">
+	<script rel="script" src="../static/scripts/error.js" th:src="@{scripts/error.js}" defer></script>
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		const serverAddress = [[${serverAddress}]];
@@ -54,22 +55,65 @@
 	
 	</header>
 	
-	<h1 th:utext="#{html.h1.error}">There is an error occurred in the application!</h1>
+	<h2 th:utext="${debugMessage == null} ? #{html.h1.error} : #{html.h1.debugMode}">
+		There is an error occurred in the application!
+	</h2>
 	
-	<div class="userMessage" th:utext="#{userMessage.errorPageMessage}"></div>
+	<div class="userMessage" th:utext="${userMessage != null} ? ${userMessage} : #{userMessage.errorPageMessage}"></div>
 	
 	<main class="mainBody">
 		
-		<article class="article">
+		<article class="article" th:if="${debugMessage != null}">
+			
+			<section class="article__section article__section_copyText"
+					 th:utext="#{commonMessages.article.copyLogSection}">
+				The full application log is placed below in the hidden section. If you are quite sure that the
+				following error is abnormal you can
+				<a id="clickHere" title="Copy the text into memory" th:title="#{html.title.a.copyIntoMemory}" href="">
+					click here </a>
+				to copy the full log text and send it to the developer for examination.
+			</section>
 			
 			<section id="closableSection" class="article__section article__section_closed"
 					 th:utext="${debugMessage}">
-				Processing log...
+				2020-06-15 20:09:42.829 WARN 2196 --- [http-nio-8088-exec-1] .m.m.a.ExceptionHandlerExceptionResolver :
+				Resolved [org.xml.sax.SAXParseException; lineNumber: 5; columnNumber: 15; The prefix "atom" for element
+				"atom:author" is not bound.]
+				2020-06-15 20:14:55.788 INFO 2196 --- [SpringContextShutdownHook]
+				o.s.s.concurrent.ThreadPoolTaskExecutor : Shutting down ExecutorService 'applicationTaskExecutor'
 			</section>
-			
+		
 		</article>
 	
 	</main>
+	
+	<article class="articleAbout" th:utext="#{commonMessages.about}" th:title="#{html.title.close}" title="Close"
+			 style="display: none">
+		About application text.
+	</article>
+	
+	<footer class="mainFooter">
+		
+		<div id="aboutItem" class="mainFooter__item" th:text="#{html.text.about}">About</div>
+		
+		<div>
+			<ul class="listSmall">
+				<li title="Developer's Github" th:title="#{html.title.footer.contacts.github}">
+					<a href="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases" target="_blank"
+					   class="mainFooter__item_smaller">
+						Github
+					</a>
+				</li>
+				<li title="Email" th:title="#{html.title.footer.email}">
+					<a href="mailto:mrbaxmypka@yandex.ru" class="mainFooter__item_smaller">Email</a>
+				</li>
+				<li class="mainFooter__item_noStyle" title="Location" th:title="#{html.title.footer.location}">
+					RU, Moscow
+				</li>
+			</ul>
+		</div>
+	
+	</footer>
 
 </div>
 
