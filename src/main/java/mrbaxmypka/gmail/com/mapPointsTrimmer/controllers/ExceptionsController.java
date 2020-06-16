@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @ControllerAdvice
-public class ExceptionsController {
+public class ExceptionsController extends AbstractController {
 	
 	@Autowired
 	private MessageSource messageSource;

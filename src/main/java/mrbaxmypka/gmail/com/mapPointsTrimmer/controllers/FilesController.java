@@ -22,7 +22,7 @@ import java.util.Locale;
 
 @Slf4j
 @RestController
-public class FilesController {
+public class FilesController extends AbstractController {
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -42,7 +42,7 @@ public class FilesController {
 		@Valid @ModelAttribute MultipartDto file, Locale locale)
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
 		
-		log.info( "{} file has been received as: {}.", MultipartDto.class.getCanonicalName(), file);
+		log.info( "{} file has been received as: {}.", MultipartDto.class.getSimpleName(), file);
 		
 		Path tempFile = multipartFileService.processMultipartDto(file, locale);
 		log.info("Temp file={}", tempFile);

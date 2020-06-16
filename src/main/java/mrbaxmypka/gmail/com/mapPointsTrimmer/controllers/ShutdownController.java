@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -26,10 +27,14 @@ public class ShutdownController {
 	private MessageSource messageSource;
 	@Autowired
 	private MultipartFileService multipartFileService;
+	@Autowired
+	private FileService fileService;
 	
 	@GetMapping(path = "/shutdown")
 	public String shutdownApp(RedirectAttributes redirectAttributes, Locale locale) {
 		multipartFileService.deleteTempFile();
+		fileService.deleteLogFile();
+		//To defer the shitting down a bit to be able to return the main page
 		Thread thread = new Thread(() -> {
 			try {
 				Thread.sleep(2000);

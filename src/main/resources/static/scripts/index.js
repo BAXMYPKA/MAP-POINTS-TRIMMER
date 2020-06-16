@@ -31,10 +31,10 @@
 		
 		window.onload = setLoggingLevel("WARN");
 		
-		document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', (ev => {
+		document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
 			ev.preventDefault();
 			window.location.href = serverAddress.concat('/shutdown');
-		}));
+		});
 		
 		document.querySelector(".mainHeader__logoImg").addEventListener('click', ev => {
 			window.location.href = serverAddress;
@@ -182,8 +182,13 @@
 		});
 		
 		document.getElementById("debugMode").addEventListener('change', ev => {
+			let debugInterrogation = document.getElementById("debugInterrogation");
 			if (ev.target.checked) {
-				setLoggingLevel("INFO");
+				if (confirm(debugInterrogation.title)) {
+					setLoggingLevel("INFO");
+				} else {
+					ev.target.checked = false;
+				}
 			} else {
 				setLoggingLevel("WARN");
 			}

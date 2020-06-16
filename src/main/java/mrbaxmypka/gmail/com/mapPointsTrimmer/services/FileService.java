@@ -63,4 +63,13 @@ public class FileService {
 		}
 		return stackTrace;
 	}
+	
+	public void deleteLogFile() {
+		Path logFilePath = Paths.get(pathToLogFile);
+		try {
+			Files.deleteIfExists(logFilePath);
+		} catch (IOException e) {
+			log.debug("Deleting temp log file has caused an exception:\n", e);
+		}
+	}
 }

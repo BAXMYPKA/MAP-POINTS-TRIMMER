@@ -52,7 +52,7 @@ public abstract class XmlHandler {
 		throws IOException, ParserConfigurationException, SAXException, TransformerException;
 	
 	protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
-		log.debug("Getting 'document' from InputStream from a MultipartFile...");
+		log.info("Getting 'document' from InputStream from a MultipartFile...");
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		//IMPORTANT! This is essential part of getting localNames of xml tags.
 		documentBuilderFactory.setNamespaceAware(true);
@@ -86,7 +86,7 @@ public abstract class XmlHandler {
 	 * @throws TransformerException When xml is not valid
 	 */
 	protected String writeTransformedDocument(Document document) throws TransformerException {
-		log.debug("Getting the resulting document to be transformed and written as String...");
+		log.info("Getting the resulting document to be transformed and written as String...");
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		DOMSource domSource = new DOMSource(document);
 		Transformer transformer = transformerFactory.newTransformer();

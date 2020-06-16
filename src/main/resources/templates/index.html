@@ -88,7 +88,7 @@
 			<span class="userMessage__close" title="Close"
 				  th:title="#{html.title.close}"
 				  th:if="${userMessage != null || #request.getParameter('userMessage') != null}">
-				 X
+				 x
 			</span>
 		
 		</div>
@@ -332,8 +332,8 @@
 					<span th:utext="#{html.input.checkbox.debugMode}">Debug mode</span>
 				</input>
 				
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.downloadAs}">
+				<div id="debugInterrogation" class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.debugMode}">
 					?
 				</div>
 			

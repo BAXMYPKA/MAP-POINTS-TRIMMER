@@ -225,6 +225,7 @@ input[type=radio] {
 .userMessage__close {
 	font-weight: bold;
 	font-size: 1.5em;
+	font-family: Consolas, sans-serif;
 	color: firebrick;
 }
 
