@@ -15,7 +15,7 @@ import java.util.Locale;
 
 @Slf4j
 @Controller
-public class ShutdownController {
+public class ShutdownController extends AbstractController{
 	
 	/**
 	 * Attribute for index.html to apply this css className to make the 'Shutdown' button grey.
@@ -32,18 +32,17 @@ public class ShutdownController {
 	
 	@GetMapping(path = "/shutdown")
 	public String shutdownApp(RedirectAttributes redirectAttributes, Locale locale) {
-		multipartFileService.deleteTempFile();
-		fileService.deleteLogFile();
 		//To defer the shitting down a bit to be able to return the main page
 		Thread thread = new Thread(() -> {
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				System.out.println(e.getMessage());
-				log.error("Thread.sleep() has raised an error: {}", e.getMessage());
+			} finally {
+				multipartFileService.deleteTempFile();
+				fileService.deleteLogFile();
+				SpringApplication.exit(applicationContext, () -> 666);
 			}
-			log.info("The application is being shutting down...");
-			SpringApplication.exit(applicationContext, () -> 666);
 		});
 		thread.start();
 		

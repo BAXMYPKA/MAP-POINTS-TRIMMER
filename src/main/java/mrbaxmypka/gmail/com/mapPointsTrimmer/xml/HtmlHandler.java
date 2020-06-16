@@ -84,7 +84,7 @@ public class HtmlHandler {
 			return Collections.emptyList();
 		}
 		Elements imgElements = parsedHtmlFragment.select("img[src]");
-		log.info("A Collection of found [src] attributes will be returned...");
+		log.debug("A Collection of found [src] attributes will be returned...");
 		return imgElements.stream().map(img -> img.attr("src")).collect(Collectors.toList());
 	}
 	
@@ -388,7 +388,7 @@ public class HtmlHandler {
 		}
 		clearEmptyTables(newHtmlDescription);
 		parsedHtmlFragment.html(newHtmlDescription.outerHtml());
-		log.info("The description has been cleared.");
+		log.debug("The description has been cleared.");
 	}
 	
 	/**

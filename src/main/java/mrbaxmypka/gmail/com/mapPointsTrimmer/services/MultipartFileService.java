@@ -177,8 +177,9 @@ public class MultipartFileService {
 	public void deleteTempFile() {
 		try {
 			Files.deleteIfExists(tempFile);
+			log.info("Temp file={} has been deleted", tempFile.toString());
 		} catch (IOException e) {
-			log.debug("Deleting temp file has caused an exception:\n", e);
+			log.info("Deleting temp file has caused an exception:\n", e);
 		}
 	}
 }

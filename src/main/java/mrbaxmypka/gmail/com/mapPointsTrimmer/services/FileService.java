@@ -68,8 +68,9 @@ public class FileService {
 		Path logFilePath = Paths.get(pathToLogFile);
 		try {
 			Files.deleteIfExists(logFilePath);
+			log.debug("Log file={} has been deleted.", pathToLogFile);
 		} catch (IOException e) {
-			log.debug("Deleting temp log file has caused an exception:\n", e);
+			log.debug("Deleting the temp log file failed and has caused an exception:\n", e);
 		}
 	}
 }

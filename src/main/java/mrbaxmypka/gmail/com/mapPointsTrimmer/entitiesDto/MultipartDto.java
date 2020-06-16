@@ -25,10 +25,8 @@ public class MultipartDto implements Serializable {
 	
 	static final long serialVersionUID = 3L;
 	
-	//TODO: to i18n validation messages
-	
 	@NonNull //Lombok required arg for the constructor
-	@NotNull
+	@NotNull(message = "{validation.notNull}")
 	private MultipartFile multipartFile;
 	
 	/**
@@ -72,8 +70,8 @@ public class MultipartDto implements Serializable {
 	 * Attached photos preview size (in width) in pixels
 	 */
 	@Nullable
-	@PositiveOrZero
-	@Max(3000)
+	@PositiveOrZero(message = "{validation.positiveOrZero}")
+	@Max(value = 3000, message = "{validation.maxNumber}")
 	private Integer previewSize;
 	
 	/**
@@ -89,8 +87,8 @@ public class MultipartDto implements Serializable {
 	 * 90% is "scale = '0.9'" etc.
 	 */
 	@Nullable
-	@PositiveOrZero
-	@Max(300)
+	@PositiveOrZero(message = "{validation.positiveOrZero}")
+	@Max(value = 300, message = "{validation.maxNumber}")
 	private Integer pointIconSize;
 	
 	/**
@@ -101,8 +99,8 @@ public class MultipartDto implements Serializable {
 	 * 90% is "scale = '0.9'" etc.
 	 */
 	@Nullable
-	@PositiveOrZero
-	@Max(300)
+	@PositiveOrZero(message = "{validation.positiveOrZero}")
+	@Max(value = 300, message = "{validation.maxNumber}")
 	private Integer pointTextSize;
 	
 	/**
@@ -130,8 +128,8 @@ public class MultipartDto implements Serializable {
 	 * **************************************************************
 	 */
 	@Nullable
-	@PositiveOrZero
-	@Max(100)
+	@PositiveOrZero(message = "{validation.positiveOrZero}")
+	@Max(value = 100, message = "{validation.maxNumber}")
 	private Integer pointTextOpacity;
 	
 	@NotNull

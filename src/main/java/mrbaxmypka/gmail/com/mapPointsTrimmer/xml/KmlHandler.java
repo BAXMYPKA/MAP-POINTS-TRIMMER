@@ -74,7 +74,7 @@ public class KmlHandler extends XmlHandler {
 			}
 			trimWhitespaces(childNode);
 		}
-		log.info("Whitespaces have been trimmed from KML");
+		log.trace("Whitespaces have been trimmed from KML");
 	}
 	
 	/**
