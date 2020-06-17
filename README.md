@@ -17,7 +17,7 @@ The examples of map points displaying for **Locus Map Pro** and **Google Earth P
 
 ## How to use it
 
-Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v2.0/MAP-POINTS-TRIMMERv2.0.zip)
+Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v2.2/MAP-POINTS-TRIMMERv2.2.zip)
 
 When the application start use your browser to visit: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
