@@ -1,0 +1,4047 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Google Earth Test Poi</name>
+	<StyleMap id="generic4">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n40</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h44</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin12">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin40</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl11</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="generic42">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n41</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h42</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_caution1">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_caution2</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_caution0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin01">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin01</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl24</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_h46">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/motorcycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin43">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin12</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl4</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin90">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin25</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl112</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_caution0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_caution0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_caution</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin_hl24">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin90">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin0">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="generic49">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n45</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h45</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin25">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="generic40">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n4</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h40</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_rail0">
+		<IconStyle>
+			<scale>1.05</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/rail.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_police10">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_police00</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_police00</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_water">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/water.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_police">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_police2</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_police20</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin21">
+		<IconStyle>
+			<color>b3ffffff</color>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b3ffffff</color>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_cycling0">
+		<IconStyle>
+			<scale>1.2</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b2ffffff</color>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin020">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_poi0">
+		<IconStyle>
+			<scale>1.2</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl17">
+		<IconStyle>
+			<scale>1.4</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/hiker.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="generic47">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n43</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h43</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin_hl03">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin91">
+		<IconStyle>
+			<scale>0.5</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_earthquake">
+		<IconStyle>
+			<scale>0.816667</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_n46">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin04">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin002</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl17</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_forbidden">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_forbidden</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_forbidden</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_cycling0">
+		<IconStyle>
+			<scale>1.4</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b2ffffff</color>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin11">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin020</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl03</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin202">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin42</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl12</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin_hl">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_hiker0">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/hiker.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_police3">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_police</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_police</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin6">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin4</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_h40">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="msn_poi">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_poi1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_poi</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin18">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin50">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin400</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl60</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_poi10">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_P">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/klm/paddle/paddle/P.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/klm/paddle/paddle/P-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="s_ylw-pushpin140">
+		<IconStyle>
+			<scale>1.2</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/homegardenbusiness.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin27">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/parks.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_earthquake">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_ylw-pushpin211">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ylw-pushpin37</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ylw-pushpin05</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin_hl112">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="generic43">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n42</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h48</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_caution">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_caution</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_caution00</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_rail1">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_rail1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_rail</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_rail">
+		<IconStyle>
+			<color>ccffffff</color>
+			<scale>1.05</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/rail.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>ccffffff</color>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin3">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info_circle.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_police0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_police4</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_police2</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_n41">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="msn_poi1">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_poi0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_poi0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_h43">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>https://www.gpsies.com/images/waypointIcons/generic.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Style id="sn_police1">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_water">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_water0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_water</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_parks">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_parks</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_parks</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_ylw-pushpin05">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl16">
+		<IconStyle>
+			<color>b3ffffff</color>
+			<scale>0.945455</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info-i.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin16">
+		<IconStyle>
+			<color>b2ffffff</color>
+			<scale>0.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b2ffffff</color>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_n48">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Style id="s_ylw-pushpin7">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_poi01">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_poi00</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_poi00</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_n42">
+		<IconStyle>
+			<scale>0.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="msn_P">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_P</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_P</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_n47">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Style id="sn_forbidden">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/forbidden.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<color>ccffffff</color>
+			<scale>0.5</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_homegardenbusiness">
+		<IconStyle>
+			<color>ff7faaff</color>
+			<scale>0.5</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/homegardenbusiness.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin19">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin9</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl7</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_police2">
+		<IconStyle>
+			<scale>0.816667</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_police00">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.5</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin40">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin190">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin90</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl1130</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_poi0">
+		<IconStyle>
+			<scale>1.4</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_police1">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_police3</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_police1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_h49">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl1201">
+		<IconStyle>
+			<scale>1.4</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/homegardenbusiness.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl11">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_h41">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/motorcycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="msn_poi00">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_poi10</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_poi1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_caution0">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_water">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/water.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin400">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/swimming.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_homegardenbusiness">
+		<IconStyle>
+			<color>ff7faaff</color>
+			<scale>0.583333</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/homegardenbusiness.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_h42">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="msn_caution00">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_caution1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_caution000</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_poi1">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_rail">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_rail0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_rail0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_h47">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="generic41">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n44</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h46</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_P">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/klm/paddle/paddle/P.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/klm/paddle/paddle/P-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="s_ylw-pushpin17">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl2">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl14">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/rainy.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_rail1">
+		<IconStyle>
+			<color>b2ffffff</color>
+			<scale>1.06364</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/rail.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b2ffffff</color>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_police10">
+		<IconStyle>
+			<color>ccffffff</color>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>ccffffff</color>
+			<scale>0.5</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl001">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/parks.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_swimming">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/swimming.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl42">
+		<IconStyle>
+			<scale>0.590909</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_water0">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/water.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_caution000">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl9">
+		<IconStyle>
+			<scale>1.06364</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_caution">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="generic45">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n48</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h4</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_hiker">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_hiker0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_hiker0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_police00">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.5</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_parks">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/parks.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_caution2">
+		<IconStyle>
+			<color>b3ffffff</color>
+			<scale>0.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl60">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/swimming.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_swimming">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_swimming</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_swimming</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin2</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl01</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_swimming">
+		<IconStyle>
+			<scale>0.816667</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/swimming.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin10">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin6</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl41</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_hiker">
+		<IconStyle>
+			<scale>0.945455</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/hiker.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin02">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin91</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl42</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin02">
+		<IconStyle>
+			<color>b3ffffff</color>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info-i.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl4">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_police10">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_caution0">
+		<IconStyle>
+			<color>b3ffffff</color>
+			<scale>1.06364</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_police20">
+		<IconStyle>
+			<color>b2ffffff</color>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b2ffffff</color>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_water0">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/water.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin8">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin3</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl00</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin40">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin140</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl1201</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin_hl7">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/hiker.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin2">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin27</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl001</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_police">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_poi00">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_poi1">
+		<IconStyle>
+			<scale>1.2</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin6">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/water.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_n49">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/motorcycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl102">
+		<IconStyle>
+			<color>b2ffffff</color>
+			<scale>1.06364</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b2ffffff</color>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin01">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_rail0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_rail</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_rail1</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin8">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/rainy.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_poi00">
+		<IconStyle>
+			<scale>0.945455</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_police">
+		<IconStyle>
+			<scale>0.945455</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_police4">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_caution00">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_police0">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin2">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin4">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_ltblu-stars">
+		<IconStyle>
+			<scale>1.06364</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/klm/paddle/paddle/ltblu-stars.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/klm/paddle/paddle/ltblu-stars-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sh_parks">
+		<IconStyle>
+			<scale>0.945455</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/parks.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin12">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_n40">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Style id="sh_poi">
+		<IconStyle>
+			<scale>1.4</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_poi">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_police2">
+		<IconStyle>
+			<color>b2ffffff</color>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b2ffffff</color>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_police1">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_h45">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="generic46">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n46</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h47</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_h44">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl100">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_caution1">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_police00">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_police0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_police10</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_police3">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_police20">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_police10</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_police100</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_rail">
+		<IconStyle>
+			<color>b2ffffff</color>
+			<scale>0.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/rail.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b2ffffff</color>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl01">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin21">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin16</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl102</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_rail1">
+		<IconStyle>
+			<color>ccffffff</color>
+			<scale>0.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/rail.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>ccffffff</color>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl20">
+		<IconStyle>
+			<color>b3ffffff</color>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>b3ffffff</color>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl00">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info_circle.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl0110">
+		<IconStyle>
+			<scale>0.945455</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin03">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin7</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl100</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_ltblu-stars0">
+		<IconStyle>
+			<scale>0.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/klm/paddle/paddle/ltblu-stars.png</href>
+			</Icon>
+			<hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+		<ListStyle>
+			<ItemIcon>
+				<href>http://maps.google.com/mapfiles/klm/paddle/paddle/ltblu-stars-lv.png</href>
+			</ItemIcon>
+		</ListStyle>
+	</Style>
+	<Style id="sn_police0">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin26">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin21</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl20</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin9">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin18</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl05</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_ltblu-stars">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_ltblu-stars0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_ltblu-stars</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_cycling">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_cycling0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_cycling0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_poi01">
+		<IconStyle>
+			<scale>0.933333</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl41">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/water.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_n4">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Style id="sn_caution">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin002">
+		<IconStyle>
+			<scale>1.2</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/hiker.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="generic44">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n49</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h41</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_water0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_water</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_water0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin42">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_hiker0">
+		<IconStyle>
+			<scale>0.933333</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/hiker.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_h48">
+		<IconStyle>
+			<scale>0.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="msn_police2">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_police1</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_police0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_poi0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_poi</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_poi01</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="msn_earthquake">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_earthquake</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_earthquake</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sn_rail0">
+		<IconStyle>
+			<scale>0.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/rail.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_hiker0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_hiker</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_hiker</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="generic_n45">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/cycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin0">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl2</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin10">
+		<IconStyle>
+			<scale>0.9</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_n43">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>https://www.gpsies.com/images/waypointIcons/generic.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Style id="s_ylw-pushpin9">
+		<IconStyle>
+			<scale>0.6</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/hiker.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.8</scale>
+		</LabelStyle>
+	</Style>
+	<StyleMap id="msn_homegardenbusiness">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#sn_homegardenbusiness</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#sh_homegardenbusiness</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="generic48">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#generic_n47</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#generic_h49</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin05">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin02</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl16</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin_hl1130">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl05">
+		<IconStyle>
+			<scale>0.827273</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl12">
+		<IconStyle>
+			<scale>0.709091</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/info.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_h4">
+		<IconStyle>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/caution.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin001">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin10</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl9</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin25">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin17</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl0110</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin20">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin8</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl14</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="sh_police100">
+		<IconStyle>
+			<color>ccffffff</color>
+			<scale>0.7</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/police.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<color>ccffffff</color>
+			<scale>0.5</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_ylw-pushpin37">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sn_hiker">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/hiker.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.6</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="sh_forbidden">
+		<IconStyle>
+			<scale>0.933333</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/forbidden.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<color>ccffffff</color>
+			<scale>0.5</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="generic_n44">
+		<IconStyle>
+			<scale>0.8</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/motorcycling.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0.7</scale>
+		</LabelStyle>
+		<BalloonStyle>
+			<text>$[description]</text>
+		</BalloonStyle>
+	</Style>
+	<Folder>
+		<name>МОИ ТОЧКИ (POI)</name>
+		<visibility>0</visibility>
+		<Placemark>
+			<name>ЦКАД переход пока есть</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic41</styleUrl>
+			<Point>
+				<coordinates>38.547163,55.88113662000001,133</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД проезд без Развязки</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic42</styleUrl>
+			<Point>
+				<coordinates>38.54269981,55.88994587,145</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД перехода Нет</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic45</styleUrl>
+			<Point>
+				<coordinates>38.5409832,55.89456632,143</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД проезд без Развязки</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic49</styleUrl>
+			<Point>
+				<coordinates>38.53305459,55.91967435,136</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД труба_1.3м</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic43</styleUrl>
+			<Point>
+				<coordinates>38.526038,55.92649099999999,141</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД труба_1.3м</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic4</styleUrl>
+			<Point>
+				<coordinates>38.50700497,55.92957477,143</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД труба 1.3м</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic48</styleUrl>
+			<Point>
+				<coordinates>38.49785327,55.92772351000001,155</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД проезд без Развязки</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic40</styleUrl>
+			<Point>
+				<coordinates>38.4926176,55.92602846000001,142</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД труба 1.3м</name>
+			<visibility>0</visibility>
+			<styleUrl>#msn_poi1</styleUrl>
+			<Point>
+				<coordinates>38.46643924,55.92139373,149</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД проезд без Развязки</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic46</styleUrl>
+			<Point>
+				<coordinates>38.46266269,55.92219327,146</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД труба_1.3м</name>
+			<visibility>0</visibility>
+			<styleUrl>#msn_poi0</styleUrl>
+			<Point>
+				<coordinates>38.45427274,55.92644922,137</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД Мост</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic47</styleUrl>
+			<Point>
+				<coordinates>38.43547582,55.9407285,147</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ЦКАД эстакада Без Развязки</name>
+			<visibility>0</visibility>
+			<styleUrl>#generic44</styleUrl>
+			<Point>
+				<coordinates>38.43045473,55.943204,152</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Стромынский тракт</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.69594005999323</longitude>
+				<latitude>56.10823503204112</latitude>
+				<altitude>0</altitude>
+				<heading>1.031833960286074</heading>
+				<tilt>0</tilt>
+				<range>16397.38180308479</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ltblu-stars</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.62075515971707,56.08752885381853,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тут тупик и проезда на восток и север нет - можно пешком</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>37.9643972896027</longitude>
+				<latitude>55.97791619308106</latitude>
+				<altitude>0</altitude>
+				<heading>-0.01199290655703927</heading>
+				<tilt>0</tilt>
+				<range>882.6739886039594</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_caution00</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.96279533093954,55.97703402777701,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Моста и перехода через реку тут нет!</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.05354550880494</longitude>
+				<latitude>56.11092905740319</latitude>
+				<altitude>0</altitude>
+				<heading>0.06196072013834549</heading>
+				<tilt>0</tilt>
+				<range>1696.534610322118</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_caution00</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.05365124856031,56.11369899698193,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Дача Павелия</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.36208097290706</longitude>
+				<latitude>56.48094988994354</latitude>
+				<altitude>0</altitude>
+				<heading>0.7534377043358127</heading>
+				<tilt>0</tilt>
+				<range>2765.226276827396</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_homegardenbusiness</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.34526778943022,56.48189168402428,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тропы и проезда нет</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.062152401296</longitude>
+				<latitude>56.11212325421609</latitude>
+				<altitude>0</altitude>
+				<heading>0.06910499711364967</heading>
+				<tilt>0</tilt>
+				<range>1785.325628778506</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_caution00</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.05723559134359,56.11316534425469,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Дороги к Бухарам нет, забор коттеджей</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.55742597815331</longitude>
+				<latitude>56.35219580826271</latitude>
+				<altitude>0</altitude>
+				<heading>0.4649794456604954</heading>
+				<tilt>0</tilt>
+				<range>3062.476268292072</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_caution00</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.53804552374257,56.35194719718194,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тут брод</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.42887299110166</longitude>
+				<latitude>56.19500989931917</latitude>
+				<altitude>0</altitude>
+				<heading>0.8180187808430186</heading>
+				<tilt>0</tilt>
+				<range>3327.613984782633</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin50</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.40570184963129,56.1938162634505,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Блок-пост внутри войсковой части</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.42847757023547</longitude>
+				<latitude>55.96753037005477</latitude>
+				<altitude>0</altitude>
+				<heading>0.6420067393373651</heading>
+				<tilt>0</tilt>
+				<range>3175.871154571688</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_police10</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.41524988485334,55.96647145763509,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Огорожено и забор. Троп уже нет.</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.61826503341245</longitude>
+				<latitude>56.23164667173052</latitude>
+				<altitude>0</altitude>
+				<heading>0.1196761987610062</heading>
+				<tilt>0</tilt>
+				<range>777.3968256180129</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_police00</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.61597343337744,56.23155944205966,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Титова</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.93494683850413</longitude>
+				<latitude>44.9813630926442</latitude>
+				<altitude>0</altitude>
+				<heading>1.222787583763931</heading>
+				<tilt>0</tilt>
+				<range>371.5686944902404</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin40</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.93366581669253,44.98149450137878,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Мост по частной территории</name>
+			<visibility>0</visibility>
+			<description>Мостик с калиткой к ферме. Лучше сделать объезд</description>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.66962491817179</longitude>
+				<latitude>56.27280098179242</latitude>
+				<altitude>0</altitude>
+				<heading>1.009309318161526</heading>
+				<tilt>0</tilt>
+				<range>968.0088675790921</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_police2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.66532666172734,56.27244304078685,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тут теперь проезда нет, ворота</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>38.78269433015582</longitude>
+				<latitude>56.37963594538064</latitude>
+				<altitude>0</altitude>
+				<heading>0.7957164228083433</heading>
+				<tilt>0</tilt>
+				<range>628.6777520964729</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_police20</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.779649462785,56.37970284059607,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Моста и дороги с него уже нет</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>37.42057202408894</longitude>
+				<latitude>56.00355098476889</latitude>
+				<altitude>0</altitude>
+				<heading>0.02491294558931534</heading>
+				<tilt>0</tilt>
+				<range>1021.833571972653</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_forbidden</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.41466335072308,56.00192485870875,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Фрязево</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2009-12-31T21:00:00Z</begin>
+					<end>2014-09-18T09:33:08Z</end>
+				</gx:TimeSpan>
+				<longitude>38.49002125820553</longitude>
+				<latitude>55.72896162790191</latitude>
+				<altitude>0</altitude>
+				<heading>0.8563147920391453</heading>
+				<tilt>0</tilt>
+				<range>5813.392753771551</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_rail1</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.47945728131154,55.73091690396062,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Только брод, моста нет!</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2009-12-31T21:00:00Z</begin>
+					<end>2017-01-10T11:29:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.86592678400587</longitude>
+				<latitude>56.28974719536868</latitude>
+				<altitude>0</altitude>
+				<heading>1.206216907429184</heading>
+				<tilt>0</tilt>
+				<range>2128.239600711072</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_swimming</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.85702277420225,56.29203515628287,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Фрязино-Пасс</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2009-12-31T21:00:00Z</begin>
+					<end>2017-01-10T11:29:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.0533160513866</longitude>
+				<latitude>55.96145594697141</latitude>
+				<altitude>0</altitude>
+				<heading>0.5337716095185436</heading>
+				<tilt>0</tilt>
+				<range>1755.291733804491</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_rail0</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.04483389919999,55.9638993120231,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Монино</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2009-12-31T21:00:00Z</begin>
+					<end>2017-01-10T11:29:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.21059060472803</longitude>
+				<latitude>55.84603634612154</latitude>
+				<altitude>0</altitude>
+				<heading>0.6640831420326722</heading>
+				<tilt>0</tilt>
+				<range>4409.619931678606</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_rail0</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.19530501214696,55.84154807540265,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Поле в забор, объезжать по грейдеру</name>
+			<visibility>0</visibility>
+			<description>Стройка с забором в поле, объезд слева по ходу движения по грейдеру</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2009-12-31T21:00:00Z</begin>
+					<end>2017-01-10T11:29:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.57272620643293</longitude>
+				<latitude>55.92529194322229</latitude>
+				<altitude>0</altitude>
+				<heading>0.9279060285477765</heading>
+				<tilt>0</tilt>
+				<range>1448.731020548824</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_poi01</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.56474151372093,55.92601111111111,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>В 2018 разрушенный мост почти непроходим!</name>
+			<visibility>0</visibility>
+			<description>В августе 2018 еле перебрался. В одиночку еще можно, с группой - нет.</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-08-06T05:45:01Z</end>
+				</gx:TimeSpan>
+				<longitude>38.67170301347903</longitude>
+				<latitude>56.13022302077962</latitude>
+				<altitude>0</altitude>
+				<heading>1.010670340618113</heading>
+				<tilt>0</tilt>
+				<range>1525.790405102928</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_earthquake</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.66542827348246,56.1298204785817,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Путей на север нет</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2009-12-31T21:00:00Z</begin>
+					<end>2017-01-10T11:29:47Z</end>
+				</gx:TimeSpan>
+				<longitude>37.17111547957062</longitude>
+				<latitude>56.25320931772371</latitude>
+				<altitude>0</altitude>
+				<heading>-0.2367059213535519</heading>
+				<tilt>0</tilt>
+				<range>3723.405351152211</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin90</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.15573389566099,56.24760979751346,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>КПП Воинской части</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2009-12-31T21:00:00Z</begin>
+					<end>2017-01-10T11:29:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.60916629377777</longitude>
+				<latitude>55.8796852482768</latitude>
+				<altitude>0</altitude>
+				<heading>0.956536405720576</heading>
+				<tilt>0</tilt>
+				<range>1801.752079450994</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin21</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.6062158173362,55.88052765545304,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Воинская часть. Проезда, возможно, нет</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2009-12-31T21:00:00Z</begin>
+					<end>2017-01-10T11:29:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.66697773549134</longitude>
+				<latitude>55.88520071015522</latitude>
+				<altitude>0</altitude>
+				<heading>1.004431523896356</heading>
+				<tilt>0</tilt>
+				<range>8717.28849766828</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin21</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.63352132889667,55.87940955420337,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>В середине 2017 тут было непроходимое болото и заливные луга</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2010-05-18T01:28:54Z</begin>
+					<end>2017-07-29T11:23:05Z</end>
+				</gx:TimeSpan>
+				<longitude>37.93312579058767</longitude>
+				<latitude>56.05424965287357</latitude>
+				<altitude>0</altitude>
+				<heading>0.1762309165026915</heading>
+				<tilt>0</tilt>
+				<range>1721.007285440029</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin10</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.92706208289034,56.05639542711418,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Хорошая тропинка, но в середине 2017 была на середине полностью завалена лесом</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2010-05-18T01:28:54Z</begin>
+					<end>2017-07-29T11:23:05Z</end>
+				</gx:TimeSpan>
+				<longitude>37.94168016632057</longitude>
+				<latitude>56.0495158816636</latitude>
+				<altitude>0</altitude>
+				<heading>0.1833267451658792</heading>
+				<tilt>0</tilt>
+				<range>2586.256349728825</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_parks</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.93244684072072,56.04741398289465,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тропа отличная, но в середине 2017 было много завалов</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2010-05-18T01:28:54Z</begin>
+					<end>2017-07-29T11:23:05Z</end>
+				</gx:TimeSpan>
+				<longitude>37.98633523278956</longitude>
+				<latitude>55.9770091799455</latitude>
+				<altitude>0</altitude>
+				<heading>0.2203486621355927</heading>
+				<tilt>0</tilt>
+				<range>3287.551236931029</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_parks</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.98076371958435,55.98110247088366,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Старая мощеная дорога</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2009-12-31T21:00:00Z</begin>
+					<end>2017-01-10T11:29:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.22087190548923</longitude>
+				<latitude>56.24945149556056</latitude>
+				<altitude>0</altitude>
+				<heading>0.4096404543321426</heading>
+				<tilt>0</tilt>
+				<range>3436.846074050516</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin20</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.23089837457415,56.25100671306209,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тут мостик!</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2017-01-10T11:29:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.65480547166578</longitude>
+				<latitude>56.31520361621286</latitude>
+				<altitude>0</altitude>
+				<heading>0.9958849818961832</heading>
+				<tilt>0</tilt>
+				<range>458.3072096164136</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin190</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.65398931496772,56.31492075386652,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Сейчас (2017) тут загорожен сквозной проезд</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeStamp><when>1970-01-01T03:00:00Z</when>
+</gx:TimeStamp>
+				<longitude>37.9501084988502</longitude>
+				<latitude>55.97768750480262</latitude>
+				<altitude>0</altitude>
+				<heading>0.02431167143040579</heading>
+				<tilt>21.46146673187045</tilt>
+				<range>985.7101846876338</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_police</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.94670394870556,55.9791749377084,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Лесная дорога расчищена в 2018г,  на Запад. Заболоченная газопросека</name>
+			<visibility>0</visibility>
+			<description>Попали тут с объездами с Леной до Фрязино</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-07-17T17:32:49Z</end>
+				</gx:TimeSpan>
+				<longitude>38.17212588261173</longitude>
+				<latitude>55.9850891634347</latitude>
+				<altitude>0</altitude>
+				<heading>0.1037925655939937</heading>
+				<tilt>0</tilt>
+				<range>2763.53560970157</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_cycling</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.16664456342087,55.98990799217139,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Здесь проезда нет</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2012-09-18T18:46:14Z</begin>
+					<end>2018-05-11T13:13:57Z</end>
+				</gx:TimeSpan>
+				<longitude>37.39771069978168</longitude>
+				<latitude>56.07185356019257</latitude>
+				<altitude>0</altitude>
+				<heading>-0.07027754842038891</heading>
+				<tilt>0</tilt>
+				<range>1619.107245510712</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin202</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.39282638888674,56.07515978972037,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>В начале 2018 была малоезженная просека.</name>
+			<visibility>0</visibility>
+			<description>Можно проверить в засушливую погоду</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2012-09-18T18:46:14Z</begin>
+					<end>2018-05-11T13:13:57Z</end>
+				</gx:TimeSpan>
+				<longitude>37.45399107536294</longitude>
+				<latitude>56.14922937047572</latitude>
+				<altitude>0</altitude>
+				<heading>-0.02357542516018987</heading>
+				<tilt>0</tilt>
+				<range>4502.475967797114</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin202</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.43522367275011,56.14840515224368,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Через ферму проезда нет</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2012-09-18T18:46:14Z</begin>
+					<end>2017-10-24T10:21:40Z</end>
+				</gx:TimeSpan>
+				<longitude>38.35825562660628</longitude>
+				<latitude>56.01615021810111</latitude>
+				<altitude>0</altitude>
+				<heading>-0.01572605056342905</heading>
+				<tilt>0</tilt>
+				<range>1094.718973477301</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin11</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.35526090906505,56.01717040515566,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Дороги после моста в 2018 уже нет! Торфоразработки отгорожены валом!</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2012-09-18T18:46:14Z</begin>
+					<end>2017-10-24T10:21:40Z</end>
+				</gx:TimeSpan>
+				<longitude>38.34406556081807</longitude>
+				<latitude>56.0157492274456</latitude>
+				<altitude>0</altitude>
+				<heading>-0.02749148790455287</heading>
+				<tilt>0</tilt>
+				<range>1994.666442753404</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_caution</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.33702933456623,56.0183050569885,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Дорожки (с проститутками) больше нет! ЦКАД!</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2012-09-18T18:46:14Z</begin>
+					<end>2017-10-24T10:21:40Z</end>
+				</gx:TimeSpan>
+				<longitude>38.29912032344578</longitude>
+				<latitude>56.0019707662433</latitude>
+				<altitude>0</altitude>
+				<heading>-0.06474997650410617</heading>
+				<tilt>0</tilt>
+				<range>3388.440495050612</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_caution</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.28654027281974,56.00384777888864,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Не очень удобно переходить речку, но можно</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2012-09-18T18:46:14Z</begin>
+					<end>2017-10-24T10:21:40Z</end>
+				</gx:TimeSpan>
+				<longitude>38.09107685616719</longitude>
+				<latitude>55.95725616107092</latitude>
+				<altitude>0</altitude>
+				<heading>-0.2371728330057948</heading>
+				<tilt>0</tilt>
+				<range>703.8551300960542</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_water0</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.08926687973754,55.95854059070234,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Лесная дорога к Полигону начинает зарастать</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2012-09-18T18:46:14Z</begin>
+					<end>2017-10-24T10:21:40Z</end>
+				</gx:TimeSpan>
+				<longitude>37.32110166202421</longitude>
+				<latitude>56.31580047381195</latitude>
+				<altitude>0</altitude>
+				<heading>-0.06384899056146266</heading>
+				<tilt>0</tilt>
+				<range>2000.332785968513</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin04</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.30792385393,56.3166632163165,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Теперь тут забор, но можно перелезть</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2012-09-18T18:46:14Z</begin>
+					<end>2017-10-24T10:21:40Z</end>
+				</gx:TimeSpan>
+				<longitude>37.32861156245444</longitude>
+				<latitude>56.33885344000142</latitude>
+				<altitude>0</altitude>
+				<heading>-0.05759808162886587</heading>
+				<tilt>0</tilt>
+				<range>1679.793145598789</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_poi00</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.31864491102778,56.34006073822994,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Отсюда выезда нет!</name>
+			<visibility>0</visibility>
+			<description>Нет на Север, Юго-Восток и Юго-Запад</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-06-23T16:11:21Z</end>
+				</gx:TimeSpan>
+				<longitude>37.83267088436055</longitude>
+				<latitude>56.40624395007657</latitude>
+				<altitude>0</altitude>
+				<heading>0.002377384532869785</heading>
+				<tilt>0</tilt>
+				<range>2276.232240586149</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin02</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.82040574152764,56.40110077544895,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Может быть распахано (2018г)</name>
+			<visibility>0</visibility>
+			<description>https://forum.velomania.ru/showthread.php?t=394462&amp;p=7408725&amp;viewfull=1#post7408725
+Перед Песьяне трактор распахал примерно 2 км прекрасной лесной дороги, там теперь лучше не ездить.</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-06-23T16:11:21Z</end>
+				</gx:TimeSpan>
+				<longitude>38.85627551506616</longitude>
+				<latitude>56.02536528951922</latitude>
+				<altitude>0</altitude>
+				<heading>0.2853521320269751</heading>
+				<tilt>0</tilt>
+				<range>8173.470048849504</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin03</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.81764183994863,56.02397336873999,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Может быть перепахано (2018г), норм объезд с юга</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-06-23T16:11:21Z</end>
+				</gx:TimeSpan>
+				<longitude>38.25208749466001</longitude>
+				<latitude>55.98154200346956</latitude>
+				<altitude>0</altitude>
+				<heading>0.6602683623912258</heading>
+				<tilt>0</tilt>
+				<range>1143.132075115991</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin25</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.24974638396591,55.98220190881694,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тут территория академии ракетных войск, части дороги нет</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-07-17T14:55:47Z</end>
+				</gx:TimeSpan>
+				<longitude>37.98284054129384</longitude>
+				<latitude>55.78584595811385</latitude>
+				<altitude>0</altitude>
+				<heading>0.1250621079847165</heading>
+				<tilt>0</tilt>
+				<range>2989.41467620329</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin26</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.97211481457519,55.7841956122972,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>К 2018 начал зарастать, начало обнесли забором</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-07-29T16:44:16Z</end>
+				</gx:TimeSpan>
+				<longitude>38.63249580220298</longitude>
+				<latitude>56.32725757126197</latitude>
+				<altitude>0</altitude>
+				<heading>0.6134886449445488</heading>
+				<tilt>0</tilt>
+				<range>2462.152674571522</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin19</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.62018549204805,56.32841567663667,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Толстолапы проехали, но в 2014 году было необъезжаемо</name>
+			<visibility>0</visibility>
+			<description>танковый трек с болотом</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-07-29T16:44:16Z</end>
+				</gx:TimeSpan>
+				<longitude>38.75127714721255</longitude>
+				<latitude>56.13359115575068</latitude>
+				<altitude>0</altitude>
+				<heading>0.7124306781504788</heading>
+				<tilt>0</tilt>
+				<range>7609.942622242394</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_water</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.71641735977572,56.12529360989127,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тут тупик, проезд по северному объезду</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-07-29T16:44:16Z</end>
+				</gx:TimeSpan>
+				<longitude>38.50201052445153</longitude>
+				<latitude>55.8266198662438</latitude>
+				<altitude>0</altitude>
+				<heading>0.5057571809471211</heading>
+				<tilt>0</tilt>
+				<range>2020.366658329048</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_police1</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.49596581603838,55.82604358751556,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Выше и ниже нет ни одного проезда на Восток</name>
+			<visibility>0</visibility>
+			<description>Только на Юг по Фрязевскому шоссе</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-08-06T05:45:01Z</end>
+				</gx:TimeSpan>
+				<longitude>38.44494614178054</longitude>
+				<latitude>55.79598732533447</latitude>
+				<altitude>0</altitude>
+				<heading>0.8227901011639595</heading>
+				<tilt>0</tilt>
+				<range>7842.530517264546</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_police0</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.41063444226983,55.80287960638785,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ст.Лесная (от Фрязево)</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-08-06T05:45:01Z</end>
+				</gx:TimeSpan>
+				<longitude>38.37747568250968</longitude>
+				<latitude>55.75553833192144</latitude>
+				<altitude>0</altitude>
+				<heading>0.7670076521168538</heading>
+				<tilt>0</tilt>
+				<range>2422.194176960248</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_rail</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.36442301952834,55.75466329728811,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Проезжаем, но труден сквозной проезд</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-08-06T05:45:01Z</end>
+				</gx:TimeSpan>
+				<longitude>38.52099998803175</longitude>
+				<latitude>55.83441432619797</latitude>
+				<altitude>0</altitude>
+				<heading>0.8856736419261414</heading>
+				<tilt>0</tilt>
+				<range>2935.624435633019</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_hiker</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.51548753641404,55.83419724911327,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тут проезда уже нет</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-08-10T14:46:31Z</end>
+				</gx:TimeSpan>
+				<longitude>38.58063286603996</longitude>
+				<latitude>56.29482347258174</latitude>
+				<altitude>0</altitude>
+				<heading>0.5877665485864825</heading>
+				<tilt>0</tilt>
+				<range>1164.386156823262</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin12</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.57277515464029,56.29359336672975,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>ВЧ, на запад не проехать</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-08-10T14:46:31Z</end>
+				</gx:TimeSpan>
+				<longitude>38.12834034219047</longitude>
+				<latitude>56.25328570831826</latitude>
+				<altitude>0</altitude>
+				<heading>0.2115820356086858</heading>
+				<tilt>0</tilt>
+				<range>4888.55313375279</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_police3</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.11569240026822,56.24812644499279,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тут только выезд из СНТ на юг</name>
+			<visibility>0</visibility>
+			<description>Калитка открывается только изнутри. Въезд с севера в 2018 был свободно открыт (большие ворота)</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-08-26T16:09:27Z</end>
+				</gx:TimeSpan>
+				<longitude>38.3205920851648</longitude>
+				<latitude>56.04905179754419</latitude>
+				<altitude>0</altitude>
+				<heading>0.7185109689112429</heading>
+				<tilt>0</tilt>
+				<range>3463.01896554746</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin43</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.30328336977689,56.04592023132662,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Труба-проезд под ЦКАД</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-08-26T16:09:27Z</end>
+				</gx:TimeSpan>
+				<longitude>38.27586655044639</longitude>
+				<latitude>56.01429685678194</latitude>
+				<altitude>0</altitude>
+				<heading>0.6814209486595227</heading>
+				<tilt>0</tilt>
+				<range>2558.882595880347</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_poi</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.25849024938203,56.0148665576988,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Кабановская просека 2018</name>
+			<visibility>0</visibility>
+			<description>В 2018 она хорошо и полностью пропилена, но уже не ездят, а ходят. Проехал не спешиваясь 09.2018 со средней 10кмч</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-09-02T16:30:21Z</end>
+				</gx:TimeSpan>
+				<longitude>38.35058321692711</longitude>
+				<latitude>55.88247368928899</latitude>
+				<altitude>0</altitude>
+				<heading>0.7430986868731277</heading>
+				<tilt>0</tilt>
+				<range>4649.324273896439</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin001</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.33270559429455,55.88037884696895,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>НАДО ИЗУЧИТЬ ПРОСЕКИ</name>
+			<visibility>0</visibility>
+			<description>Предварительно для трека Струнино-Перематкино-Ашукино</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-09-02T16:30:21Z</end>
+				</gx:TimeSpan>
+				<longitude>38.19280548706743</longitude>
+				<latitude>56.07555770866394</latitude>
+				<altitude>0</altitude>
+				<heading>0.5436865922697892</heading>
+				<tilt>0</tilt>
+				<range>8985.736541598928</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_ylw-pushpin211</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.14034644907831,56.08306173256792,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Проезда на юг через шоссе нет.</name>
+			<visibility>0</visibility>
+			<description>Очень сложный переход через загруженное шоссе</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-09-07T15:28:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.77416825787917</longitude>
+				<latitude>55.84819044892676</latitude>
+				<altitude>0</altitude>
+				<heading>0.3244842060229395</heading>
+				<tilt>0</tilt>
+				<range>2217.478280217963</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin9</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.76778910202989,55.85022867666765,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Переход под жд тут</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2018-10-10T05:42:39Z</begin>
+					<end>2018-10-10T12:17:45Z</end>
+				</gx:TimeSpan>
+				<longitude>38.72259445186373</longitude>
+				<latitude>56.28418869889379</latitude>
+				<altitude>0</altitude>
+				<heading>0.9013921532273477</heading>
+				<tilt>0</tilt>
+				<range>1053.215411561313</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin05</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.71610559992615,56.28404466988081,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Перехода через ЦКАД нет (2018)</name>
+			<visibility>0</visibility>
+			<description>Офигенная дорожка может начать зарастать</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-10-10T12:17:45Z</end>
+				</gx:TimeSpan>
+				<longitude>38.549359346134</longitude>
+				<latitude>55.90557418094377</latitude>
+				<altitude>0</altitude>
+				<heading>0.757325139107505</heading>
+				<tilt>0</tilt>
+				<range>2223.503720555334</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_caution1</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.53764520888242,55.90372256276699,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Тот самый подзаросший участок</name>
+			<visibility>0</visibility>
+			<description>Но проехалось в 2018г</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-09-07T15:28:47Z</end>
+				</gx:TimeSpan>
+				<longitude>38.61936778319071</longitude>
+				<latitude>55.98223734365629</latitude>
+				<altitude>0</altitude>
+				<heading>0.3481881285381337</heading>
+				<tilt>0</tilt>
+				<range>2035.915665147069</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_P</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.61367616125631,55.98036175756162,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Заброшенное место, хотя есть мостик. К 2018 все почти заросло</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-10-14T11:26:15Z</end>
+				</gx:TimeSpan>
+				<longitude>38.88815213098931</longitude>
+				<latitude>56.23311963442686</latitude>
+				<altitude>0</altitude>
+				<heading>1.188634778662772</heading>
+				<tilt>0</tilt>
+				<range>891.7815149853529</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#msn_hiker0</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.88434105869749,56.2335568225879,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Пляж на р.Кирчаж</name>
+			<visibility>0</visibility>
+			<description>С выкокими берегами</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-10-14T11:26:15Z</end>
+				</gx:TimeSpan>
+				<longitude>38.92565460477042</longitude>
+				<latitude>56.04965989754791</latitude>
+				<altitude>0</altitude>
+				<heading>0.06407683642065405</heading>
+				<tilt>0</tilt>
+				<range>3297.685969469538</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.91757520621468,56.05081308613684,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Дорога вдоль карьера, где теряли Свету-Шарк</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2018-10-14T11:26:15Z</end>
+				</gx:TimeSpan>
+				<longitude>38.70701914399805</longitude>
+				<latitude>55.9626367238594</latitude>
+				<altitude>0</altitude>
+				<heading>-0.09563492773752653</heading>
+				<tilt>0</tilt>
+				<range>6360.999291976706</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.70028154562243,55.95834028478058,0</coordinates>
+			</Point>
+		</Placemark>
+		<Folder>
+			<name>ВРЕМЕННЫЕ ТОЧКИ (POI)</name>
+			<visibility>0</visibility>
+			<Placemark>
+				<name>Дорожка и ее существование под вопросом (завал в этом месте)</name>
+				<visibility>0</visibility>
+				<description>Посередине завал метров 300 длиной. Инфа от надежного источника середины 2018г.</description>
+				<LookAt>
+					<gx:TimeSpan>
+						<begin>2014-11-21T00:27:31Z</begin>
+						<end>2018-09-22T12:43:57Z</end>
+					</gx:TimeSpan>
+					<longitude>38.33469717849529</longitude>
+					<latitude>56.0043898185576</latitude>
+					<altitude>0</altitude>
+					<heading>-0.01379730372041924</heading>
+					<tilt>0</tilt>
+					<range>1638.511989518377</range>
+					<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+				</LookAt>
+				<styleUrl>#msn_caution0</styleUrl>
+				<Point>
+					<gx:drawOrder>1</gx:drawOrder>
+					<coordinates>38.32962066780704,56.00546128165887,0</coordinates>
+				</Point>
+			</Placemark>
+		</Folder>
+		<Placemark>
+			<name>Забор, проезда нет</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2019-05-04T11:51:07Z</end>
+				</gx:TimeSpan>
+				<longitude>38.00075464554496</longitude>
+				<latitude>56.04753908353268</latitude>
+				<altitude>0</altitude>
+				<heading>-1.33187412464604</heading>
+				<tilt>0</tilt>
+				<range>1358.07226035126</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin01</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.99781902116795,56.04678840122251,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>В 2019г ставят глухие щиты. Проезда может не быть.</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2019-05-21T12:34:39Z</end>
+				</gx:TimeSpan>
+				<longitude>38.30770856854596</longitude>
+				<latitude>55.9960645392348</latitude>
+				<altitude>0</altitude>
+				<heading>-0.05219666748888966</heading>
+				<tilt>0</tilt>
+				<range>4784.764980791034</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin8</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.29066135108106,56.00022643305702,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Строят две полосы. Выезд затруднен!</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2019-06-09T15:06:51Z</end>
+				</gx:TimeSpan>
+				<longitude>37.393627753327</longitude>
+				<latitude>56.13352950068646</latitude>
+				<altitude>0</altitude>
+				<heading>0.008566124662583764</heading>
+				<tilt>0</tilt>
+				<range>821.2422575285777</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.39178610134155,56.13523712409105,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Переезда нет - запретка</name>
+			<visibility>0</visibility>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2014-11-21T00:27:31Z</begin>
+					<end>2019-06-19T12:12:45Z</end>
+				</gx:TimeSpan>
+				<longitude>37.88718343495515</longitude>
+				<latitude>55.83646115489962</latitude>
+				<altitude>0</altitude>
+				<heading>0.04522928819225314</heading>
+				<tilt>0</tilt>
+				<range>1276.414144698997</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin6</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>37.87856969472474,55.83635587175366,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Через ЦКАД проезда нет</name>
+			<visibility>0</visibility>
+			<description>Проезд теперь южнее под мостами</description>
+			<LookAt>
+				<gx:TimeSpan>
+					<begin>2020-04-09T05:42:04Z</begin>
+					<end>2020-04-09T14:18:37Z</end>
+				</gx:TimeSpan>
+				<longitude>38.14983958179199</longitude>
+				<latitude>56.04995575936935</latitude>
+				<altitude>0</altitude>
+				<heading>0.251990298085273</heading>
+				<tilt>0</tilt>
+				<range>1701.609767507312</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin0</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>38.14196680818726,56.05084757682285,0</coordinates>
+			</Point>
+		</Placemark>
+	</Folder>
+</Document>
+</kml>
