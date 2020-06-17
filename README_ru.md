@@ -16,7 +16,7 @@
 [Список версий программы](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
 
 ## Как использовать
-Скачать готовую для автозапуска программу можно [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v2.0/MAP-POINTS-TRIMMERv2.0.zip).
+Скачать готовую для автозапуска программу можно [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v2.2/MAP-POINTS-TRIMMERv2.2.zip).
 
 После запуска заходите в приложение через любой браузер по адресу: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
