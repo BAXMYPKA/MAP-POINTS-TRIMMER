@@ -266,20 +266,6 @@
 				
 				<br>
 				
-				<input id="pointTextColor" class="loadForm_colorInput" name="pointTextColor"
-					   type="color" disabled>
-				<input id="setPointTextColor" type="checkbox">
-				<label for="setPointTextColor" class="loadForm__label"
-					   th:text="#{html.label.setPointsTextColor}">
-					Set point labels text color
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.pointsTextColor}">
-					?
-				</div>
-				
-				<br>
-				
 				<input id="pointTextOpacity" class="loadForm_percentageInput" name="pointTextOpacity"
 					   type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%" disabled>
 				<input id="setPointTextOpacity" type="checkbox">
@@ -289,6 +275,20 @@
 				</label>
 				<div class="interrogation" title="Description"
 					 th:title="#{commonMessages.interrogationAsDescription.pointsTextOpacity}">
+					?
+				</div>
+				
+				<br>
+				
+				<input id="pointTextColor" class="loadForm_colorInput" name="pointTextColor"
+					   type="color" disabled>
+				<input id="setPointTextColor" type="checkbox">
+				<label for="setPointTextColor" class="loadForm__label"
+					   th:text="#{html.label.setPointsTextColor}">
+					Set point labels text color
+				</label>
+				<div class="interrogation" title="Description"
+					 th:title="#{commonMessages.interrogationAsDescription.pointsTextColor}">
 					?
 				</div>
 				
@@ -329,7 +329,7 @@
 			<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet__debugFieldset">
 				
 				<input type="checkbox" id="debugMode">
-					<span th:utext="#{html.input.checkbox.debugMode}">Debug mode</span>
+				<span th:utext="#{html.input.checkbox.debugMode}">Debug mode</span>
 				</input>
 				
 				<div id="debugInterrogation" class="interrogation" title="Description"
@@ -370,12 +370,6 @@
 		</div>
 	
 	</footer>
-	
-	<div class="background">
-		<div class="imageInBackground">
-		
-		</div>
-	</div>
 
 </div>
 
