@@ -15,7 +15,7 @@ public class IndexController extends AbstractController {
 	@GetMapping(path = {"/", "index", "/trimmer"})
 	public String getIndex(Model model) throws UnknownHostException {
 		model.addAttribute("poiFile", new MultipartDto());
-		log.info("Attribute 'poiFile' as the new '{}' has been added and the 'index' page is being returned.",
+		log.debug("Attribute 'poiFile' as the new '{}' has been added and the 'index' page is being returned.",
 			MultipartDto.class.getSimpleName());
 		return "index";
 	}

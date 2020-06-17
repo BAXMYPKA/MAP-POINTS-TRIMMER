@@ -460,21 +460,53 @@ input[type=radio] {
 	width: 3em;
 	float: right;
 	margin-left: 0.4em;
+	transition: all;
+	transition-timing-function: ease-in;
+	transition-duration: 0.2s;
 }
 
 .imageInText:hover {
 	z-index: 2;
-	transition: all;
-	transition-timing-function: ease-in;
-	transition-duration: 0.3s;
-	transform: translateX(-15em) translateY(5em) scale(12);
+	cursor: pointer;
+	transform: translateX(-3em) translateY(-2em) scale(3);
 }
 
-.imageInText__big:hover {
-	z-index: 2;
-	transform: translateX(-20em) translateY(5em) scale(23);
+.imageInText_horizontal:active {
+	position: absolute;
+	top: 0.5%;
+	bottom: 15%;
+	left: 5%;
+	/*right: 5%;*/
+	width: 90%;
+	transform: scale(1);
+}
+
+.imageInText_vertical:active {
+	position: absolute;
+	top: 0.5%;
+	bottom: 15%;
+	left: 65%;
+	/*right: 5%;*/
+	width: 30%;
+	transform: scale(1);
 }
 
 .select_kmlDefault:hover {
 	background-color: blue;
+}
+
+.background {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	z-index: 3;
+	background: rgba(188, 188, 135, 0.49);
+}
+
+.imageInBackground {
+	position: absolute;
+	top: 5%;
+	bottom: 5%;
+	left: 5%;
+	right: 5%;
 }
