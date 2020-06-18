@@ -21,13 +21,13 @@ public class GoogleEarthHandler {
 	
 	private Document document;
 	
-	Document processXml(Document document, MultipartDto multipartDto) {
+	Document processXml(Document document, MultipartDto multipartDto) throws ClassNotFoundException {
 		this.document = document;
 		Element documentRoot = document.getDocumentElement();
 		log.info("Document and {} are received", multipartDto);
 		//If something static will be set it will delete all the dynamic <StyleMap>'s
 		if (multipartDto.getPointIconSize() != null || multipartDto.getPointTextSize() != null
-			|| multipartDto.getPointTextColor() != null) {
+			  || multipartDto.getPointTextColor() != null) {
 			deleteStyleMaps(documentRoot, multipartDto);
 		}
 		if (multipartDto.getPointIconSize() != null) {
@@ -70,7 +70,7 @@ public class GoogleEarthHandler {
 	 * 2) If true, replace "styleUrl" with "key" "normal" "styleUrl"
 	 * 3) Deletes "StyleMap"'s from DOM.
 	 */
-	private void deleteStyleMaps(Element documentRoot, MultipartDto multipartDto) {
+	private void deleteStyleMaps(Element documentRoot, MultipartDto multipartDto) throws ClassNotFoundException {
 		NodeList styleMapNodes = documentRoot.getElementsByTagName("StyleMap");
 		
 		//<styleUrl>'s from <Placemark>'s
@@ -107,6 +107,7 @@ public class GoogleEarthHandler {
 		return styleUrlNodes;
 	}
 	
+	
 	/**
 	 * {@literal    <StyleMap id="m_ylw-pushpin12">
 	 * <Pair>
@@ -136,11 +137,11 @@ public class GoogleEarthHandler {
 	 *
 	 * @param documentRoot
 	 * @param styleUrl     {@literal e.g. "#exampleUrl" to <StyleMap id="styleUrl"> or <Style id="styleUrl">}
-	 * @return If a given 'styleUrl' reference to {@literal <StyleMap>} it will be replaced with
-	 * {@literal <styleUrl> with <key> 'normal'}.
+	 * @return If a given 'styleUrl' reference to {@literal <StyleMap> it will be replaced with
+	 * <styleUrl> with <key> 'normal'} and returned.
 	 * Otherwise the initial parameter will be returned
 	 */
-	private String getStyleUrlToStyle(Element documentRoot, String styleUrl) {
+	private String getStyleUrlToStyle(Element documentRoot, String styleUrl) throws ClassNotFoundException {
 		NodeList styleMapNodes = documentRoot.getElementsByTagName("StyleMap");
 		String trimmedUrl = styleUrl.startsWith("#") ? styleUrl.substring(1) : styleUrl;
 		
@@ -156,7 +157,7 @@ public class GoogleEarthHandler {
 		return styleUrl;
 	}
 	
-	private String getNormalStyleUrl(Node styleMap) {
+	private String getNormalStyleUrl(Node styleMap) throws ClassNotFoundException {
 		NodeList styleMapChildNodes = styleMap.getChildNodes();
 		
 		String styleUrlToNormal = "";
@@ -173,8 +174,9 @@ public class GoogleEarthHandler {
 					if (pairChildNode.getNodeName() != null && pairChildNode.getNodeName().equals("key")) {
 						//<Pair> <key>normal</key> <styleUrl>#exampleUrl</styleUrl> </Pair>
 						if (pairChildNode.getTextContent().equalsIgnoreCase("normal")) {
-							//TODO: here's the null exception
-							Node normalStyleUrl = pairChildNode.getNextSibling();
+							Node normalStyleUrl =
+								  getChildNodesFromParent(pairChildNode.getParentNode(), "styleUrl", false)
+										.get(0);
 							styleUrlToNormal = normalStyleUrl.getTextContent();
 							break start;
 						}
@@ -184,6 +186,7 @@ public class GoogleEarthHandler {
 		}
 		return styleUrlToNormal;
 	}
+	
 	
 	//TODO: to use XPath to select only <Style/>'s with attribute id=""
 	
@@ -372,7 +375,7 @@ public class GoogleEarthHandler {
 		log.debug("Got '{}' hex color input", hexColor);
 		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
 			throw new IllegalArgumentException(
-				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
+				  "Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
 		}
 		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
 		log.debug("Hex color has been converted into '{}' KML color", kmlColor);
@@ -421,4 +424,90 @@ public class GoogleEarthHandler {
 		return !href.startsWith(googleMapSpecialUrl);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	private List<Node> getChildNodesFromParents(NodeList parents, String childNodeName, boolean recursively) {
+		List<Node> children = new ArrayList<>();
+		
+		parents:
+		for (int i = 0; i < parents.getLength(); i++) {
+			Node parentNode = parents.item(i);
+			
+			if (recursively) {
+				List<Node> allChildNodes = getAllChildren(new ArrayList<>(), parentNode);
+				allChildNodes.stream()
+					  .filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
+					  .forEach(children::add);
+				continue;
+			}
+			
+			NodeList childNodes = parentNode.getChildNodes();
+			for (int j = 0; j < childNodes.getLength(); j++) {
+				Node childNode = childNodes.item(j);
+				if (childNode.getNodeName() != null && childNode.getNodeName().equals(childNodeName)) {
+					children.add(childNode);
+//					continue parents;
+				}
+			}
+		}
+		return children;
+	}
+	
+	private List<Node> getAllChildren(List<Node> nodeList, Node parentNode) {
+		if (parentNode.hasChildNodes()) {
+			NodeList childNodes = parentNode.getChildNodes();
+			for (int i = 0; i < childNodes.getLength(); i++) {
+				Node childNode = childNodes.item(i);
+				getAllChildren(nodeList, childNode);
+			}
+		} else {
+			nodeList.add(parentNode);
+		}
+		return nodeList;
+	}
+	
+	private List<Node> getChildNodesFromParent(Node parent, String childNodeName, boolean recursively) {
+		List<Node> children = new ArrayList<>();
+		
+		NodeList childNodes = parent.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node childNode = childNodes.item(i);
+			
+			if (recursively) {
+				List<Node> allChildren = getAllChildren(new ArrayList<>(), childNode);
+				allChildren.stream()
+					  .filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
+					  .forEach(children::add);
+				continue;
+			}
+			
+			if (childNode.getNodeName() != null && childNode.getNodeName().equals(childNodeName)) {
+				children.add(childNode);
+			}
+		}
+		return children;
+	}
+	
+/*
+	*/
+/**
+	 * @param siblingOf      A Node which sibling has to be found
+	 * @param siblingTagName A desired sibling tag name
+	 * @return A sibling Node with the desired tag name
+	 * @throws ClassNotFoundException If no sibling of "siblingOf" Node for a given name found
+	 *//*
+
+	private Node getSiblingOf(Node siblingOf, String siblingTagName) throws ClassNotFoundException {
+		Node parentNode = siblingOf.getParentNode();
+		NodeList childNodes = parentNode.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node children = childNodes.item(i);
+			if (children.getNodeName() != null && children.getNodeName().equals(siblingTagName)) {
+				return children;
+			}
+		}
+		throw new ClassNotFoundException(
+			  "Sibling Node name for " + siblingTagName + " not found in " + parentNode.getNodeName() + " parent Node!");
+	}
+*/
 }
