@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.mock.web.MockMultipartFile;
@@ -28,6 +29,122 @@ class GoogleEarthHandlerTest {
 	private MultipartFile multipartFile;
 	private GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
 	private KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(), googleEarthHandler);
+	private String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+		"<Document>\n" +
+		"\t<name>Google Earth Test Poi</name>\n" +
+		"\t<StyleMap id=\"generic4\">\n" +
+		"\t\t<Pair>\n" +
+		"\t\t\t<key>normal</key>\n" +
+		"\t\t\t<styleUrl>#generic_n40</styleUrl>\n" +
+		"\t\t</Pair>\n" +
+		"\t\t<Pair>\n" +
+		"\t\t\t<key>highlight</key>\n" +
+		"\t\t\t<styleUrl>#generic_h44</styleUrl>\n" +
+		"\t\t</Pair>\n" +
+		"\t</StyleMap>\n" +
+		"\t<StyleMap id=\"m_ylw-pushpin12\">\n" +
+		"\t\t<Pair>\n" +
+		"\t\t\t<key>normal</key>\n" +
+		"\t\t\t<styleUrl>#s_ylw-pushpin40</styleUrl>\n" +
+		"\t\t</Pair>\n" +
+		"\t\t<Pair>\n" +
+		"\t\t\t<key>highlight</key>\n" +
+		"\t\t\t<styleUrl>#s_ylw-pushpin_hl11</styleUrl>\n" +
+		"\t\t</Pair>\n" +
+		"\t</StyleMap>\n" +
+		"\t<Style id=\"generic_n40\">\n" +
+		"\t\t<IconStyle>\n" +
+		"\t\t\t<scale>0.8</scale>\n" +
+		"\t\t\t<Icon>\n" +
+		"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
+		"\t\t\t</Icon>\n" +
+		"\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
+		"\t\t</IconStyle>\n" +
+		"\t\t<LabelStyle>\n" +
+		"\t\t\t<scale>0.7</scale>\n" +
+		"\t\t</LabelStyle>\n" +
+		"\t\t<BalloonStyle>\n" +
+		"\t\t\t<text>$[description]</text>\n" +
+		"\t\t</BalloonStyle>\n" +
+		"\t</Style>\n" +
+		"\t<Style id=\"generic_h44\">\n" +
+		"\t\t<IconStyle>\n" +
+		"\t\t\t<scale>0.8</scale>\n" +
+		"\t\t\t<Icon>\n" +
+		"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
+		"\t\t\t</Icon>\n" +
+		"\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
+		"\t\t</IconStyle>\n" +
+		"\t\t<LabelStyle>\n" +
+		"\t\t\t<scale>0.7</scale>\n" +
+		"\t\t</LabelStyle>\n" +
+		"\t\t<BalloonStyle>\n" +
+		"\t\t\t<text>$[description]</text>\n" +
+		"\t\t</BalloonStyle>\n" +
+		"\t</Style>\n" +
+		"\t<Style id=\"s_ylw-pushpin40\">\n" +
+		"\t\t<IconStyle>\n" +
+		"\t\t\t<scale>0.6</scale>\n" +
+		"\t\t\t<Icon>\n" +
+		"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
+		"\t\t\t</Icon>\n" +
+		"\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
+		"\t\t</IconStyle>\n" +
+		"\t\t<LabelStyle>\n" +
+		"\t\t\t<scale>0.8</scale>\n" +
+		"\t\t</LabelStyle>\n" +
+		"\t</Style>\n" +
+		"\t<Style id=\"s_ylw-pushpin_hl11\">\n" +
+		"\t\t<IconStyle>\n" +
+		"\t\t\t<scale>0.709091</scale>\n" +
+		"\t\t\t<Icon>\n" +
+		"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
+		"\t\t\t</Icon>\n" +
+		"\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
+		"\t\t</IconStyle>\n" +
+		"\t\t<LabelStyle>\n" +
+		"\t\t\t<scale>0.8</scale>\n" +
+		"\t\t</LabelStyle>\n" +
+		"\t</Style>\n" +
+		"\t<Folder>\n" +
+		"\t\t<name>Folder with POI</name>\n" +
+		"\t\t<visibility>0</visibility>\n" +
+		"\t\t<Placemark>\n" +
+		"\t\t\t<name>Test Placemark 1</name>\n" +
+		"\t\t\t<visibility>0</visibility>\n" +
+		"\t\t\t<styleUrl>#generic4</styleUrl>\n" +
+		"\t\t\t<Point>\n" +
+		"\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
+		"\t\t\t</Point>\n" +
+		"\t\t</Placemark>\n" +
+		"\t\t<Placemark>\n" +
+		"\t\t\t<name>Test Placemark 2</name>\n" +
+		"\t\t\t<visibility>0</visibility>\n" +
+		"\t\t\t<styleUrl>#generic4</styleUrl>\n" +
+		"\t\t\t<Point>\n" +
+		"\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
+		"\t\t\t</Point>\n" +
+		"\t\t</Placemark>\n" +
+		"\t\t<Placemark>\n" +
+		"\t\t\t<name>Test Placemark 3</name>\n" +
+		"\t\t\t<visibility>0</visibility>\n" +
+		"\t\t\t<styleUrl>#m_ylw-pushpin12</styleUrl>\n" +
+		"\t\t\t<Point>\n" +
+		"\t\t\t\t<coordinates>38.5409832,55.89456632,143</coordinates>\n" +
+		"\t\t\t</Point>\n" +
+		"\t\t</Placemark>\n" +
+		"\t\t<Placemark>\n" +
+		"\t\t\t<name>Test Placemark 4</name>\n" +
+		"\t\t\t<visibility>0</visibility>\n" +
+		"\t\t\t<styleUrl>#generic_n40</styleUrl>\n" +
+		"\t\t\t<Point>\n" +
+		"\t\t\t\t<coordinates>38.53305459,55.91967435,136</coordinates>\n" +
+		"\t\t\t</Point>\n" +
+		"\t\t</Placemark>\n" +
+		"\t</Folder>\n" +
+		"</Document>\n" +
+		"</kml>\n";
 	
 	@ParameterizedTest
 	@ValueSource(ints = {12, 57, 111})
@@ -575,8 +692,7 @@ class GoogleEarthHandlerTest {
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {"#000088", "#ff0000", "#ffffff", "#374b5c"})
-	public void pointTextColors_Without_setTextOpacity_Should_Starts_With_Max_Opacity_Value_FF(String hexColor)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+	public void pointTextColors_Without_setTextOpacity_Should_Starts_With_Max_Opacity_Value_FF(String hexColor) {
 		//GIVEN
 		multipartFile = new MockMultipartFile("TestPoi.kml", new byte[]{});
 		multipartDto = new MultipartDto(multipartFile);
@@ -600,8 +716,7 @@ class GoogleEarthHandlerTest {
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {"#000088", "#ff0000", "#ffffff", "#374b5c"})
-	public void pointTextColors_With_setTextOpacity_Should_Starts_With_Opacity_Value_But_Not_Default_FF(String hexColor)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+	public void pointTextColors_With_setTextOpacity_Should_Starts_With_Opacity_Value_But_Not_Default_FF(String hexColor) {
 		//GIVEN
 		multipartFile = new MockMultipartFile("TestPoi.kml", new byte[]{});
 		multipartDto = new MultipartDto(multipartFile);
@@ -616,6 +731,28 @@ class GoogleEarthHandlerTest {
 		assertFalse(kmlColorWithOpacity.startsWith("ff"));
 		assertTrue(kmlColorWithOpacity.startsWith(separateHexOpacityValue));
 	}
+	
+	@Test
+	public void static_Parameters_Should_Delete_All_StyleMaps()
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleEarthKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointTextSize(50);
+		
+		//WHEN
+		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		System.out.println(resultingKml);
+		//THEN
+		
+	}
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////// UTILITY METHODS ///////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	
 	private Document getDocument(MultipartDto multipartDto) throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();

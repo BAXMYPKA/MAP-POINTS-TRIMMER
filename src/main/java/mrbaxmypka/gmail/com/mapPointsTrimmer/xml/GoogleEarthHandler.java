@@ -25,6 +25,11 @@ public class GoogleEarthHandler {
 		this.document = document;
 		Element documentRoot = document.getDocumentElement();
 		log.info("Document and {} are received", multipartDto);
+		//If something static will be set it will delete all the dynamic <StyleMap>'s
+		if (multipartDto.getPointIconSize() != null || multipartDto.getPointTextSize() != null
+			|| multipartDto.getPointTextColor() != null) {
+			deleteStyleMaps(documentRoot, multipartDto);
+		}
 		if (multipartDto.getPointIconSize() != null) {
 			setPointsIconsSize(documentRoot, multipartDto);
 		}
@@ -35,6 +40,149 @@ public class GoogleEarthHandler {
 			setPointTextColor(documentRoot, multipartDto);
 		}
 		return this.document;
+	}
+	
+	/**
+	 * {@literal    <StyleMap id="m_ylw-pushpin12">
+	 * <Pair>
+	 * <key>normal</key>
+	 * <styleUrl>#s_ylw-pushpin40</styleUrl>
+	 * </Pair>
+	 * <Pair>
+	 * <key>highlight</key>
+	 * <styleUrl>#s_ylw-pushpin_hl11</styleUrl>
+	 * </Pair>
+	 * </StyleMap>
+	 * <Style id="generic_n40">
+	 * <IconStyle>
+	 * <scale>0.8</scale>
+	 * <Icon>
+	 * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+	 * </Icon>
+	 * <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+	 * </IconStyle>
+	 * <LabelStyle>
+	 * <scale>0.7</scale>
+	 * </LabelStyle>
+	 * </Style>}
+	 * Replaces all "StyleMap" references with "Style" for all the "styleUrl" of "Placemark"'s
+	 * 1) Checks all the "styleUrl"'s from "Placemark"'s whether they are pointing to "StyleMap"
+	 * 2) If true, replace "styleUrl" with "key" "normal" "styleUrl"
+	 * 3) Deletes "StyleMap"'s from DOM.
+	 */
+	private void deleteStyleMaps(Element documentRoot, MultipartDto multipartDto) {
+		NodeList styleMapNodes = documentRoot.getElementsByTagName("StyleMap");
+		
+		//<styleUrl>'s from <Placemark>'s
+		List<Node> placemarksStyleUrls = getStyleUrlsFromPlacemarks(documentRoot.getElementsByTagName("Placemark"));
+		
+		for (int i = 0; i < placemarksStyleUrls.size(); i++) {
+			Node styleUrlNode = placemarksStyleUrls.get(i);
+			String url = styleUrlNode.getTextContent(); //#exampleUrl
+			String urlToStyle = getStyleUrlToStyle(documentRoot, url);
+			styleUrlNode.setTextContent(urlToStyle);
+		}
+		
+		for (int i = 0; i < styleMapNodes.getLength(); i++) {
+			documentRoot.removeChild(styleMapNodes.item(i));
+		}
+	}
+	
+	private List<Node> getStyleUrlsFromPlacemarks(NodeList placemarksNodeList) {
+		List<Node> styleUrlNodes = new ArrayList<>();
+		
+		placemarks:
+		for (int i = 0; i < placemarksNodeList.getLength(); i++) {
+			Node placemarkNode = placemarksNodeList.item(i);
+			
+			NodeList placemarkChildNodes = placemarkNode.getChildNodes();
+			for (int j = 0; j < placemarkChildNodes.getLength(); j++) {
+				Node placemarkChildNode = placemarkChildNodes.item(j);
+				if (placemarkChildNode.getNodeName() != null && placemarkChildNode.getNodeName().equals("styleUrl")) {
+					styleUrlNodes.add(placemarkChildNode);
+					continue placemarks;
+				}
+			}
+		}
+		return styleUrlNodes;
+	}
+	
+	/**
+	 * {@literal    <StyleMap id="m_ylw-pushpin12">
+	 * <Pair>
+	 * <key>normal</key>
+	 * <styleUrl>#s_ylw-pushpin40</styleUrl>
+	 * </Pair>
+	 * <Pair>
+	 * <key>highlight</key>
+	 * <styleUrl>#s_ylw-pushpin_hl11</styleUrl>
+	 * </Pair>
+	 * </StyleMap>
+	 * <Style id="generic_n40">
+	 * <IconStyle>
+	 * <scale>0.8</scale>
+	 * <Icon>
+	 * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+	 * </Icon>
+	 * <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+	 * </IconStyle>
+	 * <LabelStyle>
+	 * <scale>0.7</scale>
+	 * </LabelStyle>
+	 * </Style>}
+	 * If a given 'styleUrl' reference to {@literal <StyleMap>} it will be replaced with
+	 * {@literal <styleUrl> with <key> 'normal'}.
+	 * Otherwise the initial parameter will be returned
+	 *
+	 * @param documentRoot
+	 * @param styleUrl     {@literal e.g. "#exampleUrl" to <StyleMap id="styleUrl"> or <Style id="styleUrl">}
+	 * @return If a given 'styleUrl' reference to {@literal <StyleMap>} it will be replaced with
+	 * {@literal <styleUrl> with <key> 'normal'}.
+	 * Otherwise the initial parameter will be returned
+	 */
+	private String getStyleUrlToStyle(Element documentRoot, String styleUrl) {
+		NodeList styleMapNodes = documentRoot.getElementsByTagName("StyleMap");
+		String trimmedUrl = styleUrl.startsWith("#") ? styleUrl.substring(1) : styleUrl;
+		
+		for (int i = 0; i < styleMapNodes.getLength(); i++) {
+			Node styleMapNode = styleMapNodes.item(i);
+			if (styleMapNode.hasAttributes() && styleMapNode.getAttributes().getNamedItem("id") != null) {
+				Node idNode = styleMapNode.getAttributes().getNamedItem("id");
+				String idAttribute = idNode.getTextContent();
+				if (idAttribute.equals(trimmedUrl)) return getNormalStyleUrl(styleMapNode);
+			}
+		}
+		//No <StyleMap> with such an "id" attribute
+		return styleUrl;
+	}
+	
+	private String getNormalStyleUrl(Node styleMap) {
+		NodeList styleMapChildNodes = styleMap.getChildNodes();
+		
+		String styleUrlToNormal = "";
+		
+		start:
+		for (int i = 0; i < styleMapChildNodes.getLength(); i++) {
+			Node styleMapChildNode = styleMapChildNodes.item(i);
+			
+			if (styleMapChildNode.getNodeName() != null && styleMapChildNode.getNodeName().equals("Pair")) {
+				NodeList pairChildNodes = styleMapChildNode.getChildNodes();
+				
+				for (int j = 0; j < pairChildNodes.getLength(); j++) {
+					Node pairChildNode = pairChildNodes.item(j);
+					if (pairChildNode.getNodeName() != null && pairChildNode.getNodeName().equals("key")) {
+						//<Pair> <key>normal</key> <styleUrl>#exampleUrl</styleUrl> </Pair>
+						if (pairChildNode.getTextContent().equalsIgnoreCase("normal")) {
+							//TODO: here's the null exception
+							Node normalStyleUrl = pairChildNode.getNextSibling();
+							styleUrlToNormal = normalStyleUrl.getTextContent();
+							break start;
+						}
+					}
+				}
+			}
+		}
+		return styleUrlToNormal;
 	}
 	
 	//TODO: to use XPath to select only <Style/>'s with attribute id=""
