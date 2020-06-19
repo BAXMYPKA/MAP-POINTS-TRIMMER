@@ -45,7 +45,7 @@ class MultipartFileServiceTest {
 	
 	@BeforeEach
 	public void beforeEach() throws ParserConfigurationException, TransformerException, SAXException,
-		IOException {
+		IOException, ClassNotFoundException {
 		messageSource = Mockito.mock(MessageSource.class);
 		Mockito.when(messageSource.getMessage("exception.nullFilename", null, null))
 			.thenReturn("Filename cannot be null!");
@@ -76,7 +76,7 @@ class MultipartFileServiceTest {
 	 */
 	@Test
 	public void kml_File_Should_Be_Saved_Temporarily_then_Deleted()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException {
+		throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
 		// GIVEN
 		
 		//WHEN
@@ -94,7 +94,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kml_File_Should_Be_Returned_Same()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException {
+		throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
 		// GIVEN
 		
 		//WHEN
@@ -109,7 +109,7 @@ class MultipartFileServiceTest {
 	 */
 	@Test
 	public void downloadAsKml_From_Kmz_File_Should_Be_Extracted_And_Saved_as_Kml()
-		throws IOException, ParserConfigurationException, TransformerException, SAXException {
+		throws IOException, ParserConfigurationException, TransformerException, SAXException, ClassNotFoundException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
 			"LocusTestKmz.kmz",
@@ -137,7 +137,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void downloadAsKmz_From_Kml_File_Should_Be_Saved_as_Kml()
-		throws IOException, ParserConfigurationException, TransformerException, SAXException {
+		throws IOException, ParserConfigurationException, TransformerException, SAXException, ClassNotFoundException {
 		//GIVEN If while uploading KML set "downloadAs KMZ"
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
@@ -153,7 +153,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kmz_File_Should_Be_Saved_Temporarily_With_The_Filename_From_Multipart_Then_Deleted()
-		throws IOException, ParserConfigurationException, TransformerException, SAXException {
+		throws IOException, ParserConfigurationException, TransformerException, SAXException, ClassNotFoundException {
 		//GIVEN
 		String initialMultipartFileName = "LocusTestKmz.kmz";
 		multipartFile = new MockMultipartFile(
@@ -178,7 +178,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kml_In_Kmz_MultipartFile_Should_Be_Returned_Same()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException {
+		throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
 		//GIVEN download as "KMZ"
 		multipartFile = new MockMultipartFile(
 			"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(kmzPath));
@@ -205,7 +205,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kmz_MultipartFile_Should_Contain_All_The_Initial_Files()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException {
+		throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
 		//GIVEN when "download as KMZ" is selected all the initial files (images) from "LocusTestKmz.kmz"
 		// should be preserved
 		multipartFile = new MockMultipartFile(

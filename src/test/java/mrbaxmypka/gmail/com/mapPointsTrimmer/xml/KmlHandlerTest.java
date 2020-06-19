@@ -110,7 +110,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body()
-		throws IOException, XMLStreamException, ParserConfigurationException, SAXException, TransformerException {
+		throws IOException, XMLStreamException, ParserConfigurationException, SAXException, TransformerException, ClassNotFoundException {
 		//GIVEN
 		String newPath = "C:\\MyPoi\\MyPoiImages";
 		multipartFile = new MockMultipartFile(
@@ -136,7 +136,7 @@ class KmlHandlerTest {
 	 */
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body_Except_Special_GoogleEarth_Web_Links()
-		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
+		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, ClassNotFoundException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
 			"TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
@@ -154,7 +154,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded()
-		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
+		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, ClassNotFoundException {
 		//GIVEN
 		String pathWithWhitespaces = "D:\\My Folder\\My POI";
 		multipartFile = new MockMultipartFile(

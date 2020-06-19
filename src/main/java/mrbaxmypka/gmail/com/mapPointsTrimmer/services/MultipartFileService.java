@@ -55,7 +55,7 @@ public class MultipartFileService {
 	 * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
 	 */
 	public Path processMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		throws IOException, ParserConfigurationException, SAXException, TransformerException, ClassNotFoundException {
 		log.info("{} has been received. Locale = {}", multipartDto, locale);
 		
 		locale = locale == null ? this.defaultLocale : locale;
