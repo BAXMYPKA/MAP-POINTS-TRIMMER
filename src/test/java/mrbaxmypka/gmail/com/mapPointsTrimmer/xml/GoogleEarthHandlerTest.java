@@ -871,7 +871,7 @@ class GoogleEarthHandlerTest {
 		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-		System.out.println(resultingKml);
+//		System.out.println(resultingKml);
 		
 		//THEN
 		assertAll(
@@ -967,7 +967,7 @@ class GoogleEarthHandlerTest {
 		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-		System.out.println(resultingKml);
+//		System.out.println(resultingKml);
 		
 		//THEN
 		assertTrue(resultingKml.contains("<styleUrl>#style3</styleUrl>"));

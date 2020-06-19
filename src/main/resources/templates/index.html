@@ -84,7 +84,7 @@
 			
 			<span th:utext="${userMessage} ? ${userMessage} : ''"></span>
 			<span
-				th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
+				  th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
 			<span class="userMessage__close" title="Close"
 				  th:title="#{html.title.close}"
 				  th:if="${userMessage != null || #request.getParameter('userMessage') != null}">
@@ -231,68 +231,157 @@
 			
 			<br>
 			
-			<label for="fieldSetGoogle" class="loadForm__label loadForm__label_LoadFieldSet"
-				   th:utext="#{html.label.googleEarthParams}">
+			<label for="googleEarthFieldset" class="loadForm__label loadForm__label_LoadFieldSet"
+				   th:utext="#{html.label.googleEarthParameters}">
 				Set Google Earth specific parameters
 			</label>
 			
-			<fieldset id="fieldSetGoogle" class="loadForm loadForm__fieldSet">
+			<fieldset id="googleEarthFieldset" class="loadForm loadForm__fieldSet">
 				
-				<input id="pointIconSize" class="loadForm_percentageInput" name="pointIconSize"
-					   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%" disabled>
-				<input id="setPointIconSize" type="checkbox">
-				<label for="setPointIconSize" class="loadForm__label"
-					   th:text="#{html.label.pointsIconsSize}">
-					Set point icons size
+				
+				<label for="fieldSetGoogleEarthStatic"
+					   class="loadForm__label loadForm__label_LoadFieldSet loadForm__label_LoadFieldSet_subFieldset"
+					   th:utext="#{html.label.googleEarthStaticParameters}">
+					Static parameters
 				</label>
+				
 				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.pointsIconSize}">
+					 th:title="#{commonMessages.interrogationAsDescription.googleEarthStaticParameters}">
 					?
 				</div>
 				
+				<fieldset id="fieldSetGoogleEarthStatic" class="loadForm loadForm__fieldSet">
+					
+					<input id="pointIconSize" class="loadForm_percentageInput" name="pointIconSize"
+						   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%" disabled>
+					<input id="setPointIconSize" type="checkbox">
+					<label for="setPointIconSize" class="loadForm__label"
+						   th:text="#{html.label.pointsIconsSize}">
+						Set point icons size
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.pointsIconSize}">
+						?
+					</div>
+					
+					<br>
+					
+					<input id="pointTextSize" class="loadForm_percentageInput" name="pointTextSize"
+						   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%" disabled>
+					<input id="setPointTextSize" type="checkbox">
+					<label for="setPointTextSize" class="loadForm__label"
+						   th:text="#{html.label.setPointTextSize}">
+						Set point labels text size
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.pointsTextSize}">
+						?
+					</div>
+					
+					<br>
+					
+					<input id="pointTextOpacity" class="loadForm_percentageInput" name="pointTextOpacity"
+						   type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%" disabled>
+					<input id="setPointTextOpacity" type="checkbox">
+					<label for="setPointTextOpacity" class="loadForm__label"
+						   th:text="#{html.label.setPointsTextOpacity}">
+						Set point icons text opacity
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.pointsTextOpacity}">
+						?
+					</div>
+					
+					<br>
+					
+					<input id="pointTextColor" class="loadForm_colorInput" name="pointTextColor"
+						   type="color" disabled>
+					<input id="setPointTextColor" type="checkbox">
+					<label for="setPointTextColor" class="loadForm__label"
+						   th:text="#{html.label.setPointsTextColor}">
+						Set point labels text color
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.pointsTextColor}">
+						?
+					</div>
+					
+					<br>
+				
+				</fieldset>
+				
 				<br>
 				
-				<input id="pointTextSize" class="loadForm_percentageInput" name="pointTextSize"
-					   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%" disabled>
-				<input id="setPointTextSize" type="checkbox">
-				<label for="setPointTextSize" class="loadForm__label"
-					   th:text="#{html.label.setPointTextSize}">
-					Set point labels text size
+				<label for="fieldSetGoogleEarthDynamic"
+					   class="loadForm__label loadForm__label_LoadFieldSet loadForm__label_LoadFieldSet_subFieldset"
+					   th:utext="#{html.label.googleEarthDynamicParameters}">
+					Dynamic parameters
 				</label>
+				
 				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.pointsTextSize}">
+					 th:title="#{commonMessages.interrogationAsDescription.googleEarthDynamicParameters}">
 					?
 				</div>
 				
-				<br>
+				<fieldset id="fieldSetGoogleEarthDynamic" class="loadForm loadForm__fieldSet">
+					
+					<input id="pointIconSize" class="loadForm_percentageInput" name="pointIconSize"
+						   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%" disabled>
+					<input id="setPointIconSize" type="checkbox">
+					<label for="setPointIconSize" class="loadForm__label"
+						   th:text="#{html.label.pointsIconsSize}">
+						Set point icons size
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.pointsIconSize}">
+						?
+					</div>
+					
+					<br>
+					
+					<input id="pointTextSize" class="loadForm_percentageInput" name="pointTextSize"
+						   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%" disabled>
+					<input id="setPointTextSize" type="checkbox">
+					<label for="setPointTextSize" class="loadForm__label"
+						   th:text="#{html.label.setPointTextSize}">
+						Set point labels text size
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.pointsTextSize}">
+						?
+					</div>
+					
+					<br>
+					
+					<input id="pointTextOpacity" class="loadForm_percentageInput" name="pointTextOpacity"
+						   type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%" disabled>
+					<input id="setPointTextOpacity" type="checkbox">
+					<label for="setPointTextOpacity" class="loadForm__label"
+						   th:text="#{html.label.setPointsTextOpacity}">
+						Set point icons text opacity
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.pointsTextOpacity}">
+						?
+					</div>
+					
+					<br>
+					
+					<input id="pointTextColor" class="loadForm_colorInput" name="pointTextColor"
+						   type="color" disabled>
+					<input id="setPointTextColor" type="checkbox">
+					<label for="setPointTextColor" class="loadForm__label"
+						   th:text="#{html.label.setPointsTextColor}">
+						Set point labels text color
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.pointsTextColor}">
+						?
+					</div>
+					
+					<br>
 				
-				<input id="pointTextOpacity" class="loadForm_percentageInput" name="pointTextOpacity"
-					   type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%" disabled>
-				<input id="setPointTextOpacity" type="checkbox">
-				<label for="setPointTextOpacity" class="loadForm__label"
-					   th:text="#{html.label.setPointsTextOpacity}">
-					Set point icons text opacity
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.pointsTextOpacity}">
-					?
-				</div>
-				
-				<br>
-				
-				<input id="pointTextColor" class="loadForm_colorInput" name="pointTextColor"
-					   type="color" disabled>
-				<input id="setPointTextColor" type="checkbox">
-				<label for="setPointTextColor" class="loadForm__label"
-					   th:text="#{html.label.setPointsTextColor}">
-					Set point labels text color
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.pointsTextColor}">
-					?
-				</div>
-				
-				<br>
+				</fieldset>
 			
 			</fieldset>
 			

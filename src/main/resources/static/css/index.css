@@ -278,10 +278,13 @@ input[type=radio] {
 .loadForm__label_LoadFieldSet {
 	margin: 0.3em;
 	font-weight: bold;
+	text-transform: uppercase;
 }
 
-.loadForm__label_LoadFieldSet {
-	text-transform: uppercase;
+.loadForm__label_LoadFieldSet_subFieldset {
+	font-style: italic;
+	font-size: 0.9em;
+	/*text-transform: lowercase;*/
 }
 
 .loadForm__label_subSelectLabel {

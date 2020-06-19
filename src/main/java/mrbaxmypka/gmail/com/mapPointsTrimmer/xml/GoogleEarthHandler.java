@@ -22,14 +22,15 @@ import java.util.stream.Collectors;
 public class GoogleEarthHandler {
 	
 	private Document document;
+	
 	//TODO: regenerate docs
 	Document processXml(Document document, MultipartDto multipartDto) {
 		this.document = document;
 		Element documentRoot = document.getDocumentElement();
 		log.info("Document and {} are received", multipartDto);
-		//If something static will be set it will delete all the dynamic <StyleMap>'s
-		if (multipartDto.getPointIconSize() != null || multipartDto.getPointTextSize() != null
-			|| multipartDto.getPointTextColor() != null) {
+		//If something static will be set we have to delete all the dynamic <StyleMap>'s
+		if (multipartDto.getPointIconSize() != null || multipartDto.getPointTextSize() != null ||
+			  multipartDto.getPointTextColor() != null) {
 			processStyleMaps(documentRoot, multipartDto);
 		}
 		if (multipartDto.getPointIconSize() != null) {
@@ -45,17 +46,17 @@ public class GoogleEarthHandler {
 	}
 	
 	/**
-	 * {@literal    <StyleMap id="m_ylw-pushpin12">
+	 * {@literal    <StyleMap id="styleMap1">
 	 * <Pair>
 	 * <key>normal</key>
-	 * <styleUrl>#s_ylw-pushpin40</styleUrl>
+	 * <styleUrl>#style1</styleUrl>
 	 * </Pair>
 	 * <Pair>
 	 * <key>highlight</key>
-	 * <styleUrl>#s_ylw-pushpin_hl11</styleUrl>
+	 * <styleUrl>#style2</styleUrl>
 	 * </Pair>
 	 * </StyleMap>
-	 * <Style id="generic_n40">
+	 * <Style id="style1">
 	 * <IconStyle>
 	 * <scale>0.8</scale>
 	 * <Icon>
@@ -67,7 +68,10 @@ public class GoogleEarthHandler {
 	 * <scale>0.7</scale>
 	 * </LabelStyle>
 	 * </Style>}
-	 * Replaces all "StyleMap" references with "Style" for all the "styleUrl" of "Placemark"'s
+	 * <Placemark>
+	 *     <styleUrl>#styleMap1</styleUrl>
+	 * </Placemark>
+	 * Within all the <Placemark><styleUrl/></Placemark> replaces all references to <StyleMap/> with <Style/>
 	 * 1) Checks all the "styleUrl"'s from "Placemark"'s whether they are pointing to "StyleMap"
 	 * 2) If true, replace "styleUrl" with "key" "normal" "styleUrl"
 	 * 3) Deletes "StyleMap"'s from DOM.
@@ -105,7 +109,7 @@ public class GoogleEarthHandler {
 		NodeList placemarkNodes = document.getElementsByTagName("Placemark");
 		//<styleUrl>'s from <Placemark>'s
 		List<Node> placemarksStyleUrls =
-			getChildNodesFromParents(placemarkNodes, "styleUrl", false, false);
+			  getChildNodesFromParents(placemarkNodes, "styleUrl", false, false);
 		for (int i = 0; i < placemarksStyleUrls.size(); i++) {
 			Node placemarkStyleUrlNode = placemarksStyleUrls.get(i);
 			String currentUrl = placemarkStyleUrlNode.getTextContent(); //#exampleUrl
@@ -198,12 +202,12 @@ public class GoogleEarthHandler {
 		List<Node> pairNodes = getChildNodesFromParent(styleMap, "Pair", null, false, false);
 		//<Pair> <key>normal</key> <styleUrl>#exampleUrl</styleUrl> </Pair>
 		Node pairWithKeyNormal = pairNodes.stream()
-			.filter(pairNode ->
-				!getChildNodesFromParent(pairNode, "key", "normal", false, false).isEmpty())
-			.collect(Collectors.toList()).get(0);
+			  .filter(pairNode ->
+					!getChildNodesFromParent(pairNode, "key", "normal", false, false).isEmpty())
+			  .collect(Collectors.toList()).get(0);
 		
 		return getChildNodesFromParent(pairWithKeyNormal, "styleUrl", null, false, false)
-			.get(0).getTextContent();
+			  .get(0).getTextContent();
 	}
 	
 	//TODO: to use XPath to select only <Style/>'s with attribute id=""
@@ -443,7 +447,7 @@ public class GoogleEarthHandler {
 		log.debug("Got '{}' hex color input", hexColor);
 		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
 			throw new IllegalArgumentException(
-				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
+				  "Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
 		}
 		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
 		log.debug("Hex color has been converted into '{}' KML color", kmlColor);
@@ -496,35 +500,6 @@ public class GoogleEarthHandler {
 	/////////////////////////////////////////// COMMON METHODS ///////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-/*
-	private List<Node> getChildNodesFromParents(NodeList parents, String childNodeName, boolean recursively) {
-		List<Node> children = new ArrayList<>();
-		
-		parents:
-		for (int i = 0; i < parents.getLength(); i++) {
-			Node parentNode = parents.item(i);
-			
-			if (recursively) {
-				List<Node> allChildNodes = getAllChildren(new ArrayList<>(), parentNode);
-				allChildNodes.stream()
-					  .filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
-					  .forEach(children::add);
-				continue;
-			}
-			
-			NodeList childNodes = parentNode.getChildNodes();
-			for (int j = 0; j < childNodes.getLength(); j++) {
-				Node childNode = childNodes.item(j);
-				if (childNode.getNodeName() != null && childNode.getNodeName().equals(childNodeName)) {
-					children.add(childNode);
-//					continue parents;
-				}
-			}
-		}
-		return children;
-	}
-*/
-	
 	/**
 	 * @param parents        A Parents {@link NodeList} to find children of
 	 * @param childNodeName  A Child Node tag name to be found
@@ -535,9 +510,9 @@ public class GoogleEarthHandler {
 	 * @throws IllegalArgumentException if 'recursively' and 'createIfAbsent' both == true.
 	 */
 	List<Node> getChildNodesFromParents(NodeList parents, String childNodeName, boolean recursively, boolean createIfAbsent)
-		throws IllegalArgumentException {
+		  throws IllegalArgumentException {
 		if (recursively && createIfAbsent) throw new IllegalArgumentException(
-			"You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
+			  "You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
 		
 		List<Node> children = new ArrayList<>();
 		
@@ -547,8 +522,8 @@ public class GoogleEarthHandler {
 			if (recursively) {
 				List<Node> allChildNodes = getAllChildrenRecursively(new ArrayList<>(), parentNode);
 				allChildNodes.stream()
-					.filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
-					.forEach(children::add);
+					  .filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
+					  .forEach(children::add);
 				continue;
 			}
 			//Looking through direct children
@@ -567,7 +542,7 @@ public class GoogleEarthHandler {
 				parentNode.appendChild(newChildNode);
 				children.add(newChildNode);
 				log.trace("As 'createIfAbsent'== true and <{}> has't been found in <{}> it was created and appended",
-					childNodeName, parentNode.getNodeName());
+					  childNodeName, parentNode.getNodeName());
 			} else {
 				//Just add the found children (even if they aren't)
 				children.addAll(existingChildren);
@@ -588,11 +563,11 @@ public class GoogleEarthHandler {
 	 * @throws IllegalArgumentException if 'recursively' and 'createIfAbsent' both == true.
 	 */
 	List<Node> getChildNodesFromParent(
-		Node parent, String childNodeName, @Nullable String childNodeValue, boolean recursively, boolean createIfAbsent)
-		throws IllegalArgumentException {
+		  Node parent, String childNodeName, @Nullable String childNodeValue, boolean recursively, boolean createIfAbsent)
+		  throws IllegalArgumentException {
 		
 		if (recursively && createIfAbsent) throw new IllegalArgumentException(
-			"You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
+			  "You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
 		
 		List<Node> childrenNodesToBeReturned = new ArrayList<>();
 		
@@ -604,8 +579,8 @@ public class GoogleEarthHandler {
 			if (recursively) {
 				List<Node> allChildren = getAllChildrenRecursively(new ArrayList<>(), childNode);
 				allChildren.stream()
-					.filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
-					.forEach(existingChildren::add);
+					  .filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
+					  .forEach(existingChildren::add);
 				continue;
 			}
 			if (childNode.getNodeName() != null && childNode.getNodeName().equals(childNodeName)) {
@@ -622,13 +597,13 @@ public class GoogleEarthHandler {
 			parent.appendChild(newChildNode);
 			childrenNodesToBeReturned.add(newChildNode);
 			log.trace("As 'createIfAbsent'== true and <{}> has't been found in <{}> it was created and appended",
-				childNodeName, parent.getNodeName());
+				  childNodeName, parent.getNodeName());
 		} else {
 			//Just add the found children (even if they aren't)
 			childrenNodesToBeReturned.addAll(existingChildren);
 		}
 		log.trace("{} <{}> children have been found for <{}>",
-			childrenNodesToBeReturned.size(), childNodeName, parent.getNodeName());
+			  childrenNodesToBeReturned.size(), childNodeName, parent.getNodeName());
 		return childrenNodesToBeReturned;
 	}
 	
