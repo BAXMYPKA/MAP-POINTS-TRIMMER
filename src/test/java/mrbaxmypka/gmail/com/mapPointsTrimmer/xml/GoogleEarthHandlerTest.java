@@ -127,7 +127,7 @@ class GoogleEarthHandlerTest {
 	@ParameterizedTest
 	@ValueSource(ints = {12, 57, 111})
 	public void percentage_PointIconSize_Should_Update_Existing_Scales_Into_Existing_IconStyles(int percentageSize)
-		throws IOException, ParserConfigurationException, SAXException {
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		//GIVEN kml with existing <IconStyle><scale/></IconStyle>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
@@ -177,8 +177,8 @@ class GoogleEarthHandlerTest {
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
-//		String processedKml = kmlHandler.writeTransformedDocument(document);
-		
+		String processedKml = kmlHandler.writeTransformedDocument(document);
+		System.out.println(processedKml);
 		//THEN
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
