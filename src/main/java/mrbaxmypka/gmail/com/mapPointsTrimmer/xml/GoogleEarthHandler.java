@@ -86,6 +86,8 @@ public class GoogleEarthHandler {
 			Node styleMapNode = styleMapNodes.item(i);
 			styleMapNode.getParentNode().removeChild(styleMapNode);
 		}
+		//Delete unused <Style>'s from Document
+		deleteUnusedStyles();
 	}
 	
 	/**
@@ -208,6 +210,29 @@ public class GoogleEarthHandler {
 		
 		return getChildNodesFromParent(pairWithKeyNormal, "styleUrl", null, false, false)
 			  .get(0).getTextContent();
+	}
+	
+	/**
+	 * {@literal If any <styleUrl/> from <Placemark/>'s points to <Style id="styleId"/> those <StyleUrl/>'s have to
+	 * be deleted}
+	 */
+	private void deleteUnusedStyles() {
+		List<Node> placemarksStyleUrlNodes = getChildNodesFromParents(
+			document.getElementsByTagName("Placemark"), "styleUrl", false, false);
+		List<String> urlsToStyles = placemarksStyleUrlNodes.stream()
+			.map(node -> node.getTextContent().substring(1)) // To remove starting '#' sign
+			.collect(Collectors.toList());
+		
+		NodeList styleNodes = document.getElementsByTagName("Style");
+		for (int i = 0; i < styleNodes.getLength(); i++) {
+			Node styleNode = styleNodes.item(i);
+			if (styleNode.getAttributes() != null && styleNode.getAttributes().getNamedItem("id") != null) {
+					String idAttributeString = styleNode.getAttributes().getNamedItem("id").getTextContent();
+				if (!urlsToStyles.contains(idAttributeString)) {
+					styleNode.getParentNode().removeChild(styleNode);
+				}
+			}
+		}
 	}
 	
 	//TODO: to use XPath to select only <Style/>'s with attribute id=""
