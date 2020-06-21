@@ -25,7 +25,9 @@ public class MultipartDto implements Serializable {
 	
 	static final long serialVersionUID = 3L;
 	
-	//TODO: to i18n validation messages
+	private final Integer MAX_ICON_SIZE_PERCENTS = 300;
+	private final Integer MAX_TEXT_SIZE_PERCENTS = 300;
+	private final Double MAX_SCALE = 3.0;
 	
 	@NonNull //Lombok required arg for the constructor
 	@NotNull(message = "{validation.notNull}")
@@ -134,11 +136,83 @@ public class MultipartDto implements Serializable {
 	@Max(value = 100, message = "{validation.maxNumber}")
 	private Integer pointTextOpacity;
 	
+	/**
+	 * How to display on mouse over (hovering).
+	 * {@literal it will create an additional <Style id="dynamicId"/> and a <StyleMap/>.
+	 * That <StyleMap/> will contain <Pair><key><highlight>#dynamicId</highlight></key></Pair>
+	 * as a reference to that additional Style.}
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
+	@Nullable
+	@PositiveOrZero(message = "{validation.positiveOrZero}")
+	@Max(value = 300, message = "{validation.maxNumber}")
+	private Integer pointIconSizeDynamic;
+	
+	/**
+	 * How to display on mouse over (hovering).
+	 * {@literal it will create an additional <Style id="dynamicId"/> and a <StyleMap/>.
+	 * That <StyleMap/> will contain <Pair><key><highlight>#dynamicId</highlight></key></Pair>
+	 * as a reference to that additional Style.}
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
+	@Nullable
+	@PositiveOrZero(message = "{validation.positiveOrZero}")
+	@Max(value = 300, message = "{validation.maxNumber}")
+	private Integer pointTextSizeDynamic;
+	
+	/**
+	 * How to display on mouse over (hovering).
+	 * {@literal it will create an additional <Style id="dynamicId"/> and a <StyleMap/>.
+	 * That <StyleMap/> will contain <Pair><key><highlight>#dynamicId</highlight></key></Pair>
+	 * as a reference to that additional Style.}
+	 * (https://developers.google.com/kml/documentation/kmlreference#colorstyle)
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay,
+	 * you would specify the following: {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 */
+	@Nullable
+	private String pointTextColorDynamic;
+	
+	/**
+	 * How to display on mouse over (hovering).
+	 * {@literal it will create an additional <Style id="dynamicId"/> and a <StyleMap/>.
+	 * That <StyleMap/> will contain <Pair><key><highlight>#dynamicId</highlight></key></Pair>
+	 * as a reference to that additional Style.}
+	 * <p>For User's convenience it represents a percentage input as 0 - 100%.</p>
+	 * <p>(Internally it will be converted into hexadecimal representation as 00 - FF (0 - 255).)</p>
+	 * <p>********* FROM THE KML DOCUMENTATION ************************
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00
+	 * </p>
+	 * Source: https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * **************************************************************
+	 */
+	@Nullable
+	@PositiveOrZero(message = "{validation.positiveOrZero}")
+	@Max(value = 100, message = "{validation.maxNumber}")
+	private Integer pointTextOpacityDynamic;
+	
 	@NotNull
 	private DownloadAs downloadAs;
 	
+	/**
+	 * Scale has to be presented as digits divided by a dot and not exceeding the {@link #MAX_SCALE}
+	 */
 	private boolean isScaleCorrect(Double scale) {
-		return Double.toString(scale).matches("\\d\\.\\d") && scale.compareTo(3.0) <= 0;
+		return Double.toString(scale).matches("\\d\\.\\d") && scale.compareTo(MAX_SCALE) <= 0;
 	}
 	
 	public void setPathType(@Nullable String pathType) {
@@ -171,6 +245,17 @@ public class MultipartDto implements Serializable {
 	}
 	
 	/**
+	 * @return Essential scale CSS parameter from 0.0 to 3.0 (max) with the step of 0.1
+	 */
+	public BigDecimal getPointIconSizeScaledDynamic() {
+		if (this.pointIconSizeDynamic != null) {
+			return new BigDecimal(
+				String.valueOf(this.pointIconSizeDynamic)).divide(BigDecimal.valueOf(100), 1,	RoundingMode.DOWN);
+		}
+		return null;
+	}
+	
+	/**
 	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
 	 * Where 1.0 is the scale of default window font.
 	 *
@@ -185,6 +270,24 @@ public class MultipartDto implements Serializable {
 		} else {
 			BigDecimal bigDecimal = BigDecimal.valueOf(pointIconSizeScaled).setScale(1, RoundingMode.DOWN);
 			this.pointIconSize = bigDecimal.multiply(BigDecimal.valueOf(100)).intValue();
+		}
+	}
+	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 *
+	 * @param pointIconSizeScaledDynamic As a pure "scale" CSS parameter from 0.0 to 3.0 with the step of 0.1
+	 * @throws NumberFormatException If the method receives incompatible data, e.g. 11.1 or 0.12 ect
+	 */
+	public void setPointIconSizeScaledDynamic(@Nullable Double pointIconSizeScaledDynamic) throws NumberFormatException {
+		if (pointIconSizeScaledDynamic == null) {
+			this.pointIconSizeDynamic = null;
+		} else if (!isScaleCorrect(pointIconSizeScaledDynamic)) {
+			throw new NumberFormatException("Scale has to be represented as value from 0.0 to 3.0 with the step of 0.1");
+		} else {
+			BigDecimal bigDecimal = BigDecimal.valueOf(pointIconSizeScaledDynamic).setScale(1, RoundingMode.DOWN);
+			this.pointIconSizeDynamic = bigDecimal.multiply(BigDecimal.valueOf(100)).intValue();
 		}
 	}
 	
@@ -217,6 +320,35 @@ public class MultipartDto implements Serializable {
 	}
 	
 	/**
+	 * @return Essential scale CSS parameter from 0.0 to 3.0 (max) with the step of 0.1
+	 */
+	public BigDecimal getPointTextSizeScaledDynamic() {
+		if (this.pointTextSizeDynamic != null) {
+			return new BigDecimal(String.valueOf(this.pointTextSizeDynamic)).divide(BigDecimal.valueOf(100), 1,
+				RoundingMode.DOWN);
+		}
+		return null;
+	}
+	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 *
+	 * @param pointTextSizeScaledDynamic As a pure "scale" CSS parameter from 0.0 to 3.0 with the step of 0.1
+	 * @throws NumberFormatException If the method receives incompatible data, e.g. 11.1 or 0.12 ect
+	 */
+	public void setPointTextSizeScaledDynamic(@Nullable Double pointTextSizeScaledDynamic) throws NumberFormatException {
+		if (pointTextSizeScaledDynamic == null) {
+			this.pointTextSizeDynamic = null;
+		} else if (!isScaleCorrect(pointTextSizeScaledDynamic)) {
+			throw new NumberFormatException("Scale has to be represented as value from 0.0 to 3.0 with the step of 0.1");
+		} else {
+			BigDecimal bigDecimal = BigDecimal.valueOf(pointTextSizeScaledDynamic).setScale(1, RoundingMode.DOWN);
+			this.pointTextSizeDynamic = bigDecimal.multiply(BigDecimal.valueOf(100)).intValue();
+		}
+	}
+	
+	/**
 	 * @see #getPointIconSizeScaled()
 	 */
 	@Nullable
@@ -233,10 +365,34 @@ public class MultipartDto implements Serializable {
 	 * 90% is "scale = '0.9'" etc.
 	 */
 	public void setPointIconSize(@Nullable Integer pointIconSize) {
-		if (pointIconSize != null && pointIconSize > 300) {
+		if (pointIconSize != null && pointIconSize > MAX_ICON_SIZE_PERCENTS) {
 			throw new NumberFormatException("Point Icon Size cannot exceed 300%!");
 		} else {
 			this.pointIconSize = pointIconSize;
+		}
+	}
+	
+	/**
+	 * @see #getPointIconSizeScaled()
+	 */
+	@Nullable
+	@Deprecated
+	public Integer getPointIconSizeDynamic() {
+		return this.pointIconSizeDynamic;
+	}
+	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
+	public void setPointIconSizeDynamic(@Nullable Integer pointIconSizeDynamic) {
+		if (pointIconSizeDynamic != null && pointIconSizeDynamic > MAX_ICON_SIZE_PERCENTS) {
+			throw new NumberFormatException("Point Icon Size cannot exceed 300%!");
+		} else {
+			this.pointIconSize = pointIconSizeDynamic;
 		}
 	}
 	
@@ -257,10 +413,34 @@ public class MultipartDto implements Serializable {
 	 * 90% is "scale = '0.9'" etc.
 	 */
 	public void setPointTextSize(@Nullable Integer pointTextSize) {
-		if (pointTextSize != null && pointTextSize > 300) {
+		if (pointTextSize != null && pointTextSize > MAX_TEXT_SIZE_PERCENTS) {
 			throw new NumberFormatException("Point Text Size cannot exceed 300%!");
 		} else {
 			this.pointTextSize = pointTextSize;
+		}
+	}
+	
+	/**
+	 * @see #getPointTextSizeScaled()
+	 */
+	@Nullable
+	@Deprecated
+	public Integer getPointTextSizeDynamic() {
+		return this.pointTextSizeDynamic;
+	}
+	
+	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 */
+	public void setPointTextSizeDynamic(@Nullable Integer pointTextSizeDynamic) {
+		if (pointTextSizeDynamic != null && pointTextSizeDynamic > MAX_TEXT_SIZE_PERCENTS) {
+			throw new NumberFormatException("Point Text Size cannot exceed 300%!");
+		} else {
+			this.pointTextSizeDynamic = pointTextSizeDynamic;
 		}
 	}
 }

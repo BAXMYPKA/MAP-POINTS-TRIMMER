@@ -158,15 +158,17 @@ class GoogleEarthHandlerTest {
 			"\t</Style>\n" +
 			"\t<Placemark>\n" +
 			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-			" <table width=\"100%\"> \n" +
-			" </table><!-- desc_gen:end -->]]></description>\n" +
+			"\t\t<description><![CDATA[<!-- desc_gen:start --><table width=\"100%\"></table><!-- desc_gen:end -->]]></description>\n" +
 			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when>\n" +
 			"</gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#transport-steamtrain.png</styleUrl>\n" +
+			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
 			"\t\t<Point>\n" +
 			"\t\t\t<coordinates>37.44571,56.126503,200</coordinates>\n" +
 			"\t\t</Point>\n" +
+			"\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t<name>Test placemark2</name>\n" +
+			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
 			"\t</Placemark>\n" +
 			"</Document>\n" +
 			"</kml>";
@@ -178,7 +180,7 @@ class GoogleEarthHandlerTest {
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
 		String processedKml = kmlHandler.writeTransformedDocument(document);
-		System.out.println(processedKml);
+//		System.out.println(processedKml);
 		//THEN
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
@@ -191,8 +193,7 @@ class GoogleEarthHandlerTest {
 		throws IOException, ParserConfigurationException, SAXException {
 		//GIVEN with existing <IconStyle>s but without <scale>s into them
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">" +
-			"<Document>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
 			"\t<name>FullTestKmzExport01</name>\n" +
 			"\t<open>1</open>\n" +
 			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
@@ -214,14 +215,14 @@ class GoogleEarthHandlerTest {
 			"\t</Style>\n" +
 			"\t<Placemark>\n" +
 			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-			" <table width=\"100%\"> \n" +
-			" </table><!-- desc_gen:end -->]]></description>\n" +
-			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when>\n" +
-			"</gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#transport-steamtrain.png</styleUrl>\n" +
+			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
 			"\t\t<Point>\n" +
-			"\t\t\t<coordinates>37.44571,56.126503,200</coordinates>\n" +
+			"\t\t</Point>\n" +
+			"\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t<name>Test placemark</name>\n" +
+			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			"\t\t<Point>\n" +
 			"\t\t</Point>\n" +
 			"\t</Placemark>\n" +
 			"</Document>\n" +
@@ -270,14 +271,14 @@ class GoogleEarthHandlerTest {
 			"\t</Style>\n" +
 			"\t<Placemark>\n" +
 			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-			" <table width=\"100%\"> \n" +
-			" </table><!-- desc_gen:end -->]]></description>\n" +
-			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when>\n" +
-			"</gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#transport-steamtrain.png</styleUrl>\n" +
+			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
 			"\t\t<Point>\n" +
-			"\t\t\t<coordinates>37.44571,56.126503,200</coordinates>\n" +
+			"\t\t</Point>\n" +
+			"\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t<name>Test placemark2</name>\n" +
+			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			"\t\t<Point>\n" +
 			"\t\t</Point>\n" +
 			"\t</Placemark>\n" +
 			"</Document>\n" +
@@ -333,14 +334,16 @@ class GoogleEarthHandlerTest {
 			"\t</Style>\n" +
 			"\t<Placemark>\n" +
 			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-			" <table width=\"100%\"> \n" +
-			" </table><!-- desc_gen:end -->]]></description>\n" +
-			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when>\n" +
-			"</gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#transport-steamtrain.png</styleUrl>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
 			"\t\t<Point>\n" +
-			"\t\t\t<coordinates>37.44571,56.126503,200</coordinates>\n" +
+			"\t\t</Point>\n" +
+			"\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t<name>Test placemark2</name>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			"\t\t<Point>\n" +
 			"\t\t</Point>\n" +
 			"\t</Placemark>\n" +
 			"</Document>\n" +
@@ -388,15 +391,17 @@ class GoogleEarthHandlerTest {
 			"\t</Style>\n" +
 			"\t<Placemark>\n" +
 			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-			" <table width=\"100%\"> \n" +
-			" </table><!-- desc_gen:end -->]]></description>\n" +
-			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when>\n" +
-			"</gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#transport-steamtrain.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t\t<coordinates>37.44571,56.126503,200</coordinates>\n" +
-			"\t\t</Point>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
+			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			"\t\t<Point></Point>\n" +
+			"\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t<name>Test placemark</name>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
+			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			"\t\t<Point></Point>\n" +
 			"\t</Placemark>\n" +
 			"</Document>\n" +
 			"</kml>";
@@ -464,17 +469,19 @@ class GoogleEarthHandlerTest {
 			"\t</Style>\n" +
 			"\t<Placemark>\n" +
 			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-			" <table width=\"100%\"> \n" +
-			" </table><!-- desc_gen:end -->]]></description>\n" +
-			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when>\n" +
-			"</gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#transport-steamtrain.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t\t<coordinates>37.44571,56.126503,200</coordinates>\n" +
-			"\t\t</Point>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
+			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			"\t\t<Point></Point>\n" +
 			"\t</Placemark>\n" +
 			"</Document>\n" +
+			"\t<Placemark>\n" +
+			"\t\t<name>Test placemark2</name>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
+			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			"\t\t<Point></Point>\n" +
+			"\t</Placemark>\n" +
 			"</kml>";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
@@ -517,7 +524,7 @@ class GoogleEarthHandlerTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"#000088", "#ff0000", "#ffffff", "#374b5c"})
 	public void pointTextColors_Should_Update_LabelStyles_With_Colors(String hexColor)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		throws IOException, ParserConfigurationException, SAXException {
 		//GIVEN kml with <LabelStyle/>s with AND without <color/>s in them
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\"><Document>\n" +
 			"\t<name>FullTestKmzExport01</name>\n" +
@@ -546,15 +553,17 @@ class GoogleEarthHandlerTest {
 			"\t</Style>\n" +
 			"\t<Placemark>\n" +
 			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description><![CDATA[<!-- desc_gen:start -->\n" +
-			" <table width=\"100%\"> \n" +
-			" </table><!-- desc_gen:end -->]]></description>\n" +
-			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when>\n" +
-			"</gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#transport-steamtrain.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t\t<coordinates>37.44571,56.126503,200</coordinates>\n" +
-			"\t\t</Point>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when></gx:TimeStamp>\n" +
+			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			"\t\t<Point></Point>\n" +
+			"\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t<name>Test placemark2</name>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when></gx:TimeStamp>\n" +
+			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			"\t\t<Point></Point>\n" +
 			"\t</Placemark>\n" +
 			"</Document>\n" +
 			"</kml>";
@@ -1045,7 +1054,7 @@ class GoogleEarthHandlerTest {
 		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-		System.out.println(resultingKml);
+//		System.out.println(resultingKml);
 		
 		//THEN
 		assertFalse(resultingKml.contains("<styleUrl>#style3</styleUrl>"));

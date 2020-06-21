@@ -28,9 +28,9 @@ public class GoogleEarthHandler {
 		this.document = document;
 		Element documentRoot = document.getDocumentElement();
 		log.info("Document and {} are received", multipartDto);
-		//If something static will be set we have to delete all the dynamic <StyleMap>'s
+		//If something static is set we have to delete all the dynamic <StyleMap>'s
 		if (multipartDto.getPointIconSize() != null || multipartDto.getPointTextSize() != null ||
-			  multipartDto.getPointTextColor() != null) {
+			multipartDto.getPointTextColor() != null) {
 			processStyleMaps(documentRoot, multipartDto);
 		}
 		if (multipartDto.getPointIconSize() != null) {
@@ -41,6 +41,15 @@ public class GoogleEarthHandler {
 		}
 		if (multipartDto.getPointTextColor() != null) {
 			setPointTextColor(documentRoot, multipartDto);
+		}
+		//If something dynamic is set we create <StyleMap>'s, additional <Style>'s
+		// and <Pair>'s with <key>'s 'normal' and 'highlighted'.
+		if (multipartDto.getPointIconSizeDynamic() != null || multipartDto.getPointTextSizeDynamic() != null ||
+			multipartDto.getPointTextColorDynamic() != null) {
+			createStyleMaps();
+		}
+		if (multipartDto.getPointIconSizeDynamic() != null) {
+			//
 		}
 		return this.document;
 	}
@@ -69,7 +78,7 @@ public class GoogleEarthHandler {
 	 * </LabelStyle>
 	 * </Style>}
 	 * <Placemark>
-	 *     <styleUrl>#styleMap1</styleUrl>
+	 * <styleUrl>#styleMap1</styleUrl>
 	 * </Placemark>
 	 * Within all the <Placemark><styleUrl/></Placemark> replaces all references to <StyleMap/> with <Style/>
 	 * 1) Checks all the "styleUrl"'s from "Placemark"'s whether they are pointing to "StyleMap"
@@ -91,6 +100,8 @@ public class GoogleEarthHandler {
 	}
 	
 	/**
+	 * Replaces links to StyleMaps with links to Styles with key "normal" into all Placemarks.
+	 * Given:
 	 * {@literal
 	 * <StyleMap id="styleMap">
 	 * <Pair>
@@ -105,13 +116,14 @@ public class GoogleEarthHandler {
 	 * <name>Test Placemark 2</name>
 	 * <styleUrl>#styleMap</styleUrl>
 	 * </Placemark>
-	 * Replaces <styleUrl>#styleMap</styleUrl> of <Placemark> with <styleUrl>#style1</styleUrl>}
+	 * This method
+	 * Replaces <styleUrl>#styleMap</styleUrl> of <Placemark> with "normal" <styleUrl>#style1</styleUrl>}
 	 */
 	private void replacePlacemarksStyleUrl() {
 		NodeList placemarkNodes = document.getElementsByTagName("Placemark");
 		//<styleUrl>'s from <Placemark>'s
 		List<Node> placemarksStyleUrls =
-			  getChildNodesFromParents(placemarkNodes, "styleUrl", false, false);
+			getChildNodesFromParents(placemarkNodes, "styleUrl", false, false);
 		for (int i = 0; i < placemarksStyleUrls.size(); i++) {
 			Node placemarkStyleUrlNode = placemarksStyleUrls.get(i);
 			String currentUrl = placemarkStyleUrlNode.getTextContent(); //#exampleUrl
@@ -158,58 +170,24 @@ public class GoogleEarthHandler {
 		
 		for (int i = 0; i < styleMapNodes.getLength(); i++) {
 			Node styleMapNode = styleMapNodes.item(i);
-			if (styleMapNode.hasAttributes() && styleMapNode.getAttributes().getNamedItem("id") != null) {
-				Node idNode = styleMapNode.getAttributes().getNamedItem("id");
-				String idAttribute = idNode.getTextContent();
-				if (idAttribute.equals(trimmedUrl)) return getKeyNormalStyleUrlFromStyleMap(styleMapNode);
-			}
+			Node idNode = styleMapNode.getAttributes().getNamedItem("id");
+			String idAttribute = idNode.getTextContent();
+			if (idAttribute.equals(trimmedUrl)) return getKeyNormalStyleUrlFromStyleMap(styleMapNode);
 		}
 		//No <StyleMap> with such an "id" attribute
 		return styleUrl;
 	}
 	
-/*
-	private String getKeyNormalStyleUrlFromStyleMap(Node styleMap) {
-		NodeList styleMapChildNodes = styleMap.getChildNodes();
-		
-		String styleUrlToNormal = "";
-		
-		start:
-		for (int i = 0; i < styleMapChildNodes.getLength(); i++) {
-			Node styleMapChildNode = styleMapChildNodes.item(i);
-			
-			if (styleMapChildNode.getNodeName() != null && styleMapChildNode.getNodeName().equals("Pair")) {
-				NodeList pairChildNodes = styleMapChildNode.getChildNodes();
-				
-				for (int j = 0; j < pairChildNodes.getLength(); j++) {
-					Node pairChildNode = pairChildNodes.item(j);
-					if (pairChildNode.getNodeName() != null && pairChildNode.getNodeName().equals("key")) {
-						//<Pair> <key>normal</key> <styleUrl>#exampleUrl</styleUrl> </Pair>
-						if (pairChildNode.getTextContent().equalsIgnoreCase("normal")) {
-							Node normalStyleUrl =
-								getChildNodesFromParent(pairChildNode.getParentNode(), "styleUrl", null, false)
-									.get(0);
-							styleUrlToNormal = normalStyleUrl.getTextContent();
-							break start;
-						}
-					}
-				}
-			}
-		}
-		return styleUrlToNormal;
-	}
-*/
-	
 	private String getKeyNormalStyleUrlFromStyleMap(Node styleMap) {
 		List<Node> pairNodes = getChildNodesFromParent(styleMap, "Pair", null, false, false);
 		//<Pair> <key>normal</key> <styleUrl>#exampleUrl</styleUrl> </Pair>
 		Node pairWithKeyNormal = pairNodes.stream()
-			  .filter(pairNode ->
-					!getChildNodesFromParent(pairNode, "key", "normal", false, false).isEmpty())
-			  .collect(Collectors.toList()).get(0);
+			.filter(pairNode ->
+				!getChildNodesFromParent(pairNode, "key", "normal", false, false).isEmpty())
+			.collect(Collectors.toList()).get(0);
 		
 		return getChildNodesFromParent(pairWithKeyNormal, "styleUrl", null, false, false)
-			  .get(0).getTextContent();
+			.get(0).getTextContent();
 	}
 	
 	/**
@@ -227,7 +205,7 @@ public class GoogleEarthHandler {
 		for (int i = 0; i < styleNodes.getLength(); i++) {
 			Node styleNode = styleNodes.item(i);
 			if (styleNode.getAttributes() != null && styleNode.getAttributes().getNamedItem("id") != null) {
-					String idAttributeString = styleNode.getAttributes().getNamedItem("id").getTextContent();
+				String idAttributeString = styleNode.getAttributes().getNamedItem("id").getTextContent();
 				if (!urlsToStyles.contains(idAttributeString)) {
 					styleNode.getParentNode().removeChild(styleNode);
 				}
@@ -271,81 +249,6 @@ public class GoogleEarthHandler {
 		log.info("Names color has been set.");
 	}
 	
-	/**
-	 * @param iconStyles {@link NodeList} from all presented <Style/>'s within xml Document.
-	 * @return <scale/> of every <IconStyle/> from every <Style/>
-	 */
-/*
-	private List<Node> getIconStylesScales(NodeList iconStyles) {
-		List<Node> scales = new ArrayList<>();
-		//Look through every <IconStyle>
-		iconStyles:
-		for (int i = 0; i < iconStyles.getLength(); i++) {
-			Node iconStyle = iconStyles.item(i);
-			
-			NodeList iconStyleChildNodes = iconStyle.getChildNodes();
-			for (int j = 0; j < iconStyleChildNodes.getLength(); j++) {
-				Node iconStyleChild = iconStyleChildNodes.item(j);
-				if (iconStyleChild.getNodeType() != Node.ELEMENT_NODE || iconStyleChild.getNodeName() == null) continue;
-				//Scale tag is presented, just insert a new value
-				if (iconStyleChild.getNodeName().equals("scale")) {
-					scales.add(iconStyleChild);
-					log.trace("Existing <scale> has been found in <IconStyle>");
-					continue iconStyles;
-				}
-			}
-			//Scale tag not presented, create a new one, append it to parent and add to the resulting List
-			Element scale = document.createElement("scale");
-			iconStyle.appendChild(scale);
-			scales.add(scale);
-			log.trace("The new <scale> has been added into <IconStyle>");
-		}
-		log.debug("All <scale>'s within <IconStyle>'s tags have been found or created");
-		return scales;
-	}
-*/
-	
-	/**
-	 * @param iconStyles {@link NodeList} from all presented <Style/>'s within xml Document.
-	 * @return <scale/> of every <IconStyle/> from every <Style/>
-	 */
-/*
-	private List<Node> getIconStylesScales(NodeList iconStyles) {
-		return getChildNodesFromParents(iconStyles, "scale", false, true);
-	}
-*/
-	
-	/**
-	 * @param styles {@link NodeList} with all presented <Style/>'s within xml Document.
-	 * @return <scale/> of every <LabelStyle/> from every <Style/>
-	 */
-/*
-	private List<Node> getLabelStylesScales(NodeList styles) {
-		List<Node> scales = new ArrayList<>();
-		List<Node> labelStyles = getLabelStyles(styles);
-		
-		labelStyles.forEach(labelStyle -> {
-			NodeList labelStyleChildNodes = labelStyle.getChildNodes();
-			for (int i = 0; i < labelStyleChildNodes.getLength(); i++) {
-				Node labelStyleChild = labelStyleChildNodes.item(i);
-				if (labelStyleChild.getNodeType() != Node.ELEMENT_NODE || labelStyleChild.getNodeName() == null)
-					continue;
-				if (labelStyleChild.getNodeName().equals("scale")) {
-					scales.add(labelStyleChild);
-					log.trace("Existing <scale> has been found in <LabelStyle>");
-					return;
-				}
-			}
-			//<scale> isn't presented
-			Node scale = document.createElement("scale");
-			labelStyle.appendChild(scale);
-			scales.add(scale);
-			log.trace("The new <scale> has been added into <LabelStyle>");
-		});
-		log.debug("All <scale>'s within <LabelStyle>'s tags have been found or created.");
-		return scales;
-	}
-*/
 	
 	/**
 	 * @param styleNodes {@link NodeList} with all presented <Style/>'s within xml Document.
@@ -364,38 +267,6 @@ public class GoogleEarthHandler {
 	}
 	
 	/**
-	 * @param styles {@link NodeList} with all presented <Style/>'s within xml Document.
-	 * @return <color/> of every <LabelStyle/> from every <Style/>
-	 */
-/*
-	private List<Node> getLabelStylesColors(NodeList styles) {
-		List<Node> colors = new ArrayList<>();
-		List<Node> labelStyles = getLabelStyles(styles);
-		
-		labelStyles.forEach(labelStyle -> {
-			NodeList labelStyleChildNodes = labelStyle.getChildNodes();
-			for (int i = 0; i < labelStyleChildNodes.getLength(); i++) {
-				Node labelStyleChild = labelStyleChildNodes.item(i);
-				if (labelStyleChild.getNodeType() != Node.ELEMENT_NODE || labelStyleChild.getNodeName() == null)
-					continue;
-				if (labelStyleChild.getNodeName().equals("color")) {
-					colors.add(labelStyleChild);
-					log.trace("Existing <color> has been found in <LabelStyle>");
-					return;
-				}
-			}
-			//<color> isn't presented within <LabelStyle/>
-			Node color = document.createElement("color");
-			labelStyle.appendChild(color);
-			colors.add(color);
-			log.trace("The new <color> has been added into <LabelStyle>");
-		});
-		log.debug("All <color>'s within <LabelStyle>'s tags have been found or created.");
-		return colors;
-	}
-*/
-	
-	/**
 	 * @param styleNodes {@link NodeList} with all presented <Style/>'s within xml Document.
 	 * @return <color/> of every <LabelStyle/> from every <Style/>
 	 */
@@ -410,41 +281,6 @@ public class GoogleEarthHandler {
 		log.debug("All <color>'s within <LabelStyle>'s tags have been found or created.");
 		return labelStylesColorNodes;
 	}
-	
-	/**
-	 * Looks through every <Style/>.
-	 * If <Style/> contains <LabelStyle/> it will be added into the resulting List<Node>.
-	 * Otherwise <LabelStyle/> will be created, appended as a child to the existing <Style/> and added into the resulting list.
-	 *
-	 * @return List of <LabelStyle/> from <Style/>
-	 */
-/*
-	private List<Node> getLabelStyles(NodeList styles) {
-		List<Node> labelStyles = new ArrayList<>();
-		style:
-		for (int i = 0; i < styles.getLength(); i++) {
-			Node style = styles.item(i);
-			
-			NodeList styleChildNodes = style.getChildNodes();
-			for (int j = 0; j < styleChildNodes.getLength(); j++) {
-				Node styleChild = styleChildNodes.item(j);
-				if (styleChild.getNodeType() != Node.ELEMENT_NODE) continue;
-				if (styleChild.getNodeName().equals("LabelStyle")) {
-					labelStyles.add(styleChild);
-					log.trace("Existing <LabelStyle> has been found.");
-					continue style;
-				}
-			}
-			//<LabelStyle> isn't presented within <Style> parent. Create a new one and append it to <Style> parent
-			Node labelStyle = document.createElement("LabelStyle");
-			style.appendChild(labelStyle);
-			labelStyles.add(labelStyle);
-			log.trace("The new <LabelStyle> has been created and added.");
-		}
-		log.debug("All <LabelStyle>'s within Documents have been found or created.");
-		return labelStyles;
-	}
-*/
 	
 	/**
 	 * Converts standard HEX color from HTML User input into KML color standard.
@@ -472,7 +308,7 @@ public class GoogleEarthHandler {
 		log.debug("Got '{}' hex color input", hexColor);
 		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
 			throw new IllegalArgumentException(
-				  "Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
+				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
 		}
 		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
 		log.debug("Hex color has been converted into '{}' KML color", kmlColor);
@@ -505,6 +341,63 @@ public class GoogleEarthHandler {
 		return hexFormat;
 	}
 	
+	private void createStyleMaps() {
+		Element documentElement = document.getDocumentElement();
+		List<Node> styleNodes = getChildNodesFromParent(documentElement, "Style", null, false, false);
+		styleNodes.forEach(styleNode -> {
+			Node highlightStyleNode = createHighlightStyle(styleNode);
+			Node styleMap = createStyleMap(styleNode, highlightStyleNode);
+		});
+		
+		Node name = getChildNodesFromParent(documentElement, "name", null, false, false).get(0);
+		name.insertBefore(null, name);
+	}
+	
+	private Node createHighlightStyle(Node styleNode) {
+		Element styleHighlightNode = (Element) styleNode.cloneNode(true);
+		styleHighlightNode.setAttribute("id", "highlight:" + styleNode.getAttributes().getNamedItem("id").toString());
+		return styleHighlightNode;
+	}
+	
+	/**
+	 * {@literal
+	 * <StyleMap id="styleMap1">
+	 * <Pair>
+	 * <key>normal</key>
+	 * <styleUrl>#style1</styleUrl>
+	 * </Pair>
+	 * <Pair>
+	 * <key>highlight</key>
+	 * <styleUrl>#style2</styleUrl>
+	 * </Pair>
+	 * </StyleMap>
+	 * }
+	 */
+	private Node createStyleMap(Node styleNode, Node styleHighlightNode) {
+		Element styleMapNode = document.createElement("StyleMap");
+		styleMapNode.setAttribute("id", "styleMap:" + styleNode.getAttributes().getNamedItem("id").toString());
+		Element pairNormalNode = document.createElement("Pair");
+		Element keyNormalNode = document.createElement("key");
+		keyNormalNode.setTextContent("normal");
+		Element styleUrlNormal = document.createElement("styleUrl");
+		styleUrlNormal.setTextContent("#" + styleNode.getAttributes().getNamedItem("id").getTextContent());
+		pairNormalNode.appendChild(keyNormalNode);
+		pairNormalNode.appendChild(styleUrlNormal);
+		styleMapNode.appendChild(pairNormalNode);
+		
+		Element pairHighlightNode = document.createElement("Pair");
+		Element keyHighlightNode = document.createElement("key");
+		keyHighlightNode.setTextContent("highlight");
+		Element styleUrlHighlight = document.createElement("styleUrl");
+//		styleUrlHighlight.setTextContent("#" + styleNode.getAttributes().getNamedItem("id").getTextContent());
+		pairHighlightNode.appendChild(keyHighlightNode);
+		pairHighlightNode.appendChild(styleUrlHighlight);
+		styleMapNode.appendChild(pairHighlightNode);
+		
+		Node nameNode = getChildNodesFromParent(document.getDocumentElement(), "name", null, false, false).get(0);
+		document.insertBefore(styleMapNode, nameNode);
+	}
+	
 	/**
 	 * Some programs as Google Earth has special href they internally redirect to their local image store.
 	 * It is not recommended to change those type of hrefs.
@@ -535,9 +428,9 @@ public class GoogleEarthHandler {
 	 * @throws IllegalArgumentException if 'recursively' and 'createIfAbsent' both == true.
 	 */
 	List<Node> getChildNodesFromParents(NodeList parents, String childNodeName, boolean recursively, boolean createIfAbsent)
-		  throws IllegalArgumentException {
+		throws IllegalArgumentException {
 		if (recursively && createIfAbsent) throw new IllegalArgumentException(
-			  "You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
+			"You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
 		
 		List<Node> children = new ArrayList<>();
 		
@@ -547,8 +440,8 @@ public class GoogleEarthHandler {
 			if (recursively) {
 				List<Node> allChildNodes = getAllChildrenRecursively(new ArrayList<>(), parentNode);
 				allChildNodes.stream()
-					  .filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
-					  .forEach(children::add);
+					.filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
+					.forEach(children::add);
 				continue;
 			}
 			//Looking through direct children
@@ -567,7 +460,7 @@ public class GoogleEarthHandler {
 				parentNode.appendChild(newChildNode);
 				children.add(newChildNode);
 				log.trace("As 'createIfAbsent'== true and <{}> has't been found in <{}> it was created and appended",
-					  childNodeName, parentNode.getNodeName());
+					childNodeName, parentNode.getNodeName());
 			} else {
 				//Just add the found children (even if they aren't)
 				children.addAll(existingChildren);
@@ -588,11 +481,11 @@ public class GoogleEarthHandler {
 	 * @throws IllegalArgumentException if 'recursively' and 'createIfAbsent' both == true.
 	 */
 	List<Node> getChildNodesFromParent(
-		  Node parent, String childNodeName, @Nullable String childNodeValue, boolean recursively, boolean createIfAbsent)
-		  throws IllegalArgumentException {
+		Node parent, String childNodeName, @Nullable String childNodeValue, boolean recursively, boolean createIfAbsent)
+		throws IllegalArgumentException {
 		
 		if (recursively && createIfAbsent) throw new IllegalArgumentException(
-			  "You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
+			"You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
 		
 		List<Node> childrenNodesToBeReturned = new ArrayList<>();
 		
@@ -604,8 +497,8 @@ public class GoogleEarthHandler {
 			if (recursively) {
 				List<Node> allChildren = getAllChildrenRecursively(new ArrayList<>(), childNode);
 				allChildren.stream()
-					  .filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
-					  .forEach(existingChildren::add);
+					.filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
+					.forEach(existingChildren::add);
 				continue;
 			}
 			if (childNode.getNodeName() != null && childNode.getNodeName().equals(childNodeName)) {
@@ -622,13 +515,13 @@ public class GoogleEarthHandler {
 			parent.appendChild(newChildNode);
 			childrenNodesToBeReturned.add(newChildNode);
 			log.trace("As 'createIfAbsent'== true and <{}> has't been found in <{}> it was created and appended",
-				  childNodeName, parent.getNodeName());
+				childNodeName, parent.getNodeName());
 		} else {
 			//Just add the found children (even if they aren't)
 			childrenNodesToBeReturned.addAll(existingChildren);
 		}
 		log.trace("{} <{}> children have been found for <{}>",
-			  childrenNodesToBeReturned.size(), childNodeName, parent.getNodeName());
+			childrenNodesToBeReturned.size(), childNodeName, parent.getNodeName());
 		return childrenNodesToBeReturned;
 	}
 	
