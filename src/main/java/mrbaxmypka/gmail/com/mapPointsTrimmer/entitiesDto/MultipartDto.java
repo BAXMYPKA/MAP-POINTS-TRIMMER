@@ -392,7 +392,7 @@ public class MultipartDto implements Serializable {
 		if (pointIconSizeDynamic != null && pointIconSizeDynamic > MAX_ICON_SIZE_PERCENTS) {
 			throw new NumberFormatException("Point Icon Size cannot exceed 300%!");
 		} else {
-			this.pointIconSize = pointIconSizeDynamic;
+			this.pointIconSizeDynamic = pointIconSizeDynamic;
 		}
 	}
 	
