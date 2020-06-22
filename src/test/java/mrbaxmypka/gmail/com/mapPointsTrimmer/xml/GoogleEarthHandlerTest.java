@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -719,10 +720,141 @@ class GoogleEarthHandlerTest {
 		assertTrue(kmlColorWithOpacity.startsWith(separateHexOpacityValue));
 	}
 	
+	@ParameterizedTest
+	@ValueSource(strings = {"iconSize", "textSize", "textColor"})
+	public void static_Sets_Should_Update_Only_Normal_Style_From_Style_Map(String staticType)
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		//GIVEN <StyleMap>'s and <Style>'s with all the <scale>0.8</scale>
+		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"<Document>\n" +
+			"\t<name>Google Earth Test Poi</name>\n" +
+			"\t<StyleMap id=\"styleMap1\">\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>normal</key>\n" +
+			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>highlight</key>\n" +
+			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t</StyleMap>\n" +
+			"\t<StyleMap id=\"styleMap2\">\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>normal</key>\n" +
+			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>highlight</key>\n" +
+			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t</StyleMap>\n" +
+			"\t<Style id=\"style1\">\n" +
+			"\t\t<IconStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t</IconStyle>\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style2\">\n" +
+			"\t\t<IconStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t</IconStyle>\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style3\">\n" +
+			"\t\t<IconStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t</IconStyle>\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style4\">\n" +
+			"\t\t<IconStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t</IconStyle>\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style5\">\n" +
+			"\t\t<IconStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t</IconStyle>\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.8</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 1</name>\n" +
+			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+			"\t\t\t<Point></Point>\n" +
+			"\t</Placemark>\n" +
+			"\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 2</name>\n" +
+			"\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
+			"\t\t\t<Point></Point>\n" +
+			"\t</Placemark>\n" +
+			"\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 3</name>\n" +
+			"\t\t\t<styleUrl>#style4</styleUrl>\n" +
+			"\t\t\t<Point></Point>\n" +
+			"\t</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>";
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		
+		Integer textAndIconSize = 50;
+		String htmlPointsTextColor = "#ffffff";
+		
+		if (staticType.equals("iconSize")) {
+			multipartDto.setPointIconSize(textAndIconSize);
+		} else if (staticType.equals("textSize")) {
+			multipartDto.setPointTextSize(textAndIconSize);
+		} else if (staticType.equals("textColor")) {
+			multipartDto.setPointTextColor(htmlPointsTextColor);
+		}
+		Document document = getDocument(multipartDto);
+		
+		//WHEN
+		document = googleEarthHandler.processXml(document, multipartDto);
+		String processedKml = kmlHandler.writeTransformedDocument(document);
+//		System.out.println(processedKml);
+		
+		//THEN
+		//Only the "normal" #style1, #style2 from <StyleMap>'s and the referenced from <Placemark> #style4 should be changed (3 pieces)
+		//But "highlighted" #style3 from <StyleMap> and unused #style4 should be unchanged (2 pieces)
+		if (staticType.equals("iconSize")) {
+			String pointIconScale = multipartDto.getPointIconSizeScaled().toString();
+			assertTrue(containsElement(document, "IconStyle", 3, "scale", pointIconScale));
+			assertTrue(containsElement(document, "IconStyle", 2, "scale", "0.8"));
+		} else if (staticType.equals("textSize")) {
+			String pointsTextScale = multipartDto.getPointTextSizeScaled().toString();
+			assertTrue(containsElement(document, "LabelStyle", 3, "scale", pointsTextScale));
+			assertTrue(containsElement(document, "LabelStyle", 2, "scale", "0.8"));
+		} else if (staticType.equals("textColor")) {
+			String kmlColor = googleEarthHandler.getKmlColor(htmlPointsTextColor, multipartDto);
+			assertTrue(containsElement(document, "LabelStyle", 3, "color", kmlColor));
+			assertTrue(containsElement(document, "LabelStyle", 2, "color", "00000000"));
+		}
+		
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////// DYNAMIC STYLES TESTS /////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	@Disabled
 	@Test
 	public void with_Static_Parameters_Should_Delete_All_StyleMaps()
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
@@ -804,6 +936,7 @@ class GoogleEarthHandlerTest {
 		assertFalse(resultingKml.contains("<StyleMap"));
 	}
 	
+	@Disabled
 	@Test
 	public void with_Static_Parameters_Placemarks_StyleUrls_To_StyleMaps_Should_Be_Replaced_With_Key_Normal_Style_Url()
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
@@ -984,8 +1117,9 @@ class GoogleEarthHandlerTest {
 			processedDocument, "Placemark", "styleUrl", "#style3"));
 	}
 	
+	@Disabled
 	@Test
-	public void with_Static_Parameters_Unused_Styles_Should_Be_Deleted()
+	public void with_Dynamic_Parameters_Unused_Styles_Should_Be_Deleted()
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
 		//GIVEN <Style id="style3"> is the <highlight> of <StyleMap id=styleMap1">. Unused and should be deleted
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1078,35 +1212,31 @@ class GoogleEarthHandlerTest {
 	}
 	
 	/**
-	 * @param document               To be parsed
-	 * @param parentTagName          Parent tagName to be created or an existing one
-	 * @param howManyParents         How many parents should be presented within the given document
-	 * @param desiredChildrenTagName Parent's children tagName that should be presented strictly within parent's tag
-	 * @param desiredChildrenValue   What exact text value should those children have.
+	 * @param document                     The source to be parsed
+	 * @param parentTagName                Parent tagName to be created or an existing one
+	 * @param numOfParentsWithDesiredChild How many parents with the desired child should be presented within the given document
+	 * @param desiredChildrenTagName       Parent's children tagName that should be presented strictly within parent's tag
+	 * @param desiredChildrenValue         What exact text value should those children have.
 	 * @return True if all the conditions are valid
 	 */
 	private boolean containsElement(
-		Document document, String parentTagName, int howManyParents, String desiredChildrenTagName, String desiredChildrenValue) {
-		int parentsCount;
-		int childrenCount = 0;
-		boolean isValueEquals = false;
+		Document document, String parentTagName, int numOfParentsWithDesiredChild, String desiredChildrenTagName, String desiredChildrenValue) {
+		int parentsWithDesiredChildCount = 0;
 		
 		NodeList parents = document.getElementsByTagName(parentTagName);
-		parentsCount = parents.getLength();
 		for (int i = 0; i < parents.getLength(); i++) {
 			
 			Node parent = parents.item(i);
 			NodeList parentChildNodes = parent.getChildNodes();
 			for (int j = 0; j < parentChildNodes.getLength(); j++) {
-				Node children = parentChildNodes.item(j);
-				if (children.getNodeName().equals(desiredChildrenTagName)) {
-					childrenCount += 1;
-					isValueEquals = children.getTextContent().equals(desiredChildrenValue);
+				Node child = parentChildNodes.item(j);
+				if (child.getNodeName().equals(desiredChildrenTagName) && child.getTextContent().equals(desiredChildrenValue)) {
+					parentsWithDesiredChildCount += 1;
 				}
 			}
 			
 		}
-		return howManyParents == parentsCount && childrenCount == parentsCount && isValueEquals;
+		return parentsWithDesiredChildCount == numOfParentsWithDesiredChild;
 	}
 	
 	/**

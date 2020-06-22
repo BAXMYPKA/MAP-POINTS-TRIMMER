@@ -12,8 +12,7 @@ import org.w3c.dom.NodeList;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,25 +21,29 @@ import java.util.stream.Collectors;
 public class GoogleEarthHandler {
 	
 	private Document document;
+	/**
+	 * {@literal <Style>'s and <StyleMap>'s Nodes by their "id" attributes}
+	 */
+	private Map<String, Node> styleObjects;
+	private List<String> styleUrlsFromPlacemarks;
 	
 	//TODO: regenerate docs
 	Document processXml(Document document, MultipartDto multipartDto) {
 		this.document = document;
 		Element documentRoot = document.getDocumentElement();
 		log.info("Document and {} are received", multipartDto);
-		//If something static is set we have to delete all the dynamic <StyleMap>'s
-		if (multipartDto.getPointIconSize() != null || multipartDto.getPointTextSize() != null ||
-			multipartDto.getPointTextColor() != null) {
-			processStyleMaps(documentRoot, multipartDto);
-		}
+		
+		setStyleObjects();
+		setStyleUrlsFromPlacemarks();
+		
 		if (multipartDto.getPointIconSize() != null) {
-			setPointsIconsSize(documentRoot, multipartDto);
+			setPointsIconsSize(multipartDto);
 		}
 		if (multipartDto.getPointTextSize() != null) {
-			setPointTextSize(documentRoot, multipartDto);
+			setPointTextSize(multipartDto);
 		}
 		if (multipartDto.getPointTextColor() != null) {
-			setPointTextColor(documentRoot, multipartDto);
+			setPointTextColor(multipartDto);
 		}
 		//If something dynamic is set we create <StyleMap>'s, additional <Style>'s
 		// and <Pair>'s with <key>'s 'normal' and 'highlighted'.
@@ -51,7 +54,31 @@ public class GoogleEarthHandler {
 		if (multipartDto.getPointIconSizeDynamic() != null) {
 			//
 		}
+
+//		deleteUnusedStyles();
 		return this.document;
+	}
+	
+	private void setStyleObjects() {
+		styleObjects = new HashMap<>();
+		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
+		NodeList styleNodes = document.getElementsByTagName("Style");
+		for (int i = 0; i < styleMapNodes.getLength(); i++) {
+			Node styleMapNode = styleMapNodes.item(i);
+			styleObjects.put(styleMapNode.getAttributes().getNamedItem("id").getTextContent(), styleMapNode);
+		}
+		for (int i = 0; i < styleNodes.getLength(); i++) {
+			Node styleNode = styleNodes.item(i);
+			styleObjects.put(styleNode.getAttributes().getNamedItem("id").getTextContent(), styleNode);
+		}
+	}
+	
+	private void setStyleUrlsFromPlacemarks() {
+		this.styleUrlsFromPlacemarks =
+			getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false)
+				.stream()
+				.map(styleUrlNode -> styleUrlNode.getTextContent().substring(1))
+				.collect(Collectors.toList());
 	}
 	
 	/**
@@ -215,15 +242,22 @@ public class GoogleEarthHandler {
 	
 	//TODO: to use XPath to select only <Style/>'s with attribute id=""
 	
-	/**
-	 * Applies only to existing <IconStyle> tags.
-	 */
-	private void setPointsIconsSize(Element documentRoot, MultipartDto multipartDto) {
+	private void setPointsIconsSize(MultipartDto multipartDto) {
 		log.info("Setting the icons size...");
+		
 		String scale = multipartDto.getPointIconSizeScaled().toString();
-		NodeList iconStyles = documentRoot.getElementsByTagName("IconStyle");
-		List<Node> scales = getChildNodesFromParents(iconStyles, "scale", false, true);
-		scales.forEach(scaleNode -> scaleNode.setTextContent(scale));
+		
+		styleUrlsFromPlacemarks.forEach(styleUrl -> {
+			Node styleObject = styleObjects.get(styleUrl);
+			if (styleObject.getNodeName().equals("Style")) {
+				Node iconStyleScaleNode = getIconStyleScaleNodeFromStyle(styleObject);
+				iconStyleScaleNode.setTextContent(scale);
+			} else if (styleObject.getNodeName().equals("StyleMap")) {
+				Node normalStyleNode = getNormalStyleNodeFromStyleMap(styleObject);
+				Node iconStyleScaleNode = getIconStyleScaleNodeFromStyle(normalStyleNode);
+				iconStyleScaleNode.setTextContent(scale);
+			}
+		});
 		log.info("Icons size has been set.");
 	}
 	
@@ -231,24 +265,80 @@ public class GoogleEarthHandler {
 	 * Either applies to existing <LabelStyle> tags or a new ones will be created for every <Style>.
 	 * Because <LabelStyle> automatically displays <name> content from <Placemark>s.
 	 */
-	private void setPointTextSize(Element documentRoot, MultipartDto multipartDto) {
+	private void setPointTextSize(MultipartDto multipartDto) {
 		log.info("Setting the points names size...");
 		String scale = multipartDto.getPointTextSizeScaled().toString();
-		NodeList styles = documentRoot.getElementsByTagName("Style");
-		List<Node> scales = getLabelStylesScales(styles);
-		scales.forEach(scaleNode -> scaleNode.setTextContent(scale));
+		
+		styleUrlsFromPlacemarks.forEach(styleUrl -> {
+			Node styleObject = styleObjects.get(styleUrl);
+			if (styleObject.getNodeName().equals("Style")) {
+				Node labelStyleScaleNode = getLabelStyleScaleNodeFromStyle(styleObject);
+				labelStyleScaleNode.setTextContent(scale);
+			} else if (styleObject.getNodeName().equals("StyleMap")) {
+				Node normalStyleNode = getNormalStyleNodeFromStyleMap(styleObject);
+				Node labelStyleScaleNode = getLabelStyleScaleNodeFromStyle(normalStyleNode);
+				labelStyleScaleNode.setTextContent(scale);
+			}
+		});
 		log.info("Points names size has been set.");
 	}
 	
-	private void setPointTextColor(Element documentRoot, MultipartDto multipartDto) {
+	private void setPointTextColor(MultipartDto multipartDto) {
 		log.info("Setting the names text color...");
-		String color = getKmlColor(multipartDto.getPointTextColor(), multipartDto);
-		NodeList styles = documentRoot.getElementsByTagName("Style");
-		List<Node> colors = getLabelStylesColors(styles);
-		colors.forEach(colorNode -> colorNode.setTextContent(color));
+		String kmlColor = getKmlColor(multipartDto.getPointTextColor(), multipartDto);
+		
+		styleUrlsFromPlacemarks.forEach(styleUrl -> {
+			Node styleObject = styleObjects.get(styleUrl);
+			if (styleObject.getNodeName().equals("Style")) {
+				Node labelStyleColorNode = getLabelStyleColorNodeFromStyle(styleObject);
+				labelStyleColorNode.setTextContent(kmlColor);
+			} else if (styleObject.getNodeName().equals("StyleMap")) {
+				Node normalStyleNode = getNormalStyleNodeFromStyleMap(styleObject);
+				Node labelStyleColorNode = getLabelStyleColorNodeFromStyle(normalStyleNode);
+				labelStyleColorNode.setTextContent(kmlColor);
+			}
+		});
 		log.info("Names color has been set.");
 	}
 	
+	private Node getIconStyleScaleNodeFromStyle(Node styleNode) {
+		Node iconStyleNode = getChildNodesFromParent(styleNode, "IconStyle", null, false, true).get(0);
+		return getChildNodesFromParent(iconStyleNode, "scale", null, false, true).get(0);
+	}
+	
+	private Node getLabelStyleScaleNodeFromStyle(Node styleNode) {
+		Node labelStyleNode = getChildNodesFromParent(styleNode, "LabelStyle", null, false, true).get(0);
+		return getChildNodesFromParent(labelStyleNode, "scale", null, false, true).get(0);
+	}
+	
+	private Node getLabelStyleColorNodeFromStyle(Node styleNode) {
+		Node labelStyleNode = getChildNodesFromParent(styleNode, "LabelStyle", null, false, true).get(0);
+		return getChildNodesFromParent(labelStyleNode, "color", null, false, true).get(0);
+	}
+	
+	private Node getNormalStyleNodeFromStyleMap(Node styleMap) {
+		return getChildNodesFromParent(styleMap, "Pair", null, false, false)
+			.stream()
+			.filter(pairNode -> !getChildNodesFromParent(pairNode, "key", "normal", false, false).isEmpty())
+			.findFirst()
+			.map(normalPairNode -> getChildNodesFromParent(normalPairNode, "styleUrl", null, false, false).get(0))
+			.map(normalStyleUrl -> styleObjects.get(normalStyleUrl.getTextContent().substring(1)))
+			.get();
+	}
+	
+/*
+	private Node getNormalStyleNodeFromStyleMap(Node styleMap) {
+		Optional<Node> first = getChildNodesFromParent(styleMap, "Pair", null, false, false)
+			.stream()
+			.filter(pairNode -> !getChildNodesFromParent(pairNode, "key", "normal", false, false).isEmpty())
+			.findFirst();
+		Optional<Node> styleUrl = first
+			.map(normalPairNode -> getChildNodesFromParent(normalPairNode, "styleUrl", null, false, false).get(0));
+		Optional<String> node = styleUrl.map(normalStyleUrl -> normalStyleUrl.getTextContent());
+		
+		return styleObjects.get(node.get());
+	}
+*/
 	
 	/**
 	 * @param styleNodes {@link NodeList} with all presented <Style/>'s within xml Document.
@@ -346,7 +436,7 @@ public class GoogleEarthHandler {
 		List<Node> styleNodes = getChildNodesFromParent(documentElement, "Style", null, false, false);
 		styleNodes.forEach(styleNode -> {
 			Node highlightStyleNode = createHighlightStyle(styleNode);
-			Node styleMap = createStyleMap(styleNode, highlightStyleNode);
+			Node styleMap = createStyleMapNode(styleNode, highlightStyleNode);
 		});
 		
 		Node name = getChildNodesFromParent(documentElement, "name", null, false, false).get(0);
@@ -373,7 +463,7 @@ public class GoogleEarthHandler {
 	 * </StyleMap>
 	 * }
 	 */
-	private Node createStyleMap(Node styleNode, Node styleHighlightNode) {
+	private Node createStyleMapNode(Node styleNode, Node styleHighlightNode) {
 		Element styleMapNode = document.createElement("StyleMap");
 		styleMapNode.setAttribute("id", "styleMap:" + styleNode.getAttributes().getNamedItem("id").toString());
 		Element pairNormalNode = document.createElement("Pair");
@@ -396,6 +486,7 @@ public class GoogleEarthHandler {
 		
 		Node nameNode = getChildNodesFromParent(document.getDocumentElement(), "name", null, false, false).get(0);
 		document.insertBefore(styleMapNode, nameNode);
+		return styleMapNode;
 	}
 	
 	/**
@@ -467,6 +558,58 @@ public class GoogleEarthHandler {
 			}
 		}
 		log.trace("{} <{}> children have been found for <{}>", children.size(), childNodeName, parents.item(0).getNodeName());
+		return children;
+	}
+	
+	/**
+	 * @param parents        A Parents {@link NodeList} to find children of
+	 * @param childNodeName  A Child Node tag name to be found
+	 * @param recursively    To look through the children of all the children of every Node
+	 * @param createIfAbsent If not a such Child Node within the Parent Node found
+	 *                       a new one will be created, appended to the Parent and added to the resulting List.
+	 * @return A List of Children Nodes or {@link java.util.Collections#EMPTY_LIST} if nothing found.
+	 * @throws IllegalArgumentException if 'recursively' and 'createIfAbsent' both == true.
+	 */
+	List<Node> getChildNodesFromParents(List<Node> parents, String childNodeName, boolean recursively, boolean createIfAbsent)
+		throws IllegalArgumentException {
+		if (recursively && createIfAbsent) throw new IllegalArgumentException(
+			"You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
+		
+		List<Node> children = new ArrayList<>();
+		
+		for (int i = 0; i < parents.size(); i++) {
+			Node parentNode = parents.get(i);
+			//Looking through all the children of all the children for the given parent
+			if (recursively) {
+				List<Node> allChildNodes = getAllChildrenRecursively(new ArrayList<>(), parentNode);
+				allChildNodes.stream()
+					.filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
+					.forEach(children::add);
+				continue;
+			}
+			//Looking through direct children
+			NodeList childNodes = parentNode.getChildNodes();
+			List<Node> existingChildren = new ArrayList<>();
+			for (int j = 0; j < childNodes.getLength(); j++) {
+				Node childNode = childNodes.item(j);
+				if (childNode.getNodeName() != null && childNode.getNodeName().equals(childNodeName)) {
+					existingChildren.add(childNode);
+					log.trace("Existing <{}> has been found in <{}>", childNodeName, parentNode.getNodeName());
+				}
+			}
+			if (createIfAbsent && existingChildren.isEmpty()) {
+				//Has to create a child if absent and no child is exist
+				Element newChildNode = document.createElement(childNodeName);
+				parentNode.appendChild(newChildNode);
+				children.add(newChildNode);
+				log.trace("As 'createIfAbsent'== true and <{}> has't been found in <{}> it was created and appended",
+					childNodeName, parentNode.getNodeName());
+			} else {
+				//Just add the found children (even if they aren't)
+				children.addAll(existingChildren);
+			}
+		}
+		log.trace("{} <{}> children have been found for <{}>", children.size(), childNodeName, parents.get(0).getNodeName());
 		return children;
 	}
 	
