@@ -107,7 +107,11 @@ public class MultipartDto implements Serializable {
 	@Max(value = 300, message = "{validation.maxNumber}")
 	private Integer pointTextSize;
 	
+	//TODO: to examine HEXCOLORS in hmtml
+	
 	/**
+	 * Standard HTML hex color value as #ffffff.
+	 * For using in kml should be converted into kml color by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.xml.GoogleEarthHandler#getKmlColor(String, MultipartDto)}
 	 * (https://developers.google.com/kml/documentation/kmlreference#colorstyle)
 	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
 	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
@@ -116,7 +120,7 @@ public class MultipartDto implements Serializable {
 	 * you would specify the following: {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
 	 */
 	@Nullable
-	private String pointTextColor;
+	private String pointTextHexColor;
 	
 	/**
 	 * <p>For User's convenience it represents a percentage input as 0 - 100%.</p>
@@ -169,6 +173,8 @@ public class MultipartDto implements Serializable {
 	private Integer pointTextSizeDynamic;
 	
 	/**
+	 * Standard HTML hex color value as #ffffff.
+	 * For using in kml should be converted into kml color by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.xml.GoogleEarthHandler#getKmlColor(String, MultipartDto)}
 	 * How to display on mouse over (hovering).
 	 * {@literal it will create an additional <Style id="dynamicId"/> and a <StyleMap/>.
 	 * That <StyleMap/> will contain <Pair><key><highlight>#dynamicId</highlight></key></Pair>
@@ -181,10 +187,11 @@ public class MultipartDto implements Serializable {
 	 * you would specify the following: {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
 	 */
 	@Nullable
-	private String pointTextColorDynamic;
+	private String pointTextHexColorDynamic;
 	
 	/**
-	 * How to display on mouse over (hovering).
+	 * A percentage value from 0 to 100%
+	 * Dynamic means how to display on mouse over (hovering).
 	 * {@literal it will create an additional <Style id="dynamicId"/> and a <StyleMap/>.
 	 * That <StyleMap/> will contain <Pair><key><highlight>#dynamicId</highlight></key></Pair>
 	 * as a reference to that additional Style.}
@@ -250,7 +257,7 @@ public class MultipartDto implements Serializable {
 	public BigDecimal getPointIconSizeScaledDynamic() {
 		if (this.pointIconSizeDynamic != null) {
 			return new BigDecimal(
-				String.valueOf(this.pointIconSizeDynamic)).divide(BigDecimal.valueOf(100), 1,	RoundingMode.DOWN);
+				String.valueOf(this.pointIconSizeDynamic)).divide(BigDecimal.valueOf(100), 1, RoundingMode.DOWN);
 		}
 		return null;
 	}
@@ -429,6 +436,8 @@ public class MultipartDto implements Serializable {
 		return this.pointTextSizeDynamic;
 	}
 	
+	//TODO: to write docs for Dynamics with description
+	
 	/**
 	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
 	 * Where 1.0 is the scale of default window font.
@@ -442,5 +451,96 @@ public class MultipartDto implements Serializable {
 		} else {
 			this.pointTextSizeDynamic = pointTextSizeDynamic;
 		}
+	}
+	
+	/**
+	 * Converts standard HEX color from HTML User input as {@link #getPointTextHexColor()} into KML color standard
+	 * to be inserted as the {@literal <color/>} value.
+	 * HexColor: "#rrggbb" (reg, green, blue) natural input from HTML color picker in hex
+	 * ====================================================================
+	 * https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff).
+	 * For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr,
+	 * where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * {@code <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 * <p>
+	 * * Typical RGB incoming from HTML color picker list (as #rrggbb):
+	 * * HEX COLOR : #ff0000
+	 * * HEX COLOR : #000000
+	 * * HEX COLOR : #ffffff
+	 * * HEX COLOR : #8e4848
+	 *
+	 * @return kml specific color with opacity (alpha-channel) as "aabbggrr" (alpha, blue, green,red)
+	 * witch is corresponds to KML specification.
+	 */
+	public String getPointTextColorAsKmlColor() {
+		return getKmlColor(pointTextHexColor, true);
+	}
+	
+	/**
+	 * Converts standard HEX color from HTML User input as {@link #getPointTextHexColor()} into KML color standard
+	 * to be inserted as the {@literal <color/>} value.
+	 * HexColor: "#rrggbb" (reg, green, blue) natural input from HTML color picker in hex
+	 * ====================================================================
+	 * https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff).
+	 * For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr,
+	 * where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * {@code <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 * <p>
+	 * * Typical RGB incoming from HTML color picker list (as #rrggbb):
+	 * * HEX COLOR : #ff0000
+	 * * HEX COLOR : #000000
+	 * * HEX COLOR : #ffffff
+	 * * HEX COLOR : #8e4848
+	 *
+	 * @return kml specific color with opacity (alpha-channel) as "aabbggrr" (alpha, blue, green,red)
+	 * witch is corresponds to KML specification.
+	 */
+	public String getPointTextColorDynamicAsKmlColor() {
+		return getKmlColor(pointTextHexColorDynamic, false);
+	}
+	
+	private String getKmlColor(String hexColor, boolean isStatic) throws IllegalArgumentException {
+		if (hexColor == null) return null;
+		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
+			throw new IllegalArgumentException(
+				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
+		}
+		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
+		String opacity;
+		if (isStatic && getPointTextOpacity() != null) {
+			opacity = getHexFromPercentage(getPointTextOpacity());
+			kmlColor = opacity + kmlColor;
+		} else if (!isStatic && getPointTextOpacityDynamic() != null) {
+			opacity = getHexFromPercentage(getPointTextOpacityDynamic());
+			kmlColor = opacity + kmlColor;
+		} else {
+			kmlColor = "ff" + kmlColor;
+		}
+		return kmlColor;
+	}
+	
+	/**
+	 * Convert incoming percentage value 0 - 100% to an integer in base sixteen 00 - FF (0 - 255).
+	 * Where 100% = 255 and 1% = 2.55 (Rounding.HALF_UP) accordingly but as two hex digits (e.g.  00, 03, 7F, FF)
+	 *
+	 * @param percentage 0 - 100%
+	 * @return Hexadecimal representation from 00 to FF as two hex digits.
+	 * @throws IllegalArgumentException if a given percentage below 0 or above 100%
+	 */
+	private String getHexFromPercentage(Integer percentage) throws IllegalArgumentException {
+		if (percentage < 0 || percentage > 100) {
+			throw new IllegalArgumentException("Percentage has to be from 0 to 100%!");
+		}
+		BigDecimal hexPercentage = new BigDecimal(percentage * 2.55).setScale(0, RoundingMode.HALF_UP);
+		String hexFormat = String.format("%02x", hexPercentage.toBigInteger());
+		return hexFormat;
 	}
 }
