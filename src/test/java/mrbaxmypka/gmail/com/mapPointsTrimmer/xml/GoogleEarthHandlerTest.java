@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -185,7 +186,7 @@ class GoogleEarthHandlerTest {
 		//THEN
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
-		assertTrue(containsElement(document, "IconStyle", 2, "scale", scale));
+		assertTrue(containsParentsWithChildren(document, "IconStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -240,7 +241,7 @@ class GoogleEarthHandlerTest {
 		//THEN
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
-		assertTrue(containsElement(document, "IconStyle", 2, "scale", scale));
+		assertTrue(containsParentsWithChildren(document, "IconStyle", 2, "scale", scale));
 	}
 	
 	
@@ -296,7 +297,7 @@ class GoogleEarthHandlerTest {
 		//THEN
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		assertTrue(containsElement(document, "LabelStyle", 2, "scale", scale));
+		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -361,7 +362,7 @@ class GoogleEarthHandlerTest {
 		//THEN
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		assertTrue(containsElement(document, "LabelStyle", 2, "scale", scale));
+		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -418,7 +419,7 @@ class GoogleEarthHandlerTest {
 		//THEN
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		assertTrue(containsElement(document, "LabelStyle", 2, "scale", scale));
+		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
 	}
 	
 	
@@ -499,7 +500,7 @@ class GoogleEarthHandlerTest {
 //		System.out.println("HEX COLOR : " + hexColor);
 //		System.out.println("KML COLOR : " + kmlColor);
 		
-		assertTrue(containsElement(document, "LabelStyle", 2, "color", kmlColor));
+		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
 	}
 	
 	/**
@@ -583,7 +584,7 @@ class GoogleEarthHandlerTest {
 //		System.out.println("HEX COLOR : " + hexColor);
 //		System.out.println("KML COLOR : " + kmlColor);
 		
-		assertTrue(containsElement(document, "LabelStyle", 2, "color", kmlColor));
+		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
 	}
 	
 	
@@ -836,204 +837,22 @@ class GoogleEarthHandlerTest {
 		//But "highlighted" #style3 from <StyleMap> and unused #style4 should be unchanged (2 pieces)
 		if (staticType.equals("iconSize")) {
 			String pointIconScale = multipartDto.getPointIconSizeScaled().toString();
-			assertTrue(containsElement(document, "IconStyle", 3, "scale", pointIconScale));
-			assertTrue(containsElement(document, "IconStyle", 2, "scale", "0.8"));
+			assertTrue(containsParentsWithChildren(document, "IconStyle", 3, "scale", pointIconScale));
+			assertTrue(containsParentsWithChildren(document, "IconStyle", 2, "scale", "0.8"));
 		} else if (staticType.equals("textSize")) {
 			String pointsTextScale = multipartDto.getPointTextSizeScaled().toString();
-			assertTrue(containsElement(document, "LabelStyle", 3, "scale", pointsTextScale));
-			assertTrue(containsElement(document, "LabelStyle", 2, "scale", "0.8"));
+			assertTrue(containsParentsWithChildren(document, "LabelStyle", 3, "scale", pointsTextScale));
+			assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "scale", "0.8"));
 		} else if (staticType.equals("textColor")) {
 			String kmlColor = googleEarthHandler.getKmlColor(htmlPointsTextColor, multipartDto);
-			assertTrue(containsElement(document, "LabelStyle", 3, "color", kmlColor));
-			assertTrue(containsElement(document, "LabelStyle", 2, "color", "00000000"));
+			assertTrue(containsParentsWithChildren(document, "LabelStyle", 3, "color", kmlColor));
+			assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "color", "00000000"));
 		}
 		
 	}
 	
 	@Test
 	public void with_Static_Parameters_Placemarks_StyleUrls_To_Styles_Should_Not_Be_Changed()
-		  throws IOException, SAXException, ParserConfigurationException, TransformerException {
-		//GIVEN just a static multipartDto.setPointTextSize(50);
-		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-			  "<Document>\n" +
-			  "\t<name>Google Earth Test Poi</name>\n" +
-			  "\t<StyleMap id=\"styleMap1\">\n" +
-			  "\t\t<Pair>\n" +
-			  "\t\t\t<key>normal</key>\n" +
-			  "\t\t\t<styleUrl>#style1</styleUrl>\n" +
-			  "\t\t</Pair>\n" +
-			  "\t\t<Pair>\n" +
-			  "\t\t\t<key>highlight</key>\n" +
-			  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			  "\t\t</Pair>\n" +
-			  "\t</StyleMap>\n" +
-			  "\t<StyleMap id=\"styleMap2\">\n" +
-			  "\t\t<Pair>\n" +
-			  "\t\t\t<key>normal</key>\n" +
-			  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			  "\t\t</Pair>\n" +
-			  "\t\t<Pair>\n" +
-			  "\t\t\t<key>highlight</key>\n" +
-			  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			  "\t\t</Pair>\n" +
-			  "\t</StyleMap>\n" +
-			  "\t<Style id=\"style1\">\n" +
-			  "\t\t<IconStyle>\n" +
-			  "\t\t\t<Icon>\n" +
-			  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-			  "\t\t\t</Icon>\n" +
-			  "\t\t</IconStyle>\n" +
-			  "\t</Style>\n" +
-			  "\t<Style id=\"style2\">\n" +
-			  "\t\t<IconStyle>\n" +
-			  "\t\t\t<Icon>\n" +
-			  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-			  "\t\t\t</Icon>\n" +
-			  "\t\t</IconStyle>\n" +
-			  "\t</Style>\n" +
-			  "\t\t<Style id=\"style3\">\n" +
-			  "\t\t<IconStyle>\n" +
-			  "\t\t\t<Icon>\n" +
-			  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
-			  "\t\t\t</Icon>\n" +
-			  "\t\t</IconStyle>\n" +
-			  "\t\t<LabelStyle>\n" +
-			  "\t\t\t<scale>0.8</scale>\n" +
-			  "\t\t</LabelStyle>\n" +
-			  "\t</Style>\n" +
-			  "\t\t<Placemark>\n" +
-			  "\t\t\t<name>Test Placemark 1</name>\n" +
-			  "\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
-			  "\t\t\t<Point>\n" +
-			  "\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
-			  "\t\t\t</Point>\n" +
-			  "\t\t</Placemark>\n" +
-			  "\t\t<Placemark>\n" +
-			  "\t\t\t<name>Test Placemark 2</name>\n" +
-			  "\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
-			  "\t\t\t<Point>\n" +
-			  "\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
-			  "\t\t\t</Point>\n" +
-			  "\t\t</Placemark>\n" +
-			  "\t\t\t\t<Placemark>\n" +
-			  "\t\t\t<name>Test Placemark 3</name>\n" +
-			  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			  "\t\t\t<Point>\n" +
-			  "\t\t\t\t<coordinates>38.5409832,55.89456632,143</coordinates>\n" +
-			  "\t\t\t</Point>\n" +
-			  "\t\t</Placemark>\n" +
-			  "</Document>\n" +
-			  "</kml>";
-		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPointTextSize(50);
-		
-		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
-		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-//		System.out.println(resultingKml);
-		
-		//THEN
-		assertTrue(resultingKml.contains("<styleUrl>#style3</styleUrl>"));
-		assertTrue(containsParentWithChild(
-			  processedDocument, "Placemark", "styleUrl", "#style3"));
-	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////// DYNAMIC STYLES TESTS /////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	@Test
-	public void any_Dynamic_Set_Should_Create_StyleMaps()
-		  throws IOException, SAXException, ParserConfigurationException, TransformerException {
-		//GIVEN just a static multipartDto.setPointTextSize(50);
-		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-			  "<Document>\n" +
-			  "\t<name>Google Earth Test Poi</name>\n" +
-			  "\t<StyleMap id=\"styleMap1\">\n" +
-			  "\t\t<Pair>\n" +
-			  "\t\t\t<key>normal</key>\n" +
-			  "\t\t\t<styleUrl>#style1</styleUrl>\n" +
-			  "\t\t</Pair>\n" +
-			  "\t\t<Pair>\n" +
-			  "\t\t\t<key>highlight</key>\n" +
-			  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			  "\t\t</Pair>\n" +
-			  "\t</StyleMap>\n" +
-			  "\t<StyleMap id=\"styleMap2\">\n" +
-			  "\t\t<Pair>\n" +
-			  "\t\t\t<key>normal</key>\n" +
-			  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			  "\t\t</Pair>\n" +
-			  "\t\t<Pair>\n" +
-			  "\t\t\t<key>highlight</key>\n" +
-			  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			  "\t\t</Pair>\n" +
-			  "\t</StyleMap>\n" +
-			  "\t<Style id=\"style1\">\n" +
-			  "\t\t<IconStyle>\n" +
-			  "\t\t\t<Icon></Icon>\n" +
-			  "\t\t</IconStyle>\n" +
-			  "\t</Style>\n" +
-			  "\t<Style id=\"style2\">\n" +
-			  "\t\t<IconStyle>\n" +
-			  "\t\t\t<Icon></Icon>\n" +
-			  "\t\t</IconStyle>\n" +
-			  "\t</Style>\n" +
-			  "\t\t<Style id=\"style3\">\n" +
-			  "\t\t<IconStyle>\n" +
-			  "\t\t\t<Icon></Icon>\n" +
-			  "\t\t</IconStyle>\n" +
-			  "\t\t<LabelStyle>\n" +
-			  "\t\t\t<scale>0.8</scale>\n" +
-			  "\t\t</LabelStyle>\n" +
-			  "\t</Style>\n" +
-			  "\t\t<Style id=\"style4\">\n" +
-			  "\t\t<IconStyle>\n" +
-			  "\t\t\t<Icon></Icon>\n" +
-			  "\t\t</IconStyle>\n" +
-			  "\t</Style>\n" +
-			  "\t\t<Placemark>\n" +
-			  "\t\t\t<name>Test Placemark 1</name>\n" +
-			  "\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
-			  "\t\t\t<Point></Point>\n" +
-			  "\t\t</Placemark>\n" +
-			  "\t\t<Placemark>\n" +
-			  "\t\t\t<name>Test Placemark 2</name>\n" +
-			  "\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
-			  "\t\t\t<Point></Point>\n" +
-			  "\t\t</Placemark>\n" +
-			  "\t\t<Placemark>\n" +
-			  "\t\t\t<name>Test Placemark 2</name>\n" +
-			  "\t\t\t<styleUrl>#style1</styleUrl>\n" +
-			  "\t\t\t<Point></Point>\n" +
-			  "\t\t</Placemark>\n" +
-			  "\t\t\t\t<Placemark>\n" +
-			  "\t\t\t<name>Test Placemark 3</name>\n" +
-			  "\t\t\t<styleUrl>#style4</styleUrl>\n" +
-			  "\t\t\t<Point></Point>\n" +
-			  "\t\t</Placemark>\n" +
-			  "</Document>\n" +
-			  "</kml>";
-		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPointIconSizeDynamic(50);
-		
-		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
-		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-		System.out.println(resultingKml);
-		
-		//THEN
-		
-	}
-	
-	@Test
-	public void any_Dynamic_Set_Should_Replace_All_Placemarks_StyleUrl_References_to_Styles_With_StyleMaps()
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
 		//GIVEN just a static multipartDto.setPointTextSize(50);
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1098,169 +917,9 @@ class GoogleEarthHandlerTest {
 			"\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
 			"\t\t\t</Point>\n" +
 			"\t\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
-		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPointTextSize(50);
-		
-		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
-		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-		
-		//THEN
-		assertFalse(resultingKml.contains("<StyleMap"));
-	}
-	
-	@Disabled
-	@Test
-	public void with_Static_Parameters_Placemarks_StyleUrls_To_StyleMaps_Should_Be_Replaced_With_Key_Normal_Style_Url()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
-		//GIVEN just a static multipartDto.setPointTextSize(50);
-		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-			"<Document>\n" +
-			"\t<name>Google Earth Test Poi</name>\n" +
-			"\t<StyleMap id=\"styleMap1\">\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>normal</key>\n" +
-			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>highlight</key>\n" +
-			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t</StyleMap>\n" +
-			"\t<StyleMap id=\"styleMap2\">\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>normal</key>\n" +
-			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>highlight</key>\n" +
-			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t</StyleMap>\n" +
-			"\t<Style id=\"style1\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"style2\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t\t<Style id=\"style3\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 1</name>\n" +
-			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
-			"\t\t\t<Point>\n" +
-			"\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
-			"\t\t\t</Point>\n" +
-			"\t\t</Placemark>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 2</name>\n" +
-			"\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
-			"\t\t\t<Point>\n" +
-			"\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
-			"\t\t\t</Point>\n" +
-			"\t\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
-		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPointTextSize(50);
-		
-		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
-		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-//		System.out.println(resultingKml);
-		
-		//THEN
-		assertAll(
-			() -> assertFalse(resultingKml.contains("<styleUrl>#styleMap1</styleUrl>")),
-			() -> assertFalse(resultingKml.contains("<styleUrl>#styleMap2</styleUrl>"))
-		);
-		assertAll(
-			() -> assertTrue(resultingKml.contains("<styleUrl>#style1</styleUrl>")),
-			() -> assertTrue(resultingKml.contains("<styleUrl>#style2</styleUrl>"))
-		);
-	}
-	
-	
-	@Disabled
-	@Test
-	public void with_Dynamic_Parameters_Unused_Styles_Should_Be_Deleted()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
-		//GIVEN <Style id="style3"> is the <highlight> of <StyleMap id=styleMap1">. Unused and should be deleted
-		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-			"<Document>\n" +
-			"\t<name>Google Earth Test Poi</name>\n" +
-			"\t<StyleMap id=\"styleMap1\">\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>normal</key>\n" +
-			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>highlight</key>\n" +
-			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t</StyleMap>\n" +
-			"\t<Style id=\"style1\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"style2\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t\t<Style id=\"style3\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 1</name>\n" +
-			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
-			"\t\t\t<Point>\n" +
-			"\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
-			"\t\t\t</Point>\n" +
-			"\t\t</Placemark>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 2</name>\n" +
-			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			"\t\t\t<Point>\n" +
-			"\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
-			"\t\t\t</Point>\n" +
-			"\t\t</Placemark>\n" +
-			"\t\t\t<Placemark>\n" +
+			"\t\t\t\t<Placemark>\n" +
 			"\t\t\t<name>Test Placemark 3</name>\n" +
-			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
 			"\t\t\t<Point>\n" +
 			"\t\t\t\t<coordinates>38.5409832,55.89456632,143</coordinates>\n" +
 			"\t\t\t</Point>\n" +
@@ -1278,10 +937,290 @@ class GoogleEarthHandlerTest {
 //		System.out.println(resultingKml);
 		
 		//THEN
-		assertFalse(resultingKml.contains("<styleUrl>#style3</styleUrl>"));
-		assertFalse(containsParentWithChild(
+		assertTrue(resultingKml.contains("<styleUrl>#style3</styleUrl>"));
+		assertTrue(containsParentWithChild(
 			processedDocument, "Placemark", "styleUrl", "#style3"));
 	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////// DYNAMIC STYLES TESTS /////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	@Test
+	public void with_Dynamic_Parameters_Should_Create_StyleMaps_And_Replace_StyleUrls_In_Placemarks()
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		//GIVEN The googleKml with only 2 <Style>
+		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"\t<Document>\n" +
+			"\t\t<name>Google Earth Test Poi</name>\n" +
+			"\t\t<Style id=\"style1\">\n" +
+			"\t\t\t<IconStyle>\n" +
+			"\t\t\t\t<Icon/>\n" +
+			"\t\t\t</IconStyle>\n" +
+			"\t\t</Style>\n" +
+			"\t\t<Style id=\"style2\">\n" +
+			"\t\t\t<IconStyle>\n" +
+			"\t\t\t\t<Icon/>\n" +
+			"\t\t\t</IconStyle>\n" +
+			"\t\t</Style>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 1</name>\n" +
+			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t\t\t<Point/>\n" +
+			"\t\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 2</name>\n" +
+			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			"\t\t\t<Point/>\n" +
+			"\t\t</Placemark>\n" +
+			"\t</Document>\n" +
+			"</kml>";
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointIconSizeDynamic(50);
+		
+		//WHEN set any dynamic
+		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+//		System.out.println(resultingKml);
+		
+		//THEN
+		// 2 <StyleMap> have to be created
+		assertTrue(containsParentsWithChildren(processedDocument, "StyleMap", 2, "Pair", null));
+		// 2 additional <Style> 4 have to be created as "highlight" styles (4 <Style> in total>
+		assertTrue(containsParentsWithChildren(processedDocument, "Style", 4, "IconStyle", null));
+		// <Placemark>'s are no more reference to <Style>'s
+		assertFalse(containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style1"));
+		assertFalse(containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style2"));
+		// <Placemark>'s are reference to <StyleMap>'s
+		assertTrue(containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style1"));
+		assertTrue(containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style2"));
+		
+	}
+	
+	@Test
+	public void with_Dynamic_Parameters_Should_Replace_Styles_With_StyleMaps_In_StyleUrls_In_Placemarks()
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		//GIVEN The googleKml with <Placemark>'s
+		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"<Document>\n" +
+			"\t<name>Google Earth Test Poi</name>\n" +
+			"\t<StyleMap id=\"styleMap1\">\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>normal</key>\n" +
+			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>highlight</key>\n" +
+			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t</StyleMap>\n" +
+			"\t<Style id=\"style1\">\n" +
+			"\t\t<IconStyle></IconStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style2\">\n" +
+			"\t\t<IconStyle></IconStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style3\">\n" +
+			"\t\t<IconStyle></IconStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 1</name>\n" +
+			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 2</name>\n" +
+			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>";
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointIconSizeDynamic(50);
+		
+		//WHEN set any dynamic
+		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+//		System.out.println(resultingKml);
+		
+		//THEN
+		// <Placemark> 1 still references to #styleMap1
+		assertTrue(containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMap1"));
+		// <Placemark> 2 no more references to #style3
+		assertFalse(containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
+		// <Placemark> 2 references to a new #styleMapOf:style3
+		assertTrue(containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style3"));
+		
+	}
+	
+	@Disabled
+	@Test
+	public void with_Dynamic_Parameters_Unused_Styles_And_StyleMaps_Should_Be_Deleted()
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		//GIVEN <Style id="style3"> and <StyleMap id=styleMap2"> are unused and should be deleted
+		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"<Document>\n" +
+			"\t<name>Google Earth Test Poi</name>\n" +
+			"\t<StyleMap id=\"styleMap1\">\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>normal</key>\n" +
+			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>highlight</key>\n" +
+			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t</StyleMap>\n" +
+			"\t<StyleMap id=\"styleMap2\">\n" +
+			"\t\t<scale>0.0</scale>\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>normal</key>\n" +
+			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>highlight</key>\n" +
+			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t</StyleMap>\n" +
+			"\t<Style id=\"style1\">\n" +
+			"\t\t<IconStyle></IconStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style2\">\n" +
+			"\t\t<IconStyle></IconStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style3\">\n" +
+			"\t\t<scale>0.0</scale>\n" +
+			"\t\t<IconStyle></IconStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 1</name>\n" +
+			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 2</name>\n" +
+			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>";
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointTextSize(50);
+		
+		//WHEN
+		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+//		System.out.println(resultingKml);
+		
+		//THEN <StyleMap id="styleMap2"> and <Style id="style3"> should be deleted
+		assertFalse(containsParentWithChild(processedDocument, "Style", "scale", "0.0"));
+		assertFalse(containsParentWithChild(processedDocument, "StyleMap", "scale", "0.0"));
+	}
+	
+	/**
+	 * DO NOT DELETE!
+	 * May be used for complicated examination
+	 */
+	@Disabled
+	@Test
+	public void with_Dynamic_Parameters_Complicated_Test()
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		//GIVEN The googleKml with 2 <StyleMap>'s and 4 <Style>'s
+		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"\t<Document>\n" +
+			"\t\t<name>Google Earth Test Poi</name>\n" +
+			"\t\t<StyleMap id=\"styleMap1\">\n" +
+			"\t\t\t<Pair>\n" +
+			"\t\t\t\t<key>normal</key>\n" +
+			"\t\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t\t\t</Pair>\n" +
+			"\t\t\t<Pair>\n" +
+			"\t\t\t\t<key>highlight</key>\n" +
+			"\t\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			"\t\t\t</Pair>\n" +
+			"\t\t</StyleMap>\n" +
+			"\t\t<StyleMap id=\"styleMap2\">\n" +
+			"\t\t\t<Pair>\n" +
+			"\t\t\t\t<key>normal</key>\n" +
+			"\t\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			"\t\t\t</Pair>\n" +
+			"\t\t\t<Pair>\n" +
+			"\t\t\t\t<key>highlight</key>\n" +
+			"\t\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			"\t\t\t</Pair>\n" +
+			"\t\t</StyleMap>\n" +
+			"\t\t<Style id=\"style1\">\n" +
+			"\t\t\t<IconStyle>\n" +
+			"\t\t\t\t<Icon/>\n" +
+			"\t\t\t</IconStyle>\n" +
+			"\t\t</Style>\n" +
+			"\t\t<Style id=\"style2\">\n" +
+			"\t\t\t<IconStyle>\n" +
+			"\t\t\t\t<Icon/>\n" +
+			"\t\t\t</IconStyle>\n" +
+			"\t\t</Style>\n" +
+			"\t\t<Style id=\"style3\">\n" +
+			"\t\t\t<IconStyle>\n" +
+			"\t\t\t\t<Icon/>\n" +
+			"\t\t\t</IconStyle>\n" +
+			"\t\t\t<LabelStyle>\n" +
+			"\t\t\t\t<scale>0.8</scale>\n" +
+			"\t\t\t</LabelStyle>\n" +
+			"\t\t</Style>\n" +
+			"\t\t<Style id=\"style4\">\n" +
+			"\t\t\t<IconStyle>\n" +
+			"\t\t\t\t<Icon/>\n" +
+			"\t\t\t</IconStyle>\n" +
+			"\t\t</Style>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 1</name>\n" +
+			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+			"\t\t\t<Point/>\n" +
+			"\t\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 2</name>\n" +
+			"\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
+			"\t\t\t<Point/>\n" +
+			"\t\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 3</name>\n" +
+			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t\t\t<Point/>\n" +
+			"\t\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 4</name>\n" +
+			"\t\t\t<styleUrl>#style4</styleUrl>\n" +
+			"\t\t\t<Point/>\n" +
+			"\t\t</Placemark>\n" +
+			"\t</Document>\n" +
+			"</kml>";
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointIconSizeDynamic(50);
+		
+		//WHEN set any dynamic
+		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		System.out.println(resultingKml);
+		
+		//THEN
+		// 2 additional <StyleMap>'s for <Placemark> 3 and 4 have to be created (4 <StyleMap>'s in total)
+		assertTrue(containsParentsWithChildren(processedDocument, "StyleMap", 4, "Pair", null));
+		// 2 additional <Style>'s for <Placemark> 3 and 4 have to be created as "highlight" styles (6 <Style> in total>
+		assertTrue(containsParentsWithChildren(processedDocument, "Style", 6, "IconStyle", null));
+		// <Placemark>'s 3 and 4 no more references to <Style>'s
+		assertFalse(containsParentsWithChildren(processedDocument, "Placemark", 4, "styleUrl", "#style1"));
+		assertFalse(containsParentsWithChildren(processedDocument, "Placemark", 4, "styleUrl", "#style4"));
+		
+	}
+	
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1299,52 +1238,67 @@ class GoogleEarthHandlerTest {
 	}
 	
 	/**
-	 * @param document                     The source to be parsed
-	 * @param parentTagName                Parent tagName to be created or an existing one
-	 * @param numOfParentsWithDesiredChild How many parents with the desired child should be presented within the given document
-	 * @param desiredChildrenTagName       Parent's children tagName that should be presented strictly within parent's tag
-	 * @param desiredChildrenValue         What exact text value should those children have.
+	 * @param document                The source to be parsed
+	 * @param requiredParentTagName   Parent tagName to be created or an existing one
+	 * @param requiredNumberOfParents How many parents with the desired child should be presented within the given document
+	 * @param requiredChildrenTagName Parent's children tagName that should be presented strictly within parent's tag
+	 * @param requiredChildrenValue   If not null, what exact text value should those children have.
+	 *                                Otherwise will be ignored. And only num of parents and children tag name will be consedered.
 	 * @return True if all the conditions are valid
 	 */
-	private boolean containsElement(
-		Document document, String parentTagName, int numOfParentsWithDesiredChild, String desiredChildrenTagName, String desiredChildrenValue) {
+	private boolean containsParentsWithChildren(
+		Document document,
+		String requiredParentTagName,
+		int requiredNumberOfParents,
+		String requiredChildrenTagName,
+		@Nullable String requiredChildrenValue) {
+		
 		int parentsWithDesiredChildCount = 0;
 		
-		NodeList parents = document.getElementsByTagName(parentTagName);
+		NodeList parents = document.getElementsByTagName(requiredParentTagName);
+		parents:
 		for (int i = 0; i < parents.getLength(); i++) {
 			
 			Node parent = parents.item(i);
 			NodeList parentChildNodes = parent.getChildNodes();
 			for (int j = 0; j < parentChildNodes.getLength(); j++) {
 				Node child = parentChildNodes.item(j);
-				if (child.getNodeName().equals(desiredChildrenTagName) && child.getTextContent().equals(desiredChildrenValue)) {
-					parentsWithDesiredChildCount += 1;
+				if (requiredChildrenValue != null) {
+					if (child.getNodeName().equals(requiredChildrenTagName) && child.getTextContent().equals(requiredChildrenValue)) {
+						parentsWithDesiredChildCount += 1;
+						continue parents;
+					}
+				} else {
+					if (child.getNodeName().equals(requiredChildrenTagName)) {
+						parentsWithDesiredChildCount += 1;
+						continue parents;
+					}
 				}
 			}
 			
 		}
-		return parentsWithDesiredChildCount == numOfParentsWithDesiredChild;
+		return parentsWithDesiredChildCount == requiredNumberOfParents;
 	}
 	
 	/**
 	 * @param document
-	 * @param parentTagName       Parent Nodes to be looked for their children
-	 * @param desiredChildTagName A child tag name to found in every Parent
-	 * @param desiredChildValue   A child text value to be kept in a child Node
+	 * @param requiredParentTagName Parent Nodes to be looked for their children
+	 * @param requiredChildTagName  A child tag name to found in every Parent
+	 * @param requiredChildValue    A child text value to be kept in a child Node
 	 * @return true if any of the Parent contains the Child with the desired value
 	 */
 	private boolean containsParentWithChild(
-		Document document, String parentTagName, String desiredChildTagName, String desiredChildValue) {
+		Document document, String requiredParentTagName, String requiredChildTagName, String requiredChildValue) {
 		
-		NodeList parentNodes = document.getElementsByTagName(parentTagName);
+		NodeList parentNodes = document.getElementsByTagName(requiredParentTagName);
 		for (int i = 0; i < parentNodes.getLength(); i++) {
 			Node parentNode = parentNodes.item(i);
 			
 			NodeList childNodes = parentNode.getChildNodes();
 			for (int j = 0; j < childNodes.getLength(); j++) {
 				Node child = childNodes.item(j);
-				if (child.getNodeName() != null && child.getNodeName().equals(desiredChildTagName) &&
-					child.getTextContent().equals(desiredChildValue)) {
+				if (child.getNodeName() != null && child.getNodeName().equals(requiredChildTagName) &&
+					child.getTextContent().equals(requiredChildValue)) {
 					return true;
 				}
 			}

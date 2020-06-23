@@ -620,7 +620,7 @@ public class GoogleEarthHandler {
 	 */
 	private Node createStyleMapNode(Node styleNode) {
 		Element styleMapNode = document.createElement("StyleMap");
-		styleMapNode.setAttribute("id", "styleMapFrom#" + styleNode.getAttributes().getNamedItem("id").getTextContent());
+		styleMapNode.setAttribute("id", "styleMapOf:" + styleNode.getAttributes().getNamedItem("id").getTextContent());
 		
 		Element pairNormalNode = document.createElement("Pair");
 		Element keyNormalNode = document.createElement("key");
@@ -651,7 +651,7 @@ public class GoogleEarthHandler {
 	
 	private Node createHighlightStyleNode(Node styleNode) {
 		Element styleHighlightNode = (Element) styleNode.cloneNode(true);
-		styleHighlightNode.setAttribute("id", "highlightFrom#:" + styleNode.getAttributes().getNamedItem("id").getTextContent());
+		styleHighlightNode.setAttribute("id", "highlightOf:" + styleNode.getAttributes().getNamedItem("id").getTextContent());
 		return styleHighlightNode;
 	}
 	
