@@ -57,7 +57,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class GoogleEarthHandlerDynamicTest {
 	
-	private GoogleEarthHandlerStaticTest geTest = new GoogleEarthHandlerStaticTest();
 	private MultipartDto multipartDto;
 	private MultipartFile multipartFile;
 	private GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
@@ -192,7 +191,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(50);
 		
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processXml(geTest.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
 //		System.out.println(resultingKml);
@@ -200,20 +199,19 @@ public class GoogleEarthHandlerDynamicTest {
 		//THEN
 		// 2 <StyleMap> have to be created
 		assertTrue(
-			geTest.containsParentsWithChildren(processedDocument, "StyleMap", 2, "Pair", null));
+			XmlTestUtils.containsParentsWithChildren(processedDocument, "StyleMap", 2, "Pair", null));
 		// 2 additional <Style> 4 have to be created as "highlight" styles (4 <Style> in total>
 		assertTrue(
-			geTest.containsParentsWithChildren(processedDocument, "Style", 4, "IconStyle", null));
+			XmlTestUtils.containsParentsWithChildren(processedDocument, "Style", 4, "IconStyle", null));
 		// <Placemark>'s are no more reference to <Style>'s
 		assertFalse(
-			geTest.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style1"));
-		assertFalse(geTest.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style2"));
+			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style1"));
+		assertFalse(XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style2"));
 		// <Placemark>'s are reference to <StyleMap>'s
 		assertTrue(
-			geTest.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style1"));
+			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style1"));
 		assertTrue(
-			geTest.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style2"));
-		
+			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style2"));
 	}
 	
 	@Test
@@ -258,7 +256,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(50);
 		
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processXml(geTest.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
 //		System.out.println(resultingKml);
@@ -266,13 +264,13 @@ public class GoogleEarthHandlerDynamicTest {
 		//THEN
 		// <Placemark> 1 still references to #styleMap1
 		assertTrue(
-			geTest.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMap1"));
+			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMap1"));
 		// <Placemark> 2 no more references to #style3
 		assertFalse(
-			geTest.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
+			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
 		// <Placemark> 2 references to a new #styleMapOf:style3
 		assertTrue(
-			geTest.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style3"));
+			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style3"));
 		
 	}
 	
@@ -315,16 +313,16 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(50); //0.5 as the scale
 		
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processXml(geTest.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
 //		System.out.println(resultingKml);
 		
 		//THEN
 		//Normal <Style id="style1"> IconStyle scale should be unchanged (0.0)
-		assertTrue(geTest.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.0"));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.0"));
 		//Highlight <Style id="style2"> IconStyle scale should be "0.5"
-		assertTrue(geTest.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.5"));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.5"));
 	}
 	
 	@Test
@@ -374,16 +372,16 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointTextSizeDynamic(60); //0.6 as the scale
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(geTest.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
 //		System.out.println(resultingKml);
 		
 		//THEN
 		//Normal <Style id="style1"> LabelStyle scale should be unchanged (0.0)
-		assertTrue(geTest.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "scale", "0.0"));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "scale", "0.0"));
 		//Highlight <Style id="style2"> LabelStyle scale should be "0.6"
-		assertTrue(geTest.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "scale", "0.6"));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "scale", "0.6"));
 	}
 	
 	@Test
@@ -433,23 +431,22 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointTextHexColorDynamic("#ffffff");
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(geTest.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
 //		System.out.println(resultingKml);
 		
 		//THEN
 		//Normal <Style id="style1"> LabelStyle color should be unchanged (00000000)
-		assertTrue(geTest.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
 		//Highlight <Style id="style2"> LabelStyle color should be "ffffffff"
-		assertTrue(geTest.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "ffffffff"));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "ffffffff"));
 	}
 	
-	@Disabled
 	@Test
-	public void with_Dynamic_Parameters_Unused_Styles_And_StyleMaps_Should_Be_Deleted()
+	public void pointTextOpacityDynamic_Should_Update_Only_Highlighted_Styles()
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
-		//GIVEN <Style id="style3"> and <StyleMap id=styleMap2"> are unused and should be deleted
+		//GIVEN <Style id="style2"> is the only "highligh" style
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
 			"<Document>\n" +
@@ -464,52 +461,46 @@ public class GoogleEarthHandlerDynamicTest {
 			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
 			"\t\t</Pair>\n" +
 			"\t</StyleMap>\n" +
-			"\t<StyleMap id=\"styleMap2\">\n" +
-			"\t\t<scale>0.0</scale>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>normal</key>\n" +
-			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>highlight</key>\n" +
-			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t</StyleMap>\n" +
 			"\t<Style id=\"style1\">\n" +
-			"\t\t<IconStyle></IconStyle>\n" +
+			"\t\t<IconStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t</IconStyle>\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
 			"\t</Style>\n" +
 			"\t<Style id=\"style2\">\n" +
-			"\t\t<IconStyle></IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"style3\">\n" +
-			"\t\t<scale>0.0</scale>\n" +
-			"\t\t<IconStyle></IconStyle>\n" +
+			"\t\t<IconStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t</IconStyle>\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
 			"\t</Style>\n" +
 			"\t<Placemark>\n" +
 			"\t\t\t<name>Test Placemark 1</name>\n" +
 			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
 			"\t</Placemark>\n" +
-			"\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 2</name>\n" +
-			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			"\t</Placemark>\n" +
 			"</Document>\n" +
 			"</kml>";
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPointTextSize(50);
+		multipartDto.setPointTextHexColorDynamic("#ffffff");
+		multipartDto.setPointTextOpacityDynamic(00);
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(geTest.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-//		System.out.println(resultingKml);
+		System.out.println(resultingKml);
 		
-		//THEN <StyleMap id="styleMap2"> and <Style id="style3"> should be deleted
-		assertFalse(
-			geTest.containsParentWithChild(processedDocument, "Style", "scale", "0.0"));
-		assertFalse(
-			geTest.containsParentWithChild(processedDocument, "StyleMap", "scale", "0.0"));
+		//THEN
+		//Normal <Style id="style1"> LabelStyle color should be unchanged (00000000)
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
+		//Highlight <Style id="style2"> LabelStyle color should be "ffffffff"
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00ffffff"));
 	}
 	
 	/**
@@ -595,7 +586,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(50);
 		
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processXml(geTest.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
 		System.out.println(resultingKml);
@@ -603,18 +594,18 @@ public class GoogleEarthHandlerDynamicTest {
 		//THEN
 		// 2 additional <StyleMap>'s for <Placemark> 3 and 4 have to be created (4 <StyleMap>'s in total)
 		assertTrue(
-			geTest.containsParentsWithChildren(
+			XmlTestUtils.containsParentsWithChildren(
 				processedDocument, "StyleMap", 4, "Pair", null));
 		// 2 additional <Style>'s for <Placemark> 3 and 4 have to be created as "highlight" styles (6 <Style> in total>
 		assertTrue(
-			geTest.containsParentsWithChildren(
+			XmlTestUtils.containsParentsWithChildren(
 				processedDocument, "Style", 6, "IconStyle", null));
 		// <Placemark>'s 3 and 4 no more references to <Style>'s
 		assertFalse(
-			geTest.containsParentsWithChildren(
+			XmlTestUtils.containsParentsWithChildren(
 				processedDocument, "Placemark", 4, "styleUrl", "#style1"));
 		assertFalse(
-			geTest.containsParentsWithChildren(
+			XmlTestUtils.containsParentsWithChildren(
 				processedDocument, "Placemark", 4, "styleUrl", "#style4"));
 		
 	}

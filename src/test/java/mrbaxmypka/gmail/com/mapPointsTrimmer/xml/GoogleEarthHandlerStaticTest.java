@@ -4,16 +4,11 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
@@ -191,7 +186,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSize(percentageSize);
-		Document document = getDocument(multipartDto);
+		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
@@ -200,7 +195,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
-		assertTrue(containsParentsWithChildren(document, "IconStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "IconStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -246,7 +241,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSize(percentageSize);
-		Document document = getDocument(multipartDto);
+		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
@@ -255,7 +250,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
-		assertTrue(containsParentsWithChildren(document, "IconStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "IconStyle", 2, "scale", scale));
 	}
 	
 	
@@ -302,7 +297,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(percentageSize);
-		Document document = getDocument(multipartDto);
+		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
@@ -311,7 +306,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -367,7 +362,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(percentageSize);
-		Document document = getDocument(multipartDto);
+		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
@@ -376,7 +371,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -424,7 +419,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(percentageSize);
-		Document document = getDocument(multipartDto);
+		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
@@ -433,7 +428,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
 	}
 	
 	
@@ -502,7 +497,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColor(hexColor);
-		Document document = getDocument(multipartDto);
+		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
@@ -510,11 +505,11 @@ class GoogleEarthHandlerStaticTest {
 //		System.out.println(processedKml);
 		
 		//THEN
-		String kmlColor = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), multipartDto);
+		String kmlColor = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), multipartDto.getPointTextOpacity());
 //		System.out.println("HEX COLOR : " + hexColor);
 //		System.out.println("KML COLOR : " + kmlColor);
 		
-		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
 	}
 	
 	/**
@@ -586,7 +581,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColor(hexColor);
-		Document document = getDocument(multipartDto);
+		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
@@ -594,11 +589,11 @@ class GoogleEarthHandlerStaticTest {
 //		System.out.println(processedKml);
 		
 		//THEN
-		String kmlColor = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), multipartDto);
+		String kmlColor = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), multipartDto.getPointTextOpacity());
 //		System.out.println("HEX COLOR : " + hexColor);
 //		System.out.println("KML COLOR : " + kmlColor);
 		
-		assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
+		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
 	}
 	
 	
@@ -629,7 +624,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto = new MultipartDto(new MockMultipartFile("name", new byte[]{}));
 		
 		//WHEN
-		String kmlColor = googleEarthHandler.getKmlColor(hexColor, multipartDto);
+		String kmlColor = googleEarthHandler.getKmlColor(hexColor, multipartDto.getPointTextOpacity());
 		
 		//THEN
 //		System.out.println("HEX COLOR : " + hexColor);
@@ -647,7 +642,7 @@ class GoogleEarthHandlerStaticTest {
 		
 		//WHEN
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-			() -> googleEarthHandler.getKmlColor(hexColor, multipartDto));
+			() -> googleEarthHandler.getKmlColor(hexColor, multipartDto.getPointTextOpacity()));
 		
 		//THEN
 		assertEquals("Color value is not correct! (It has to correspond to '#rrggbb' hex pattern", exception.getMessage());
@@ -702,7 +697,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto.setPointTextHexColor(hexColor);
 		
 		//WHEN
-		String kmlColorWithOpacity = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), multipartDto);
+		String kmlColorWithOpacity = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), (Integer) null);
 		
 		//THEN
 		assertTrue(kmlColorWithOpacity.startsWith("ff"));
@@ -727,7 +722,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto.setPointTextOpacity((int) (Math.random() * 100 + 1));
 		
 		//WHEN
-		String kmlColorWithOpacity = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), multipartDto);
+		String kmlColorWithOpacity = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), multipartDto.getPointTextOpacity());
 		String separateHexOpacityValue = googleEarthHandler.getHexFromPercentage(multipartDto.getPointTextOpacity());
 		
 		//THEN
@@ -839,7 +834,7 @@ class GoogleEarthHandlerStaticTest {
 		} else if (staticType.equals("textColor")) {
 			multipartDto.setPointTextHexColor(htmlPointsTextColor);
 		}
-		Document document = getDocument(multipartDto);
+		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
@@ -851,16 +846,16 @@ class GoogleEarthHandlerStaticTest {
 		//But "highlighted" #style3 from <StyleMap> and unused #style4 should be unchanged (2 pieces)
 		if (staticType.equals("iconSize")) {
 			String pointIconScale = multipartDto.getPointIconSizeScaled().toString();
-			assertTrue(containsParentsWithChildren(document, "IconStyle", 3, "scale", pointIconScale));
-			assertTrue(containsParentsWithChildren(document, "IconStyle", 2, "scale", "0.8"));
+			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "IconStyle", 3, "scale", pointIconScale));
+			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "IconStyle", 2, "scale", "0.8"));
 		} else if (staticType.equals("textSize")) {
 			String pointsTextScale = multipartDto.getPointTextSizeScaled().toString();
-			assertTrue(containsParentsWithChildren(document, "LabelStyle", 3, "scale", pointsTextScale));
-			assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "scale", "0.8"));
+			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 3, "scale", pointsTextScale));
+			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "scale", "0.8"));
 		} else if (staticType.equals("textColor")) {
-			String kmlColor = googleEarthHandler.getKmlColor(htmlPointsTextColor, multipartDto);
-			assertTrue(containsParentsWithChildren(document, "LabelStyle", 3, "color", kmlColor));
-			assertTrue(containsParentsWithChildren(document, "LabelStyle", 2, "color", "00000000"));
+			String kmlColor = googleEarthHandler.getKmlColor(htmlPointsTextColor, multipartDto.getPointTextOpacity());
+			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 3, "color", kmlColor));
+			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "color", "00000000"));
 		}
 		
 	}
@@ -945,97 +940,13 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto.setPointTextSize(50);
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
 //		System.out.println(resultingKml);
 		
 		//THEN
 		assertTrue(resultingKml.contains("<styleUrl>#style3</styleUrl>"));
-		assertTrue(containsParentWithChild(
-			processedDocument, "Placemark", "styleUrl", "#style3"));
-	}
-	
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////// UTILITY METHODS ///////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
-	Document getDocument(MultipartDto multipartDto) throws ParserConfigurationException, IOException, SAXException {
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.parse(multipartDto.getMultipartFile().getInputStream());
-		document.normalizeDocument();
-		return document;
-	}
-	
-	/**
-	 * @param document                The source to be parsed
-	 * @param requiredParentTagName   Parent tagName to be created or an existing one
-	 * @param requiredNumberOfParents How many parents with the desired child should be presented within the given document
-	 * @param requiredChildrenTagName Parent's children tagName that should be presented strictly within parent's tag
-	 * @param requiredChildrenValue   If not null, what exact text value should those children have.
-	 *                                Otherwise will be ignored. And only num of parents and children tag name will be consedered.
-	 * @return True if all the conditions are valid
-	 */
-	boolean containsParentsWithChildren(
-		Document document,
-		String requiredParentTagName,
-		int requiredNumberOfParents,
-		String requiredChildrenTagName,
-		@Nullable String requiredChildrenValue) {
-		
-		int parentsWithDesiredChildCount = 0;
-		
-		NodeList parents = document.getElementsByTagName(requiredParentTagName);
-		parents:
-		for (int i = 0; i < parents.getLength(); i++) {
-			
-			Node parent = parents.item(i);
-			NodeList parentChildNodes = parent.getChildNodes();
-			for (int j = 0; j < parentChildNodes.getLength(); j++) {
-				Node child = parentChildNodes.item(j);
-				if (requiredChildrenValue != null) {
-					if (child.getNodeName().equals(requiredChildrenTagName) && child.getTextContent().equals(requiredChildrenValue)) {
-						parentsWithDesiredChildCount += 1;
-						continue parents;
-					}
-				} else {
-					if (child.getNodeName().equals(requiredChildrenTagName)) {
-						parentsWithDesiredChildCount += 1;
-						continue parents;
-					}
-				}
-			}
-			
-		}
-		return parentsWithDesiredChildCount == requiredNumberOfParents;
-	}
-	
-	/**
-	 * @param document
-	 * @param requiredParentTagName Parent Nodes to be looked for their children
-	 * @param requiredChildTagName  A child tag name to found in every Parent
-	 * @param requiredChildValue    A child text value to be kept in a child Node
-	 * @return true if any of the Parent contains the Child with the desired value
-	 */
-	boolean containsParentWithChild(
-		Document document, String requiredParentTagName, String requiredChildTagName, String requiredChildValue) {
-		
-		NodeList parentNodes = document.getElementsByTagName(requiredParentTagName);
-		for (int i = 0; i < parentNodes.getLength(); i++) {
-			Node parentNode = parentNodes.item(i);
-			
-			NodeList childNodes = parentNode.getChildNodes();
-			for (int j = 0; j < childNodes.getLength(); j++) {
-				Node child = childNodes.item(j);
-				if (child.getNodeName() != null && child.getNodeName().equals(requiredChildTagName) &&
-					child.getTextContent().equals(requiredChildValue)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		assertTrue(XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
 	}
 }

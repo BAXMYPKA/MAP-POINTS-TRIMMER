@@ -12,7 +12,9 @@ import org.w3c.dom.NodeList;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,14 +28,15 @@ public class GoogleEarthHandler {
 	 */
 	private Map<String, Node> styleObjects;
 	private List<String> styleUrlsFromPlacemarks;
+	private XmlDomUtils xmlDomUtils;
 	
 	//TODO: regenerate docs
 	Document processXml(Document document, MultipartDto multipartDto) {
 		this.document = document;
-		Element documentRoot = document.getDocumentElement();
+		xmlDomUtils = new XmlDomUtils(document);
 		log.info("Document and {} are received", multipartDto);
 		
-		setStyleObjects();
+		setStyleObjectsMap();
 		setStyleUrlsFromPlacemarks();
 		
 		if (multipartDto.getPointIconSize() != null) {
@@ -66,7 +69,7 @@ public class GoogleEarthHandler {
 	/**
 	 * {@code Sets ALL the <Style/>'s and <StyleMap/>'s within the Document by their "id" attribute.}
 	 */
-	private void setStyleObjects() {
+	private void setStyleObjectsMap() {
 		styleObjects = new HashMap<>();
 		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
 		NodeList styleNodes = document.getElementsByTagName("Style");
@@ -78,75 +81,18 @@ public class GoogleEarthHandler {
 			Node styleNode = styleNodes.item(i);
 			styleObjects.put(styleNode.getAttributes().getNamedItem("id").getTextContent(), styleNode);
 		}
+		log.trace("Style objects map's set with the size={}", styleObjects.size());
 	}
 	
 	private void setStyleUrlsFromPlacemarks() {
 		styleUrlsFromPlacemarks =
-			getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false, false)
+			xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false
+				, false)
 				.stream()
 				.map(styleUrlNode -> styleUrlNode.getTextContent().substring(1))
 				.collect(Collectors.toList());
+		log.trace("The List<String> of StyleUrls from Placemarks has been set with size={}", styleUrlsFromPlacemarks.size());
 	}
-	
-	/**
-	 * {@literal    <StyleMap id="m_ylw-pushpin12">
-	 * <Pair>
-	 * <key>normal</key>
-	 * <styleUrl>#s_ylw-pushpin40</styleUrl>
-	 * </Pair>
-	 * <Pair>
-	 * <key>highlight</key>
-	 * <styleUrl>#s_ylw-pushpin_hl11</styleUrl>
-	 * </Pair>
-	 * </StyleMap>
-	 * <Style id="generic_n40">
-	 * <IconStyle>
-	 * <scale>0.8</scale>
-	 * <Icon>
-	 * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
-	 * </Icon>
-	 * <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
-	 * </IconStyle>
-	 * <LabelStyle>
-	 * <scale>0.7</scale>
-	 * </LabelStyle>
-	 * </Style>}
-	 * If a given 'styleUrl' reference to {@literal <StyleMap>} it will be replaced with
-	 * {@literal <styleUrl> with <key> 'normal'}.
-	 * Otherwise the initial parameter will be returned
-	 *
-	 * @param styleUrl {@literal e.g. "#exampleUrl" to <StyleMap id="styleUrl"> or <Style id="styleUrl">}
-	 * @return If a given 'styleUrl' reference to {@literal <StyleMap> it will be replaced with
-	 * <styleUrl> with <key> 'normal'} and returned.
-	 * Otherwise the initial parameter will be returned
-	 */
-	private String getStyleUrlToNormalStyleOfStyleMap(String styleUrl) {
-		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
-		String trimmedUrl = styleUrl.startsWith("#") ? styleUrl.substring(1) : styleUrl;
-		
-		for (int i = 0; i < styleMapNodes.getLength(); i++) {
-			Node styleMapNode = styleMapNodes.item(i);
-			Node idNode = styleMapNode.getAttributes().getNamedItem("id");
-			String idAttribute = idNode.getTextContent();
-			if (idAttribute.equals(trimmedUrl)) return getKeyNormalStyleUrlFromStyleMap(styleMapNode);
-		}
-		//No <StyleMap> with such an "id" attribute
-		return styleUrl;
-	}
-	
-	private String getKeyNormalStyleUrlFromStyleMap(Node styleMap) {
-		List<Node> pairNodes = getChildNodesFromParent(styleMap, "Pair", null, false, false, false);
-		//<Pair> <key>normal</key> <styleUrl>#exampleUrl</styleUrl> </Pair>
-		Node pairWithKeyNormal = pairNodes.stream()
-			.filter(pairNode ->
-				!getChildNodesFromParent(pairNode, "key", "normal", false, false, false).isEmpty())
-			.collect(Collectors.toList()).get(0);
-		
-		return getChildNodesFromParent(pairWithKeyNormal, "styleUrl", null, false, false, false)
-			.get(0).getTextContent();
-	}
-	
-	//TODO: to use XPath to select only <Style/>'s with attribute id=""
 	
 	private void setPointsIconsSize(MultipartDto multipartDto) {
 		log.info("Setting the icons size...");
@@ -191,7 +137,7 @@ public class GoogleEarthHandler {
 	
 	private void setPointsTextColor(MultipartDto multipartDto) {
 		log.info("Setting the names text color...");
-		String kmlColor = getKmlColor(multipartDto.getPointTextHexColor(), multipartDto);
+		String kmlColor = getKmlColor(multipartDto.getPointTextHexColor(), multipartDto.getPointTextOpacity());
 		
 		styleUrlsFromPlacemarks.forEach(styleUrl -> {
 			Node styleObject = styleObjects.get(styleUrl);
@@ -223,8 +169,8 @@ public class GoogleEarthHandler {
 	 * </Style>}
 	 */
 	private Node getIconStyleScaleNodeFromStyle(Node styleNode) {
-		Node iconStyleNode = getChildNodesFromParent(styleNode, "IconStyle", null, false, true, false).get(0);
-		return getChildNodesFromParent(iconStyleNode, "scale", null, false, true, false).get(0);
+		Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(styleNode, "IconStyle", null, false, true, false).get(0);
+		return xmlDomUtils.getChildNodesFromParent(iconStyleNode, "scale", null, false, true, false).get(0);
 	}
 	
 	/**
@@ -243,8 +189,8 @@ public class GoogleEarthHandler {
 	 * </Style>}
 	 */
 	private Node getLabelStyleScaleNodeFromStyle(Node styleNode) {
-		Node labelStyleNode = getChildNodesFromParent(styleNode, "LabelStyle", null, false, true, false).get(0);
-		return getChildNodesFromParent(labelStyleNode, "scale", null, false, true, false).get(0);
+		Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(styleNode, "LabelStyle", null, false, true, false).get(0);
+		return xmlDomUtils.getChildNodesFromParent(labelStyleNode, "scale", null, false, true, false).get(0);
 	}
 	
 	/**
@@ -264,8 +210,8 @@ public class GoogleEarthHandler {
 	 * </Style>}
 	 */
 	private Node getLabelStyleColorNodeFromStyle(Node styleNode) {
-		Node labelStyleNode = getChildNodesFromParent(styleNode, "LabelStyle", null, false, true, false).get(0);
-		return getChildNodesFromParent(labelStyleNode, "color", null, false, true, false).get(0);
+		Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(styleNode, "LabelStyle", null, false, true, false).get(0);
+		return xmlDomUtils.getChildNodesFromParent(labelStyleNode, "color", null, false, true, false).get(0);
 	}
 	
 	/**
@@ -307,11 +253,11 @@ public class GoogleEarthHandler {
 	 * }
 	 */
 	private Node getNormalStyleNodeFromStyleMap(Node styleMap) {
-		return getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
+		return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
 			.stream()
-			.filter(pairNode -> !getChildNodesFromParent(pairNode, "key", "normal", false, false, false).isEmpty())
+			.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "normal", false, false, false).isEmpty())
 			.findFirst()
-			.map(normalPairNode -> getChildNodesFromParent(normalPairNode, "styleUrl", null, false, false, false).get(0))
+			.map(normalPairNode -> xmlDomUtils.getChildNodesFromParent(normalPairNode, "styleUrl", null, false, false, false).get(0))
 			.map(normalStyleUrl -> styleObjects.get(normalStyleUrl.getTextContent().substring(1)))
 			.get();
 	}
@@ -355,72 +301,13 @@ public class GoogleEarthHandler {
 	 * }
 	 */
 	private Node getHighlightStyleNodeFromStyleMap(Node styleMap) {
-		return getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
+		return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
 			.stream()
-			.filter(pairNode -> !getChildNodesFromParent(pairNode, "key", "highlight", false, false, false).isEmpty())
+			.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "highlight", false, false, false).isEmpty())
 			.findFirst()
-			.map(highlightPairNode -> getChildNodesFromParent(highlightPairNode, "styleUrl", null, false, false, false).get(0))
+			.map(highlightPairNode -> xmlDomUtils.getChildNodesFromParent(highlightPairNode, "styleUrl", null, false, false, false).get(0))
 			.map(highlightStyleUrl -> styleObjects.get(highlightStyleUrl.getTextContent().substring(1)))
 			.get();
-	}
-	
-	/**
-	 * Converts standard HEX color from HTML User input into KML color standard.
-	 * ====================================================================
-	 * https://developers.google.com/kml/documentation/kmlreference#colorstyle
-	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
-	 * The range of values for any one color is 0 to 255 (00 to ff).
-	 * For alpha, 00 is fully transparent and ff is fully opaque.
-	 * The order of expression is aabbggrr,
-	 * where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
-	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
-	 * {@code <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
-	 * <p>
-	 * * Typical RGB incoming from HTML color picker list (as #rrggbb):
-	 * * HEX COLOR : #ff0000
-	 * * HEX COLOR : #000000
-	 * * HEX COLOR : #ffffff
-	 * * HEX COLOR : #8e4848
-	 *
-	 * @param hexColor "#rrggbb" (reg, green, blue) natural input from HTML color picker in hex
-	 * @return kml specific color with opacity (alpha-channel) as "aabbggrr" (alpha, blue, green,red)
-	 * witch is corresponds to KML specification.
-	 */
-	public String getKmlColor(String hexColor, MultipartDto multipartDto) throws IllegalArgumentException {
-		log.debug("Got '{}' hex color input", hexColor);
-		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
-			throw new IllegalArgumentException(
-				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
-		}
-		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
-		log.debug("Hex color has been converted into '{}' KML color", kmlColor);
-		if (multipartDto.getPointTextOpacity() != null) {
-			String opacity = getHexFromPercentage(multipartDto.getPointTextOpacity());
-			log.info("KML color with opacity will be returned as '{}'", opacity + kmlColor);
-			return opacity + kmlColor;
-		} else {
-			log.info("KML color will be returned as '{}'", "ff" + kmlColor);
-			return "ff" + kmlColor;
-		}
-	}
-	
-	/**
-	 * Convert incoming percentage value 0 - 100% to an integer in base sixteen 00 - FF (0 - 255).
-	 * Where 100% = 255 and 1% = 2.55 (Rounding.HALF_UP) accordingly but as two hex digits (e.g.  00, 03, 7F, FF)
-	 *
-	 * @param percentage 0 - 100%
-	 * @return Hexadecimal representation from 00 to FF as two hex digits.
-	 * @throws IllegalArgumentException if a given percentage below 0 or above 100%
-	 */
-	String getHexFromPercentage(Integer percentage) throws IllegalArgumentException {
-		log.debug("Got percentage as {}", percentage);
-		if (percentage < 0 || percentage > 100) {
-			throw new IllegalArgumentException("Percentage has to be from 0 to 100%!");
-		}
-		BigDecimal hexPercentage = new BigDecimal(percentage * 2.55).setScale(0, RoundingMode.HALF_UP);
-		String hexFormat = String.format("%02x", hexPercentage.toBigInteger());
-		log.info("Hex format '{}' will be returned", hexFormat);
-		return hexFormat;
 	}
 	
 	//TODO: if null is thrown from this class treat it as a non-valid xml
@@ -430,7 +317,7 @@ public class GoogleEarthHandler {
 	 */
 	private void createStyleMaps() {
 		List<Node> placemarksStyleUrlNodes =
-			getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false, false);
+			xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false, false);
 		placemarksStyleUrlNodes.stream()
 			.filter(styleUrlNode -> styleObjects.get(styleUrlNode.getTextContent().substring(1)) != null)
 			.forEach(styleUrlNode -> {
@@ -440,36 +327,11 @@ public class GoogleEarthHandler {
 					styleUrlNode.setTextContent("#" + styleMapNode.getAttributes().getNamedItem("id").getTextContent());
 				}
 			});
-		//Clear all the occasional unused garbage from Document
-		deleteUnusedStylesAndStyleMaps();
 		//Refresh existing collections
-		setStyleObjects();
+		setStyleObjectsMap();
 		setStyleUrlsFromPlacemarks();
-	}
-	
-	/**
-	 * {@literal Deletes all the unused
-	 * (which either have no references from <Placemark/>'s or "normal" or "highlight" <StyleMap/>'s)
-	 * <Style/>'s and <StyleMap/>'s from the} {@link #document}
-	 */
-	private void deleteUnusedStylesAndStyleMaps() {
-		//TODO: todo
-		List<Node> placemarksStyleUrlNodes = getChildNodesFromParents(
-			document.getElementsByTagName("Placemark"), "styleUrl", false, false, false);
-		List<String> urlsToStyles = placemarksStyleUrlNodes.stream()
-			.map(node -> node.getTextContent().substring(1)) // To remove starting '#' sign
-			.collect(Collectors.toList());
-		
-		NodeList styleNodes = document.getElementsByTagName("Style");
-		for (int i = 0; i < styleNodes.getLength(); i++) {
-			Node styleNode = styleNodes.item(i);
-			if (styleNode.getAttributes() != null && styleNode.getAttributes().getNamedItem("id") != null) {
-				String idAttributeString = styleNode.getAttributes().getNamedItem("id").getTextContent();
-				if (!urlsToStyles.contains(idAttributeString)) {
-					styleNode.getParentNode().removeChild(styleNode);
-				}
-			}
-		}
+		log.info("<StyleMap>'s have been created for all the <Placemark><styleUrl/></Placemark>. ({} StyleObjects)",
+			styleObjects.size());
 	}
 	
 	/**
@@ -534,10 +396,8 @@ public class GoogleEarthHandler {
 		pairHighlightNode.appendChild(styleUrlHighlightNode);
 		styleMapNode.appendChild(pairHighlightNode);
 		
-		//Must contain a single <Document> Node
-		Node documentNode = document.getElementsByTagName("Document").item(0);
-		documentNode.insertBefore(highlightStyleNode, getInsertBeforeNode(documentNode));
-		documentNode.insertBefore(styleMapNode, getInsertBeforeNode(documentNode));
+		insertIntoDocumentNode(highlightStyleNode);
+		insertIntoDocumentNode(styleMapNode);
 		return styleMapNode;
 	}
 	
@@ -548,45 +408,56 @@ public class GoogleEarthHandler {
 	}
 	
 	private void setPointsIconsSizeDynamic(MultipartDto multipartDto) {
+		log.info("Setting the points icons dynamic size...");
 		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
 		for (int i = 0; i < styleMapNodes.getLength(); i++) {
 			Node styleMapNode = styleMapNodes.item(i);
 			Node highlightStyleNode = getHighlightStyleNodeFromStyleMap(styleMapNode);
-			Node iconStyleNode = getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
-			Node scaleNode = getChildNodesFromParent(iconStyleNode, "scale", null, false, true, true).get(0);
+			Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
+			Node scaleNode = xmlDomUtils.getChildNodesFromParent(iconStyleNode, "scale", null, false, true, true).get(0);
 			scaleNode.setTextContent(multipartDto.getPointIconSizeScaledDynamic().toString());
 		}
+		log.info("All the points icons dynamic size has been set.");
 	}
 	
 	private void setPointsTextSizeDynamic(MultipartDto multipartDto) {
+		log.info("Setting the points text dynamic size...");
 		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
 		for (int i = 0; i < styleMapNodes.getLength(); i++) {
 			Node styleMapNode = styleMapNodes.item(i);
 			Node highlightStyleNode = getHighlightStyleNodeFromStyleMap(styleMapNode);
-			Node labelStyleNode = getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
-			Node scaleNode = getChildNodesFromParent(labelStyleNode, "scale", null, false, true, true).get(0);
+			Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
+			Node scaleNode = xmlDomUtils.getChildNodesFromParent(labelStyleNode, "scale", null, false, true, true).get(0);
 			scaleNode.setTextContent(multipartDto.getPointTextSizeScaledDynamic().toString());
 		}
+		log.info("All the points text dynamic size has been set.");
 	}
 	
 	private void setPointsTextColorDynamic(MultipartDto multipartDto) {
-		log.info("Setting the names text color...");
-		String kmlColor = getKmlColor(multipartDto.getPointTextHexColorDynamic(), multipartDto);
+		log.info("Setting the names text dynamic color...");
+		String kmlColor = getKmlColor(multipartDto.getPointTextHexColorDynamic(), multipartDto.getPointTextOpacityDynamic());
 		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
 		for (int i = 0; i < styleMapNodes.getLength(); i++) {
 			Node styleMapNode = styleMapNodes.item(i);
 			Node highlightStyleNode = getHighlightStyleNodeFromStyleMap(styleMapNode);
-			Node labelStyleNode = getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
-			Node colorNode = getChildNodesFromParent(labelStyleNode, "color", null, false, true, true).get(0);
+			Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
+			Node colorNode = xmlDomUtils.getChildNodesFromParent(labelStyleNode, "color", null, false, true, true).get(0);
 			colorNode.setTextContent(kmlColor);
 		}
+		log.info("All the points text dynamic color has been set.");
 	}
 	
 	/**
-	 * @param documentNode A Document Node to find the first appropriate child Node from
-	 * @return The first <Style/>, <StyleMap/> or any first child Node from <Document/>
+	 * {@literal
+	 * A Kml Document must contain a single header as a <Document/> Node.
+	 * The new created <StyleMap/>'s have to be inserted either before elder ones or the a first child of the
+	 * <Document/>
+	 * }
+	 *
+	 * @return A given "styleMapNode" parameter as the inserted into Document one.
 	 */
-	private Node getInsertBeforeNode(Node documentNode) {
+	private Node insertIntoDocumentNode(Node styleMapNode) {
+		Node documentNode = document.getElementsByTagName("Document").item(0);
 		Node insertBeforeNode = null;
 		//<Document/>
 		NodeList childNodes = documentNode.getChildNodes();
@@ -598,8 +469,106 @@ public class GoogleEarthHandler {
 				break;
 			}
 		}
-		return insertBeforeNode != null ? insertBeforeNode : childNodes.item(0).getFirstChild();
+		insertBeforeNode = insertBeforeNode != null ? insertBeforeNode : childNodes.item(0).getFirstChild();
+		documentNode.insertBefore(styleMapNode, insertBeforeNode);
+		return styleMapNode;
 	}
+	
+	/**
+	 * Converts standard HEX color from HTML User input into KML color standard.
+	 * ====================================================================
+	 * https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff).
+	 * For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr,
+	 * where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * {@code <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 * <p>
+	 * * Typical RGB incoming from HTML color picker list (as #rrggbb):
+	 * * HEX COLOR : #ff0000
+	 * * HEX COLOR : #000000
+	 * * HEX COLOR : #ffffff
+	 * * HEX COLOR : #8e4848
+	 *
+	 * @param hexColor "#rrggbb" (reg, green, blue) natural input from HTML color picker in hex
+	 *                 {@link MultipartDto#getPointTextHexColor()} or {@link MultipartDto#getPointTextHexColorDynamic()}
+	 * @param opacity  Percentage value from 0 to 100%.
+	 *                 {@link MultipartDto#getPointTextOpacity()} or {@link MultipartDto#getPointTextOpacityDynamic()}
+	 *                 If null, the max "ff" value will be set.
+	 * @return kml specific color with opacity (alpha-channel) as "aabbggrr" (alpha, blue, green,red)
+	 * witch is corresponds to KML specification.
+	 */
+	public String getKmlColor(String hexColor, @Nullable Integer opacity) throws IllegalArgumentException {
+		log.info("Got '{}' hex color input with {} opacity", hexColor, opacity != null ? opacity : "null");
+		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
+			throw new IllegalArgumentException(
+				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
+		}
+		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
+		String kmlOpacity = opacity != null ? getHexFromPercentage(opacity) : "ff";
+		log.info("KML color with opacity will be returned as '{}'", kmlOpacity + kmlColor);
+		return kmlOpacity + kmlColor;
+	}
+	
+	/**
+	 * Converts standard HEX color from HTML User input into KML color standard.
+	 * ====================================================================
+	 * https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff).
+	 * For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr,
+	 * where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * {@code <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00.
+	 * <p>
+	 * * Typical RGB incoming from HTML color picker list (as #rrggbb):
+	 * * HEX COLOR : #ff0000
+	 * * HEX COLOR : #000000
+	 * * HEX COLOR : #ffffff
+	 * * HEX COLOR : #8e4848
+	 *
+	 * @param hexColor "#rrggbb" (reg, green, blue) natural input from HTML color picker in hex
+	 *                 {@link MultipartDto#getPointTextHexColor()} or {@link MultipartDto#getPointTextHexColorDynamic()}
+	 * @param hexOpacity  Hexadecimal value from 00 to FF.
+	 *                 {@link MultipartDto#getPointTextHexOpacity()} or {@link MultipartDto#getPointTextHexOpacityDynamic()}
+	 *                 If null, the max "ff" value will be set.
+	 * @return kml specific color with opacity (alpha-channel) as "aabbggrr" (alpha, blue, green,red)
+	 * witch is corresponds to KML specification.
+	 */
+	public String getKmlColor(String hexColor, String hexOpacity) throws IllegalArgumentException {
+		log.info("Got '{}' hex color input with {} opacity", hexColor, hexOpacity != null ? hexOpacity : "null");
+		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
+			throw new IllegalArgumentException(
+				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
+		}
+		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
+		log.info("KML color with opacity will be returned as '{}'", hexOpacity + kmlColor);
+		return hexOpacity + kmlColor;
+	}
+	
+	/**
+	 * Convert incoming percentage value 0 - 100% to an integer in base sixteen 00 - FF (0 - 255).
+	 * Where 100% = 255 and 1% = 2.55 (Rounding.HALF_UP) accordingly but as two hex digits (e.g.  00, 03, 7F, FF)
+	 *
+	 * @param percentage 0 - 100%
+	 * @return Hexadecimal representation from 00 to FF as two hex digits.
+	 * @throws IllegalArgumentException if a given percentage below 0 or above 100%
+	 */
+	String getHexFromPercentage(Integer percentage) throws IllegalArgumentException {
+		log.debug("Got percentage as {}", percentage);
+		if (percentage < 0 || percentage > 100) {
+			throw new IllegalArgumentException("Percentage has to be from 0 to 100%!");
+		}
+		BigDecimal hexPercentage = new BigDecimal(percentage * 2.55).setScale(0, RoundingMode.HALF_UP);
+		String hexFormat = String.format("%02x", hexPercentage.toBigInteger());
+		log.info("Hex format '{}' will be returned", hexFormat);
+		return hexFormat;
+	}
+	
+	//TODO: to download special GE images
 	
 	/**
 	 * Some programs as Google Earth has special href they internally redirect to their local image store.
@@ -610,207 +579,9 @@ public class GoogleEarthHandler {
 	 * @param href Href or src to be evaluated
 	 * @return If the given href is Google Earth specific and cannot be replaced with a new href or not.
 	 */
-	//TODO: to download special GE images
 	boolean isImageHrefChangeable(String href) {
 		log.trace("Href to evaluate as GoogleMap special = '{}'", href);
 		String googleMapSpecialUrl = "http://maps.google.com/";
 		return !href.startsWith(googleMapSpecialUrl);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////// COMMON METHODS ///////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * @param parents        A Parents {@link NodeList} to find children of
-	 * @param childNodeName  A Child Node tag name to be found
-	 * @param recursively    To look through the children of all the children of every Node
-	 * @param createIfAbsent If not a such Child Node within the Parent Node found
-	 *                       a new one will be created, appended to the Parent and added to the resulting List.
-	 * @param asFirstChild   Only in conjunction with "createIfAbsent" parameter.
-	 *                       If true a new child Node will be inserted as a first child of the parent.
-	 *                       Otherwise it will be appended at the end.
-	 * @return A List of Children Nodes or {@link java.util.Collections#EMPTY_LIST} if nothing found.
-	 * @throws IllegalArgumentException if 'recursively' and 'createIfAbsent' both == true.
-	 */
-	List<Node> getChildNodesFromParents(NodeList parents, String childNodeName, boolean recursively, boolean createIfAbsent, boolean asFirstChild)
-		throws IllegalArgumentException {
-		if (recursively && createIfAbsent) throw new IllegalArgumentException(
-			"You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
-		
-		List<Node> children = new ArrayList<>();
-		
-		for (int i = 0; i < parents.getLength(); i++) {
-			Node parentNode = parents.item(i);
-			//Looking through all the children of all the children for the given parent
-			if (recursively) {
-				List<Node> allChildNodes = getAllChildrenRecursively(new ArrayList<>(), parentNode);
-				allChildNodes.stream()
-					.filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
-					.forEach(children::add);
-				continue;
-			}
-			//Looking through direct children
-			NodeList childNodes = parentNode.getChildNodes();
-			List<Node> existingChildren = new ArrayList<>();
-			for (int j = 0; j < childNodes.getLength(); j++) {
-				Node childNode = childNodes.item(j);
-				if (childNode.getNodeName() != null && childNode.getNodeName().equals(childNodeName)) {
-					existingChildren.add(childNode);
-					log.trace("Existing <{}> has been found in <{}>", childNodeName, parentNode.getNodeName());
-				}
-			}
-			if (createIfAbsent && existingChildren.isEmpty()) {
-				//Has to create a child if absent and no child is exist
-				Element newChildNode = document.createElement(childNodeName);
-				if (asFirstChild) {
-					parentNode.insertBefore(newChildNode, parentNode.getFirstChild());
-				} else {
-					parentNode.appendChild(newChildNode);
-				}
-				children.add(newChildNode);
-				log.trace("As 'createIfAbsent'== true and <{}> has't been found in <{}> it was created and appended",
-					childNodeName, parentNode.getNodeName());
-			} else {
-				//Just add the found children (even if they aren't)
-				children.addAll(existingChildren);
-			}
-		}
-		log.trace("{} <{}> children have been found for <{}>", children.size(), childNodeName, parents.item(0).getNodeName());
-		return children;
-	}
-	
-	/**
-	 * @param parents        A Parents {@link NodeList} to find children of
-	 * @param childNodeName  A Child Node tag name to be found
-	 * @param recursively    To look through the children of all the children of every Node
-	 * @param createIfAbsent If not a such Child Node within the Parent Node found
-	 *                       a new one will be created, appended to the Parent and added to the resulting List.
-	 * @param asFirstChild   Only in conjunction with "createIfAbsent" parameter.
-	 *                       If true a new child Node will be inserted as a first child of the parent.
-	 *                       Otherwise it will be appended at the end.
-	 * @return A List of Children Nodes or {@link java.util.Collections#EMPTY_LIST} if nothing found.
-	 * @throws IllegalArgumentException if 'recursively' and 'createIfAbsent' both == true.
-	 */
-	private List<Node> getChildNodesFromParents(List<Node> parents, String childNodeName, boolean recursively, boolean createIfAbsent, boolean asFirstChild)
-		throws IllegalArgumentException {
-		if (recursively && createIfAbsent) throw new IllegalArgumentException(
-			"You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
-		
-		List<Node> children = new ArrayList<>();
-		
-		for (int i = 0; i < parents.size(); i++) {
-			Node parentNode = parents.get(i);
-			//Looking through all the children of all the children for the given parent
-			if (recursively) {
-				List<Node> allChildNodes = getAllChildrenRecursively(new ArrayList<>(), parentNode);
-				allChildNodes.stream()
-					.filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
-					.forEach(children::add);
-				continue;
-			}
-			//Looking through direct children
-			NodeList childNodes = parentNode.getChildNodes();
-			List<Node> existingChildren = new ArrayList<>();
-			for (int j = 0; j < childNodes.getLength(); j++) {
-				Node childNode = childNodes.item(j);
-				if (childNode.getNodeName() != null && childNode.getNodeName().equals(childNodeName)) {
-					existingChildren.add(childNode);
-					log.trace("Existing <{}> has been found in <{}>", childNodeName, parentNode.getNodeName());
-				}
-			}
-			if (createIfAbsent && existingChildren.isEmpty()) {
-				//Has to create a child if absent and no child is exist
-				Element newChildNode = document.createElement(childNodeName);
-				if (asFirstChild) {
-					parentNode.insertBefore(newChildNode, parentNode.getFirstChild());
-				} else {
-					parentNode.appendChild(newChildNode);
-				}
-				children.add(newChildNode);
-				log.trace("As 'createIfAbsent'== true and <{}> has't been found in <{}> it was created and appended",
-					childNodeName, parentNode.getNodeName());
-			} else {
-				//Just add the found children (even if they aren't)
-				children.addAll(existingChildren);
-			}
-		}
-		log.trace("{} <{}> children have been found for <{}>", children.size(), childNodeName, parents.get(0).getNodeName());
-		return children;
-	}
-	
-	/**
-	 * @param parent         A Parent Node to find child of
-	 * @param childNodeName  A Child Node tag name to be found
-	 * @param childNodeValue {@link Nullable} If not null only the Child Node with equal text content will be returned
-	 * @param recursively    To look through the children of all the children of every Node
-	 * @param createIfAbsent If not a such Child Node within the Parent Node found
-	 *                       a new one will be created, appended to the Parent and added to the resulting List.
-	 * @param asFirstChild   Only in conjunction with "createIfAbsent" parameter.
-	 *                       If true a new child Node will be inserted as a first child of the parent.
-	 *                       Otherwise it will be appended at the end.
-	 * @return A List of Children Nodes or {@link java.util.Collections#EMPTY_LIST} if nothing found.
-	 * @throws IllegalArgumentException if 'recursively' and 'createIfAbsent' both == true.
-	 */
-	List<Node> getChildNodesFromParent(
-		Node parent, String childNodeName, @Nullable String childNodeValue, boolean recursively, boolean createIfAbsent, boolean asFirstChild)
-		throws IllegalArgumentException {
-		
-		if (recursively && createIfAbsent) throw new IllegalArgumentException(
-			"You can create only direct children within parents! 'recursively' is only for looking through exist nodes!");
-		
-		List<Node> childrenNodesToBeReturned = new ArrayList<>();
-		
-		NodeList childNodes = parent.getChildNodes();
-		List<Node> existingChildren = new ArrayList<>();
-		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node childNode = childNodes.item(i);
-			
-			if (recursively) {
-				List<Node> allChildren = getAllChildrenRecursively(new ArrayList<>(), childNode);
-				allChildren.stream()
-					.filter(node -> node.getNodeName() != null && node.getNodeName().equals(childNodeName))
-					.forEach(existingChildren::add);
-				continue;
-			}
-			if (childNode.getNodeName() != null && childNode.getNodeName().equals(childNodeName)) {
-				if (childNodeValue == null) {
-					existingChildren.add(childNode);
-				} else if (childNode.getTextContent() != null && childNode.getTextContent().equals(childNodeValue)) {
-					existingChildren.add(childNode);
-				}
-			}
-		}
-		if (createIfAbsent && existingChildren.isEmpty()) {
-			//Has to create a child if absent and no child is exist
-			Element newChildNode = document.createElement(childNodeName);
-			if (asFirstChild) {
-				parent.insertBefore(newChildNode, parent.getFirstChild());
-			} else {
-				parent.appendChild(newChildNode);
-			}
-			childrenNodesToBeReturned.add(newChildNode);
-			log.trace("As 'createIfAbsent'== true and <{}> has't been found in <{}> it was created and appended",
-				childNodeName, parent.getNodeName());
-		} else {
-			//Just add the found children (even if they aren't)
-			childrenNodesToBeReturned.addAll(existingChildren);
-		}
-		log.trace("{} <{}> children have been found for <{}>",
-			childrenNodesToBeReturned.size(), childNodeName, parent.getNodeName());
-		return childrenNodesToBeReturned;
-	}
-	
-	private List<Node> getAllChildrenRecursively(List<Node> nodeList, Node parentNode) {
-		if (parentNode.hasChildNodes()) {
-			NodeList childNodes = parentNode.getChildNodes();
-			for (int i = 0; i < childNodes.getLength(); i++) {
-				Node childNode = childNodes.item(i);
-				getAllChildrenRecursively(nodeList, childNode);
-			}
-		} else {
-			nodeList.add(parentNode);
-		}
-		return nodeList;
 	}
 }
