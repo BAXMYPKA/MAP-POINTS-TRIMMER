@@ -30,7 +30,6 @@ public class GoogleEarthHandler {
 	private List<String> styleUrlsFromPlacemarks;
 	private XmlDomUtils xmlDomUtils;
 	
-	//TODO: regenerate docs
 	Document processXml(Document document, MultipartDto multipartDto) {
 		this.document = document;
 		xmlDomUtils = new XmlDomUtils(document);

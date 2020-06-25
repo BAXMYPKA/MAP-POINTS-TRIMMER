@@ -11,13 +11,11 @@ First of all it's been developed for Locus Map Pro and Google Earth Pro for desk
 
 The examples of map points displaying for **Locus Map Pro** and **Google Earth Pro**:
 
-<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusMapPhotoPoint.jpg" width="260px" alt="Locus Map point with the photo in description" title="How Locus Map can display a photo right in a point description"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPhoto.jpg" width=310px" alt="How Google Earth Pro displays a point description with the photo inside it after it was clicked" title="How Google Earth Pro displays a point description with the photo inside it after it was clicked"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPoints.jpg" width="310px" alt="An example of points icons and names with various colors and sizes on Google Earth satellite map" title="An example of points icons and names with various colors and sizes on Google Earth satellite map">
-
-[Application releases list](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
+<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusMapPhotoPoint.jpg" width="260px" alt="Locus Map point with the photo in description" title="How Locus Map can display a photo right in a point description"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPhoto.jpg" width=310px" alt="How Google Earth Pro displays a point description with the photo inside it after it was clicked" title="How Google Earth Pro displays a point description with the photo inside it after it was clicked"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPoints.jpg" width="310px" alt="An example of points icons and names with various colors and sizes on Google Earth satellite map" title="An example of points icons and names with various colors and sizes on Google Earth satellite map"></p>
 
 ## How to use it
 
-Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v2.2/MAP-POINTS-TRIMMERv2.2.zip)
+Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
 
 When the application start use your browser to visit: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 

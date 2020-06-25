@@ -10,13 +10,10 @@
 
 Примеры результатов обработки в **Locus Map Pro** и **Google Earth Pro**:
 
-<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusMapPhotoPoint.jpg" width="260px" alt="Locus Map point with the photo in description" title="Отображение фотографии местности в теле описания точки Locus Map"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPhoto.jpg" width=310px" alt="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro" title="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPoints.jpg" width="310px" alt="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth" title="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth">
-</p>
-
-[Список версий программы](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases)
+<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusMapPhotoPoint.jpg" width="260px" alt="Locus Map point with the photo in description" title="Отображение фотографии местности в теле описания точки Locus Map"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPhoto.jpg" width=310px" alt="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro" title="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPoints.jpg" width="310px" alt="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth" title="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth"></p>
 
 ## Как использовать
-Скачать готовую для автозапуска программу можно [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases/download/v2.2/MAP-POINTS-TRIMMERv2.2.zip).
+Скачать готовую для автозапуска программу можно [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases).
 
 После запуска заходите в приложение через любой браузер по адресу: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
