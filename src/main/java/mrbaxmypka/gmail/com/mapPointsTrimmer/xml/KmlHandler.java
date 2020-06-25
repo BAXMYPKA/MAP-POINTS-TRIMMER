@@ -62,20 +62,9 @@ public class KmlHandler extends XmlHandler {
 			trimWhitespaces(documentRoot);
 		}
 		log.info("The KML has been processed");
-		return writeTransformedDocument(document);
+		return writeTransformedDocument(document, !multipartDto.isTrimXml());
 	}
 	
-	private void trimWhitespaces(Node node) {
-		NodeList childNodes = node.getChildNodes();
-		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node childNode = childNodes.item(i);
-			if (childNode.getNodeType() == Node.TEXT_NODE) {
-				childNode.setTextContent(childNode.getTextContent().trim());
-			}
-			trimWhitespaces(childNode);
-		}
-		log.trace("Whitespaces have been trimmed from KML");
-	}
 	
 	/**
 	 * Every old href tag contains path to file and a filename. So here we derive an existing filename

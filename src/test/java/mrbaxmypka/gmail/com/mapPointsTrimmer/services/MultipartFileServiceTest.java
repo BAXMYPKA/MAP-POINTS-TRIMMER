@@ -5,6 +5,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.GoogleEarthHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.XmlTestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -125,13 +126,13 @@ class MultipartFileServiceTest {
 		//WHEN .kmz is fully processed without Mocks and additional conditions
 		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
 		String kmlResult = Files.readString(tmpFile, StandardCharsets.UTF_8);
+//		System.out.println(kmlResult);
 		
 		//THEN The resulting 'doc.kml' should be the same
 		assertAll(
-			() -> assertTrue(kmlResult.startsWith("<?xml version=\"1.0\" encoding=\"utf-8\"")),
-			() -> assertTrue(kmlResult.endsWith("</Placemark>\n" +
-				"</Document>\n" +
-				"</kml>"))
+			() -> assertTrue(kmlResult.contains("<Style id=\"file:///sdcard/Locus/cache/images/1571471453728\">")),
+			() -> assertTrue(kmlResult.contains("<name>Locus17.04.2020</name>")),
+			() -> assertTrue(kmlResult.contains("<name>2015-04-10 14:27:17</name>"))
 		);
 	}
 	

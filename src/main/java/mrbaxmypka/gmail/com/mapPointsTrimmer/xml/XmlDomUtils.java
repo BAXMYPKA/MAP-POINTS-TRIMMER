@@ -78,7 +78,10 @@ public class XmlDomUtils {
 				children.addAll(existingChildren);
 			}
 		}
-		log.trace("{} <{}> children have been found for <{}>", children.size(), childNodeName, parents.item(0).getNodeName());
+		log.trace("{} <{}> children have been found for <{}>",
+			children.size(),
+			childNodeName,
+			parents.getLength() != 0 ? parents.item(0).getNodeName() : "null");
 		return children;
 	}
 	

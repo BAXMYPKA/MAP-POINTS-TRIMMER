@@ -190,7 +190,7 @@ class GoogleEarthHandlerStaticTest {
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
-		String processedKml = kmlHandler.writeTransformedDocument(document);
+		String processedKml = kmlHandler.writeTransformedDocument(document, true);
 //		System.out.println(processedKml);
 		//THEN
 		String scale = multipartDto.getPointIconSizeScaled().toString();
@@ -838,7 +838,7 @@ class GoogleEarthHandlerStaticTest {
 		
 		//WHEN
 		document = googleEarthHandler.processXml(document, multipartDto);
-		String processedKml = kmlHandler.writeTransformedDocument(document);
+		String processedKml = kmlHandler.writeTransformedDocument(document, true);
 //		System.out.println(processedKml);
 		
 		//THEN
@@ -942,7 +942,7 @@ class GoogleEarthHandlerStaticTest {
 		//WHEN
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
 		
 		//THEN

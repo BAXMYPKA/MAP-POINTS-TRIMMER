@@ -226,6 +226,7 @@ class KmlHandlerTest {
 		
 		//WHEN
 		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+//		System.out.println(processedKml);
 		
 		//THEN xml tags are without whitespaces but CDATA starts and ends with them
 		assertAll(
@@ -482,14 +483,9 @@ class KmlHandlerTest {
 
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(
-			() -> assertTrue(processedKml.contains(
-				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-					"\t\t<lc:attachment>files/p__20200511_130333.jpg</lc:attachment>\n" +
-					"\t</ExtendedData>")),
-			() -> assertTrue(processedKml.contains(
-				"<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-					"\t\t<lc:attachment>files/p__20200511_125332.jpg</lc:attachment>\n" +
-					"\t</ExtendedData>"))
+			() -> assertTrue(processedKml.contains("<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">")),
+			() -> assertTrue(processedKml.contains("<lc:attachment>files/p__20200511_130333.jpg</lc:attachment>")),
+			() -> assertTrue(processedKml.contains("<lc:attachment>files/p__20200511_125332.jpg</lc:attachment>"))
 		);
 	}
 	
@@ -628,16 +624,14 @@ class KmlHandlerTest {
 		
 		//WHEN
 		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+//		System.out.println(processedKml);
 		
 		//THEN <kml (...) xmlns:lc="http://www.locusmap.eu"> namespace in the header has to be created
 		assertAll(
 			  () -> assertTrue(processedKml.contains(
 					"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\"" +
 						  " xmlns:lc=\"http://www.locusmap.eu\">")),
-			  () -> assertTrue(processedKml.contains(
-					"<ExtendedData>\n" +
-						  "\t\t\t<lc:attachment>files/p__20180907_123842.jpg</lc:attachment>\n" +
-						  "\t\t</ExtendedData>"))
+			  () -> assertTrue(processedKml.contains("<lc:attachment>files/p__20180907_123842.jpg</lc:attachment>"))
 		);
 	}
 }

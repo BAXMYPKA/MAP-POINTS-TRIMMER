@@ -17,7 +17,8 @@ import java.io.IOException;
  */
 public class XmlTestUtils {
 	
-	static Document getDocument(MultipartDto multipartDto) throws ParserConfigurationException, IOException, SAXException {
+	public static Document getDocument(MultipartDto multipartDto) throws ParserConfigurationException, IOException,
+		SAXException {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -35,7 +36,7 @@ public class XmlTestUtils {
 	 *                                Otherwise will be ignored. And only num of parents and children tag name will be consedered.
 	 * @return True if all the conditions are valid
 	 */
-	static boolean containsParentsWithChildren(
+	public static boolean containsParentsWithChildren(
 		Document document,
 		String requiredParentTagName,
 		int requiredNumberOfParents,
@@ -76,7 +77,7 @@ public class XmlTestUtils {
 	 * @param requiredChildValue    A child text value to be kept in a child Node
 	 * @return true if any of the Parent contains the Child with the desired value
 	 */
-	static boolean containsParentWithChild(
+	public static boolean containsParentWithChild(
 		Document document, String requiredParentTagName, String requiredChildTagName, String requiredChildValue) {
 		
 		NodeList parentNodes = document.getElementsByTagName(requiredParentTagName);

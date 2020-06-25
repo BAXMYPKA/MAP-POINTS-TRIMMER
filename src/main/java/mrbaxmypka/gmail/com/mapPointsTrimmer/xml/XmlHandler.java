@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -44,6 +45,7 @@ public abstract class XmlHandler {
 	/**
 	 * {@link DocumentBuilderFactory#setNamespaceAware(boolean)} true is crucial for getting
 	 * {@link Node#getLocalName()}!
+	 *
 	 * @param inputStream  An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartDto}
 	 * @param multipartDto
 	 * @return
@@ -63,7 +65,7 @@ public abstract class XmlHandler {
 		} catch (SAXParseException e) {
 			if (e.getMessage().contains("The prefix \"lc\" for element \"lc:attachment\" is not bound")) {
 				log.info("The prefix 'lc' for element 'lc:attachment' is not bound within XML file." +
-					  " 'lc:' namespace will be added into xml header...");
+					" 'lc:' namespace will be added into xml header...");
 				xmlInputStream.reset();
 				xmlInputStream = fixNamespaceForLcPrefixMethod(xmlInputStream);
 				document = documentBuilder.parse(xmlInputStream);
@@ -77,7 +79,8 @@ public abstract class XmlHandler {
 	}
 	
 	/**
-	 * @param document {@link Document} to be transformed into String.
+	 * @param document    {@link Document} to be transformed into String.
+	 * @param prettyPrint To format the resulting xml String with indents.
 	 * @return {@link String} where
 	 * 1) All {@link Transformer} linebreaks as "\r\n" are replaced with default "\n"
 	 * 2) As Locus may spread orphan signs {@literal ">"} occasionally (especially after {@code <ExtendedData> tag})
@@ -85,21 +88,24 @@ public abstract class XmlHandler {
 	 * kml for those signs to be deleted.
 	 * @throws TransformerException When xml is not valid
 	 */
-	protected String writeTransformedDocument(Document document) throws TransformerException {
+	protected String writeTransformedDocument(Document document, boolean prettyPrint) throws TransformerException {
 		log.info("Getting the resulting document to be transformed and written as String...");
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		DOMSource domSource = new DOMSource(document);
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 //		transformer.setOutputProperty(OutputKeys.CDATA_SECTION_ELEMENTS, "description");
-//		transformer.setOutputProperty(OutputKeys.INDENT,  "yes");
+		if (prettyPrint) {
+			trimWhitespaces(document); //To delete all the previous whitespaces
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		}
 		StringWriter stringWriter = new StringWriter();
 		Result result = new StreamResult(stringWriter);
 		transformer.transform(domSource, result);
-		//The first condition checks "&gt;\t" regexp (or {@code '\\s*>\\s*'} within original kml from Locus)
-		// as Locus may spread those signs ">" occasionally (especially after {@code <ExtendedData> tag}).
+		String xmlResult = clearFix(stringWriter);
 		log.info("The resulting XML String has been written into memory. After some cleaning it will be returned...");
-		return stringWriter.toString().replaceAll("\r\n", "\n").replaceAll("&gt;\t", "");
+		return xmlResult;
 	}
 	
 	/**
@@ -127,6 +133,38 @@ public abstract class XmlHandler {
 		}
 		log.info("Namespace 'lc:' has been fixed into XML header.");
 		return new ByteArrayInputStream(kml.getBytes(StandardCharsets.UTF_8));
+	}
+	
+	/**
+	 * Deletes all whitespaces between all nodes deep recursively from the given {@link Node}
+	 *
+	 * @param node The root {@link Node} whose all the children should be cleared from whitespaces between
+	 */
+	void trimWhitespaces(Node node) {
+		NodeList childNodes = node.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node childNode = childNodes.item(i);
+			if (childNode.getNodeType() == Node.TEXT_NODE) {
+				childNode.setTextContent(childNode.getTextContent().trim());
+			}
+			trimWhitespaces(childNode);
+		}
+		log.trace("Whitespaces have been trimmed from KML");
+	}
+	
+	/**
+	 * First checks Locus artifacts as the "&gt;\t" regexp (or {@code '\\s*>\\s*'} within original kml)
+	 * as Locus may spread those signs ">" occasionally (especially after {@code <ExtendedData> tag}).
+	 * Second replaces all the {@link Transformer}'s "\r\n" indents with standard "\r"
+	 *
+	 * @param rawXml A newly transformed raw Xml.
+	 * @return The cleared xml String.
+	 */
+	private String clearFix(StringWriter rawXml) {
+		String xmlResult = rawXml.toString().replaceAll("\r\n", "\n").replaceAll("&gt;\t", "");
+		log.info(
+			"Clear fix to delete all the unnecessary '>\\t' and replace '\\r\\n' with standard '\\n' has been completed");
+		return xmlResult;
 	}
 	
 	protected void validateDocument(Document document, File schemaFile) throws SAXException, IOException {

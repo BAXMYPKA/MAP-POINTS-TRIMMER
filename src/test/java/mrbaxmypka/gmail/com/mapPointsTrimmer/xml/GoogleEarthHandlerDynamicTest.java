@@ -231,7 +231,7 @@ public class GoogleEarthHandlerDynamicTest {
 		//WHEN set any dynamic
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
 		
 		//THEN
@@ -296,7 +296,7 @@ public class GoogleEarthHandlerDynamicTest {
 		//WHEN set any dynamic
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
 		
 		//THEN
@@ -353,7 +353,7 @@ public class GoogleEarthHandlerDynamicTest {
 		//WHEN set any dynamic
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
 		
 		//THEN
@@ -412,7 +412,7 @@ public class GoogleEarthHandlerDynamicTest {
 		//WHEN
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
 		
 		//THEN
@@ -471,7 +471,7 @@ public class GoogleEarthHandlerDynamicTest {
 		//WHEN
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
 		
 		//THEN
@@ -531,7 +531,7 @@ public class GoogleEarthHandlerDynamicTest {
 		//WHEN
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
 		
 		//THEN
@@ -544,7 +544,7 @@ public class GoogleEarthHandlerDynamicTest {
 	@Test
 	public void reference_To_Same_Style_From_Two_Placemarks_Should_Update_Only_Highlighted_Styles()
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
-		//GIVEN <Style id="style2"> is the only "highligh" style
+		//GIVEN <Style id="style1"> is referenced from two <Placemakr/>'s
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\">\n" +
 			"<Document>\n" +
 			"\t<name>Test poi</name>\n" +
@@ -573,14 +573,60 @@ public class GoogleEarthHandlerDynamicTest {
 		//WHEN
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-		System.out.println(resultingKml);
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
+//		System.out.println(resultingKml);
 		
 		//THEN
-		//Normal <Style id="style1"> LabelStyle color should be unchanged (00000000)
-//		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
-		//Highlight <Style id="style2"> LabelStyle color should be "ffffffff"
-//		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00ffffff"));
+		//Normal <Style id="style1"> IconStyle scale should be 0.6
+		assertTrue(XmlTestUtils
+			.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.6"));
+		//Highlight <Style id="#styleMapOf:style1"> IconsStyle scale should be 0.8
+		assertTrue(XmlTestUtils
+			.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.8"));
+	}
+	
+	@Test
+	public void reference_To_Same_Style_From_Two_Placemarks_Should_Create_Single_StyleMap()
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		//GIVEN <Style id="style1"> is referenced from two <Placemakr/>'s
+		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\">\n" +
+			"<Document>\n" +
+			"\t<name>Test poi</name>\n" +
+			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			"\t<Style id=\"style1\">\n" +
+			"\t\t<IconStyle></IconStyle>\n" +
+			"\t\t<LabelStyle></LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Placemark>\n" +
+			"\t\t<name>Test placemark1</name>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t<name>Test placemark2</name>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>";
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointIconSize(60);
+		multipartDto.setPointIconSizeDynamic(80);
+		
+		//WHEN
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
+//		System.out.println(resultingKml);
+		
+		//THEN
+		//Only single <StyleMap/> is presented
+		assertTrue(XmlTestUtils
+			.containsParentsWithChildren(processedDocument, "StyleMap", 1, "Pair", null));
+		//Only two <Style/>'s are presented
+		assertTrue(XmlTestUtils
+			.containsParentsWithChildren(processedDocument, "Style", 2, "IconStyle", null));
 	}
 	
 	/**
@@ -668,7 +714,7 @@ public class GoogleEarthHandlerDynamicTest {
 		//WHEN set any dynamic
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
-		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 		System.out.println(resultingKml);
 		
 		//THEN
