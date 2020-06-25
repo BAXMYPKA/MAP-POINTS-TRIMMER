@@ -310,8 +310,6 @@ public class GoogleEarthHandler {
 			.get();
 	}
 	
-	//TODO: if null is thrown from this class treat it as a non-valid xml
-	
 	/**
 	 * {@code All the <Placemark><styleUrl/></Placemark> have to reference to <StyleMap/>'s instead of <Style/>'s}
 	 */

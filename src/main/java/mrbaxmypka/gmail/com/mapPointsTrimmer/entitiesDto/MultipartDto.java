@@ -107,8 +107,6 @@ public class MultipartDto implements Serializable {
 	@Max(value = 300, message = "{validation.maxNumber}")
 	private Integer pointTextSize;
 	
-	//TODO: to examine HEXCOLORS in hmtml
-	
 	/**
 	 * Standard HTML hex color value as #ffffff.
 	 * For using in kml should be converted into kml color by
@@ -281,7 +279,7 @@ public class MultipartDto implements Serializable {
 	 * </Style>
 	 * }
 	 * Standard HTML hex color value as #ffffff.
-	 * For using in kml should be converted into kml color by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.xml.GoogleEarthHandler#getKmlColor(String, MultipartDto)}
+	 * For using in kml should be converted into kml color by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.xml.GoogleEarthHandler#getKmlColor(String, String)}
 	 * (https://developers.google.com/kml/documentation/kmlreference#colorstyle)
 	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
 	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
@@ -573,9 +571,50 @@ public class MultipartDto implements Serializable {
 		return this.pointTextSizeDynamic;
 	}
 	
-	//TODO: to write docs for Dynamics with description
-	
 	/**
+	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
+	 * Where 1.0 is the scale of default window font.
+	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
+	 * 10% is "scale = '0.1'",
+	 * 90% is "scale = '0.9'" etc.
+	 * {@code
+	 * "Static" means either unmapped <Style> or <key>normal</key> url to <Style>.
+	 * "Dynamic" means how to display it on mouse over (hovering) from <key>highlight</key> url to <Style>.
+	 * <StyleMap id="styleMap1">
+	 * <Pair>
+	 * ===>>> <key>normal</key> <<<=== STATIC PARAMETER
+	 * <styleUrl>#style1</styleUrl>
+	 * </Pair>
+	 * <Pair>
+	 * ===>>> <key>highlight</key> <<<=== DYNAMIC PARAMETER
+	 * <styleUrl>#style3</styleUrl>
+	 * </Pair>
+	 * </StyleMap>
+	 * ===>>> <Style id="style1"> <<<=== STATIC DISPLAY STYLE
+	 * <IconStyle>
+	 * <Icon>
+	 * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+	 * </Icon>
+	 * </IconStyle>
+	 * </Style>
+	 * ===>>> <Style id="style2"> <<<=== ON MOUSE OVER (DYNAMIC) DISPLAY STYLE
+	 * <IconStyle>
+	 * <Icon>
+	 * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+	 * </Icon>
+	 * </IconStyle>
+	 * </Style>
+	 * ===>>> <Style id="style3"> <<<=== UNMAPPED STATIC DISPLAY STYLE
+	 * <IconStyle>
+	 * <Icon>
+	 * <href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>
+	 * </Icon>
+	 * </IconStyle>
+	 * <LabelStyle>
+	 * <scale>0.8</scale>
+	 * </LabelStyle>
+	 * </Style>
+	 * }
 	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
 	 * Where 1.0 is the scale of default window font.
 	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where

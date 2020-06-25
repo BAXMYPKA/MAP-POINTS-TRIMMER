@@ -19,6 +19,44 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests for dynamic display with StyleMap for various Styles
  * {@code
+ * "Static" means either unmapped <Style> or <key>normal</key> url to <Style>.
+ * "Dynamic" means how to display it on mouse over (hovering) from <key>highlight</key> url to <Style>.
+ * <StyleMap id="styleMap1">
+ * <Pair>
+ * ===>>> <key>normal</key> <<<=== STATIC PARAMETER
+ * <styleUrl>#style1</styleUrl>
+ * </Pair>
+ * <Pair>
+ * ===>>> <key>highlight</key> <<<=== DYNAMIC PARAMETER
+ * <styleUrl>#style3</styleUrl>
+ * </Pair>
+ * </StyleMap>
+ * ===>>> <Style id="style1"> <<<=== STATIC DISPLAY STYLE
+ * <IconStyle>
+ * <Icon>
+ * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+ * </Icon>
+ * </IconStyle>
+ * </Style>
+ * ===>>> <Style id="style2"> <<<=== ON MOUSE OVER (DYNAMIC) DISPLAY STYLE
+ * <IconStyle>
+ * <Icon>
+ * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+ * </Icon>
+ * </IconStyle>
+ * </Style>
+ * ===>>> <Style id="style3"> <<<=== UNMAPPED STATIC DISPLAY STYLE
+ * <IconStyle>
+ * <Icon>
+ * <href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>
+ * </Icon>
+ * </IconStyle>
+ * <LabelStyle>
+ * <scale>0.8</scale>
+ * </LabelStyle>
+ * </Style>
+ * }
+ * {@code
  * <StyleMap id="styleMap1">
  * <Pair>
  * <key>normal</key>
@@ -494,13 +532,55 @@ public class GoogleEarthHandlerDynamicTest {
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
-		System.out.println(resultingKml);
+//		System.out.println(resultingKml);
 		
 		//THEN
 		//Normal <Style id="style1"> LabelStyle color should be unchanged (00000000)
 		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
 		//Highlight <Style id="style2"> LabelStyle color should be "ffffffff"
 		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00ffffff"));
+	}
+	
+	@Test
+	public void reference_To_Same_Style_From_Two_Placemarks_Should_Update_Only_Highlighted_Styles()
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		//GIVEN <Style id="style2"> is the only "highligh" style
+		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\">\n" +
+			"<Document>\n" +
+			"\t<name>Test poi</name>\n" +
+			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			"\t<Style id=\"style1\">\n" +
+			"\t\t<IconStyle></IconStyle>\n" +
+			"\t\t<LabelStyle></LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Placemark>\n" +
+			"\t\t<name>Test placemark1</name>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"\t\t<Placemark>\n" +
+			"\t\t<name>Test placemark2</name>\n" +
+			"\t\t<description></description>\n" +
+			"\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>";
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointIconSize(60);
+		multipartDto.setPointIconSizeDynamic(80);
+		
+		//WHEN
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument);
+		System.out.println(resultingKml);
+		
+		//THEN
+		//Normal <Style id="style1"> LabelStyle color should be unchanged (00000000)
+//		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
+		//Highlight <Style id="style2"> LabelStyle color should be "ffffffff"
+//		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00ffffff"));
 	}
 	
 	/**

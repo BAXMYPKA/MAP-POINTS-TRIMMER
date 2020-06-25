@@ -145,8 +145,8 @@
 			}
 		});
 		
-		document.getElementById("setPointTextColor").addEventListener('change', ev => {
-			const pointsTextColorInput = document.getElementById("pointTextColor");
+		document.getElementById("setPointTextHexColor").addEventListener('change', ev => {
+			const pointsTextColorInput = document.getElementById("pointTextHexColor");
 			if (ev.target.checked) {
 				pointsTextColorInput.disabled = false;
 			} else {
@@ -156,6 +156,42 @@
 		
 		document.getElementById("setPointTextOpacity").addEventListener('change', ev => {
 			const pointTextTransparencyInput = document.getElementById("pointTextOpacity");
+			if (ev.target.checked) {
+				pointTextTransparencyInput.disabled = false;
+			} else {
+				pointTextTransparencyInput.disabled = true;
+			}
+		});
+		
+		document.getElementById("setPointIconSizeDynamic").addEventListener('change', ev => {
+			const pointsIconSizeInput = document.getElementById("pointIconSizeDynamic");
+			if (ev.target.checked) {
+				pointsIconSizeInput.disabled = false;
+			} else {
+				pointsIconSizeInput.disabled = true;
+			}
+		});
+		
+		document.getElementById("setPointTextSizeDynamic").addEventListener('change', ev => {
+			const pointsTextSizeInput = document.getElementById("pointTextSizeDynamic");
+			if (ev.target.checked) {
+				pointsTextSizeInput.disabled = false;
+			} else {
+				pointsTextSizeInput.disabled = true;
+			}
+		});
+		
+		document.getElementById("setPointTextHexColorDynamic").addEventListener('change', ev => {
+			const pointsTextColorInput = document.getElementById("pointTextHexColorDynamic");
+			if (ev.target.checked) {
+				pointsTextColorInput.disabled = false;
+			} else {
+				pointsTextColorInput.disabled = true;
+			}
+		});
+		
+		document.getElementById("setPointTextOpacityDynamic").addEventListener('change', ev => {
+			const pointTextTransparencyInput = document.getElementById("pointTextOpacityDynamic");
 			if (ev.target.checked) {
 				pointTextTransparencyInput.disabled = false;
 			} else {
