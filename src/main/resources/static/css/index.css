@@ -55,11 +55,30 @@ h3 {
 	font-size: 1em;
 }
 
+.accept {
+	font-weight: bold;
+	font-size: 1em;
+	font-family: Consolas, sans-serif;
+	color: green;
+	transition-duration: 0.2s;
+}
+
+.accept:hover {
+	/*color: rgba(157, 238, 92, 0.84);*/
+	color: limegreen;
+	cursor: pointer;
+}
+
+.accept:active {
+	color: forestgreen;
+}
+
 .close {
 	font-weight: bold;
 	font-size: 1.5em;
 	font-family: Consolas, sans-serif;
 	color: firebrick;
+	transition-duration: 0.2s;
 }
 
 .close:hover {
@@ -67,16 +86,8 @@ h3 {
 	cursor: pointer;
 }
 
-.accept {
-	font-weight: bold;
-	font-size: 1em;
-	font-family: Consolas, sans-serif;
-	color: green;
-}
-
-.accept:hover {
-	color: rgba(157, 238, 92, 0.84);
-	cursor: pointer;
+.close:active {
+	color: red;
 }
 
 .article {
