@@ -55,6 +55,30 @@ h3 {
 	font-size: 1em;
 }
 
+.close {
+	font-weight: bold;
+	font-size: 1.5em;
+	font-family: Consolas, sans-serif;
+	color: firebrick;
+}
+
+.close:hover {
+	color: rgba(255, 80, 36, 0.71);
+	cursor: pointer;
+}
+
+.accept {
+	font-weight: bold;
+	font-size: 1em;
+	font-family: Consolas, sans-serif;
+	color: green;
+}
+
+.accept:hover {
+	color: rgba(157, 238, 92, 0.84);
+	cursor: pointer;
+}
+
 .article {
 	margin-bottom: 0.5em;
 	padding: 0.3em;
@@ -222,18 +246,6 @@ input[type=radio] {
 	visibility: hidden;
 }
 
-.userMessage__close {
-	font-weight: bold;
-	font-size: 1.5em;
-	font-family: Consolas, sans-serif;
-	color: firebrick;
-}
-
-.userMessage__close:hover {
-	color: rgba(255, 80, 36, 0.71);
-	cursor: pointer;
-}
-
 .loadForm {
 	position: relative;
 	padding: 0.5em;
@@ -303,6 +315,28 @@ input[type=radio] {
 	margin-top: 0.5em;
 }
 
+.loadForm__fieldSet__debugFieldset {
+	margin-top: 0.5em;
+	/*text-align: end;*/
+}
+
+.loadForm__fieldSet__settingsContainer {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-content: center;
+}
+
+.loadForm__fieldSet__setting_preset {
+	/*display: inline-block;*/
+	/*text-align: start;*/
+}
+
+.loadForm__fieldSet__setting_debug {
+	/*display: inline-block;*/
+	/*text-align: end;*/
+}
+
 .loadForm__inputButton_processSpecialButton {
 	display: inline-block;
 	margin-left: 1em;
@@ -331,11 +365,6 @@ input[type=radio] {
 
 .loadForm_colorInput {
 	width: 3.2em;
-}
-
-.loadForm__fieldSet__debugFieldset {
-	margin-top: 0.5em;
-	text-align: end;
 }
 
 .inputButton {
