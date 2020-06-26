@@ -1,4 +1,4 @@
-(function presets() {
+(function localPresets() {
 		
 		class Preset {
 			constructor(presetName, trimXml, trimDescriptions, previewSize, setPath, relativePath, absolutePath, webPath, path,
@@ -48,26 +48,29 @@
 		};
 		
 		const MAX_PRESETS_NUMBER = 4;
-		const presetsDatalist = document.getElementById("presets");
-		const presetSaveButton = document.getElementById("presetSave");
-		const presetDeleteButton = document.getElementById("presetDelete");
+		const PRESETS_KEY = "presets";
+		const presetsDatalistInput = document.getElementById("presetsInput");
 		
-		presetsDatalist.addEventListener("change", ev => {
+		document.getElementById("presetClear").addEventListener('click', ev => {
+			presetsDatalistInput.value = null;
+		});
+		
+		presetsDatalistInput.addEventListener("input", ev => {
 			if (ev.target.value === "...") {
 				ev.target.value = null;
 			}
 		});
 		
-		presetSaveButton.addEventListener("click", ev => {
-			let newPresetName = presetsDatalist.value;
+		document.getElementById("presetSave").addEventListener("click", ev => {
+			let newPresetName = presetsDatalistInput.value;
 			if (newPresetName === null || newPresetName === "") {
 				return;
 			}
 			addPresetToLocalStorage(newPresetName);
 		});
 		
-		presetDeleteButton.addEventListener("click", ev => {
-			let existingPresetName = presetsDatalist.value;
+		document.getElementById("presetDelete").addEventListener("click", ev => {
+			let existingPresetName = presetsDatalistInput.value;
 			if (existingPresetName === null || existingPresetName === "") {
 				return;
 			}
@@ -75,51 +78,57 @@
 		});
 		
 		function getPresetsArrayFromLocalStorage() {
-			let presets = localStorage.getItem("presets");
+			let presets = JSON.parse(localStorage.getItem(PRESETS_KEY));
 			return presets !== null ? presets : [];
 		};
 		
 		function addPresetToLocalStorage(presetName) {
+			let presets = getPresetsArrayFromLocalStorage();
 			let presetsUpdated = false;
-			getPresetsArrayFromLocalStorage().forEach(existingPreset => {
+			for (let existingPreset of presets) {
 				if (existingPreset.presetName === presetName) {
-					existingPreset.constructFromInputs();
+					let preset = Object.assign(new Preset(), existingPreset);
+					preset.constructFromInputs();
 					presetsUpdated = true;
 				}
-			});
+			}
 			if (!presetsUpdated) {
 				//No Preset with same name, add a new one
-				if (getPresetsArrayFromLocalStorage().length === MAX_PRESETS_NUMBER) {
-					presetsDatalist.value = "Max presets number exceeded!"
+				if (presets.length === MAX_PRESETS_NUMBER) {
+					presetsDatalistInput.value = "Max presets number exceeded!"
 					return;
 				}
-				
 				let preset = new Preset();
+				preset.presetName = presetName;
 				preset.constructFromInputs();
-				getPresetsArrayFromLocalStorage().push(preset);
+				presets.push(preset);
 			}
-			localStorage.setItem("presets", JSON.stringify(presets));
+			localStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
+			setPresetsToDatalist();
 		}
 		
 		function deletePresetFromLocalStorage(presetName) {
 			let filteredPresets = getPresetsArrayFromLocalStorage()
 				.filter(existingPreset => existingPreset.presetName !== presetName);
-			localStorage.setItem("presets", JSON.stringify(filteredPresets));
-			presetsDatalist.value = null;
+			localStorage.setItem(PRESETS_KEY, JSON.stringify(filteredPresets));
+			setPresetsToDatalist();
+			presetsDatalistInput.value = null;
 		}
 		
 		/**
 		 * 'presets' from the localStorage is the JSONed Array of Preset classes
 		 */
-		(function setPresetsToDatalist() {
-			// presets = localStorage.getItem("presets");
-			if (localStorage.getItem("presets") != null) {
-				localStorage.getItem("presets").forEach(preset => {
+		function setPresetsToDatalist() {
+			const presetsDatalist = document.getElementById("presetsDatalist");
+			if (localStorage.getItem(PRESETS_KEY) != null) {
+				presetsDatalist.innerHTML = "";
+				for (let preset of getPresetsArrayFromLocalStorage()) {
 					let option = document.createElement("option");
 					option.value = preset.presetName;
 					presetsDatalist.appendChild(option);
-				});
+				}
 			}
-		})();
+		};
+		setPresetsToDatalist();
 	}
 )();

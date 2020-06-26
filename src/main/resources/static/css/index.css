@@ -55,38 +55,52 @@ h3 {
 	font-size: 1em;
 }
 
-.accept {
+.specialButtons {
+	font-family: Consolas, sans-serif;
 	font-weight: bold;
 	font-size: 1em;
-	font-family: Consolas, sans-serif;
-	color: green;
 	transition-duration: 0.2s;
 }
 
-.accept:hover {
-	/*color: rgba(157, 238, 92, 0.84);*/
-	color: limegreen;
+.specialButtons:hover {
 	cursor: pointer;
 }
 
-.accept:active {
+.specialButtons_clear {
+	font-weight: normal;
+	color: darkorange;
+}
+
+.specialButtons_clear:hover {
+	color: lightcoral;
+}
+
+.specialButtons_clear:active {
+	color: orangered;
+}
+
+.specialButtons_accept {
+	color: green;
+}
+
+.specialButtons_accept:hover {
+	color: limegreen;
+}
+
+.specialButtons_accept:active {
 	color: forestgreen;
 }
 
-.close {
-	font-weight: bold;
+.specialButtons_close {
 	font-size: 1.5em;
-	font-family: Consolas, sans-serif;
 	color: firebrick;
-	transition-duration: 0.2s;
 }
 
-.close:hover {
+.specialButtons_close:hover {
 	color: rgba(255, 80, 36, 0.71);
-	cursor: pointer;
 }
 
-.close:active {
+.specialButtons_close:active {
 	color: red;
 }
 

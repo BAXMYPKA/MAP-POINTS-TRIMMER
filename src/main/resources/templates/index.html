@@ -89,7 +89,8 @@
 					like to keep them under control.</p>
 				<p>At the moment it supports only .kml (<a href=”https://en.wikipedia.org/wiki/Keyhole_Markup_Language”>those
 					are the files with the points (POI) description</a>) and .kmz (<a
-					href="https://developers.google.com/kml/documentation/kmzarchives">those are obvious archives which
+					  href="https://developers.google.com/kml/documentation/kmzarchives">those are obvious archives
+					which
 					can be opened with any zip or rar archiver </a> with a points file .kml (named “doc.kml” as usual)
 					and a folder with photos for that file (named "files" as usual).</p>
 				<p>Below there are some possible scenarios how to use this…</p>
@@ -108,8 +109,8 @@
 			
 			<span th:utext="${userMessage} ? ${userMessage} : ''"></span>
 			<span
-				th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
-			<span class="close" title="Close"
+				  th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
+			<span class="specialButtons_close" title="Close"
 				  th:title="#{html.title.close}"
 				  th:if="${userMessage != null || #request.getParameter('userMessage') != null}">
 				 x
@@ -471,23 +472,28 @@
 				
 				<div class="loadForm__fieldSet__setting_preset">
 					
-					<input list="presets" placeholder="Presets..." title="Local presets list">
-					<datalist id="presets">
+					<input id="presetsInput" list="presetsDatalist" placeholder="Presets..." title="Local presets list">
+					<datalist id="presetsDatalist">
 						<option value="..."></option>
 						<option value="One"></option>
 					</datalist>
 					
-					<span id="presetSave" class="accept" title="Save or Update preset"
+					<span id="presetClear" class="specialButtons specialButtons_clear" title="Clear..."
+						  th:title="#{html.title.clearTextArea}">
+						&#9851;
+					</span>
+					
+					<span id="presetSave" class="specialButtons specialButtons_accept" title="Save or Update preset"
 						  th:title="#{html.title.saveUpdatePreset}">
 						&#10004;
 					</span>
 					
-					<span id="presetDelete" class="close" title="Delete preset"
+					<span id="presetDelete" class="specialButtons specialButtons_close" title="Delete preset"
 						  th:title="#{html.title.deletePreset}">
 						x
 					</span>
-					
-					<div class="interrogation" title="Description"
+
+					<div class="interrogation" title="Description" style="margin-left: 0.7em"
 						 th:title="#{commonMessages.interrogationAsDescription.presets}">
 						?
 					</div>
@@ -497,7 +503,7 @@
 				<div class="loadForm__fieldSet__setting_debug">
 					
 					<input type="checkbox" id="debugMode">
-					<span th:utext="#{html.input.checkbox.debugMode}" style="font-size: smaller">Debug mode</span>
+						<span th:utext="#{html.input.checkbox.debugMode}" style="font-size: smaller">Debug mode</span>
 					</input>
 					
 					<div id="debugInterrogation" class="interrogation" title="Description"
