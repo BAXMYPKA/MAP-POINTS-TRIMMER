@@ -98,10 +98,18 @@
 			const pathTypes = document.querySelectorAll("input[name='pathType']");
 			if (ev.target.checked) {
 				path.disabled = false;
-				pathTypes.forEach(value => value.disabled = false);
+				pathTypes.forEach(value => {
+					value.disabled = false
+					if (value.id === "webPath" && value.checked) {
+						document.getElementById("asAttachmentInLocus").disabled = true;
+					}
+				});
 			} else {
 				path.disabled = true;
-				pathTypes.forEach(value => value.disabled = true);
+				pathTypes.forEach(value => {
+					value.disabled = true
+					document.getElementById("asAttachmentInLocus").disabled = false;
+				});
 			}
 		});
 		

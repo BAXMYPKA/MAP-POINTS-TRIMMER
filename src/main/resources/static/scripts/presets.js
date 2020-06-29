@@ -1,63 +1,79 @@
 (function localPresets() {
 		
-		class Preset {
-			constructor(presetName, trimXml, trimDescriptions, previewSize, setPath, relativePath, absolutePath, webPath, path,
-						asAttachmentInLocus, clearDescriptions, pointIconSize, pointTextSize, pointTextOpacity, pointTextHexColor,
-						pointIconSizeDynamic, pointTextSizeDynamic, pointTextOpacityDynamic, pointTextHexColorDynamic) {
-				this.presetName = presetName;
-				this.trimXml = trimXml;
-				this.trimDescriptions = trimDescriptions;
-				this.previewSize = previewSize;
-				this.setPath = setPath;
-				this.relativePath = relativePath;
-				this.absolutePath = absolutePath;
-				this.webPath = webPath;
-				this.path = path;
-				this.asAttachmentInLocus = asAttachmentInLocus;
-				this.clearDescriptions = clearDescriptions;
-				this.pointIconSize = pointIconSize;
-				this.pointTextSize = pointTextSize;
-				this.pointTextOpacity = pointTextOpacity;
-				this.pointTextHexColor = pointTextHexColor;
-				this.pointIconSizeDynamic = pointIconSizeDynamic;
-				this.pointTextSizeDynamic = pointTextSizeDynamic;
-				this.pointTextOpacityDynamic = pointTextOpacityDynamic;
-				this.pointTextHexColorDynamic = pointTextHexColorDynamic;
-			}
-			
-			constructFromInputs() {
-				this.trimXml = document.getElementById("trimXml").value;
-				this.trimDescriptions = document.getElementById("trimDescriptions").value;
-				this.previewSize = document.getElementById("previewSize").value;
-				this.setPath = document.getElementById("setPath").value;
-				this.relativePath = document.getElementById("relativePath").value;
-				this.absolutePath = document.getElementById("absolutePath").value;
-				this.webPath = document.getElementById("webPath").value;
-				this.path = document.getElementById("path").value;
-				this.asAttachmentInLocus = document.getElementById("asAttachmentInLocus").value;
-				this.clearDescriptions = document.getElementById("clearDescriptions").value;
-				this.pointIconSize = document.getElementById("pointIconSize").value;
-				this.pointTextSize = document.getElementById("pointTextSize").value;
-				this.pointTextOpacity = document.getElementById("pointTextOpacity").value;
-				this.pointTextHexColor = document.getElementById("pointTextHexColor").value;
-				this.pointIconSizeDynamic = document.getElementById("pointIconSizeDynamic").value;
-				this.pointTextSizeDynamic = document.getElementById("pointTextSizeDynamic").value;
-				this.pointTextOpacityDynamic = document.getElementById("pointTextOpacityDynamic").value;
-				this.pointTextHexColorDynamic = document.getElementById("pointTextHexColorDynamic").value;
-			}
-		};
-		
 		const MAX_PRESETS_NUMBER = 4;
 		const PRESETS_KEY = "presets";
 		const presetsDatalistInput = document.getElementById("presetsInput");
 		
+		class Preset {
+			constructor(presetName, inputsArray) {
+				this.presetName = presetName;
+				this.inputsArray = inputsArray;
+			}
+		}
+		
+		function getInputs() {
+			let formElements = document.getElementById("poiFile").elements;
+			let inputs = [];
+			for (let element of formElements) {
+				if (element.tagName.match(new RegExp("input", "i")) || element.tagName.match(new RegExp("select", "i"))) {
+					if (element.type === "file" || element.type === "submit") continue;
+					inputs.push({
+						id: element.id,
+						value: element.value,
+						checked: element.checked,
+						disabled: element.disabled
+					});
+				}
+			}
+			return inputs;
+		}
+		
+		function setInputs(presetName) {
+			getPresetsArrayFromLocalStorage().filter(preset => preset.presetName === presetName).forEach(currentPreset => {
+				for (let presetInput of currentPreset.inputsArray) {
+					let formInput = document.getElementById(presetInput.id);
+					formInput.value = presetInput.value;
+					formInput.checked = presetInput.checked;
+					formInput.disabled = presetInput.disabled;
+				}
+			});
+		}
+		
+		function clearInputs() {
+			let formElements = document.getElementById("poiFile").elements;
+			for (let input of formElements) {
+				if (input.tagName.match(new RegExp("input", "i")) || input.tagName.match(new RegExp("select", "i"))) {
+					if (input.type === "file" || input.type === "submit") continue;
+					if (input.type === "number" || input.type === "text") {
+						input.value = null;
+						input.disabled = true;
+					}
+					if (input.type === "color") {
+						input.value = "#000000";
+						input.disabled = true;
+					}
+					if (input.type === "checkbox") {
+						input.checked = false;
+					}
+					if (input.type === "radio") {
+						input.disabled = true;
+						document.getElementById("asAttachmentInLocus").disabled = false;
+					}
+				}
+			}
+		}
+		
 		document.getElementById("presetClear").addEventListener('click', ev => {
 			presetsDatalistInput.value = null;
+			clearInputs();
 		});
 		
 		presetsDatalistInput.addEventListener("input", ev => {
-			if (ev.target.value === "...") {
-				ev.target.value = null;
+			for (let input of getPresetsArrayFromLocalStorage()) {
+				if (ev.target.value === input.presetName) {
+					setInputs(input.presetName);
+					break;
+				}
 			}
 		});
 		
@@ -83,26 +99,13 @@
 		};
 		
 		function addPresetToLocalStorage(presetName) {
-			let presets = getPresetsArrayFromLocalStorage();
-			let presetsUpdated = false;
-			for (let existingPreset of presets) {
-				if (existingPreset.presetName === presetName) {
-					let preset = Object.assign(new Preset(), existingPreset);
-					preset.constructFromInputs();
-					presetsUpdated = true;
-				}
+			let presets = getPresetsArrayFromLocalStorage().filter(preset => preset.presetName !== presetName);
+			if (presets.length === MAX_PRESETS_NUMBER) {
+				presetsDatalistInput.value = `MAX PRESETS=${MAX_PRESETS_NUMBER}`;
+				return;
 			}
-			if (!presetsUpdated) {
-				//No Preset with same name, add a new one
-				if (presets.length === MAX_PRESETS_NUMBER) {
-					presetsDatalistInput.value = "Max presets number exceeded!"
-					return;
-				}
-				let preset = new Preset();
-				preset.presetName = presetName;
-				preset.constructFromInputs();
-				presets.push(preset);
-			}
+			let preset = new Preset(presetName, getInputs());
+			presets.push(preset);
 			localStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
 			setPresetsToDatalist();
 		}

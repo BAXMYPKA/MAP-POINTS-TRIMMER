@@ -440,7 +440,7 @@
 					   class="inputButton loadForm__inputButton_processSpecialButton"
 					   th:value="#{html.input.value.convert}">
 				
-				<select name="downloadAs" class="loadForm__selectDownloadAs"
+				<select id="downloadAs" name="downloadAs" class="loadForm__selectDownloadAs"
 						th:title="#{html.title.select.downloadAs}"
 						title="Download as... (.kml by default)">
 					<option value="kml" selected title="A processed file with the points and tracks inside."
@@ -472,10 +472,9 @@
 				
 				<div class="loadForm__fieldSet__setting_preset">
 					
-					<input id="presetsInput" list="presetsDatalist" placeholder="Presets..." title="Local presets list">
+					<input id="presetsInput" list="presetsDatalist" placeholder="Presets..." title="Local presets list"
+					th:title="#{html.title.select.localPresets}" th:placeholder="#{html.input.placeholder.presets}">
 					<datalist id="presetsDatalist">
-						<option value="..."></option>
-						<option value="One"></option>
 					</datalist>
 					
 					<span id="presetClear" class="specialButtons specialButtons_clear" title="Clear..."
