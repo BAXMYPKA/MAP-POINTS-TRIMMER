@@ -542,6 +542,66 @@ public class GoogleEarthHandlerDynamicTest {
 	}
 	
 	@Test
+	public void pointIconOpacityDynamic_Should_Update_Only_Highlighted_Styles()
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		//GIVEN <Style id="style2"> is the only "highligh" style
+		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"<Document>\n" +
+			"\t<name>Google Earth Test Poi</name>\n" +
+			"\t<StyleMap id=\"styleMap1\">\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>normal</key>\n" +
+			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>highlight</key>\n" +
+			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t</StyleMap>\n" +
+			"\t<Style id=\"style1\">\n" +
+			"\t\t<IconStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t</IconStyle>\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style2\">\n" +
+			"\t\t<IconStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t</IconStyle>\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 1</name>\n" +
+			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>";
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointIconOpacityDynamic(50);
+		
+		//WHEN
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
+		System.out.println(multipartDto.getPointIconHexOpacityDynamic());
+		System.out.println(resultingKml);
+		
+		//THEN
+		//Normal <Style id="style1"> LabelStyle color should be unchanged (00000000)
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
+		//Highlight <Style id="style2"> LabelStyle color should be "ffffffff"
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00ffffff"));
+	}
+	
+	@Test
 	public void reference_To_Same_Style_From_Two_Placemarks_Should_Update_Only_Highlighted_Styles()
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
 		//GIVEN <Style id="style1"> is referenced from two <Placemakr/>'s

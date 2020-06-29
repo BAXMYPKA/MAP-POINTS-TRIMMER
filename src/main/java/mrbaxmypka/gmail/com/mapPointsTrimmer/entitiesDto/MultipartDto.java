@@ -96,6 +96,26 @@ public class MultipartDto implements Serializable {
 	private Integer pointIconSize;
 	
 	/**
+	 * <p>For User's convenience it represents a percentage input as 0 - 100%.</p>
+	 * <p>(Internally it will be converted into hexadecimal representation as 00 - FF (0 - 255).)</p>
+	 * <p>This color tag is applied as an overlay to PNG icons, the #FFFFFF is the white color and won't affect the
+	 * icons color, but the first hex "alpha channel" value will. (E.g. 00FFFFFF will make the icons invisible.)</p>
+	 * <p>********* FROM THE KML DOCUMENTATION ************************
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00
+	 * </p>
+	 * Source: https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * **************************************************************
+	 */
+	@Nullable
+	@PositiveOrZero(message = "{validation.positiveOrZero}")
+	@Max(value = 100, message = "{validation.maxNumber}")
+	private Integer pointIconOpacity;
+	
+	/**
 	 * Internally it will be represented as "scale" parameter from 0.0 to 3.0 unit with the step of 0.1.
 	 * Where 1.0 is the scale of default window font.
 	 * For User's convenience scale unit is represented as the percentage unit from 0 to 300(%) where
@@ -188,6 +208,26 @@ public class MultipartDto implements Serializable {
 	@PositiveOrZero(message = "{validation.positiveOrZero}")
 	@Max(value = 300, message = "{validation.maxNumber}")
 	private Integer pointIconSizeDynamic;
+	
+	/**
+	 * <p>For User's convenience it represents a percentage input as 0 - 100%.</p>
+	 * <p>(Internally it will be converted into hexadecimal representation as 00 - FF (0 - 255).)</p>
+	 * <p>This color tag is applied as an overlay to PNG icons, the #FFFFFF is the white color and won't affect the
+	 * icons color, but the first hex "alpha channel" value will. (E.g. 00FFFFFF will make the icons invisible.)</p>
+	 * <p>********* FROM THE KML DOCUMENTATION ************************
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00
+	 * </p>
+	 * Source: https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * **************************************************************
+	 */
+	@Nullable
+	@PositiveOrZero(message = "{validation.positiveOrZero}")
+	@Max(value = 100, message = "{validation.maxNumber}")
+	private Integer pointIconOpacityDynamic;
 	
 	/**
 	 * {@code
@@ -649,6 +689,30 @@ public class MultipartDto implements Serializable {
 			throw new IllegalArgumentException("Percentage has to be from 0 to 100%!");
 		}
 		BigDecimal hexPercentage = new BigDecimal(pointTextOpacityDynamic * 2.55).setScale(0, RoundingMode.HALF_UP);
+		String hexFormat = String.format("%02x", hexPercentage.toBigInteger());
+		return hexFormat;
+	}
+	
+	/**
+	 * @return {@link org.springframework.lang.NonNull} Hexidecimal format for color opacity setting from 00 to FF
+	 */
+	public String getPointIconHexOpacity() {
+		if (pointTextOpacity < 0 || pointIconOpacity > 100) {
+			throw new IllegalArgumentException("Percentage has to be from 0 to 100%!");
+		}
+		BigDecimal hexPercentage = new BigDecimal(pointIconOpacity * 2.55).setScale(0, RoundingMode.HALF_UP);
+		String hexFormat = String.format("%02x", hexPercentage.toBigInteger());
+		return hexFormat;
+	}
+	
+	/**
+	 * @return {@link org.springframework.lang.NonNull} Hexidecimal format for color opacity setting from 00 to FF
+	 */
+	public String getPointIconHexOpacityDynamic() {
+		if (pointIconOpacityDynamic < 0 || pointIconOpacityDynamic > 100) {
+			throw new IllegalArgumentException("Percentage has to be from 0 to 100%!");
+		}
+		BigDecimal hexPercentage = new BigDecimal(pointIconOpacityDynamic * 2.55).setScale(0, RoundingMode.HALF_UP);
 		String hexFormat = String.format("%02x", hexPercentage.toBigInteger());
 		return hexFormat;
 	}

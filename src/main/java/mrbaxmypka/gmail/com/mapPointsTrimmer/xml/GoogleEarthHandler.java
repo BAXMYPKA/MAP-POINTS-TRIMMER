@@ -41,6 +41,9 @@ public class GoogleEarthHandler {
 		if (multipartDto.getPointIconSize() != null) {
 			setPointsIconsSize(multipartDto);
 		}
+		if (multipartDto.getPointIconOpacity() != null) {
+			setPointsIconsOpacity(multipartDto);
+		}
 		if (multipartDto.getPointTextSize() != null) {
 			setPointsTextSize(multipartDto);
 		}
@@ -55,6 +58,9 @@ public class GoogleEarthHandler {
 		}
 		if (multipartDto.getPointIconSizeDynamic() != null) {
 			setPointsIconsSizeDynamic(multipartDto);
+		}
+		if (multipartDto.getPointIconOpacityDynamic() != null) {
+			setPointsIconsOpacityDynamic(multipartDto);
 		}
 		if (multipartDto.getPointTextSizeDynamic() != null) {
 			setPointsTextSizeDynamic(multipartDto);
@@ -110,6 +116,30 @@ public class GoogleEarthHandler {
 			}
 		});
 		log.info("Icons size has been set.");
+	}
+	
+	/**
+	 * HTML hexadecimal color with max value "#FFFFFF" will be prefixed with 'kml color' hexadecimal value
+	 * from 00 to FF as "00FFFFFF" or "FFFFFFFF" etc.
+	 */
+	private void setPointsIconsOpacity(MultipartDto multipartDto) {
+		log.info("Setting the icons opacity...");
+		
+		String opacityColor = getKmlColor("#ffffff", multipartDto.getPointIconHexOpacity());
+		
+		styleUrlsFromPlacemarks.forEach(styleUrl -> {
+			Node styleObject = styleObjectsMap.get(styleUrl);
+			if (styleObject.getNodeName().equals("Style")) {
+				getIconsStyleColorNodeFromStyle(styleObject);
+				Node iconStyleColorNode = getIconStyleScaleNodeFromStyle(styleObject);
+				iconStyleColorNode.setTextContent(opacityColor);
+			} else if (styleObject.getNodeName().equals("StyleMap")) {
+				Node normalStyleNode = getNormalStyleNodeFromStyleMap(styleObject);
+				Node iconStyleColorNode = getIconsStyleColorNodeFromStyle(normalStyleNode);
+				iconStyleColorNode.setTextContent(opacityColor);
+			}
+		});
+		log.info("Icons opacity has been set.");
 	}
 	
 	/**
@@ -170,6 +200,26 @@ public class GoogleEarthHandler {
 	private Node getIconStyleScaleNodeFromStyle(Node styleNode) {
 		Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(styleNode, "IconStyle", null, false, true, false).get(0);
 		return xmlDomUtils.getChildNodesFromParent(iconStyleNode, "scale", null, false, true, false).get(0);
+	}
+	
+	/**
+	 * {@literal
+	 * <Style id="generic_n40">
+	 * <IconStyle>
+	 * ===>>> <scale>0.8</scale> <<<===
+	 * <Icon>
+	 * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
+	 * </Icon>
+	 * <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+	 * </IconStyle>
+	 * <LabelStyle>
+	 * <scale>0.7</scale>
+	 * </LabelStyle>
+	 * </Style>}
+	 */
+	private Node getIconsStyleColorNodeFromStyle(Node styleNode) {
+		Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(styleNode, "IconStyle", null, false, true, false).get(0);
+		return xmlDomUtils.getChildNodesFromParent(iconStyleNode, "color", null, false, true, false).get(0);
 	}
 	
 	/**
@@ -425,6 +475,37 @@ public class GoogleEarthHandler {
 		}
 		log.info("All the points icons dynamic size has been set.");
 	}
+	
+	/**
+	 * Hexadecimal value from 00 to FF as "00FFFFFF" or "FFFFFFFF" etc.
+	 * <p>This color tag is applied as an overlay to PNG icons, the #FFFFFF is the white color and won't affect the
+	 * icons color, but the first hex "alpha channel" value will. (E.g. 00FFFFFF will make the icons invisible.)</p>
+	 * <p>********* FROM THE KML DOCUMENTATION ************************
+	 * Color and opacity (alpha) values are expressed in hexadecimal notation.
+	 * The range of values for any one color is 0 to 255 (00 to ff). For alpha, 00 is fully transparent and ff is fully opaque.
+	 * The order of expression is aabbggrr, where aa=alpha (00 to ff); bb=blue (00 to ff); gg=green (00 to ff); rr=red (00 to ff).
+	 * For example, if you want to apply a blue color with 50 percent opacity to an overlay, you would specify the following:
+	 * {@literal <color>7fff0000</color>}, where alpha=0x7f, blue=0xff, green=0x00, and red=0x00
+	 * </p>
+	 * Source: https://developers.google.com/kml/documentation/kmlreference#colorstyle
+	 * **************************************************************
+	 */
+	private void setPointsIconsOpacityDynamic(MultipartDto multipartDto) {
+		log.info("Setting the dynamic icons opacity...");
+		
+		String opacityColor = getKmlColor("#ffffff", multipartDto.getPointIconHexOpacityDynamic());
+		
+		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
+		for (int i = 0; i < styleMapNodes.getLength(); i++) {
+			Node styleMapNode = styleMapNodes.item(i);
+			Node highlightStyleNode = getHighlightStyleNodeFromStyleMap(styleMapNode);
+			Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
+			Node colorNode = xmlDomUtils.getChildNodesFromParent(iconStyleNode, "color", null, false, true, true).get(0);
+			colorNode.setTextContent(opacityColor);
+		}
+		log.info("Icons dynamic opacity has been set.");
+	}
+	
 	
 	private void setPointsTextSizeDynamic(MultipartDto multipartDto) {
 		log.info("Setting the points text dynamic size...");
