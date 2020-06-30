@@ -144,6 +144,15 @@
 			}
 		});
 		
+		document.getElementById("setPointIconOpacity").addEventListener('change', ev => {
+			const pointsIconSizeInput = document.getElementById("pointIconOpacity");
+			if (ev.target.checked) {
+				pointsIconSizeInput.disabled = false;
+			} else {
+				pointsIconSizeInput.disabled = true;
+			}
+		});
+		
 		document.getElementById("setPointTextSize").addEventListener('change', ev => {
 			const pointsTextSizeInput = document.getElementById("pointTextSize");
 			if (ev.target.checked) {
@@ -173,6 +182,15 @@
 		
 		document.getElementById("setPointIconSizeDynamic").addEventListener('change', ev => {
 			const pointsIconSizeInput = document.getElementById("pointIconSizeDynamic");
+			if (ev.target.checked) {
+				pointsIconSizeInput.disabled = false;
+			} else {
+				pointsIconSizeInput.disabled = true;
+			}
+		});
+		
+		document.getElementById("setPointIconOpacityDynamic").addEventListener('change', ev => {
+			const pointsIconSizeInput = document.getElementById("pointIconOpacityDynamic");
 			if (ev.target.checked) {
 				pointsIconSizeInput.disabled = false;
 			} else {

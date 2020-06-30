@@ -25,7 +25,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
 		cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
 		cookieLocaleResolver.setCookieName("lang");
-		cookieLocaleResolver.setCookieMaxAge(60 * 60 * 24 * 7 * 4); //One month
+		cookieLocaleResolver.setCookieMaxAge(60 * 60 * 24 * 7 * 24); //Six months
 		return cookieLocaleResolver;
 	}
 	

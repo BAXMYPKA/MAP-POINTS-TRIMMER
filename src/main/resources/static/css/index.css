@@ -342,7 +342,6 @@ input[type=radio] {
 
 .loadForm__fieldSet__debugFieldset {
 	margin-top: 0.5em;
-	/*text-align: end;*/
 }
 
 .loadForm__fieldSet__settingsContainer {
@@ -353,13 +352,9 @@ input[type=radio] {
 }
 
 .loadForm__fieldSet__setting_preset {
-	/*display: inline-block;*/
-	/*text-align: start;*/
 }
 
 .loadForm__fieldSet__setting_debug {
-	/*display: inline-block;*/
-	/*text-align: end;*/
 }
 
 .loadForm__inputButton_processSpecialButton {
