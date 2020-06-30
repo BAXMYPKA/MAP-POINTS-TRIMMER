@@ -528,16 +528,6 @@ input[type=radio] {
 	transform: translateX(-3em) translateY(-2em) scale(3);
 }
 
-/*
-.imageInText:active {
-	position: relative;
-	width: 100%;
-	transform: scale(1) translateY(-5em);
-	border: rgba(213, 205, 196, 0.6) solid 0.9em;
-	border-radius: 0.6em;
-}
-*/
-
 .imageInText:active {
 	z-index: 3;
 	position: absolute;

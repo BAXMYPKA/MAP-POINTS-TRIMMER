@@ -33,7 +33,7 @@ public class XmlTestUtils {
 	 * @param requiredNumberOfParents How many parents with the desired child should be presented within the given document
 	 * @param requiredChildrenTagName Parent's children tagName that should be presented strictly within parent's tag
 	 * @param requiredChildrenValue   If not null, what exact text value should those children have.
-	 *                                Otherwise will be ignored. And only num of parents and children tag name will be consedered.
+	 *                                Otherwise will be ignored. And only num of parents and children tag name will be considered.
 	 * @return True if all the conditions are valid
 	 */
 	public static boolean containsParentsWithChildren(

@@ -3,6 +3,8 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -541,10 +543,11 @@ public class GoogleEarthHandlerDynamicTest {
 		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00ffffff"));
 	}
 	
-	@Test
-	public void pointIconOpacityDynamic_Should_Update_Only_Highlighted_Styles()
+	@ParameterizedTest
+	@ValueSource(ints = {0, 100})
+	public void pointIconOpacityDynamic_Should_Update_Only_Highlighted_Styles(Integer opacity)
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
-		//GIVEN <Style id="style2"> is the only "highligh" style
+		//GIVEN Only highlighted Style id=style2 contains IconStyle
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
 			"<Document>\n" +
@@ -560,9 +563,6 @@ public class GoogleEarthHandlerDynamicTest {
 			"\t\t</Pair>\n" +
 			"\t</StyleMap>\n" +
 			"\t<Style id=\"style1\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<scale>0.0</scale>\n" +
-			"\t\t</IconStyle>\n" +
 			"\t\t<LabelStyle>\n" +
 			"\t\t\t<scale>0.0</scale>\n" +
 			"\t\t\t<color>00000000</color>\n" +
@@ -585,20 +585,23 @@ public class GoogleEarthHandlerDynamicTest {
 			"</kml>";
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPointIconOpacityDynamic(50);
+		multipartDto.setPointIconOpacityDynamic(opacity);
+		String iconOpacityWithColor = null;
+		if (opacity == 0) {
+			iconOpacityWithColor = "00ffffff";
+		} else if (opacity == 100){
+			iconOpacityWithColor = "ffffffff";
+		}
 		
 		//WHEN
 		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
-		System.out.println(multipartDto.getPointIconHexOpacityDynamic());
-		System.out.println(resultingKml);
+//		System.out.println(resultingKml);
 		
 		//THEN
-		//Normal <Style id="style1"> LabelStyle color should be unchanged (00000000)
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
-		//Highlight <Style id="style2"> LabelStyle color should be "ffffffff"
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00ffffff"));
+		//Only highlight <Style id="style2"> IconStyle should exist and be with required <color> text
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "IconStyle", 1, "color", iconOpacityWithColor));
 	}
 	
 	@Test

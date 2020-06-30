@@ -253,6 +253,63 @@ class GoogleEarthHandlerStaticTest {
 		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "IconStyle", 2, "scale", scale));
 	}
 	
+	@ParameterizedTest
+	@ValueSource(ints = {0, 100})
+	public void pointIconOpacity_Should_Update_Only_Normal_Styles(Integer opacity)
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		//GIVEN Only Normal Style id=style1 contains IconStyle
+		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			"<Document>\n" +
+			"\t<name>Google Earth Test Poi</name>\n" +
+			"\t<StyleMap id=\"styleMap1\">\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>normal</key>\n" +
+			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t\t<Pair>\n" +
+			"\t\t\t<key>highlight</key>\n" +
+			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			"\t\t</Pair>\n" +
+			"\t</StyleMap>\n" +
+			"\t<Style id=\"style1\">\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Style id=\"style2\">\n" +
+			"\t\t<LabelStyle>\n" +
+			"\t\t\t<scale>0.0</scale>\n" +
+			"\t\t\t<color>00000000</color>\n" +
+			"\t\t</LabelStyle>\n" +
+			"\t</Style>\n" +
+			"\t<Placemark>\n" +
+			"\t\t\t<name>Test Placemark 1</name>\n" +
+			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+			"\t</Placemark>\n" +
+			"</Document>\n" +
+			"</kml>";
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPointIconOpacityDynamic(opacity);
+		String iconOpacityWithColor = null;
+		if (opacity == 0) {
+			iconOpacityWithColor = "00ffffff";
+		} else if (opacity == 100) {
+			iconOpacityWithColor = "ffffffff";
+		}
+		
+		//WHEN
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
+//		System.out.println(resultingKml);
+		
+		//THEN
+		//Only normal <Style id="style1"> IconStyle color should be with the <IconStyle> and the required <color> text
+		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "IconStyle", 1, "color", iconOpacityWithColor));
+	}
 	
 	@ParameterizedTest
 	@ValueSource(ints = {12, 57, 111})
