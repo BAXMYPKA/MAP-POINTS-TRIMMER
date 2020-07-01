@@ -34,11 +34,6 @@ The support of .gpx format is being considered but I'm hesitating if it will be 
 * Preinstalled Java JVM with a minimum version [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") or the latest [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
 * It is expected you use not an outdated version of any Internet browser
  
-## In the project
-
-* Dynamic points displaying, i.e. increase an icon when hovering a cursor over it, show point name only on mouseover etc.
-* .gpx format support
-
 ##  Features
 
 Use it with caution.
