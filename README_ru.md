@@ -10,7 +10,7 @@
 
 Примеры результатов обработки в **Locus Map Pro** и **Google Earth Pro**:
 
-<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusMapPhotoPoint.jpg" width="300px" alt="Locus Map point with the photo in description" title="Отображение фотографии местности в теле описания точки Locus Map"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPhoto.jpg" width=350px" alt="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro" title="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPoints.jpg" width="350px" alt="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth" title="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth"><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GoogleEarthDynamic.gif" width="350px" alt="Пример динамического текста и точек с разным цветом и размером на спутниковой карте Google Earth" title="Пример динамического отображения текста и точек с разным цветом и размером на спутниковой карте Google Earth"></p>
+<p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusMapPhotoPoint.jpg" width="300px" alt="Свойства точки с фотографией в Locus Map" title="Отображение фотографии местности в теле описания точки Locus Map"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPhoto.jpg" width=350px" alt="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro" title="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPoints.jpg" width="350px" alt="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth" title="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth"><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GoogleEarthDynamic.gif" width="350px" alt="Пример динамического текста и точек с разным цветом и размером на спутниковой карте Google Earth" title="Пример динамического отображения текста и точек с разным цветом и размером на спутниковой карте Google Earth"></p>
 
 ## Как использовать
 Скачать готовую для автозапуска программу можно [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases).
@@ -23,7 +23,9 @@
 
 На данный момент программа работает только с .kml и .kmz файлами, как наиболее правильно и точно поддерживающие сохранение и передачу фотографий и других полезных данных внутри точек.
 
-Поддержка формата точек .gpx рассматривается в будущем. Хотя и не знаю, насколько это будет актуальным.
+## Интерфейс программы
+
+<details><summary>Развернуть\Свернуть</summary><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_ru.jpg" width="600px" alt="Интерфейс программы" title="Интерфейс программы"></details>
 
 ## Минимальные системные требования
 * Windows 7/Linux

@@ -56,11 +56,6 @@
 				previewSize.value = "600";
 			}
 		});
-		document.querySelector(".article__section_closed").addEventListener('click', ev => {
-			if (document.getElementById("closableSection").classList.contains("article__section_closed")) {
-				document.getElementById("closableSection").classList.toggle("article__section_closed");
-			}
-		});
 		
 		document.querySelectorAll(".interrogation").forEach(value => {
 			value.addEventListener('click', evt => {

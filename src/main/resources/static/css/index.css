@@ -124,23 +124,6 @@ h3 {
 	clear: both;
 }
 
-.article__section_closed {
-	opacity: 0.4;
-	height: 0.9em;
-	overflow: hidden;
-	border-top: saddlebrown 0.1em dotted;
-	border-radius: 0.3em;
-	background: linear-gradient(to bottom, rgba(202, 191, 20, 0.13), white);
-}
-
-.article__section_closed:hover {
-	cursor: pointer;
-}
-
-.article__section_closed:before {
-	content: "(...)";
-}
-
 .mainHeader {
 	display: flex;
 	flex-direction: row;
@@ -359,9 +342,7 @@ input[type=radio] {
 
 .loadForm__inputButton_processSpecialButton {
 	display: inline-block;
-	margin-left: 1em;
-	margin-bottom: 1em;
-	border: goldenrod 0.12em solid;
+	height: 1.5em;
 	transition: all;
 	transition-duration: 0.2s;
 }
@@ -369,7 +350,6 @@ input[type=radio] {
 .loadForm__inputButton_processSpecialButton:hover {
 	background-color: lightgreen;
 }
-
 
 .loadForm__selectDownloadAs {
 	display: inline-block;
@@ -385,6 +365,15 @@ input[type=radio] {
 
 .loadForm_colorInput {
 	width: 3.2em;
+	padding-top: 0;
+	height: 1.3em;
+}
+
+/*Mozilla displays color inputs with a different sizes from others*/
+@-moz-document url-prefix() {
+	.loadForm_colorInput {
+		width: 3.5em;
+	}
 }
 
 .inputButton {

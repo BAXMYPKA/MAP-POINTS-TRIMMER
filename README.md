@@ -25,7 +25,9 @@ When the application start use your browser to visit: [Map-Points-Trimmer](http:
 
 For the moment the utility supports only .kml and .kmz formats as the most powerful for keep and transfer points with photos.
 
-The support of .gpx format is being considered but I'm hesitating if it will be useful.
+## User interface
+
+<details><summary>Open\Close</summary><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_en.jpg" width="600px" alt="User interface" title="User interface"></details>
 
 ## Minimum system requirements
 * Windows 7/Linux
