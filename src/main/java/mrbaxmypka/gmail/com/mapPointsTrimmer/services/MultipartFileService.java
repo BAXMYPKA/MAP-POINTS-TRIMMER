@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -42,6 +42,11 @@ public class MultipartFileService {
 	 * To store the inner kml or gpx filename from archive
 	 */
 	private String xmlFileName = "";
+	@Getter
+	private Set<String> iconsNamesFromZip = new HashSet<>();
+	//TODO: to clear when max size is exceeded
+	@Getter
+	private Map<String, byte[]> downloadedGoogleIcons = new HashMap<>();
 	
 	@Autowired
 	public MultipartFileService(KmlHandler kmlHandler, MessageSource messageSource) {
@@ -88,6 +93,7 @@ public class MultipartFileService {
 	private InputStream getXmlFromZip(MultipartDto multipartDto, DownloadAs xmlFileExtension, Locale locale)
 		throws IOException {
 		log.info("'{}' file is being extracted from the given MultipartDto", xmlFileExtension);
+		iconsNamesFromZip = new HashSet<>();
 		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream())) {
 			ZipEntry zipEntry;
 			while ((zipEntry = zis.getNextEntry()) != null) {
