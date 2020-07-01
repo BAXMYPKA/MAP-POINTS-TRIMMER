@@ -524,7 +524,7 @@ input[type=radio] {
 	max-width: 1000px;
 	/*transform: scale(1) translateY(-5em);*/
 	transform: scale(1);
-	border: rgba(213, 205, 196, 0.6) solid 0.9em;
+	border: rgba(213, 205, 196, 0.8) solid 1em;
 	border-radius: 0.6em;
 }
 
