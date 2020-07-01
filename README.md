@@ -1,6 +1,7 @@
 [RUSSIAN](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/README_ru.md)
 
 # MAP POINTS TRIMMER
+
 **The convenient handler for your map points with photos**
 
 The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview and have the ability to be magnified by click. Also you can set any path to your photos within any device, delete outdated garbage from descriptions and so forth.
@@ -30,10 +31,11 @@ For the moment the utility supports only .kml and .kmz formats as the most power
 <details><summary>Show\Hide</summary><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_en.jpg" width="950px" alt="User interface" title="User interface"></details>
 
 ## Minimum system requirements
+
 * Windows 7/Linux
 * Intel/AMD Dual Core CPU with 2.0GHz+
 * 4Gb+ RAM
-* Preinstalled Java JVM with a minimum version [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") or the latest [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
+* Preinstalled Java JVM with a minimum version [Java SE Runtime Environment 11+]( https://www.oracle.com/java/technologies/javase-downloads.html "Where to download and install")
 * It is expected you use not an outdated version of any Internet browser
  
 ##  Features
