@@ -32,11 +32,6 @@
 * Установленная Ява JVM версии не ниже [Java SE Runtime Environment 9+]( https://www.oracle.com/java/technologies/javase/javase9-archive-downloads.html "Where to download and install") или последняя [Java SE/SDK 14+](https://www.oracle.com/java/technologies/javase-downloads.html)
 * Крайне желательна последняя версия любого интернет браузера.
  
-## В проекте
-
-* Динамическое отображение иконок и текста на Google Earth карте, т.е., увеличение иконки при наведении, отображение названия точки только при наведении.
-* Поддержка формата .gpx. Пока под вопросом, т.к. не до конца решил, нужно ли это.
-
 ##  Особенности
 
 Используйте на свой страх и риск )))
