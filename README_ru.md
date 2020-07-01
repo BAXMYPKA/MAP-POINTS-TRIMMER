@@ -25,7 +25,7 @@
 
 ## Интерфейс программы
 
-<details><summary>Развернуть\Свернуть</summary><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_ru.jpg" width="600px" alt="Интерфейс программы" title="Интерфейс программы"></details>
+<details><summary>Развернуть\Свернуть</summary><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_ru.jpg" width="950px" alt="Интерфейс программы" title="Интерфейс программы"></details>
 
 ## Минимальные системные требования
 * Windows 7/Linux
