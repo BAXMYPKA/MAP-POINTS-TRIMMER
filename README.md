@@ -27,7 +27,7 @@ For the moment the utility supports only .kml and .kmz formats as the most power
 
 ## User interface
 
-<details><summary>Open\Close</summary><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_en.jpg" width="950px" alt="User interface" title="User interface"></details>
+<details><summary>Show\Hide</summary><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_en.jpg" width="950px" alt="User interface" title="User interface"></details>
 
 ## Minimum system requirements
 * Windows 7/Linux
