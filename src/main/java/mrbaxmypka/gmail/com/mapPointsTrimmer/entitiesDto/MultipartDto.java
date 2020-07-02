@@ -697,7 +697,7 @@ public class MultipartDto implements Serializable {
 	 * @return {@link org.springframework.lang.NonNull} Hexidecimal format for color opacity setting from 00 to FF
 	 */
 	public String getPointIconHexOpacity() {
-		if (pointTextOpacity < 0 || pointIconOpacity > 100) {
+		if (pointIconOpacity < 0 || pointIconOpacity > 100) {
 			throw new IllegalArgumentException("Percentage has to be from 0 to 100%!");
 		}
 		BigDecimal hexPercentage = new BigDecimal(pointIconOpacity * 2.55).setScale(0, RoundingMode.HALF_UP);
