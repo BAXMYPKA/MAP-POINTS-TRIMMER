@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -41,148 +42,148 @@ class GoogleEarthHandlerStaticTest {
 	private GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
 	private KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(), googleEarthHandler);
 	private String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-		"<Document>\n" +
-		"\t<name>Google Earth Test Poi</name>\n" +
-		"\t<StyleMap id=\"styleMap1\">\n" +
-		"\t\t<Pair>\n" +
-		"\t\t\t<key>normal</key>\n" +
-		"\t\t\t<styleUrl>#style1</styleUrl>\n" +
-		"\t\t</Pair>\n" +
-		"\t\t<Pair>\n" +
-		"\t\t\t<key>highlight</key>\n" +
-		"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-		"\t\t</Pair>\n" +
-		"\t</StyleMap>\n" +
-		"\t<StyleMap id=\"styleMap2\">\n" +
-		"\t\t<Pair>\n" +
-		"\t\t\t<key>normal</key>\n" +
-		"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-		"\t\t</Pair>\n" +
-		"\t\t<Pair>\n" +
-		"\t\t\t<key>highlight</key>\n" +
-		"\t\t\t<styleUrl>#style3</styleUrl>\n" +
-		"\t\t</Pair>\n" +
-		"\t</StyleMap>\n" +
-		"\t<Style id=\"style1\">\n" +
-		"\t\t<IconStyle>\n" +
-		"\t\t\t<scale>0.8</scale>\n" +
-		"\t\t\t<Icon>\n" +
-		"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-		"\t\t\t</Icon>\n" +
-		"\t\t</IconStyle>\n" +
-		"\t</Style>\n" +
-		"\t<Style id=\"style2\">\n" +
-		"\t\t<IconStyle>\n" +
-		"\t\t\t<scale>0.8</scale>\n" +
-		"\t\t\t<Icon>\n" +
-		"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-		"\t\t\t</Icon>\n" +
-		"\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
-		"\t\t</IconStyle>\n" +
-		"\t</Style>\n" +
-		"\t<Style id=\"style3\">\n" +
-		"\t\t<IconStyle>\n" +
-		"\t\t\t<scale>0.6</scale>\n" +
-		"\t\t\t<Icon>\n" +
-		"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
-		"\t\t\t</Icon>\n" +
-		"\t\t</IconStyle>\n" +
-		"\t</Style>\n" +
-		"\t<Style id=\"style4\">\n" +
-		"\t\t<IconStyle>\n" +
-		"\t\t\t<scale>0.709091</scale>\n" +
-		"\t\t\t<Icon>\n" +
-		"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
-		"\t\t\t</Icon>\n" +
-		"\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
-		"\t\t</IconStyle>\n" +
-		"\t\t<LabelStyle>\n" +
-		"\t\t\t<scale>0.8</scale>\n" +
-		"\t\t</LabelStyle>\n" +
-		"\t</Style>\n" +
-		"\t<Folder>\n" +
-		"\t\t<name>Folder with POI</name>\n" +
-		"\t\t<Placemark>\n" +
-		"\t\t\t<name>Test Placemark 1</name>\n" +
-		"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
-		"\t\t\t<Point>\n" +
-		"\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
-		"\t\t\t</Point>\n" +
-		"\t\t</Placemark>\n" +
-		"\t\t<Placemark>\n" +
-		"\t\t\t<name>Test Placemark 2</name>\n" +
-		"\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
-		"\t\t\t<Point>\n" +
-		"\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
-		"\t\t\t</Point>\n" +
-		"\t\t</Placemark>\n" +
-		"\t\t<Placemark>\n" +
-		"\t\t\t<name>Test Placemark 3</name>\n" +
-		"\t\t\t<styleUrl>#style3</styleUrl>\n" +
-		"\t\t\t<Point>\n" +
-		"\t\t\t\t<coordinates>38.5409832,55.89456632,143</coordinates>\n" +
-		"\t\t\t</Point>\n" +
-		"\t\t</Placemark>\n" +
-		"\t\t<Placemark>\n" +
-		"\t\t\t<name>Test Placemark 4</name>\n" +
-		"\t\t\t<styleUrl>#style4</styleUrl>\n" +
-		"\t\t\t<Point>\n" +
-		"\t\t\t\t<coordinates>38.53305459,55.91967435,136</coordinates>\n" +
-		"\t\t\t</Point>\n" +
-		"\t\t</Placemark>\n" +
-		"\t</Folder>\n" +
-		"</Document>\n" +
-		"</kml>";
+		  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+		  "<Document>\n" +
+		  "\t<name>Google Earth Test Poi</name>\n" +
+		  "\t<StyleMap id=\"styleMap1\">\n" +
+		  "\t\t<Pair>\n" +
+		  "\t\t\t<key>normal</key>\n" +
+		  "\t\t\t<styleUrl>#style1</styleUrl>\n" +
+		  "\t\t</Pair>\n" +
+		  "\t\t<Pair>\n" +
+		  "\t\t\t<key>highlight</key>\n" +
+		  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
+		  "\t\t</Pair>\n" +
+		  "\t</StyleMap>\n" +
+		  "\t<StyleMap id=\"styleMap2\">\n" +
+		  "\t\t<Pair>\n" +
+		  "\t\t\t<key>normal</key>\n" +
+		  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
+		  "\t\t</Pair>\n" +
+		  "\t\t<Pair>\n" +
+		  "\t\t\t<key>highlight</key>\n" +
+		  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
+		  "\t\t</Pair>\n" +
+		  "\t</StyleMap>\n" +
+		  "\t<Style id=\"style1\">\n" +
+		  "\t\t<IconStyle>\n" +
+		  "\t\t\t<scale>0.8</scale>\n" +
+		  "\t\t\t<Icon>\n" +
+		  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
+		  "\t\t\t</Icon>\n" +
+		  "\t\t</IconStyle>\n" +
+		  "\t</Style>\n" +
+		  "\t<Style id=\"style2\">\n" +
+		  "\t\t<IconStyle>\n" +
+		  "\t\t\t<scale>0.8</scale>\n" +
+		  "\t\t\t<Icon>\n" +
+		  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
+		  "\t\t\t</Icon>\n" +
+		  "\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
+		  "\t\t</IconStyle>\n" +
+		  "\t</Style>\n" +
+		  "\t<Style id=\"style3\">\n" +
+		  "\t\t<IconStyle>\n" +
+		  "\t\t\t<scale>0.6</scale>\n" +
+		  "\t\t\t<Icon>\n" +
+		  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
+		  "\t\t\t</Icon>\n" +
+		  "\t\t</IconStyle>\n" +
+		  "\t</Style>\n" +
+		  "\t<Style id=\"style4\">\n" +
+		  "\t\t<IconStyle>\n" +
+		  "\t\t\t<scale>0.709091</scale>\n" +
+		  "\t\t\t<Icon>\n" +
+		  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
+		  "\t\t\t</Icon>\n" +
+		  "\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
+		  "\t\t</IconStyle>\n" +
+		  "\t\t<LabelStyle>\n" +
+		  "\t\t\t<scale>0.8</scale>\n" +
+		  "\t\t</LabelStyle>\n" +
+		  "\t</Style>\n" +
+		  "\t<Folder>\n" +
+		  "\t\t<name>Folder with POI</name>\n" +
+		  "\t\t<Placemark>\n" +
+		  "\t\t\t<name>Test Placemark 1</name>\n" +
+		  "\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+		  "\t\t\t<Point>\n" +
+		  "\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
+		  "\t\t\t</Point>\n" +
+		  "\t\t</Placemark>\n" +
+		  "\t\t<Placemark>\n" +
+		  "\t\t\t<name>Test Placemark 2</name>\n" +
+		  "\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
+		  "\t\t\t<Point>\n" +
+		  "\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
+		  "\t\t\t</Point>\n" +
+		  "\t\t</Placemark>\n" +
+		  "\t\t<Placemark>\n" +
+		  "\t\t\t<name>Test Placemark 3</name>\n" +
+		  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
+		  "\t\t\t<Point>\n" +
+		  "\t\t\t\t<coordinates>38.5409832,55.89456632,143</coordinates>\n" +
+		  "\t\t\t</Point>\n" +
+		  "\t\t</Placemark>\n" +
+		  "\t\t<Placemark>\n" +
+		  "\t\t\t<name>Test Placemark 4</name>\n" +
+		  "\t\t\t<styleUrl>#style4</styleUrl>\n" +
+		  "\t\t\t<Point>\n" +
+		  "\t\t\t\t<coordinates>38.53305459,55.91967435,136</coordinates>\n" +
+		  "\t\t\t</Point>\n" +
+		  "\t\t</Placemark>\n" +
+		  "\t</Folder>\n" +
+		  "</Document>\n" +
+		  "</kml>";
 	
 	@ParameterizedTest
 	@ValueSource(ints = {12, 57, 111})
 	public void percentage_PointIconSize_Should_Update_Existing_Scales_Into_Existing_IconStyles(int percentageSize)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		  throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		//GIVEN kml with existing <IconStyle><scale/></IconStyle>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
-			"\t<name>FullTestKmzExport01</name>\n" +
-			"\t<open>1</open>\n" +
-			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
-			"\t<Style id=\"misc-sunny.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<scale>0.5</scale>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"sport-hiking.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t\t<scale>0</scale>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<color>00ffffff</color>\n" +
-			"\t\t\t<scale>0</scale>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Placemark>\n" +
-			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description><![CDATA[<!-- desc_gen:start --><table width=\"100%\"></table><!-- desc_gen:end -->]]></description>\n" +
-			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when>\n" +
-			"</gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t\t<coordinates>37.44571,56.126503,200</coordinates>\n" +
-			"\t\t</Point>\n" +
-			"\t</Placemark>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t<name>Test placemark2</name>\n" +
-			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
-			"\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
+			  "\t<name>FullTestKmzExport01</name>\n" +
+			  "\t<open>1</open>\n" +
+			  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			  "\t<Style id=\"misc-sunny.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<scale>0.5</scale>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"sport-hiking.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t\t<scale>0</scale>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<color>00ffffff</color>\n" +
+			  "\t\t\t<scale>0</scale>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t<name>Test placemark</name>\n" +
+			  "\t\t<description><![CDATA[<!-- desc_gen:start --><table width=\"100%\"></table><!-- desc_gen:end -->]]></description>\n" +
+			  "\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when>\n" +
+			  "</gx:TimeStamp>\n" +
+			  "\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			  "\t\t<Point>\n" +
+			  "\t\t\t<coordinates>37.44571,56.126503,200</coordinates>\n" +
+			  "\t\t</Point>\n" +
+			  "\t</Placemark>\n" +
+			  "\t\t<Placemark>\n" +
+			  "\t\t<name>Test placemark2</name>\n" +
+			  "\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			  "\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSize(percentageSize);
@@ -201,43 +202,43 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {7, 21, 199})
 	public void percentage_PointIconSize_Should_Create_Scales_Into_Existing_IconStyles(int percentageSize)
-		throws IOException, ParserConfigurationException, SAXException {
+		  throws IOException, ParserConfigurationException, SAXException {
 		//GIVEN with existing <IconStyle>s but without <scale>s into them
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
-			"\t<name>FullTestKmzExport01</name>\n" +
-			"\t<open>1</open>\n" +
-			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
-			"\t<Style id=\"misc-sunny.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"sport-hiking.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Placemark>\n" +
-			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t</Point>\n" +
-			"\t</Placemark>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t</Point>\n" +
-			"\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
+			  "\t<name>FullTestKmzExport01</name>\n" +
+			  "\t<open>1</open>\n" +
+			  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			  "\t<Style id=\"misc-sunny.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"sport-hiking.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t<name>Test placemark</name>\n" +
+			  "\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			  "\t\t<Point>\n" +
+			  "\t\t</Point>\n" +
+			  "\t</Placemark>\n" +
+			  "\t\t<Placemark>\n" +
+			  "\t\t<name>Test placemark</name>\n" +
+			  "\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			  "\t\t<Point>\n" +
+			  "\t\t</Point>\n" +
+			  "\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSize(percentageSize);
@@ -256,40 +257,40 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 100})
 	public void pointIconOpacity_Should_Update_Only_Normal_Styles(Integer opacity)
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		  throws IOException, SAXException, ParserConfigurationException, TransformerException {
 		//GIVEN Only Normal Style id=style1 contains IconStyle
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-			"<Document>\n" +
-			"\t<name>Google Earth Test Poi</name>\n" +
-			"\t<StyleMap id=\"styleMap1\">\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>normal</key>\n" +
-			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>highlight</key>\n" +
-			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t</StyleMap>\n" +
-			"\t<Style id=\"style1\">\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<scale>0.0</scale>\n" +
-			"\t\t\t<color>00000000</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"style2\">\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<scale>0.0</scale>\n" +
-			"\t\t\t<color>00000000</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 1</name>\n" +
-			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
-			"\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			  "<Document>\n" +
+			  "\t<name>Google Earth Test Poi</name>\n" +
+			  "\t<StyleMap id=\"styleMap1\">\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>normal</key>\n" +
+			  "\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>highlight</key>\n" +
+			  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t</StyleMap>\n" +
+			  "\t<Style id=\"style1\">\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<scale>0.0</scale>\n" +
+			  "\t\t\t<color>00000000</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"style2\">\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<scale>0.0</scale>\n" +
+			  "\t\t\t<color>00000000</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t\t<name>Test Placemark 1</name>\n" +
+			  "\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+			  "\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconOpacityDynamic(opacity);
@@ -314,43 +315,43 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {12, 57, 111})
 	public void percentage_PointTextSize_Should_Insert_New_Scales_Into_Existing_LabelStyles(int percentageSize)
-		throws IOException, ParserConfigurationException, SAXException {
+		  throws IOException, ParserConfigurationException, SAXException {
 		//GIVEN kml with existing <LabelStyle/>s but without <scale>s inside
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
-			"\t<name>FullTestKmzExport01</name>\n" +
-			"\t<open>1</open>\n" +
-			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
-			"\t<Style id=\"misc-sunny.png\">\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<color>00ffffff</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"sport-hiking.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<color>00ffffff</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Placemark>\n" +
-			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t</Point>\n" +
-			"\t</Placemark>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t<name>Test placemark2</name>\n" +
-			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t</Point>\n" +
-			"\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
+			  "\t<name>FullTestKmzExport01</name>\n" +
+			  "\t<open>1</open>\n" +
+			  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			  "\t<Style id=\"misc-sunny.png\">\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<color>00ffffff</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"sport-hiking.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<color>00ffffff</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t<name>Test placemark</name>\n" +
+			  "\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			  "\t\t<Point>\n" +
+			  "\t\t</Point>\n" +
+			  "\t</Placemark>\n" +
+			  "\t\t<Placemark>\n" +
+			  "\t\t<name>Test placemark2</name>\n" +
+			  "\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			  "\t\t<Point>\n" +
+			  "\t\t</Point>\n" +
+			  "\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(percentageSize);
@@ -369,53 +370,53 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 20, 300})
 	public void percentage_PointTextSize_Should_Update_Existing_Scales_Into_Existing_LabelStyles(int percentageSize)
-		throws IOException, ParserConfigurationException, SAXException {
+		  throws IOException, ParserConfigurationException, SAXException {
 		//GIVEN kml with existing <LabelStyle><scale/></LabelStyle>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
-			"\t<name>FullTestKmzExport01</name>\n" +
-			"\t<open>1</open>\n" +
-			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
-			"\t<Style id=\"misc-sunny.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<color>00ffffff</color>\n" +
-			"\t\t\t<scale>0</scale>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"sport-hiking.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<color>00ffffff</color>\n" +
-			"\t\t\t<scale>2.2</scale>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Placemark>\n" +
-			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description></description>\n" +
-			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t</Point>\n" +
-			"\t</Placemark>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t<name>Test placemark2</name>\n" +
-			"\t\t<description></description>\n" +
-			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
-			"\t\t<Point>\n" +
-			"\t\t</Point>\n" +
-			"\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
+			  "\t<name>FullTestKmzExport01</name>\n" +
+			  "\t<open>1</open>\n" +
+			  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			  "\t<Style id=\"misc-sunny.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<color>00ffffff</color>\n" +
+			  "\t\t\t<scale>0</scale>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"sport-hiking.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<color>00ffffff</color>\n" +
+			  "\t\t\t<scale>2.2</scale>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t<name>Test placemark</name>\n" +
+			  "\t\t<description></description>\n" +
+			  "\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			  "\t\t<Point>\n" +
+			  "\t\t</Point>\n" +
+			  "\t</Placemark>\n" +
+			  "\t\t<Placemark>\n" +
+			  "\t\t<name>Test placemark2</name>\n" +
+			  "\t\t<description></description>\n" +
+			  "\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			  "\t\t<Point>\n" +
+			  "\t\t</Point>\n" +
+			  "\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(percentageSize);
@@ -434,45 +435,45 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 20, 300})
 	public void percentage_PointTextSize_Should_Create_LabelStyles_With_Scales(int percentageSize)
-		throws IOException, ParserConfigurationException, SAXException {
+		  throws IOException, ParserConfigurationException, SAXException {
 		//GIVEN kml without <LabelStyle>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
-			"\t<name>FullTestKmzExport01</name>\n" +
-			"\t<open>1</open>\n" +
-			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
-			"\t<Style id=\"misc-sunny.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"sport-hiking.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Placemark>\n" +
-			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description></description>\n" +
-			"\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-			"\t\t<Point></Point>\n" +
-			"\t</Placemark>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description></description>\n" +
-			"\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
-			"\t\t<Point></Point>\n" +
-			"\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
+			  "\t<name>FullTestKmzExport01</name>\n" +
+			  "\t<open>1</open>\n" +
+			  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			  "\t<Style id=\"misc-sunny.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"sport-hiking.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t<name>Test placemark</name>\n" +
+			  "\t\t<description></description>\n" +
+			  "\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
+			  "\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			  "\t\t<Point></Point>\n" +
+			  "\t</Placemark>\n" +
+			  "\t\t<Placemark>\n" +
+			  "\t\t<name>Test placemark</name>\n" +
+			  "\t\t<description></description>\n" +
+			  "\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
+			  "\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			  "\t\t<Point></Point>\n" +
+			  "\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(percentageSize);
@@ -512,45 +513,45 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"#000000", "#ff0000", "#ffffff", "#374b5c"})
 	public void pointTextColors_Should_Create_LabelStyles_With_Colors(String hexColor)
-		throws IOException, ParserConfigurationException, SAXException {
+		  throws IOException, ParserConfigurationException, SAXException {
 		//GIVEN kml without <LabelStyle/>s and <color/>s in them
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
-			"\t<name>FullTestKmzExport01</name>\n" +
-			"\t<open>1</open>\n" +
-			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
-			"\t<Style id=\"misc-sunny.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"sport-hiking.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Placemark>\n" +
-			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description></description>\n" +
-			"\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-			"\t\t<Point></Point>\n" +
-			"\t</Placemark>\n" +
-			"</Document>\n" +
-			"\t<Placemark>\n" +
-			"\t\t<name>Test placemark2</name>\n" +
-			"\t\t<description></description>\n" +
-			"\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
-			"\t\t<Point></Point>\n" +
-			"\t</Placemark>\n" +
-			"</kml>";
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
+			  "\t<name>FullTestKmzExport01</name>\n" +
+			  "\t<open>1</open>\n" +
+			  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			  "\t<Style id=\"misc-sunny.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"sport-hiking.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" yunits=\"fraction\" y=\"0\" xunits=\"fraction\"></hotSpot>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t<name>Test placemark</name>\n" +
+			  "\t\t<description></description>\n" +
+			  "\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
+			  "\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			  "\t\t<Point></Point>\n" +
+			  "\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t<name>Test placemark2</name>\n" +
+			  "\t\t<description></description>\n" +
+			  "\t\t<gx:TimeStamp></gx:TimeStamp>\n" +
+			  "\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			  "\t\t<Point></Point>\n" +
+			  "\t</Placemark>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColor(hexColor);
@@ -592,49 +593,49 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"#000088", "#ff0000", "#ffffff", "#374b5c"})
 	public void pointTextColors_Should_Update_LabelStyles_With_Colors(String hexColor)
-		throws IOException, ParserConfigurationException, SAXException {
+		  throws IOException, ParserConfigurationException, SAXException {
 		//GIVEN kml with <LabelStyle/>s with AND without <color/>s in them
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\"><Document>\n" +
-			"\t<name>FullTestKmzExport01</name>\n" +
-			"\t<open>1</open>\n" +
-			"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
-			"\t<Style id=\"misc-sunny.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" xunits=\"fraction\" y=\"0\" yunits=\"fraction\"/>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<color>ff990000</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"sport-hiking.png\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t\t<hotSpot x=\"0.5\" xunits=\"fraction\" y=\"0\" yunits=\"fraction\"/>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Placemark>\n" +
-			"\t\t<name>Test placemark</name>\n" +
-			"\t\t<description></description>\n" +
-			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when></gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
-			"\t\t<Point></Point>\n" +
-			"\t</Placemark>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t<name>Test placemark2</name>\n" +
-			"\t\t<description></description>\n" +
-			"\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when></gx:TimeStamp>\n" +
-			"\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
-			"\t\t<Point></Point>\n" +
-			"\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
+			  "\t<name>FullTestKmzExport01</name>\n" +
+			  "\t<open>1</open>\n" +
+			  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			  "\t<Style id=\"misc-sunny.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/misc-sunny.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" xunits=\"fraction\" y=\"0\" yunits=\"fraction\"/>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<color>ff990000</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"sport-hiking.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>file:////storage/emulated/0/DCIM/FullTestKmzExport01/sport-hiking.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" xunits=\"fraction\" y=\"0\" yunits=\"fraction\"/>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t<name>Test placemark</name>\n" +
+			  "\t\t<description></description>\n" +
+			  "\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when></gx:TimeStamp>\n" +
+			  "\t\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+			  "\t\t<Point></Point>\n" +
+			  "\t</Placemark>\n" +
+			  "\t\t<Placemark>\n" +
+			  "\t\t<name>Test placemark2</name>\n" +
+			  "\t\t<description></description>\n" +
+			  "\t\t<gx:TimeStamp><when>2014-11-21T00:27:31Z</when></gx:TimeStamp>\n" +
+			  "\t\t<styleUrl>#sport-hiking.png</styleUrl>\n" +
+			  "\t\t<Point></Point>\n" +
+			  "\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColor(hexColor);
@@ -688,7 +689,7 @@ class GoogleEarthHandlerStaticTest {
 //		System.out.println("KML COLOR : " + kmlColor);
 		
 		assertTrue(kmlColor.contains("ff332211") || kmlColor.contains("ffab10ff") ||
-			kmlColor.contains("fffcfbaf") || kmlColor.contains("ff5c4b37"));
+			  kmlColor.contains("fffcfbaf") || kmlColor.contains("ff5c4b37"));
 	}
 	
 	@ParameterizedTest
@@ -699,7 +700,7 @@ class GoogleEarthHandlerStaticTest {
 		
 		//WHEN
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-			() -> googleEarthHandler.getKmlColor(hexColor, multipartDto.getPointTextOpacity()));
+			  () -> googleEarthHandler.getKmlColor(hexColor, multipartDto.getPointTextOpacity()));
 		
 		//THEN
 		assertEquals("Color value is not correct! (It has to correspond to '#rrggbb' hex pattern", exception.getMessage());
@@ -731,9 +732,9 @@ class GoogleEarthHandlerStaticTest {
 		
 		//THEN
 		assertTrue(hexRepresentation.equalsIgnoreCase("00") || hexRepresentation.equalsIgnoreCase("03") ||
-			hexRepresentation.equalsIgnoreCase("05") || hexRepresentation.equalsIgnoreCase("7F") ||
-			hexRepresentation.equalsIgnoreCase("BA") || hexRepresentation.equalsIgnoreCase("FC") ||
-			hexRepresentation.equalsIgnoreCase("FF"));
+			  hexRepresentation.equalsIgnoreCase("05") || hexRepresentation.equalsIgnoreCase("7F") ||
+			  hexRepresentation.equalsIgnoreCase("BA") || hexRepresentation.equalsIgnoreCase("FC") ||
+			  hexRepresentation.equalsIgnoreCase("FF"));
 	}
 	
 	/**
@@ -790,94 +791,94 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"iconSize", "textSize", "textColor"})
 	public void static_Sets_Should_Update_Only_Normal_Style_From_Style_Map(String staticType)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		  throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		//GIVEN <StyleMap>'s and <Style>'s with all the <scale>0.8</scale>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-			"<Document>\n" +
-			"\t<name>Google Earth Test Poi</name>\n" +
-			"\t<StyleMap id=\"styleMap1\">\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>normal</key>\n" +
-			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>highlight</key>\n" +
-			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t</StyleMap>\n" +
-			"\t<StyleMap id=\"styleMap2\">\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>normal</key>\n" +
-			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>highlight</key>\n" +
-			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t</StyleMap>\n" +
-			"\t<Style id=\"style1\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t\t<color>00000000</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"style2\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t\t<color>00000000</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"style3\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t\t<color>00000000</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"style4\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t\t<color>00000000</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"style5\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t\t<color>00000000</color>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 1</name>\n" +
-			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
-			"\t\t\t<Point></Point>\n" +
-			"\t</Placemark>\n" +
-			"\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 2</name>\n" +
-			"\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
-			"\t\t\t<Point></Point>\n" +
-			"\t</Placemark>\n" +
-			"\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 3</name>\n" +
-			"\t\t\t<styleUrl>#style4</styleUrl>\n" +
-			"\t\t\t<Point></Point>\n" +
-			"\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			  "<Document>\n" +
+			  "\t<name>Google Earth Test Poi</name>\n" +
+			  "\t<StyleMap id=\"styleMap1\">\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>normal</key>\n" +
+			  "\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>highlight</key>\n" +
+			  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t</StyleMap>\n" +
+			  "\t<StyleMap id=\"styleMap2\">\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>normal</key>\n" +
+			  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>highlight</key>\n" +
+			  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t</StyleMap>\n" +
+			  "\t<Style id=\"style1\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t\t<color>00000000</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"style2\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t\t<color>00000000</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"style3\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t\t<color>00000000</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"style4\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t\t<color>00000000</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"style5\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t\t<color>00000000</color>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t\t<name>Test Placemark 1</name>\n" +
+			  "\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+			  "\t\t\t<Point></Point>\n" +
+			  "\t</Placemark>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t\t<name>Test Placemark 2</name>\n" +
+			  "\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
+			  "\t\t\t<Point></Point>\n" +
+			  "\t</Placemark>\n" +
+			  "\t<Placemark>\n" +
+			  "\t\t\t<name>Test Placemark 3</name>\n" +
+			  "\t\t\t<styleUrl>#style4</styleUrl>\n" +
+			  "\t\t\t<Point></Point>\n" +
+			  "\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		
@@ -919,79 +920,79 @@ class GoogleEarthHandlerStaticTest {
 	
 	@Test
 	public void with_Static_Parameters_Placemarks_StyleUrls_To_Styles_Should_Not_Be_Changed()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		  throws IOException, SAXException, ParserConfigurationException, TransformerException {
 		//GIVEN just a static multipartDto.setPointTextSize(50);
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-			"<Document>\n" +
-			"\t<name>Google Earth Test Poi</name>\n" +
-			"\t<StyleMap id=\"styleMap1\">\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>normal</key>\n" +
-			"\t\t\t<styleUrl>#style1</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>highlight</key>\n" +
-			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t</StyleMap>\n" +
-			"\t<StyleMap id=\"styleMap2\">\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>normal</key>\n" +
-			"\t\t\t<styleUrl>#style2</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t\t<Pair>\n" +
-			"\t\t\t<key>highlight</key>\n" +
-			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			"\t\t</Pair>\n" +
-			"\t</StyleMap>\n" +
-			"\t<Style id=\"style1\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t<Style id=\"style2\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t</Style>\n" +
-			"\t\t<Style id=\"style3\">\n" +
-			"\t\t<IconStyle>\n" +
-			"\t\t\t<Icon>\n" +
-			"\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
-			"\t\t\t</Icon>\n" +
-			"\t\t</IconStyle>\n" +
-			"\t\t<LabelStyle>\n" +
-			"\t\t\t<scale>0.8</scale>\n" +
-			"\t\t</LabelStyle>\n" +
-			"\t</Style>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 1</name>\n" +
-			"\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
-			"\t\t\t<Point>\n" +
-			"\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
-			"\t\t\t</Point>\n" +
-			"\t\t</Placemark>\n" +
-			"\t\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 2</name>\n" +
-			"\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
-			"\t\t\t<Point>\n" +
-			"\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
-			"\t\t\t</Point>\n" +
-			"\t\t</Placemark>\n" +
-			"\t\t\t\t<Placemark>\n" +
-			"\t\t\t<name>Test Placemark 3</name>\n" +
-			"\t\t\t<styleUrl>#style3</styleUrl>\n" +
-			"\t\t\t<Point>\n" +
-			"\t\t\t\t<coordinates>38.5409832,55.89456632,143</coordinates>\n" +
-			"\t\t\t</Point>\n" +
-			"\t\t</Placemark>\n" +
-			"</Document>\n" +
-			"</kml>";
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			  "<Document>\n" +
+			  "\t<name>Google Earth Test Poi</name>\n" +
+			  "\t<StyleMap id=\"styleMap1\">\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>normal</key>\n" +
+			  "\t\t\t<styleUrl>#style1</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>highlight</key>\n" +
+			  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t</StyleMap>\n" +
+			  "\t<StyleMap id=\"styleMap2\">\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>normal</key>\n" +
+			  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t\t<Pair>\n" +
+			  "\t\t\t<key>highlight</key>\n" +
+			  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			  "\t\t</Pair>\n" +
+			  "\t</StyleMap>\n" +
+			  "\t<Style id=\"style1\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t<Style id=\"style2\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t\t<Style id=\"style3\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon>\n" +
+			  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
+			  "\t\t\t</Icon>\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t\t<LabelStyle>\n" +
+			  "\t\t\t<scale>0.8</scale>\n" +
+			  "\t\t</LabelStyle>\n" +
+			  "\t</Style>\n" +
+			  "\t\t<Placemark>\n" +
+			  "\t\t\t<name>Test Placemark 1</name>\n" +
+			  "\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
+			  "\t\t\t<Point>\n" +
+			  "\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
+			  "\t\t\t</Point>\n" +
+			  "\t\t</Placemark>\n" +
+			  "\t\t<Placemark>\n" +
+			  "\t\t\t<name>Test Placemark 2</name>\n" +
+			  "\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
+			  "\t\t\t<Point>\n" +
+			  "\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
+			  "\t\t\t</Point>\n" +
+			  "\t\t</Placemark>\n" +
+			  "\t\t\t\t<Placemark>\n" +
+			  "\t\t\t<name>Test Placemark 3</name>\n" +
+			  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
+			  "\t\t\t<Point>\n" +
+			  "\t\t\t\t<coordinates>38.5409832,55.89456632,143</coordinates>\n" +
+			  "\t\t\t</Point>\n" +
+			  "\t\t</Placemark>\n" +
+			  "</Document>\n" +
+			  "</kml>";
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(50);
@@ -1005,5 +1006,194 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		assertTrue(resultingKml.contains("<styleUrl>#style3</styleUrl>"));
 		assertTrue(XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
+	}
+	
+	@Test
+	public void bigTest()
+		  throws IOException, SAXException, ParserConfigurationException, TransformerException {
+		//GIVEN just a static multipartDto.setPointTextSize(50);
+		String googleEarthKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+			  "<Document>\n" +
+			  "\t<name>Locus30.06.2020</name>\n" +
+			  "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+			  "\t\t<Style id=\"sport-cyclingsport.png\">\n" +
+			  "\t\t<IconStyle>\n" +
+			  "\t\t\t<Icon><href>files/sport-cyclingsport.png</href></Icon>\n" +
+			  "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
+			  "\t\t</IconStyle>\n" +
+			  "\t</Style>\n" +
+			  "<Placemark>\n" +
+			  "\t<name>Катушкин</name>\n" +
+			  "\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
+			  "<!-- desc_user:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_user:end -->\n" +
+			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->]]></description>\n" +
+			  "\t<styleUrl>#sport-cyclingsport.png</styleUrl>\n" +
+			  "\t<Point>\n" +
+			  "\t\t<coordinates>37.7266760,55.8425980,0.00</coordinates>\n" +
+			  "\t</Point>\n" +
+			  "\t<gx:TimeStamp>\n" +
+			  "\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+			  "\t</gx:TimeStamp>\n" +
+			  "</Placemark>\n" +
+			  "<Placemark>\n" +
+			  "\t<name>Дорога в сторону Шеремет. шоссе</name>\n" +
+			  "\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
+			  "<!-- desc_user:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">2012г\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"/storage/emulated/0/Locus/data/media/photo/_1348037300055.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/_1348037300055.jpg\" width=\"330px\" align=\"center\"></a>хорошая полевая</td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_user:end -->\n" +
+			  "</td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->]]></description>\n" +
+			  "\t<styleUrl>#sport-cyclingsport.png</styleUrl>\n" +
+			  "\t<Point>\n" +
+			  "\t\t<coordinates>37.4492730,55.9974100</coordinates>\n" +
+			  "\t</Point>\n" +
+			  "\t<gx:TimeStamp>\n" +
+			  "\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+			  "\t</gx:TimeStamp>\n" +
+			  "</Placemark>\n" +
+			  "<Placemark>\n" +
+			  "\t<name>Хорошая грунтовка на северо-запад к Сенежу</name>\n" +
+			  "\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
+			  "<!-- desc_user:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"/storage/emulated/0/Locus/data/media/photo/_1348050337329.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/_1348050337329.jpg\" width=\"330px\" align=\"center\"></a>видна на ОСМ картах</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">249m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Скорость</b></small></td><td align=\"center\" valign=\"center\">4.0km/h</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">189°</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">10m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-21 11:01:57</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">236 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-05-10 16:33:59</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">236 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-03 14:39:11</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">236 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-07 17:25:15</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">236 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-07-18 17:23:19</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">236 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-08-10 13:33:15</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">236 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-09-18 16:16:44</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_user:end -->\n" +
+			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">236 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->]]></description>\n" +
+			  "\t<styleUrl>#sport-cyclingsport.png</styleUrl>\n" +
+			  "\t<Point>\n" +
+			  "\t\t<coordinates>37.1862430,56.1627300,235.55</coordinates>\n" +
+			  "\t</Point>\n" +
+			  "\t<gx:TimeStamp>\n" +
+			  "\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+			  "\t</gx:TimeStamp>\n" +
+			  "</Placemark>\n" +
+			  "<Placemark>\n" +
+			  "\t<name>На восток</name>\n" +
+			  "\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
+			  "<!-- desc_user:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"/storage/emulated/0/Locus/data/media/photo/_1348054187474.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/_1348054187474.jpg\" width=\"330px\" align=\"center\"></a>перекресток грунтовок</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">262m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">171°</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">10m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-22 17:01:16</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-05-10 16:33:59</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-03 14:39:11</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-07 17:25:15</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-07-18 17:23:19</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-08-10 13:33:15</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-09-18 16:16:44</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_user:end -->\n" +
+			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->]]></description>\n" +
+			  "\t<styleUrl>#sport-cyclingsport.png</styleUrl>\n" +
+			  "\t<Point>\n" +
+			  "\t\t<coordinates>37.2404120,56.1473070,244.75</coordinates>\n" +
+			  "\t</Point>\n" +
+			  "\t<gx:TimeStamp>\n" +
+			  "\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+			  "\t</gx:TimeStamp>\n" +
+			  "</Placemark>\n" +
+			  "<Placemark>\n" +
+			  "\t<name>На север</name>\n" +
+			  "\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
+			  "<!-- desc_user:start -->\n" +
+			  "<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><a href=\"/storage/emulated/0/Locus/data/media/photo/_1348054239943.jpg\" target=\"_blank\"><img src=\"/storage/emulated/0/Locus/data/media/photo/_1348054239943.jpg\" width=\"330px\" align=\"center\"></a>перекресток грунтовок</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">262m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">266°</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">10m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-22 17:01:46</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-05-10 16:33:59</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-03 14:39:11</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-06-07 17:25:15</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-07-18 17:23:19</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-08-10 13:33:15</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font></td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-09-18 16:16:44</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_user:end -->\n" +
+			  "</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">245 m</td></tr>\n" +
+			  "<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:30</td></tr>\n" +
+			  "</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+			  "<!-- desc_gen:end -->]]></description>\n" +
+			  "\t<styleUrl>#sport-cyclingsport.png</styleUrl>\n" +
+			  "\t<Point>\n" +
+			  "\t\t<coordinates>37.2403750,56.1473270,244.86</coordinates>\n" +
+			  "\t</Point>\n" +
+			  "\t<gx:TimeStamp>\n" +
+			  "\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+			  "\t</gx:TimeStamp>\n" +
+			  "</Placemark>\n" +
+			  "\n" +
+			  "\t</Document>\n" +
+			  "</kml>";
+		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleEarthKml.getBytes(StandardCharsets.UTF_8));
+		multipartDto = new MultipartDto(multipartFile);
+		multipartDto.setPreviewSize(800);
+		multipartDto.setPreviewUnit("pixels");
+		multipartDto.setPathType("absolute");
+		multipartDto.setPath("D:\\PROGRAM POOL\\КАРТОГРАФИЯ\\LOCUS\\Импортированные точки Locus\\data-media-photo");
+		multipartDto.setClearOutdatedDescriptions(true);
+		multipartDto.setPointIconSize(40);
+		multipartDto.setPointIconOpacity(70);
+		multipartDto.setPointTextSize(0);
+		multipartDto.setPointIconSizeDynamic(70);
+		multipartDto.setPointIconOpacityDynamic(90);
+		multipartDto.setPointTextSizeDynamic(60);
+		multipartDto.setPointTextOpacityDynamic(80);
+		multipartDto.setPointTextHexColorDynamic("#A5CFE3");
+		multipartDto.setDownloadAs(DownloadAs.KML);
+		
+		
+		//WHEN
+		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		
+		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
+		System.out.println(resultingKml);
+		
+		//THEN
+//		assertTrue(resultingKml.contains("<styleUrl>#style3</styleUrl>"));
+//		assertTrue(XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
 	}
 }

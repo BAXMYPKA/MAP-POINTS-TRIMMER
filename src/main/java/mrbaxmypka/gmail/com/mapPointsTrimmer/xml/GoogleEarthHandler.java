@@ -589,7 +589,7 @@ public class GoogleEarthHandler {
 	 */
 	public String getKmlColor(String hexColor, @Nullable Integer opacity) throws IllegalArgumentException {
 		log.info("Got '{}' hex color input with {} opacity", hexColor, opacity != null ? opacity : "null");
-		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
+		if (!hexColor.matches("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")) {
 			throw new IllegalArgumentException(
 				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
 		}
@@ -627,7 +627,7 @@ public class GoogleEarthHandler {
 	 */
 	public String getKmlColor(String hexColor, String hexOpacity) throws IllegalArgumentException {
 		log.info("Got '{}' hex color input with {} opacity", hexColor, hexOpacity != null ? hexOpacity : "null");
-		if (!hexColor.matches("^#([0-9a-f]{3}|[0-9a-f]{6})$")) {
+		if (!hexColor.matches("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")) {
 			throw new IllegalArgumentException(
 				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
 		}
