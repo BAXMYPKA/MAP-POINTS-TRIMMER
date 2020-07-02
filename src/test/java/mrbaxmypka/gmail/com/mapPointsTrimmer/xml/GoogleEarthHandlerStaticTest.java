@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -1008,8 +1009,9 @@ class GoogleEarthHandlerStaticTest {
 		assertTrue(XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
 	}
 	
+	@Disabled
 	@Test
-	public void bigTest()
+	public void complicated_Test()
 		  throws IOException, SAXException, ParserConfigurationException, TransformerException {
 		//GIVEN just a static multipartDto.setPointTextSize(50);
 		String googleEarthKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +

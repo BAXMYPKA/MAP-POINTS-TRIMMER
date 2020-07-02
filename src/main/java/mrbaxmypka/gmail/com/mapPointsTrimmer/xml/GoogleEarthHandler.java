@@ -131,7 +131,7 @@ public class GoogleEarthHandler {
 			Node styleObject = styleObjectsMap.get(styleUrl);
 			if (styleObject.getNodeName().equals("Style")) {
 				getIconsStyleColorNodeFromStyle(styleObject);
-				Node iconStyleColorNode = getIconStyleScaleNodeFromStyle(styleObject);
+				Node iconStyleColorNode = getIconsStyleColorNodeFromStyle(styleObject);
 				iconStyleColorNode.setTextContent(opacityColor);
 			} else if (styleObject.getNodeName().equals("StyleMap")) {
 				Node normalStyleNode = getNormalStyleNodeFromStyleMap(styleObject);
