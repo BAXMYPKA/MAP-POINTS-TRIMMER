@@ -33,6 +33,7 @@ public class MultipartFileService {
 	private final Locale defaultLocale = Locale.ENGLISH;
 	private final MessageSource messageSource;
 	private final KmlHandler kmlHandler;
+	private final GoogleIconsService googleIconsService;
 	/**
 	 * The temp file which is stored in a system temp directory
 	 */
@@ -42,15 +43,13 @@ public class MultipartFileService {
 	 * To store the inner kml or gpx filename from archive
 	 */
 	private String xmlFileName = "";
-	@Getter
+//	@Getter
 	private Set<String> iconsNamesFromZip = new HashSet<>();
-	//TODO: to clear when max size is exceeded
-	@Getter
-	private Map<String, byte[]> downloadedGoogleIcons = new HashMap<>();
 	
 	@Autowired
-	public MultipartFileService(KmlHandler kmlHandler, MessageSource messageSource) {
+	public MultipartFileService(KmlHandler kmlHandler, GoogleIconsService googleIconsService, MessageSource messageSource) {
 		this.kmlHandler = kmlHandler;
+		this.googleIconsService = googleIconsService;
 		this.messageSource = messageSource;
 	}
 	
@@ -93,7 +92,8 @@ public class MultipartFileService {
 	private InputStream getXmlFromZip(MultipartDto multipartDto, DownloadAs xmlFileExtension, Locale locale)
 		throws IOException {
 		log.info("'{}' file is being extracted from the given MultipartDto", xmlFileExtension);
-		iconsNamesFromZip = new HashSet<>();
+		//TODO: to fill this HashSet
+		googleIconsService.getIconsNamesFromZip();
 		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream())) {
 			ZipEntry zipEntry;
 			while ((zipEntry = zis.getNextEntry()) != null) {
@@ -166,17 +166,19 @@ public class MultipartFileService {
 		
 		if (DownloadAs.KML.hasSameExtension(originalFilename) ||
 			(DownloadAs.KMZ.hasSameExtension(originalFilename) && multipartDto.getDownloadAs().equals(DownloadAs.KML))) {
+			//Write .kml file
 			log.info("Temp file will be written to the temp directory as '{}' before returning as it is.", xmlFileName);
-			//Return .kml file
 			tempFile = Paths.get(tempDir.concat(xmlFileName));
 			BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8);
 			bufferedWriter.write(processedXml);
 			bufferedWriter.close();
 			log.info("Temp file has been written as '{}'", tempFile);
 		} else if (DownloadAs.KMZ.hasSameExtension(originalFilename) && DownloadAs.KMZ.equals(multipartDto.getDownloadAs())) {
+			//Write .kmz file
 			log.info("Temp file will be written as KMZ");
 			processTempZip(processedXml, DownloadAs.KML, multipartDto, locale);
 		}
+		googleIconsService.getIconsNamesFromZip().clear();
 		return tempFile;
 	}
 	
