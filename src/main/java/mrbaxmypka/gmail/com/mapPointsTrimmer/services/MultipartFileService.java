@@ -20,7 +20,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -43,7 +45,7 @@ public class MultipartFileService {
 	 * To store the inner kml or gpx filename from archive
 	 */
 	private String xmlFileName = "";
-//	@Getter
+	//	@Getter
 	private Set<String> iconsNamesFromZip = new HashSet<>();
 	
 	@Autowired
@@ -92,8 +94,9 @@ public class MultipartFileService {
 	private InputStream getXmlFromZip(MultipartDto multipartDto, DownloadAs xmlFileExtension, Locale locale)
 		throws IOException {
 		log.info("'{}' file is being extracted from the given MultipartDto", xmlFileExtension);
-		//TODO: to fill this HashSet
-		googleIconsService.getIconsNamesFromZip();
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		googleIconsService.setImagesNamesFromZip(new HashSet<>());
+		
 		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream())) {
 			ZipEntry zipEntry;
 			while ((zipEntry = zis.getNextEntry()) != null) {
@@ -102,15 +105,19 @@ public class MultipartFileService {
 //					byte[] buffer = new byte[(int) zipEntry.getSize()];
 // 					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
 					xmlFileName = zipEntry.getName(); //To store it if .kml has to be returned
-					ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 					buffer.writeBytes(zis.readAllBytes());
 					log.info("File '{}' has been extracted from zip and will be returned as InputStream", xmlFileName);
-					return new ByteArrayInputStream(buffer.toByteArray());
+				} else {
+					googleIconsService.getImagesNamesFromZip().add(zipEntry.getName());
 				}
 			}
 		}
-		throw new IllegalArgumentException(messageSource.getMessage("exception.noXmlInZipFound",
-			new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
+		if (buffer.size() > 0) {
+			return new ByteArrayInputStream(buffer.toByteArray());
+		} else {
+			throw new IllegalArgumentException(messageSource.getMessage("exception.noXmlInZipFound",
+				new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
+		}
 	}
 	
 	/**
@@ -178,7 +185,7 @@ public class MultipartFileService {
 			log.info("Temp file will be written as KMZ");
 			processTempZip(processedXml, DownloadAs.KML, multipartDto, locale);
 		}
-		googleIconsService.getIconsNamesFromZip().clear();
+		googleIconsService.getImagesNamesFromZip().clear();
 		return tempFile;
 	}
 	

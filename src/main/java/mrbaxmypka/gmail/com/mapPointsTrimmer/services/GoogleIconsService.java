@@ -1,18 +1,19 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @NoArgsConstructor
@@ -21,17 +22,20 @@ public class GoogleIconsService {
 	
 	private final int ICON_SIZE_LIMIT = 1024 * 15; //15 kilobytes
 	private final String GOOGLE_URL = "http://maps.google.com/";
-	@Getter
-	private Set<String> iconsNamesFromZip = new HashSet<>();
 	private final int MAX_CACHED_ICONS = 300;
 	/**
 	 * As an intermediate cache for current set of User's previously downloaded google icons.
 	 * MUST be cleared after every processing of .kmz.
 	 */
 	@Getter
-//	@Setter(AccessLevel.PUBLIC)
-	private Map<String, byte[]> downloadedGoogleIcons = new LinkedHashMap<>();
-	
+	private final Map<String, byte[]> downloadedGoogleIcons = new LinkedHashMap<>();
+	/**
+	 * The instant cache for a currently processing .zip file with its images names
+	 * MUST be cleared after use
+	 */
+	@Getter
+	@Setter
+	private Set<String> imagesNamesFromZip = new HashSet<>();
 	
 	/**
 	 * Google Earth has special href to icons it internally redirects to it local image store.
@@ -58,7 +62,7 @@ public class GoogleIconsService {
 	 * if isn't (e.g. no internet connection) it return the initial URL.
 	 */
 	private String getDownloadedHref(String googleUrl) {
-		return getIconsNamesFromZip().stream()
+		return getImagesNamesFromZip().stream()
 			.filter(s -> s.equals(getIconFilename(googleUrl)))
 			.findFirst()
 			.orElse(downloadIcon(googleUrl));
@@ -82,33 +86,24 @@ public class GoogleIconsService {
 	 * @return A newly downloaded icon filename or the initial url if failed.
 	 */
 	private String downloadIcon(String googleUrl) {
-		try {
-			URLConnection urlConnection = new URL(googleUrl).openConnection();
-			urlConnection.setConnectTimeout(2000);
-			urlConnection.setReadTimeout(2000);
-			InputStream is = urlConnection.getInputStream();
-			byte[] bytes = is.readAllBytes();
-			if (bytes.length > ICON_SIZE_LIMIT) {
+		if (downloadedGoogleIcons.size() < MAX_CACHED_ICONS) {
+			try {
+				URLConnection urlConnection = new URL(googleUrl).openConnection();
+				urlConnection.setConnectTimeout(2000);
+				urlConnection.setReadTimeout(2000);
+				InputStream is = urlConnection.getInputStream();
+				byte[] bytes = is.readAllBytes();
+				if (bytes.length > ICON_SIZE_LIMIT) {
+					return googleUrl;
+				}
+				getDownloadedGoogleIcons().put(getIconFilename(googleUrl), bytes);
+				return getIconFilename(googleUrl);
+			} catch (IOException e) {
+				log.trace(e.getMessage(), e);
 				return googleUrl;
 			}
-			getDownloadedGoogleIcons().put(getIconFilename(googleUrl), bytes);
-		} catch (IOException e) {
-			log.trace(e.getMessage(), e);
+		} else {
 			return googleUrl;
 		}
-		return getIconFilename(googleUrl);
-	}
-	
-	public void clearGoogleIconsCache() {
-		//TODO: to be tested
-		//Clear cache
-		if (downloadedGoogleIcons.size() > MAX_CACHED_ICONS) {
-			Iterator<Map.Entry<String, byte[]>> iterator = downloadedGoogleIcons.entrySet().iterator();
-			while (downloadedGoogleIcons.size() > MAX_CACHED_ICONS && iterator.hasNext()) {
-				iterator.next();
-				iterator.remove();
-			}
-		}
-//		iconsNamesFromZip.clear();
 	}
 }
