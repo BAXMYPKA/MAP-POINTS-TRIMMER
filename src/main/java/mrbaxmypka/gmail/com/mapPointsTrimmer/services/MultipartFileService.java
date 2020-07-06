@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
@@ -20,9 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -35,7 +34,6 @@ public class MultipartFileService {
 	private final Locale defaultLocale = Locale.ENGLISH;
 	private final MessageSource messageSource;
 	private final KmlHandler kmlHandler;
-	private final GoogleIconsService googleIconsService;
 	/**
 	 * The temp file which is stored in a system temp directory
 	 */
@@ -45,13 +43,23 @@ public class MultipartFileService {
 	 * To store the inner kml or gpx filename from archive
 	 */
 	private String xmlFileName = "";
-	//	@Getter
-	private Set<String> iconsNamesFromZip = new HashSet<>();
+	/**
+	 * The instant cache for a currently processing .zip file with its images names
+	 * MUST be cleared after use
+	 */
+	@Getter
+	@Setter
+	private Set<String> imagesNamesFromZip = new HashSet<>();
+	/**
+	 * Google Map icons added by {@link GoogleIconsService)} to be added into the resulting zip archive.
+	 */
+	@Getter
+	private Map<String, byte[]> iconsToBeZipped = new HashMap<>();
+	
 	
 	@Autowired
-	public MultipartFileService(KmlHandler kmlHandler, GoogleIconsService googleIconsService, MessageSource messageSource) {
+	public MultipartFileService(KmlHandler kmlHandler, MessageSource messageSource) {
 		this.kmlHandler = kmlHandler;
-		this.googleIconsService = googleIconsService;
 		this.messageSource = messageSource;
 	}
 	
@@ -61,7 +69,7 @@ public class MultipartFileService {
 	 * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
 	 */
 	public Path processMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException, ClassNotFoundException {
+		throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		log.info("{} has been received. Locale = {}", multipartDto, locale);
 		
 		locale = locale == null ? this.defaultLocale : locale;
@@ -95,7 +103,7 @@ public class MultipartFileService {
 		throws IOException {
 		log.info("'{}' file is being extracted from the given MultipartDto", xmlFileExtension);
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		googleIconsService.setImagesNamesFromZip(new HashSet<>());
+		imagesNamesFromZip = new HashSet<>();
 		
 		try (ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream())) {
 			ZipEntry zipEntry;
@@ -108,7 +116,7 @@ public class MultipartFileService {
 					buffer.writeBytes(zis.readAllBytes());
 					log.info("File '{}' has been extracted from zip and will be returned as InputStream", xmlFileName);
 				} else {
-					googleIconsService.getImagesNamesFromZip().add(zipEntry.getName());
+					imagesNamesFromZip.add(zipEntry.getName());
 				}
 			}
 		}
@@ -185,7 +193,7 @@ public class MultipartFileService {
 			log.info("Temp file will be written as KMZ");
 			processTempZip(processedXml, DownloadAs.KML, multipartDto, locale);
 		}
-		googleIconsService.getImagesNamesFromZip().clear();
+		imagesNamesFromZip.clear();
 		return tempFile;
 	}
 	
