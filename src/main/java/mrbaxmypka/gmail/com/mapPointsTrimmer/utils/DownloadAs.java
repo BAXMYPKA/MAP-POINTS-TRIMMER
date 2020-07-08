@@ -39,4 +39,12 @@ public enum DownloadAs {
 			return false;
 		}
 	}
+	
+	
+	/**
+	 * @return ".kml", ".kmz" etc
+	 */
+	public String getExtension() {
+		return "." + this.name().toLowerCase();
+	}
 }

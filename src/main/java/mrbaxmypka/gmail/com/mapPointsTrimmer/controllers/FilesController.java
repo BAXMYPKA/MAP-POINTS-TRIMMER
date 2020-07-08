@@ -47,7 +47,6 @@ public class FilesController extends AbstractController {
 		Path tempFile = multipartFileService.processMultipartDto(file, locale);
 		log.info("Temp file={}", tempFile);
 		FileSystemResource resource = new FileSystemResource(tempFile);
-		//TODO: to schedule deleting a tempFile and clearing cache
 		//TODO: add a message with file keeping time limit
 		return ResponseEntity.ok()
 			.header("Content-Disposition", "attachment; filename=" + tempFile.getFileName()).body(resource);
