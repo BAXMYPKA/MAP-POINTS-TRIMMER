@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,18 +40,18 @@ class MultipartFileServiceTest {
 	private static MessageSource messageSource;
 	private static MultipartDto multipartDto;
 	private static Path tmpFile;
+	private static String originalKmlFilename = "MockKml.kml";
 	private static String testKml = "<kml>test</kml>";
-	;
 	private static MultipartFile multipartFile;
 	private static Path kmzPath = Paths.get("src/test/java/resources/LocusTestKmz.kmz");
 	
 	
 	@BeforeEach
 	public void beforeEach() throws ParserConfigurationException, TransformerException, SAXException,
-		IOException, ClassNotFoundException {
+			IOException, ClassNotFoundException {
 		messageSource = Mockito.mock(MessageSource.class);
 		Mockito.when(messageSource.getMessage("exception.nullFilename", null, null))
-			.thenReturn("Filename cannot be null!");
+				.thenReturn("Filename cannot be null!");
 		
 		kmlHandler = Mockito.mock(KmlHandler.class);
 		Mockito.when(kmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartDto.class))).thenReturn(testKml);
@@ -57,8 +59,7 @@ class MultipartFileServiceTest {
 		multipartFileService = new MultipartFileService(kmlHandler, messageSource);
 		;
 		
-		multipartFile = new MockMultipartFile(
-			"MockKml.kml", "MockKml.kml", null, testKml.getBytes());
+		multipartFile = new MockMultipartFile(originalKmlFilename, originalKmlFilename, null, testKml.getBytes());
 		
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setDownloadAs(DownloadAs.KML);
@@ -77,7 +78,7 @@ class MultipartFileServiceTest {
 	 */
 	@Test
 	public void kml_File_Should_Be_Saved_Temporarily_then_Deleted()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
 		// GIVEN
 		
 		//WHEN
@@ -95,7 +96,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kml_File_Should_Be_Returned_Same()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
 		// GIVEN
 		
 		//WHEN
@@ -110,13 +111,13 @@ class MultipartFileServiceTest {
 	 */
 	@Test
 	public void downloadAsKml_From_Kmz_File_Should_Be_Extracted_And_Saved_as_Kml()
-		throws IOException, ParserConfigurationException, TransformerException, SAXException, ClassNotFoundException {
+			throws IOException, ParserConfigurationException, TransformerException, SAXException, ClassNotFoundException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
-			"LocusTestKmz.kmz",
-			"LocusTestKmz.kmz",
-			null,
-			new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz")));
+				"LocusTestKmz.kmz",
+				"LocusTestKmz.kmz",
+				null,
+				new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz")));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setDownloadAs(DownloadAs.KML);
 		
@@ -130,15 +131,15 @@ class MultipartFileServiceTest {
 		
 		//THEN The resulting 'doc.kml' should be the same
 		assertAll(
-			() -> assertTrue(kmlResult.contains("<Style id=\"file:///sdcard/Locus/cache/images/1571471453728\">")),
-			() -> assertTrue(kmlResult.contains("<name>Locus17.04.2020</name>")),
-			() -> assertTrue(kmlResult.contains("<name>2015-04-10 14:27:17</name>"))
+				() -> assertTrue(kmlResult.contains("<Style id=\"file:///sdcard/Locus/cache/images/1571471453728\">")),
+				() -> assertTrue(kmlResult.contains("<name>Locus17.04.2020</name>")),
+				() -> assertTrue(kmlResult.contains("<name>2015-04-10 14:27:17</name>"))
 		);
 	}
 	
 	@Test
-	public void downloadAsKmz_From_Kml_File_Should_Be_Saved_as_Kml()
-		throws IOException, ParserConfigurationException, TransformerException, SAXException, ClassNotFoundException {
+	public void downloadAsKmz_From_Kml_File_Should_Be_Saved_as_Kmz_With_Original_Filename()
+			throws IOException, ParserConfigurationException, TransformerException, SAXException {
 		//GIVEN If while uploading KML set "downloadAs KMZ"
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
@@ -148,20 +149,26 @@ class MultipartFileServiceTest {
 		//WHEN .kmz is fully processed without Mocks and additional conditions
 		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
 		
-		//THEN
-		assertTrue(tmpFile.getFileName().toString().endsWith(".kml"));
+		//THEN .kmz should be a zip file with the single entity as 'doc.kml'
+		assertTrue(tmpFile.getFileName().toString().endsWith(".kmz"));
+		assertTrue(tmpFile.getFileName().toString().startsWith(originalKmlFilename.substring(0, originalKmlFilename.lastIndexOf("."))));
+		assertDoesNotThrow(() -> {
+			ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
+			ZipEntry zipEntry = zis.getNextEntry();
+			assertEquals("doc.kml", zipEntry.getName());
+		});
 	}
 	
 	@Test
 	public void kmz_File_Should_Be_Saved_Temporarily_With_The_Filename_From_Multipart_Then_Deleted()
-		throws IOException, ParserConfigurationException, TransformerException, SAXException, ClassNotFoundException {
+			throws IOException, ParserConfigurationException, TransformerException, SAXException {
 		//GIVEN
 		String initialMultipartFileName = "LocusTestKmz.kmz";
 		multipartFile = new MockMultipartFile(
-			initialMultipartFileName,
-			initialMultipartFileName,
-			null,
-			new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz")));
+				initialMultipartFileName,
+				initialMultipartFileName,
+				null,
+				new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz")));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
@@ -179,10 +186,10 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kml_In_Kmz_MultipartFile_Should_Be_Returned_Same()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
 		//GIVEN download as "KMZ"
 		multipartFile = new MockMultipartFile(
-			"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(kmzPath));
+				"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(kmzPath));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
@@ -206,11 +213,11 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kmz_MultipartFile_Should_Contain_All_The_Initial_Files()
-		throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
 		//GIVEN when "download as KMZ" is selected all the initial files (images) from "LocusTestKmz.kmz"
 		// should be preserved
 		multipartFile = new MockMultipartFile(
-			"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(kmzPath));
+				"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(kmzPath));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
@@ -240,9 +247,9 @@ class MultipartFileServiceTest {
 				if (tempPath.getFileName() == null) continue;
 				
 				long count = initialFiles.stream()
-					.filter(initPath -> initPath.getFileName().toString().equals(tempPath.getFileName().toString()))
-					.filter(initPath -> initPath.getParent().toString().equals(tempPath.getParent().toString()))
-					.count();
+						.filter(initPath -> initPath.getFileName().toString().equals(tempPath.getFileName().toString()))
+						.filter(initPath -> initPath.getParent().toString().equals(tempPath.getParent().toString()))
+						.count();
 				
 				assertEquals(1, count);
 				initialFiles.removeIf(next -> next.getFileName().toString().equals(tempPath.getFileName().toString()));
