@@ -16,26 +16,30 @@ import java.net.URLConnection;
 @Component
 public class GoogleIconsService {
 	
-	private final String GOOGLE_URL = "http://maps.google.com/";
-	@Autowired
+	private final String MAPS_GOOGLE_URL = "http://maps.google.com/";
 	private MultipartFileService multipartFileService;
-	@Autowired
 	private GoogleIconsCache googleIconsCache;
+	
+	@Autowired
+	public GoogleIconsService(MultipartFileService multipartFileService, GoogleIconsCache googleIconsCache) {
+		this.multipartFileService = multipartFileService;
+		this.googleIconsCache = googleIconsCache;
+	}
 	
 	/**
 	 * Google Earth has special href to icons it internally redirects to it local image store.
-	 * If the given href starts with {@link #GOOGLE_URL} this method will try do download the icon.
+	 * If the given href starts with {@link #MAPS_GOOGLE_URL} this method will try do download the icon.
 	 *
 	 * @param href Href or src to an icon to be evaluated
-	 * @return If the given href don't start with {@link #GOOGLE_URL} the initial href will be returned.
+	 * @return If the given href don't start with {@link #MAPS_GOOGLE_URL} the initial href will be returned.
 	 * If the given user zip archive contains the icon name from the given href, the icon name without url will be returned.
 	 * Otherwise this method will try to download the icon and return the downloaded icon filename of the initial url if failed.
 	 */
 	public String processIconHref(String href) {
 		log.trace("Href to evaluate as GoogleMap special = '{}'", href);
-		if (href.startsWith(GOOGLE_URL)) {
+		if (href.startsWith(MAPS_GOOGLE_URL)) {
 			String downloadedHref = getDownloadedHref(href);
-			if (downloadedHref.startsWith(GOOGLE_URL)) {
+			if (downloadedHref.startsWith(MAPS_GOOGLE_URL)) {
 				//Failed to download the icon, return the initial filename
 				return href;
 			} else {
@@ -49,10 +53,10 @@ public class GoogleIconsService {
 	}
 	
 	/**
-	 * @param googleUrl An {@link URL} which starts with {@link #GOOGLE_URL}
+	 * @param googleUrl An {@link URL} which starts with {@link #MAPS_GOOGLE_URL}
 	 * @return If a current zip archive from User contain an icon filename from the given URL that filename will be returned.
 	 * Otherwise it will try to download the icon. If success, the filename of the downloaded icon will be returned,
-	 * if isn't (e.g. no internet connection) it return the initial URL.
+	 * if isn't (e.g. no internet connection) it return the initial Google URL.
 	 */
 	private String getDownloadedHref(String googleUrl) {
 		return multipartFileService.getImagesNamesFromZip().stream()
@@ -66,7 +70,7 @@ public class GoogleIconsService {
 	 * @return Only the icon filename without Internet address.
 	 */
 	private String getIconFilename(String googleHref) {
-		if (googleHref.startsWith(GOOGLE_URL)) {
+		if (googleHref.startsWith(MAPS_GOOGLE_URL)) {
 			return googleHref.substring(googleHref.lastIndexOf("/"));
 		} else {
 			return googleHref;
