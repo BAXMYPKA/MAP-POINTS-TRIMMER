@@ -25,12 +25,10 @@ import java.net.URLConnection;
 public class GoogleIconsService {
 	
 	private final String MAPS_GOOGLE_URL = "http://maps.google.com/";
-	private MultipartFileService multipartFileService;
 	private GoogleIconsCache googleIconsCache;
 	
 	@Autowired
-	public GoogleIconsService(MultipartFileService multipartFileService, GoogleIconsCache googleIconsCache) {
-		this.multipartFileService = multipartFileService;
+	public GoogleIconsService(GoogleIconsCache googleIconsCache) {
 		this.googleIconsCache = googleIconsCache;
 	}
 	
@@ -70,9 +68,9 @@ public class GoogleIconsService {
 	 */
 	private String getDownloadedHref(String googleUrl, MultipartDto multipartDto) {
 		return multipartDto.getImagesNamesFromZip().stream()
-			.filter(s -> s.equals(getIconFilename(googleUrl)))
-			.findFirst()
-			.orElse(downloadIcon(googleUrl));
+				.filter(s -> s.equals(getIconFilename(googleUrl)))
+				.findFirst()
+				.orElseGet(() -> downloadIcon(googleUrl));
 	}
 	
 	/**
@@ -81,7 +79,7 @@ public class GoogleIconsService {
 	 */
 	private String getIconFilename(String googleHref) {
 		if (googleHref.startsWith(MAPS_GOOGLE_URL)) {
-			return googleHref.substring(googleHref.lastIndexOf("/"));
+			return googleHref.substring(googleHref.lastIndexOf("/") + 1);
 		} else {
 			return googleHref;
 		}
@@ -98,8 +96,8 @@ public class GoogleIconsService {
 		} else {
 			try {
 				URLConnection urlConnection = new URL(googleUrl).openConnection();
-				urlConnection.setConnectTimeout(2000);
-				urlConnection.setReadTimeout(2000);
+				urlConnection.setConnectTimeout(1500);
+				urlConnection.setReadTimeout(1500);
 				InputStream is = urlConnection.getInputStream();
 				byte[] iconBytes = is.readAllBytes();
 				if (googleIconsCache.putIcon(getIconFilename(googleUrl), iconBytes)) {
@@ -108,7 +106,7 @@ public class GoogleIconsService {
 					return googleUrl;
 				}
 			} catch (IOException e) {
-				log.trace(e.getMessage(), e);
+				log.debug(e.getMessage(), e);
 				return googleUrl;
 			}
 		}

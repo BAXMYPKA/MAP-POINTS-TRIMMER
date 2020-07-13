@@ -19,7 +19,7 @@ public class GoogleIconsCache {
 	private Map<String, byte[]> googleIconsCache = new ConcurrentHashMap<>();
 	
 	public boolean putIcon(String iconName, byte[] iconBytes) {
-		if (googleIconsCache.size() < MAX_CACHED_ICONS || iconBytes.length == 0 || iconBytes.length > ICON_SIZE_LIMIT) {
+		if (googleIconsCache.size() >= MAX_CACHED_ICONS || iconBytes.length == 0 || iconBytes.length > ICON_SIZE_LIMIT) {
 			return false;
 		} else {
 			googleIconsCache.putIfAbsent(iconName, iconBytes);

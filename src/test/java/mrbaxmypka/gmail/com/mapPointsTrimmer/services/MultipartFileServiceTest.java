@@ -43,7 +43,7 @@ class MultipartFileServiceTest {
 	private static String originalKmlFilename = "MockKml.kml";
 	private static String testKml = "<kml>test</kml>";
 	private static MultipartFile multipartFile;
-	private static Path kmzPath = Paths.get("src/test/java/resources/LocusTestKmz.kmz");
+	private static Path kmzPath = Paths.get("src/test/java/resources/TestKmz.kmz");
 	
 	
 	@BeforeEach
@@ -114,10 +114,10 @@ class MultipartFileServiceTest {
 			throws IOException, ParserConfigurationException, TransformerException, SAXException, ClassNotFoundException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
-				"LocusTestKmz.kmz",
-				"LocusTestKmz.kmz",
+				"TestKmz.kmz",
+				"TestKmz.kmz",
 				null,
-				new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz")));
+				new FileInputStream(new File("src/test/java/resources/TestKmz.kmz")));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setDownloadAs(DownloadAs.KML);
 		
@@ -131,9 +131,9 @@ class MultipartFileServiceTest {
 		
 		//THEN The resulting 'doc.kml' should be the same
 		assertAll(
-				() -> assertTrue(kmlResult.contains("<Style id=\"file:///sdcard/Locus/cache/images/1571471453728\">")),
-				() -> assertTrue(kmlResult.contains("<name>Locus17.04.2020</name>")),
-				() -> assertTrue(kmlResult.contains("<name>2015-04-10 14:27:17</name>"))
+				() -> assertTrue(kmlResult.contains("<Style id=\"transport-bus-local\">")),
+				() -> assertTrue(kmlResult.contains("<name>Test KMZ</name>")),
+				() -> assertTrue(kmlResult.contains("<name>Placemark 1</name>"))
 		);
 	}
 	
@@ -163,12 +163,12 @@ class MultipartFileServiceTest {
 	public void kmz_File_Should_Be_Saved_Temporarily_With_The_Filename_From_Multipart_Then_Deleted()
 			throws IOException, ParserConfigurationException, TransformerException, SAXException {
 		//GIVEN
-		String initialMultipartFileName = "LocusTestKmz.kmz";
+		String initialMultipartFileName = "TestKmz.kmz";
 		multipartFile = new MockMultipartFile(
 				initialMultipartFileName,
 				initialMultipartFileName,
 				null,
-				new FileInputStream(new File("src/test/java/resources/LocusTestKmz.kmz")));
+				new FileInputStream(new File("src/test/java/resources/TestKmz.kmz")));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
