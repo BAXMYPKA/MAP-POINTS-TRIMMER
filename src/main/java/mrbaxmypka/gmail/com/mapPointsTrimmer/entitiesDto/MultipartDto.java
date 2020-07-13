@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
@@ -13,6 +14,10 @@ import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -389,6 +394,18 @@ public class MultipartDto implements Serializable {
 	
 	@NotNull
 	private DownloadAs downloadAs;
+	
+	/**
+	 * The instant cache for a currently processing .zip file from {@link #multipartFile} (if it is) with images names
+	 * from it.
+	 * Can be used to determine the existent icons names.
+	 */
+	private final Set<String> imagesNamesFromZip = new HashSet<>();
+	/**
+	 * Google Map icons added by {@link GoogleIconsService#processIconHref(String, MultipartDto)}  )}
+	 * to be added into the resulting zip archive.
+	 */
+	private Map<String, byte[]> googleIconsToBeZipped = new HashMap<>();
 	
 	/**
 	 * Scale has to be presented as digits divided by a dot and not exceeding the {@link #MAX_SCALE}
