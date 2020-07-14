@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-@NoArgsConstructor
-@Component
+//@NoArgsConstructor
+//@Component
 public class GoogleEarthHandler {
 	
 	private Document document;
@@ -656,6 +656,7 @@ public class GoogleEarthHandler {
 	}
 	
 	//TODO: to download special GE images
+	//TODO: to delete the following
 	
 	/**
 	 * Some programs as Google Earth has special href they internally redirect to their local image store.
@@ -666,9 +667,11 @@ public class GoogleEarthHandler {
 	 * @param href Href or src to be evaluated
 	 * @return If the given href is Google Earth specific and cannot be replaced with a new href or not.
 	 */
+/*
 	boolean isImageHrefChangeable(String href) {
 		log.trace("Href to evaluate as GoogleMap special = '{}'", href);
 		String googleMapSpecialUrl = "http://maps.google.com/";
 		return !href.startsWith(googleMapSpecialUrl);
 	}
+*/
 }

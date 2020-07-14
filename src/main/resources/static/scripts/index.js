@@ -128,6 +128,7 @@
 				}
 			}
 			document.querySelector('.loadForm').submit();
+			document.querySelector(".downloadMessage").hidden = false;
 		});
 		
 		document.getElementById("setPointIconSize").addEventListener('change', ev => {

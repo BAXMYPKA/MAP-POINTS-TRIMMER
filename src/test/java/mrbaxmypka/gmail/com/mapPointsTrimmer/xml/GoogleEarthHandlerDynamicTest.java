@@ -1,6 +1,8 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -100,7 +102,7 @@ public class GoogleEarthHandlerDynamicTest {
 	private MultipartDto multipartDto;
 	private MultipartFile multipartFile;
 	private GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
-	private KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(), googleEarthHandler);
+	private KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(), new GoogleIconsService(new GoogleIconsCache()));
 	private String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
 		"\t<Document>\n" +

@@ -44,7 +44,8 @@ public class GoogleIconsService {
 	 * Otherwise this method will try to download the icon and return the downloaded icon filename of the initial url if failed.
 	 */
 	public String processIconHref(String href, MultipartDto multipartDto) {
-		log.trace("Href to evaluate as GoogleMap special = '{}'", href);
+		log.trace("Href to evaluate as GoogleMap special = '{}'", href == null ? "null" : href);
+		if (href == null) return "";
 		if (href.startsWith(MAPS_GOOGLE_URL)) {
 			String downloadedHref = getDownloadedHref(href, multipartDto);
 			if (downloadedHref.startsWith(MAPS_GOOGLE_URL)) {

@@ -1,7 +1,10 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +27,7 @@ class KmlHandlerTest {
 	private static InputStream inputStream;
 	private static MultipartDto multipartDto;
 	private static MultipartFile multipartFile;
-	private KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(), new GoogleEarthHandler());
+	private KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(), new GoogleIconsService(new GoogleIconsCache()));
 	private static String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
 		"xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -131,12 +134,16 @@ class KmlHandlerTest {
 	}
 	
 	/**
+	 * This test used to be actual up to {@link mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication} v3.0.
+	 * The following versions try to download those type of icons.
+	 * =========================================================
 	 * Google Earth has some special http links to icons which it treats as local.
 	 * So those types of {@literal <href></href>} have not to be changed.
 	 */
+	@Disabled
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body_Except_Special_GoogleEarth_Web_Links()
-		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, ClassNotFoundException {
+		throws IOException, TransformerException, SAXException, ParserConfigurationException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
 			"TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));

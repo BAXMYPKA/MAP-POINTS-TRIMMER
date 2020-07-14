@@ -84,7 +84,7 @@ class GoogleIconsServiceTest {
 	}
 	
 	@Test
-	public void not_Existent_Maps_Google_Icon_Should_Be_Downloaded_And_Cached() {
+	public void not_Existent_Maps_Google_Icon_In_Kmz_Should_Be_Downloaded_And_Cached() {
 		//GIVEN
 		
 		//WHEN
@@ -96,25 +96,6 @@ class GoogleIconsServiceTest {
 		assertTrue(googleIconsCache.containsIconName("parks.png"));
 		assertNotNull(googleIconsCache.getIcon("parks.png"));
 		assertTrue(googleIconsCache.getIcon("parks.png").length > 1024);
+		assertEquals(1, multipartDto.getGoogleIconsToBeZipped().size());
 	}
-	
-	@Test
-	public void new_Kmz_Should_Be_Created_For_Downloaded_Icons_From_Kml() throws IOException, TransformerException, SAXException, ParserConfigurationException {
-		//GIVEN no mocks
-		googleIconsCache = new GoogleIconsCache();
-		HtmlHandler htmlHandler = new HtmlHandler();
-		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
-		KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleEarthHandler);
-		MultipartFileService multipartFileService = new MultipartFileService(kmlHandler, null);
-		googleIconsService = new GoogleIconsService(googleIconsCache);
-		multipartDto = new MultipartDto(new MockMultipartFile(
-				"Test.kml", "Test.kml", null, Files.readAllBytes(testKmz)));
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
-		
-		//WHEN
-		Path tempKmzPath = multipartFileService.processMultipartDto(multipartDto, null);
-		
-	}
-	
-	//TODO: check timeouts for downloading
 }

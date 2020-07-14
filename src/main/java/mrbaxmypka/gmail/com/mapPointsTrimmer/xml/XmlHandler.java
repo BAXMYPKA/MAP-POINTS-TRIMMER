@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -32,14 +33,14 @@ import java.nio.charset.StandardCharsets;
 public abstract class XmlHandler {
 	
 	@Getter(value = AccessLevel.PROTECTED)
-	protected HtmlHandler htmlHandler;
-	
-	protected GoogleEarthHandler googleEarthHandler;
+	private HtmlHandler htmlHandler;
+	@Getter(value = AccessLevel.PROTECTED)
+	private GoogleIconsService googleIconsService;
 	
 	@Autowired
-	public XmlHandler(HtmlHandler htmlHandler, GoogleEarthHandler googleEarthHandler) {
+	public XmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService) {
 		this.htmlHandler = htmlHandler;
-		this.googleEarthHandler = googleEarthHandler;
+		this.googleIconsService = googleIconsService;
 	}
 	
 	/**
@@ -47,8 +48,8 @@ public abstract class XmlHandler {
 	 * {@link Node#getLocalName()}!
 	 *
 	 * @param inputStream  An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartDto}
-	 * @param multipartDto
-	 * @return
+	 * @param multipartDto The main object to get data from.
+	 * @return A fully processed xml string.
 	 */
 	public abstract String processXml(InputStream inputStream, MultipartDto multipartDto)
 		throws IOException, ParserConfigurationException, SAXException, TransformerException;

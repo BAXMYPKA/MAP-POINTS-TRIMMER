@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.*;
@@ -27,8 +28,8 @@ public class KmlHandler extends XmlHandler {
 	
 	private Document document;
 	
-	public KmlHandler(HtmlHandler htmlHandler, GoogleEarthHandler googleEarthHandler) {
-		super(htmlHandler, googleEarthHandler);
+	public KmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService) {
+		super(htmlHandler, googleIconsService);
 	}
 	
 	/**
@@ -37,18 +38,17 @@ public class KmlHandler extends XmlHandler {
 	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
 	 */
 	public String processXml(InputStream kmlInputStream, MultipartDto multipartDto)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+			throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		log.info("The given KML is being processed...");
 		document = getDocument(kmlInputStream);
 		Element documentRoot = document.getDocumentElement();
 		//Processing Google Earth specific options
 		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
 		googleEarthHandler.processXml(document, multipartDto);
-		
-		if (multipartDto.getPath() != null) {
-			log.info("Setting the new path to images...");
-			processHref(documentRoot, multipartDto);
-		}
+
+		log.info("Setting the new path to images...");
+		processHref(documentRoot, multipartDto);
+
 		log.info("Descriptions from KML are being processed...");
 		//Processing the further text options regarding to inner CDATA or plain text from <description>s
 		processDescriptionsTexts(documentRoot, multipartDto);
@@ -76,10 +76,20 @@ public class KmlHandler extends XmlHandler {
 		NodeList hrefs = documentRoot.getElementsByTagName("href");
 		for (int i = 0; i < hrefs.getLength(); i++) {
 			Node node = hrefs.item(i);
-			String oldHrefWithFilename = node.getTextContent();
-			if (googleEarthHandler.isImageHrefChangeable(oldHrefWithFilename)) {
+			String currentHrefWithFilename = node.getTextContent();
+			String processedHrefWithFilename = getGoogleIconsService().processIconHref(currentHrefWithFilename, multipartDto);
+			if (multipartDto.getPath() != null) {
+				//Full processing with a new href to image
 				String newHrefWithOldFilename = getHtmlHandler().getNewHrefWithOldFilename(
-					oldHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
+						processedHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
+				node.setTextContent(newHrefWithOldFilename);
+				log.trace("<href> text has been replaced with '{}'", newHrefWithOldFilename);
+			} else if (!currentHrefWithFilename.equals(processedHrefWithFilename)) {
+				//User hasn't defined a custom path to images
+				//Existing href was a GoogleMaps special url and has been downloaded locally
+				//It has to be zipped into the default folder
+				String newHrefWithOldFilename = getHtmlHandler().getNewHrefWithOldFilename(
+						processedHrefWithFilename, PathTypes.RELATIVE, "files/");
 				node.setTextContent(newHrefWithOldFilename);
 				log.trace("<href> text has been replaced with '{}'", newHrefWithOldFilename);
 			}
@@ -103,7 +113,7 @@ public class KmlHandler extends XmlHandler {
 				log.trace("Description has been set as blank string");
 			} else {
 				//Obtain an inner CDATA text to treat as HTML elements or plain text
-				String processedHtmlCdata = htmlHandler.processDescriptionText(textContent, multipartDto);
+				String processedHtmlCdata = getHtmlHandler().processDescriptionText(textContent, multipartDto);
 				processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartDto);
 				CDATASection cdataSection = document.createCDATASection(processedHtmlCdata);
 				descriptionNode.setTextContent("");
@@ -142,7 +152,7 @@ public class KmlHandler extends XmlHandler {
 					continue;
 				if (placemarkChild.getLocalName().equals("description")) {
 					descriptionText = placemarkChild.getTextContent();
-					imgSrcFromDescription = htmlHandler.getAllImagesFromDescription(descriptionText);
+					imgSrcFromDescription = getHtmlHandler().getAllImagesFromDescription(descriptionText);
 				} else if (placemarkChild.getLocalName().equals("ExtendedData")) {
 					
 					//<ExtendedData> is the parent for every <attachment>
@@ -150,7 +160,7 @@ public class KmlHandler extends XmlHandler {
 					for (int k = 0; k < extendedDataChildNodes.getLength(); k++) {
 						Node extendedDataChild = extendedDataChildNodes.item(k);
 						if (extendedDataChild.getNodeType() != Node.ELEMENT_NODE ||
-							extendedDataChild.getLocalName() == null) continue;
+								extendedDataChild.getLocalName() == null) continue;
 						if (extendedDataChild.getLocalName().equals("attachment")) {
 							attachments.add(extendedDataChild);
 						}
@@ -189,7 +199,7 @@ public class KmlHandler extends XmlHandler {
 	 *                              presented.
 	 */
 	private void processImagesFromDescription(
-		List<String> imgSrcFromDescription, List<Node> attachmentNodes, Node placemark, MultipartDto multipartDto) {
+			List<String> imgSrcFromDescription, List<Node> attachmentNodes, Node placemark, MultipartDto multipartDto) {
 		log.trace("'{}' images for '{}' attachments are being processed", imgSrcFromDescription.size(), attachmentNodes.size());
 		//No images from description to insert as attachments
 		if (imgSrcFromDescription.isEmpty()) {
@@ -206,25 +216,25 @@ public class KmlHandler extends XmlHandler {
 		if (!attachmentNodes.isEmpty()) {
 			//addLcPrefixForLocusmapNamespace(attachmentNodes);
 			attachmentNodes = attachmentNodes.stream()
-				.filter(attachment -> attachment.getPrefix().equals("lc"))
-				.peek(attachment -> {
-					String attachmentFilename = htmlHandler.getFileName(attachment.getTextContent());
-					//If <attachment> has same name as any img from description, this attachment is being set same
-					// src="" from src List
-					Iterator<String> iterator = locusAttachmentsHref.iterator();
-					while (iterator.hasNext()) {
-						String imgSrc = iterator.next();
-						if (htmlHandler.getFileName(imgSrc).equals(attachmentFilename)) {
-							
-							attachment.setTextContent(imgSrc);
-							//And that src is removing to determine if description has more src than <ExtendedData>
-							//has <lc:attachment>'s
-							iterator.remove();
-							break;
+					.filter(attachment -> attachment.getPrefix().equals("lc"))
+					.peek(attachment -> {
+						String attachmentFilename = getHtmlHandler().getFileName(attachment.getTextContent());
+						//If <attachment> has same name as any img from description, this attachment is being set same
+						// src="" from src List
+						Iterator<String> iterator = locusAttachmentsHref.iterator();
+						while (iterator.hasNext()) {
+							String imgSrc = iterator.next();
+							if (getHtmlHandler().getFileName(imgSrc).equals(attachmentFilename)) {
+								
+								attachment.setTextContent(imgSrc);
+								//And that src is removing to determine if description has more src than <ExtendedData>
+								//has <lc:attachment>'s
+								iterator.remove();
+								break;
+							}
 						}
-					}
-				})
-				.collect(Collectors.toList());
+					})
+					.collect(Collectors.toList());
 			//If not all the images from Description are attached we create and add new <lc:attachment>'s
 			if (!locusAttachmentsHref.isEmpty()) {
 				List<Element> newAttachments = getImagesSrcAsLcAttachments(locusAttachmentsHref);
@@ -244,13 +254,13 @@ public class KmlHandler extends XmlHandler {
 	
 	private List<String> getLocusSpecificAttachmentsHref(List<String> imagesToAttach, MultipartDto multipartDto) {
 		imagesToAttach = imagesToAttach.stream()
-			.map(imgSrc -> {
-				//Locus lc:attachments accepts only RELATIVE type of path
-				//So remake path to Locus specific absolute path without "file:///"
-				return getHtmlHandler().getLocusAttachmentAbsoluteHref(imgSrc, multipartDto);
-			})
-			.filter(imgSrc -> !imgSrc.isBlank())
-			.collect(Collectors.toList());
+				.map(imgSrc -> {
+					//Locus lc:attachments accepts only RELATIVE type of path
+					//So remake path to Locus specific absolute path without "file:///"
+					return getHtmlHandler().getLocusAttachmentAbsoluteHref(imgSrc, multipartDto);
+				})
+				.filter(imgSrc -> !imgSrc.isBlank())
+				.collect(Collectors.toList());
 		log.trace("{} processed 'src' for Locus <attachment> will be returned", imagesToAttach.size());
 		return imagesToAttach;
 	}

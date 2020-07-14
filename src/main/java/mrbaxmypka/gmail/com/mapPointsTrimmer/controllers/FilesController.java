@@ -40,7 +40,7 @@ public class FilesController extends AbstractController {
 				 produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
 	public ResponseEntity<FileSystemResource> postKml(
 		@Valid @ModelAttribute MultipartDto file, Locale locale)
-		throws IOException, SAXException, ParserConfigurationException, TransformerException, ClassNotFoundException {
+		throws IOException, SAXException, ParserConfigurationException, TransformerException {
 		
 		log.info( "{} file has been received as: {}.", MultipartDto.class.getSimpleName(), file);
 		
