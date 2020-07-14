@@ -2,9 +2,9 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-@NoArgsConstructor
 @Component
 public abstract class XmlHandler {
 	
@@ -36,11 +35,14 @@ public abstract class XmlHandler {
 	private HtmlHandler htmlHandler;
 	@Getter(value = AccessLevel.PROTECTED)
 	private GoogleIconsService googleIconsService;
+	@Getter(value = AccessLevel.PROTECTED)
+	private FileService fileService;
 	
 	@Autowired
-	public XmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService) {
+	public XmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService) {
 		this.htmlHandler = htmlHandler;
 		this.googleIconsService = googleIconsService;
+		this.fileService = fileService;
 	}
 	
 	/**

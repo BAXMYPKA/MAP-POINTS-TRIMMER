@@ -36,6 +36,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class MultipartFileServiceTest {
 	
 	private KmlHandler mockKmlHandler;
+	private FileService mockFileService;
+	private GoogleIconsCache googleIconsCache;
+	private FileService fileService;
+	private HtmlHandler htmlHandler;
 	private MultipartFileService multipartFileService;
 	private MessageSource mockMessageSource;
 	private MultipartDto multipartDto;
@@ -56,8 +60,15 @@ class MultipartFileServiceTest {
 		mockKmlHandler = Mockito.mock(KmlHandler.class);
 		Mockito.when(mockKmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartDto.class))).thenReturn(testKml);
 		
-		multipartFileService = new MultipartFileService(mockKmlHandler, mockMessageSource);
-		;
+		mockFileService = Mockito.mock(FileService.class);
+		
+		multipartFileService = new MultipartFileService(mockKmlHandler, mockFileService, mockMessageSource);
+		
+		googleIconsCache = new GoogleIconsCache();
+		
+		fileService = new FileService();
+		
+		htmlHandler = new HtmlHandler(fileService);
 		
 		multipartFile = new MockMultipartFile(originalKmlFilename, originalKmlFilename, null, testKml.getBytes());
 		
@@ -115,7 +126,7 @@ class MultipartFileServiceTest {
 	 */
 	@Test
 	public void downloadAsKml_From_Kmz_File_Should_Be_Extracted_And_Saved_as_Kml()
-			throws IOException, ParserConfigurationException, TransformerException, SAXException, ClassNotFoundException {
+			throws IOException, ParserConfigurationException, TransformerException, SAXException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
 				"TestKmz.kmz",
@@ -125,8 +136,9 @@ class MultipartFileServiceTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setDownloadAs(DownloadAs.KML);
 		
-		mockKmlHandler = new KmlHandler(new HtmlHandler(), new GoogleIconsService(new GoogleIconsCache()));
-		multipartFileService = new MultipartFileService(mockKmlHandler, mockMessageSource);
+		KmlHandler kmlHandler = new KmlHandler(
+				new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService);
+		multipartFileService = new MultipartFileService(kmlHandler, fileService, mockMessageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
 		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
@@ -147,8 +159,8 @@ class MultipartFileServiceTest {
 		//GIVEN If while uploading KML set "downloadAs KMZ"
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
-		mockKmlHandler = new KmlHandler(new HtmlHandler(), new GoogleIconsService(new GoogleIconsCache()));
-		multipartFileService = new MultipartFileService(mockKmlHandler, mockMessageSource);
+		KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService);
+		multipartFileService = new MultipartFileService(kmlHandler, fileService, mockMessageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
 		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
@@ -190,7 +202,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kml_In_Kmz_MultipartFile_Should_Be_Returned_Same()
-			throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException {
 		//GIVEN download as "KMZ"
 		multipartFile = new MockMultipartFile(
 				"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(testKmz));
@@ -217,7 +229,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kmz_MultipartFile_Should_Contain_All_The_Initial_Files()
-			throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException {
 		//GIVEN when "download as KMZ" is selected all the initial files (images) from "LocusTestKmz.kmz"
 		// should be preserved
 		multipartFile = new MockMultipartFile(
@@ -337,7 +349,10 @@ class MultipartFileServiceTest {
 				"Test.kml", "Test.kml", null, kmlWithIcons.getBytes(StandardCharsets.UTF_8)));
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
-		multipartFileService = new MultipartFileService(new KmlHandler(new HtmlHandler(), new GoogleIconsService(new GoogleIconsCache())), null);
+		multipartFileService = new MultipartFileService(
+				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
+				fileService,
+				null);
 		
 		//WHEN
 		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
@@ -374,7 +389,10 @@ class MultipartFileServiceTest {
 		multipartDto.setPath("C:\\images\\");
 		multipartDto.setPathType(PathTypes.ABSOLUTE.getType());
 		
-		multipartFileService = new MultipartFileService(new KmlHandler(new HtmlHandler(), new GoogleIconsService(new GoogleIconsCache())), null);
+		multipartFileService = new MultipartFileService(
+				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
+				fileService,
+				null);
 		
 		//WHEN
 		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
@@ -394,8 +412,8 @@ class MultipartFileServiceTest {
 		});
 		
 		assertTrue(zipEntriesNames.contains("doc.kml"));
-		assertTrue(zipEntriesNames.contains("C:/images/parks.png"));
-		assertTrue(zipEntriesNames.contains("C:images//cabs.png"));
+		assertTrue(zipEntriesNames.contains("files/parks.png"));
+		assertTrue(zipEntriesNames.contains("files/cabs.png"));
 	}
 	
 }

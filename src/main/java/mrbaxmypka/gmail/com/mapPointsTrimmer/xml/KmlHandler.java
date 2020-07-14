@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import org.springframework.stereotype.Component;
@@ -28,8 +29,8 @@ public class KmlHandler extends XmlHandler {
 	
 	private Document document;
 	
-	public KmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService) {
-		super(htmlHandler, googleIconsService);
+	public KmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService) {
+		super(htmlHandler, googleIconsService, fileService);
 	}
 	
 	/**
@@ -76,20 +77,20 @@ public class KmlHandler extends XmlHandler {
 		NodeList hrefs = documentRoot.getElementsByTagName("href");
 		for (int i = 0; i < hrefs.getLength(); i++) {
 			Node node = hrefs.item(i);
-			String currentHrefWithFilename = node.getTextContent();
-			String processedHrefWithFilename = getGoogleIconsService().processIconHref(currentHrefWithFilename, multipartDto);
+			String currentIconHrefWithFilename = node.getTextContent();
+			String processedIconHrefWithFilename = getGoogleIconsService().processIconHref(currentIconHrefWithFilename, multipartDto);
 			if (multipartDto.getPath() != null) {
 				//Full processing with a new href to image
 				String newHrefWithOldFilename = getHtmlHandler().getNewHrefWithOldFilename(
-						processedHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
+						processedIconHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
 				node.setTextContent(newHrefWithOldFilename);
 				log.trace("<href> text has been replaced with '{}'", newHrefWithOldFilename);
-			} else if (!currentHrefWithFilename.equals(processedHrefWithFilename)) {
+			} else if (!currentIconHrefWithFilename.equals(processedIconHrefWithFilename)) {
 				//User hasn't defined a custom path to images
 				//Existing href was a GoogleMaps special url and has been downloaded locally
 				//It has to be zipped into the default folder
 				String newHrefWithOldFilename = getHtmlHandler().getNewHrefWithOldFilename(
-						processedHrefWithFilename, PathTypes.RELATIVE, "files/");
+						processedIconHrefWithFilename, PathTypes.RELATIVE, "files/");
 				node.setTextContent(newHrefWithOldFilename);
 				log.trace("<href> text has been replaced with '{}'", newHrefWithOldFilename);
 			}
@@ -218,13 +219,13 @@ public class KmlHandler extends XmlHandler {
 			attachmentNodes = attachmentNodes.stream()
 					.filter(attachment -> attachment.getPrefix().equals("lc"))
 					.peek(attachment -> {
-						String attachmentFilename = getHtmlHandler().getFileName(attachment.getTextContent());
+						String attachmentFilename = getFileService().getFileName(attachment.getTextContent());
 						//If <attachment> has same name as any img from description, this attachment is being set same
 						// src="" from src List
 						Iterator<String> iterator = locusAttachmentsHref.iterator();
 						while (iterator.hasNext()) {
 							String imgSrc = iterator.next();
-							if (getHtmlHandler().getFileName(imgSrc).equals(attachmentFilename)) {
+							if (getFileService().getFileName(imgSrc).equals(attachmentFilename)) {
 								
 								attachment.setTextContent(imgSrc);
 								//And that src is removing to determine if description has more src than <ExtendedData>

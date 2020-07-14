@@ -1,6 +1,5 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
@@ -20,12 +19,11 @@ import java.net.URLConnection;
  * or replace this href with the previously downloaded icon (if any).
  */
 @Slf4j
-@NoArgsConstructor
 @Component
 public class GoogleIconsService {
 	
 	private final String MAPS_GOOGLE_URL = "http://maps.google.com/";
-	private GoogleIconsCache googleIconsCache;
+	private final GoogleIconsCache googleIconsCache;
 	
 	@Autowired
 	public GoogleIconsService(GoogleIconsCache googleIconsCache) {
@@ -51,8 +49,11 @@ public class GoogleIconsService {
 			if (downloadedHref.startsWith(MAPS_GOOGLE_URL)) {
 				//Failed to download the icon, return the initial filename
 				return href;
+			} else if (!googleIconsCache.containsIconName(downloadedHref)) {
+				//The icon with the name is already presented in a current zip and hasn't been downloaded
+				return downloadedHref;
 			} else {
-				//Icon has been downloaded to GoogleIconsCache
+				//Icon hasn't been presented in a current zip and has been downloaded to GoogleIconsCache as a new one
 				multipartDto.getGoogleIconsToBeZipped().put(downloadedHref, googleIconsCache.getIcon(downloadedHref));
 				return downloadedHref;
 			}

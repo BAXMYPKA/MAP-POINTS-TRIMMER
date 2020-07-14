@@ -404,6 +404,8 @@ public class MultipartDto implements Serializable {
 	/**
 	 * Google Map icons added by {@link GoogleIconsService#processIconHref(String, MultipartDto)}  )}
 	 * to be added into the resulting zip archive.
+	 * If a byte array value is null it means the icon with the key name is presented within a given archive from
+	 * {@link #getMultipartFile()}
 	 */
 	private Map<String, byte[]> googleIconsToBeZipped = new HashMap<>();
 	

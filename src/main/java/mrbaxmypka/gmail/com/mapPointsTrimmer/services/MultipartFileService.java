@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -34,6 +35,7 @@ public class MultipartFileService {
 	private final Locale defaultLocale = Locale.ENGLISH;
 	private final MessageSource messageSource;
 	private final KmlHandler kmlHandler;
+	private final FileService fileService;
 	/**
 	 * The temp file which is stored in a system temp directory
 	 */
@@ -45,8 +47,9 @@ public class MultipartFileService {
 	private String xmlFileName = "";
 	
 	@Autowired
-	public MultipartFileService(KmlHandler kmlHandler, MessageSource messageSource) {
+	public MultipartFileService(KmlHandler kmlHandler, FileService fileService, MessageSource messageSource) {
 		this.kmlHandler = kmlHandler;
+		this.fileService = fileService;
 		this.messageSource = messageSource;
 	}
 	
@@ -102,7 +105,7 @@ public class MultipartFileService {
 					buffer.writeBytes(zis.readAllBytes());
 					log.info("File '{}' has been extracted from zip and will be returned as InputStream", xmlFileName);
 				} else {
-					multipartDto.getImagesNamesFromZip().add(zipEntry.getName());
+					multipartDto.getImagesNamesFromZip().add(fileService.getFileName(zipEntry.getName()));
 				}
 			}
 		}
@@ -113,56 +116,6 @@ public class MultipartFileService {
 					new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
 		}
 	}
-	
-	/**
-	 * https://stackoverflow.com/a/43836969/11592202
-	 * Relocates all the internal files from a given .kmz or .gpz from a User to the temp directory as a new kmz
-	 * with replacing an old inner .kml or .gpx with the new one.
-	 *
-	 * @param processedXml     A processed xml String to be written to the resulting file.
-	 * @param xmlFileExtension The extension of a future xml file.
-	 * @param multipartDto
-	 * @param locale           To return a locale-oriented messages
-	 * @return {@link Path} to a temp file to be returned to a User.
-	 * @throws IOException With the localized message to be returned to a User if the temp file writing is failed.
-	 */
-/*
-	private void processTempZip(
-		String processedXml, DownloadAs xmlFileExtension, MultipartDto multipartDto, Locale locale) throws IOException {
-		
-		String originalZipFilename = multipartDto.getMultipartFile().getOriginalFilename();
-		
-		//It is important to save tempFile as the field to get an opportunity to delete it case of app crashing
-		tempFile = Paths.get(tempDir.concat(originalZipFilename));
-		log.info("To be downloaded as '{}' the zip file '{}' has been prepared to be written to the temp dir",
-			xmlFileExtension, tempFile);
-		ZipInputStream zis = new ZipInputStream(multipartDto.getMultipartFile().getInputStream());
-		ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
-		ZipEntry zipInEntry;
-		while ((zipInEntry = zis.getNextEntry()) != null) {
-			
-			ZipEntry zipOutEntry = new ZipEntry(zipInEntry.getName());
-			zipOutEntry.setComment(zipInEntry.getComment());
-			zipOutEntry.setExtra(zipInEntry.getExtra());
-			
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			
-			//Replace existing file with the new one
-			if (xmlFileExtension.hasSameExtension(zipInEntry.getName())) {
-				zos.putNextEntry(zipOutEntry);
-				buffer.writeBytes(processedXml.getBytes(StandardCharsets.UTF_8));
-			} else {
-				zos.putNextEntry(zipOutEntry);
-				buffer.writeBytes(zis.readAllBytes());
-			}
-			zos.write(buffer.toByteArray());
-			zos.closeEntry();
-		}
-		zis.close();
-		zos.close();
-		log.info("Temp zip file '{}' has been written to the temp dir", tempFile);
-	}
-*/
 	
 	/**
 	 * https://stackoverflow.com/a/43836969/11592202
@@ -193,9 +146,7 @@ public class MultipartFileService {
 			createNewZip(zos, processedXml, multipartDto);
 		}
 		//Write downloaded icons if there are
-		String imagesFolderName = multipartDto.getPath() != null ? multipartDto.getPath() :
-				DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
-//		String imagesFolderName = DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
+		String imagesFolderName = DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
 		for (Map.Entry<String, byte[]> iconEntry : multipartDto.getGoogleIconsToBeZipped().entrySet()) {
 			ZipEntry zipEntry = new ZipEntry(imagesFolderName + iconEntry.getKey());
 			zos.putNextEntry(zipEntry);
@@ -279,22 +230,6 @@ public class MultipartFileService {
 			log.info("Temp file will be written as KMZ");
 			processTempZip(processedXml, multipartDto, locale);
 		}
-/*
-		if (DownloadAs.KML.hasSameExtension(originalFilename) ||
-			(DownloadAs.KMZ.hasSameExtension(originalFilename) && multipartDto.getDownloadAs().equals(DownloadAs.KML))) {
-			//Write .kml file
-			log.info("Temp file will be written to the temp directory as '{}' before returning as it is.", xmlFileName);
-			tempFile = Paths.get(tempDir.concat(xmlFileName));
-			BufferedWriter bufferedWriter = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8);
-			bufferedWriter.write(processedXml);
-			bufferedWriter.close();
-			log.info("Temp file has been written as '{}'", tempFile);
-		} else if (DownloadAs.KMZ.hasSameExtension(originalFilename) && DownloadAs.KMZ.equals(multipartDto.getDownloadAs())) {
-			//Write .kmz file
-			log.info("Temp file will be written as KMZ");
-			processTempZip(processedXml, DownloadAs.KML, multipartDto, locale);
-		}
-*/
 		return tempFile;
 	}
 	

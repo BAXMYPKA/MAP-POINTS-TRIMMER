@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HtmlHandlerTest {
 	
-	static HtmlHandler htmlHandler = new HtmlHandler();
+	static HtmlHandler htmlHandler = new HtmlHandler(new FileService());
 	static String html = "<!-- desc_gen:start -->\n" +
 		"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
 		"<!-- desc_user:start -->\n" +

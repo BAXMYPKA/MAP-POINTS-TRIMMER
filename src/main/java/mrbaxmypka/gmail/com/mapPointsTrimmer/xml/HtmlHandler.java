@@ -1,8 +1,8 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.jsoup.Jsoup;
@@ -13,6 +13,7 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.jsoup.select.NodeFilter;
 import org.jsoup.select.NodeVisitor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +27,15 @@ import java.util.stream.Collectors;
  * HTML processing class based on {@link org.jsoup.Jsoup} library to parse only CDATA as HTML.
  */
 @Slf4j
-@NoArgsConstructor
 @Component
 public class HtmlHandler {
+	
+	private final FileService fileService;
+	
+	@Autowired
+	public HtmlHandler(FileService fileService) {
+		this.fileService = fileService;
+	}
 	
 	/**
 	 * @param description  Receives inner text from {@literal <description>...</description>} which in fact is the
@@ -132,8 +139,8 @@ public class HtmlHandler {
 		oldHrefWithFilename = oldHrefWithFilename == null || oldHrefWithFilename.isEmpty() ? "" : oldHrefWithFilename;
 		log.trace("Old href with the filename is {}", oldHrefWithFilename);
 		//User may want to erase <href>
-		if (newHrefWithoutFilename.isBlank()) {
-			log.trace("New href is blank");
+		if (newHrefWithoutFilename == null || newHrefWithoutFilename.isBlank()) {
+			log.trace("New href is null or blank");
 			return "";
 		}
 		String newHrefWithOldFilename = "";
@@ -154,7 +161,7 @@ public class HtmlHandler {
 	
 	private String getNewRelativeHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
 		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
-		String filename = getFileName(oldHrefWithFilename);
+		String filename = fileService.getFileName(oldHrefWithFilename);
 		log.trace("The new relative href will be returned as '{}'", newHrefWithoutFilename.concat(filename));
 		return newHrefWithoutFilename.concat(filename);
 	}
@@ -185,7 +192,7 @@ public class HtmlHandler {
 	private String getNewAbsoluteHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
 		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
 		newHrefWithoutFilename = newHrefWithoutFilename.replaceAll("\\\\", "/");
-		String filename = getFileName(oldHrefWithFilename);
+		String filename = fileService.getFileName(oldHrefWithFilename);
 		String newAbsoluteHref = "file:///" + newHrefWithoutFilename + filename;
 		log.trace("Absolute type href will be returned as '{}'", newAbsoluteHref);
 		return newAbsoluteHref;
@@ -193,30 +200,10 @@ public class HtmlHandler {
 	
 	private String getNewWebHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
 		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
-		String filename = getFileName(oldHrefWithFilename);
+		String filename = fileService.getFileName(oldHrefWithFilename);
 		String newWebHref = newHrefWithoutFilename + filename;
 		log.trace("Web type href will be returned as '{}'", newWebHref);
 		return newWebHref;
-	}
-	
-	/**
-	 * Extract full filename from a given img[src] or a[href].
-	 * E.g. 'files:/image.png' or 'C:\images\image.jpg' will be returned as 'image.png', and 'image.jpg' will be returned as it.
-	 *
-	 * @param oldHrefWithFilename Href or src to the image
-	 * @return The name of the file from the given src or empty string if nothing found.
-	 */
-	String getFileName(String oldHrefWithFilename) {
-//		if (!oldHrefWithFilename.contains(".") ||
-//			(!oldHrefWithFilename.contains("/") && !oldHrefWithFilename.contains("\\"))) return "";
-		if (!oldHrefWithFilename.matches("[.\\S]{1,100}\\.[a-zA-Z1-9]{3,5}")) return "";
-		//If index of '/' or '\' return -1 the 'oldHrefWithFilename' consist of only the filename without href
-		int lastIndexOFSlash = oldHrefWithFilename.lastIndexOf("/") != -1 ?
-				oldHrefWithFilename.lastIndexOf("/") :
-				oldHrefWithFilename.lastIndexOf("\\");
-		String filename = oldHrefWithFilename.substring(lastIndexOFSlash + 1);
-		log.trace("Filename as '{}' will be returned", filename);
-		return filename.isBlank() ? "" : filename;
 	}
 	
 	private String trimNewHrefWithoutFilename(String newHrefWithoutFilename) {
@@ -578,7 +565,7 @@ public class HtmlHandler {
 		
 		Set<String> fileNames = new HashSet<>(3);
 		imgElements.forEach(img -> {
-			String fileName = getFileName(img.attr("src"));
+			String fileName = fileService.getFileName(img.attr("src"));
 			if (fileNames.contains(fileName)) {
 				if (img.hasParent() && img.parent().tagName().equals("a")) {
 					img.parent().remove();

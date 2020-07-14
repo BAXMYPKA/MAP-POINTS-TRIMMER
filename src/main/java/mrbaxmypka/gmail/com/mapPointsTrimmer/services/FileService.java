@@ -73,4 +73,27 @@ public class FileService {
 			log.debug("Deleting the temp log file failed and has caused an exception:\n", e);
 		}
 	}
+	
+	/**
+	 * Extract the exact filename from a given path or http link as img[src] or a[href].
+	 * E.g. 'files:/image.png' or 'C:\images\image.jpg' will be returned as 'image.png', and 'image.jpg' will be returned as it.
+	 *
+	 * @param pathWithFilename Href or src to the image
+	 * @return The name of the file from the given src or empty string if nothing found.
+	 */
+	public String getFileName(String pathWithFilename) {
+/*
+		if (!oldHrefWithFilename.contains(".") ||
+			(!oldHrefWithFilename.contains("/") && !oldHrefWithFilename.contains("\\"))) return "";
+*/
+		if (!pathWithFilename.matches("[.\\S]{1,100}\\.[a-zA-Z1-9]{3,5}")) return "";
+		//If index of '/' or '\' return -1 the 'oldHrefWithFilename' consist of only the filename without href
+		int lastIndexOFSlash = pathWithFilename.lastIndexOf("/") != -1 ?
+				pathWithFilename.lastIndexOf("/") :
+				pathWithFilename.lastIndexOf("\\");
+		String filename = pathWithFilename.substring(lastIndexOFSlash + 1);
+		log.trace("Filename as '{}' will be returned", filename);
+		return filename.isBlank() ? "" : filename;
+	}
+	
 }

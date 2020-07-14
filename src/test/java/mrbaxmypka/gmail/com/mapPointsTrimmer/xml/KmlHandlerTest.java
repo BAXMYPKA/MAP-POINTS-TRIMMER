@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
@@ -27,7 +28,11 @@ class KmlHandlerTest {
 	private static InputStream inputStream;
 	private static MultipartDto multipartDto;
 	private static MultipartFile multipartFile;
-	private KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(), new GoogleIconsService(new GoogleIconsCache()));
+	private static FileService fileService = new FileService();
+	private static GoogleIconsCache googleIconsCache = new GoogleIconsCache();
+	private static HtmlHandler htmlHandler = new HtmlHandler(fileService);
+	private static GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
+	private KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
 	private static String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
 		"xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +

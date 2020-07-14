@@ -31,11 +31,13 @@ class GoogleIconsServiceTest {
 	private GoogleIconsService googleIconsService;
 	private MultipartFileService mockMultipartFileService;
 	private GoogleIconsCache googleIconsCache;
+	private FileService fileService;
 	private Path testKmz = Paths.get("src/test/java/resources/TestKmz.kmz");
 	
 	@BeforeEach
 	public void beforeEach() {
 		googleIconsCache = new GoogleIconsCache();
+		fileService = new FileService();
 		mockMultipartFileService = Mockito.mock(MultipartFileService.class);
 		googleIconsService = new GoogleIconsService(googleIconsCache);
 		multipartDto = new MultipartDto(new MockMultipartFile("Test.kml", "Test.kml", null, new byte[]{}));
