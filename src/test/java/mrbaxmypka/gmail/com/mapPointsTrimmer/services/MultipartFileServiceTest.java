@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.junit.jupiter.api.AfterEach;
@@ -303,8 +304,9 @@ class MultipartFileServiceTest {
 	 * Also this test should be the integration test but...
 	 */
 	@Test
-	public void additional_GoogleMaps_Icon_Should_Be_Downloaded_And_Added_Into_Kmz() throws ParserConfigurationException, TransformerException, SAXException, IOException {
-		//GIVEN
+	public void kml_With_Additional_GoogleMaps_Icons_Should_Be_Downloaded_And_Added_Into_Kmz()
+			throws ParserConfigurationException, TransformerException, SAXException, IOException {
+		//GIVEN .kml with Google Maps icons hrefs
 		String kmlWithIcons = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 				"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
 				"<Document>\n" +
@@ -357,4 +359,43 @@ class MultipartFileServiceTest {
 		assertTrue(zipEntriesNames.contains("files/parks.png"));
 		assertTrue(zipEntriesNames.contains("files/cabs.png"));
 	}
+	
+	/**
+	 * WARNING! This test requires fast Internet connection otherwise it will fail.
+	 * Also this test should be the integration test but...
+	 */
+	@Test
+	public void kmz_With_Additional_GoogleMaps_Icons_Should_Be_Downloaded_And_Added_Into_Kmz()
+			throws ParserConfigurationException, TransformerException, SAXException, IOException {
+		//GIVEN .kml with Google Maps icons hrefs
+		multipartDto = new MultipartDto(new MockMultipartFile(
+				"Test.kmz", "Test.kmz", null, Files.newInputStream(testKmz)));
+		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartDto.setPath("C:\\images\\");
+		multipartDto.setPathType(PathTypes.ABSOLUTE.getType());
+		
+		multipartFileService = new MultipartFileService(new KmlHandler(new HtmlHandler(), new GoogleIconsService(new GoogleIconsCache())), null);
+		
+		//WHEN
+		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		
+		//THEN
+		assertEquals("Test.kmz", tmpFile.getFileName().toString());
+		
+		List<String> zipEntriesNames = new ArrayList<>(3);
+		
+		assertDoesNotThrow(() -> {
+			ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
+			ZipEntry zipEntry;
+			while ((zipEntry = zis.getNextEntry()) != null) {
+				zipEntriesNames.add(zipEntry.getName());
+				System.out.println(zipEntry.getName());
+			}
+		});
+		
+		assertTrue(zipEntriesNames.contains("doc.kml"));
+		assertTrue(zipEntriesNames.contains("C:/images/parks.png"));
+		assertTrue(zipEntriesNames.contains("C:images//cabs.png"));
+	}
+	
 }
