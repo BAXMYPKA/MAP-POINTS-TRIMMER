@@ -17,6 +17,9 @@ import javax.validation.Valid;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.Locale;
 
@@ -47,8 +50,21 @@ public class FilesController extends AbstractController {
 		Path tempFile = multipartFileService.processMultipartDto(file, locale);
 		log.info("Temp file={}", tempFile);
 		FileSystemResource resource = new FileSystemResource(tempFile);
-		//TODO: add a message with file keeping time limit
+//		return ResponseEntity.ok()
+//			.header("Content-Disposition", "attachment; filename=\"" + tempFile.getFileName().toString() +"\"").body(resource);
 		return ResponseEntity.ok()
-			.header("Content-Disposition", "attachment; filename=" + tempFile.getFileName()).body(resource);
+			  .header("Content-Disposition", "attachment; filename=\"" + getAsciiEncodedFilename(tempFile) + "\"; filename*=UTF-8''" + getAsciiEncodedFilename(tempFile))
+			  .body(resource);
+	}
+	
+	private String getAsciiEncodedFilename(Path pathToFile) {
+		try {
+			URI encodedFilename = new URI(null, null, pathToFile.getFileName().toString(), null);
+			return encodedFilename.toASCIIString();
+		} catch (URISyntaxException e) {
+			log.info(e.getMessage(), e);
+			String filename = pathToFile.getFileName().toString().replaceAll("\\s", "");
+			return filename;
+		}
 	}
 }

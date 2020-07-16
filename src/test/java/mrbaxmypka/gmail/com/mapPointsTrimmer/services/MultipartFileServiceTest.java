@@ -407,7 +407,6 @@ class MultipartFileServiceTest {
 			ZipEntry zipEntry;
 			while ((zipEntry = zis.getNextEntry()) != null) {
 				zipEntriesNames.add(zipEntry.getName());
-				System.out.println(zipEntry.getName());
 			}
 		});
 		

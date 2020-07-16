@@ -654,24 +654,4 @@ public class GoogleEarthHandler {
 		log.info("Hex format '{}' will be returned", hexFormat);
 		return hexFormat;
 	}
-	
-	//TODO: to download special GE images
-	//TODO: to delete the following
-	
-	/**
-	 * Some programs as Google Earth has special href they internally redirect to their local image store.
-	 * It is not recommended to change those type of hrefs.
-	 * Evaluates a given "href" or "src" not to start with "http://maps.google.com" as those types of hrefs are
-	 * Google Earth Pro specific and cannot be replaced with the new links.
-	 *
-	 * @param href Href or src to be evaluated
-	 * @return If the given href is Google Earth specific and cannot be replaced with a new href or not.
-	 */
-/*
-	boolean isImageHrefChangeable(String href) {
-		log.trace("Href to evaluate as GoogleMap special = '{}'", href);
-		String googleMapSpecialUrl = "http://maps.google.com/";
-		return !href.startsWith(googleMapSpecialUrl);
-	}
-*/
 }

@@ -98,7 +98,7 @@
 			</section>
 			
 			<details>
-				<summary th:text="#{html.text.open-close}">Open\Close</summary>
+				<summary class="summaryOption" th:text="#{html.text.open-close}">Open\Close</summary>
 				
 				<section id="closableSection" class="article__section"
 						 th:utext="#{commonMessages.article.scenarios}">
@@ -214,7 +214,7 @@
 				<br>
 				
 				<details>
-					<summary th:text="#{html.text.optionalParameters}">Optional parameters...</summary>
+					<summary class="summaryOption" th:utext="#{html.text.optionalParameters}"><b>Optional parameters...</b></summary>
 					
 					<br>
 					<input id="trimXml" name="trimXml" type="checkbox">

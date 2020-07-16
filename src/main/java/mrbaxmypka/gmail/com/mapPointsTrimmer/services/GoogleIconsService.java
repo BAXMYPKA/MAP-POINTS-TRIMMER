@@ -98,7 +98,7 @@ public class GoogleIconsService {
 		} else {
 			try {
 				URLConnection urlConnection = new URL(googleUrl).openConnection();
-				urlConnection.setConnectTimeout(1500);
+				urlConnection.setConnectTimeout(2000);
 				urlConnection.setReadTimeout(1500);
 				InputStream is = urlConnection.getInputStream();
 				byte[] iconBytes = is.readAllBytes();
