@@ -13,6 +13,10 @@
 
 <p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusMapPhotoPoint.jpg" width="300px" alt="Свойства точки с фотографией в Locus Map" title="Отображение фотографии местности в теле описания точки Locus Map"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPhoto.jpg" width=350px" alt="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro" title="Вывод точки с фотографией местности при нажатии на нее в Google Earth Pro"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPoints.jpg" width="350px" alt="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth" title="Пример текста и точек с разным цветом и размером на спутниковой карте Google Earth"><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GoogleEarthDynamic.gif" width="350px" alt="Пример динамического текста и точек с разным цветом и размером на спутниковой карте Google Earth" title="Пример динамического отображения текста и точек с разным цветом и размером на спутниковой карте Google Earth"></p>
 
+## Интерфейс программы
+
+<img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_ru.jpg" width="950px" alt="Интерфейс программы" title="Интерфейс программы">
+
 ## Как использовать
 
 Скачать готовую для автозапуска программу можно [по ссылке](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases).
@@ -24,10 +28,6 @@
 **По завершению работы не забудьте его выключить!!** (Иначе сервер так и останется висеть у вас в памяти.)
 
 На данный момент программа работает только с .kml и .kmz файлами, как наиболее правильно и точно поддерживающие сохранение и передачу фотографий и других полезных данных внутри точек.
-
-## Интерфейс программы
-
-<details><summary>Показать\Скрыть</summary><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_ru.jpg" width="950px" alt="Интерфейс программы" title="Интерфейс программы"></details>
 
 ## Минимальные системные требования
 

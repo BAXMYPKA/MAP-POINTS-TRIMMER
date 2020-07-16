@@ -14,6 +14,10 @@ The examples of map points displaying for **Locus Map Pro** and **Google Earth P
 
 <p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusMapPhotoPoint.jpg" width="300px" alt="Locus Map point with the photo in description" title="How Locus Map can display a photo right in a point description"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPhoto.jpg" width=350px" alt="How Google Earth Pro displays a point description with the photo inside it after it was clicked" title="How Google Earth Pro displays a point description with the photo inside it after it was clicked"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPoints.jpg" width="350px" alt="An example of points icons and names with various colors and sizes on Google Earth satellite map" title="An example of points icons and names with various colors and sizes on Google Earth satellite map"><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GoogleEarthDynamic.gif" width="350px" alt="An example of dynamic points icons and names display with various colors and sizes on Google Earth satellite map" title="An example of dynamic points icons and names display with various colors and sizes on Google Earth satellite map"></p>
 
+## User interface
+
+<img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_en.jpg" width="950px" alt="User interface" title="User interface">
+
 ## How to use it
 
 Download the ready to use [application here](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases).
@@ -25,10 +29,6 @@ When the application start use your browser to visit: [Map-Points-Trimmer](http:
 **After you finish don't forget to shut down the application with a special button!** (Otherwise the local server will hang in your RAM.)
 
 For the moment the utility supports only .kml and .kmz formats as the most powerful for keep and transfer points with photos.
-
-## User interface
-
-<details><summary>Show\Hide</summary><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_en.jpg" width="950px" alt="User interface" title="User interface"></details>
 
 ## Minimum system requirements
 

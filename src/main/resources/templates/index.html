@@ -145,23 +145,6 @@
 			
 			<fieldset id="fieldSetMain" class="loadForm loadForm__fieldSet">
 				
-				<input id="trimXml" name="trimXml" type="checkbox">
-				<label for="trimXml" th:text="#{html.label.trimXml}" class="loadForm__label">
-					Trim whitespaces in xml markup to compress
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.trimXml}">?
-				</div>
-				<br>
-				<input id="trimDescriptions" name="trimDescriptions" type="checkbox">
-				<label for="trimDescriptions" class="loadForm__label" th:text="#{html.label.trimDescriptions}">
-					Trim whitespaces in user descriptions to compress
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.trimDescription}">
-					?
-				</div>
-				<br>
 				<input id="setPreviewSize" name="setPreviewSize" type="checkbox">
 				<label for="setPreviewSize" class="loadForm__label" th:text="#{html.label.previewSize}">
 					Set photos preview size
@@ -219,7 +202,6 @@
 					?
 				</div>
 				<br>
-				<br>
 				<input id="path" name="path" type="text" disabled
 					   th:title="#{html.input.placeholder.defaultPath}"
 					   title="Input a path to your photos here..."
@@ -228,6 +210,33 @@
 				<div class="interrogation" title="Description"
 					 th:title="#{commonMessages.interrogationAsDescription.path}">?
 				</div>
+				<br>
+				<br>
+				
+				<details>
+					<summary th:text="#{html.text.optionalParameters}">Optional parameters...</summary>
+					
+					<br>
+					<input id="trimXml" name="trimXml" type="checkbox">
+					<label for="trimXml" th:text="#{html.label.trimXml}" class="loadForm__label">
+						Trim whitespaces in xml markup to compress
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.trimXml}">?
+					</div>
+					<br>
+					<input id="trimDescriptions" name="trimDescriptions" type="checkbox">
+					<label for="trimDescriptions" class="loadForm__label" th:text="#{html.label.trimDescriptions}">
+						Trim whitespaces in user descriptions to compress
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.trimDescription}">
+						?
+					</div>
+					<br>
+				
+				</details>
+				
 				<br>
 			</fieldset>
 			<br>
