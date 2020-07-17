@@ -4,6 +4,16 @@
 
 **The convenient handler for your map points with photos**
 
+**The application allows you:**
+
+* Transfer all your POI with included geo tagged photos from one map application to another (e.g. from Locus Map to Google Earth Pro). The main benefit for using with Locus Map is to get those photos right in the description body and\or make them available in "Attachments" tab. And if you have too many photos from various sources it allows keeping them in one optional place with custom path within any device.
+
+* Show the photos in a desired size on any device according to a screen resolution. Photos can have any preview size depending on used application and platform. Also they will have the ability to be magnified by click.
+
+* To set a desired icons and text size, color, transparency and the behaviour under the mouse cursor for Google Earth Pro map.
+
+* If you have a lot of map points but your device has not enough CPU power the elimination of unneccessary symbols or outdated data may help speeding up points display.
+
 The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview and have the ability to be magnified by click. Also you can set any path to your photos within any device, delete outdated garbage from descriptions and so forth.
 
 For export to Google Earth the application proposes options for selecting size, color and opacity of icons and points names to be displayed on the map. 
