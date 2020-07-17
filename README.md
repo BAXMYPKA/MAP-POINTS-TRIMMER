@@ -14,12 +14,6 @@
 
 * If you have a lot of map points but your device has not enough CPU power the elimination of unneccessary symbols or outdated data may help speeding up points display.
 
-The aim of this utility is to help transfer your map points with photos in their descriptions from one program to another one so that embedded photos will be properly displayed according to your wishes and screen resolution as preview and have the ability to be magnified by click. Also you can set any path to your photos within any device, delete outdated garbage from descriptions and so forth.
-
-For export to Google Earth the application proposes options for selecting size, color and opacity of icons and points names to be displayed on the map. 
-
-First of all it's been developed for Locus Map Pro and Google Earth Pro for desktop.
-
 The examples of map points displaying for **Locus Map Pro** and **Google Earth Pro**:
 
 <p align="center"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/locusMapPhotoPoint.jpg" width="300px" alt="Locus Map point with the photo in description" title="How Locus Map can display a photo right in a point description"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPhoto.jpg" width=350px" alt="How Google Earth Pro displays a point description with the photo inside it after it was clicked" title="How Google Earth Pro displays a point description with the photo inside it after it was clicked"> <img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/googleEarthPoints.jpg" width="350px" alt="An example of points icons and names with various colors and sizes on Google Earth satellite map" title="An example of points icons and names with various colors and sizes on Google Earth satellite map"><img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/GoogleEarthDynamic.gif" width="350px" alt="An example of dynamic points icons and names display with various colors and sizes on Google Earth satellite map" title="An example of dynamic points icons and names display with various colors and sizes on Google Earth satellite map"></p>
