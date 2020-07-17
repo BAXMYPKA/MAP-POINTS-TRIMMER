@@ -4,6 +4,8 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -465,14 +467,16 @@ class HtmlHandlerTest {
 		);
 	}
 	
-	@Test
-	public void set_Absolute_Windows_Path_Without_Whitespaces_Should_Set_Correct_Absolute_Path_Type() {
+	@ParameterizedTest
+	@ValueSource(strings = {"D:\\MyFolder\\MyPOI", "\\D:\\MyFolder\\MyPOI", "\\D:\\MyFolder\\MyPOI\\"})
+	public void set_Absolute_Windows_Path_Without_Whitespaces_Should_Set_Correct_Absolute_Path_Type(String absolutePath) {
 		//GIVEN
 		multipartDto.setPathType("Absolute");
-		multipartDto.setPath("D:\\MyFolder\\MyPOI");
+		multipartDto.setPath(absolutePath);
 		
 		//WHEN
 		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+//		System.out.println(processedHtml);
 		
 		//THEN
 		assertAll(

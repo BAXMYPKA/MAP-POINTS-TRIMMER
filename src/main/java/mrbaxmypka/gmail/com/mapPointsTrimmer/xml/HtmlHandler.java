@@ -191,7 +191,7 @@ public class HtmlHandler {
 	
 	private String getNewAbsoluteHref(String oldHrefWithFilename, String newHrefWithoutFilename) {
 		newHrefWithoutFilename = trimNewHrefWithoutFilename(newHrefWithoutFilename);
-		newHrefWithoutFilename = newHrefWithoutFilename.replaceAll("\\\\", "/");
+		newHrefWithoutFilename = newHrefWithoutFilename.startsWith("/") ? newHrefWithoutFilename.substring(1) : newHrefWithoutFilename;
 		String filename = fileService.getFileName(oldHrefWithFilename);
 		String newAbsoluteHref = "file:///" + newHrefWithoutFilename + filename;
 		log.trace("Absolute type href will be returned as '{}'", newAbsoluteHref);
@@ -208,15 +208,15 @@ public class HtmlHandler {
 	
 	private String trimNewHrefWithoutFilename(String newHrefWithoutFilename) {
 		newHrefWithoutFilename = newHrefWithoutFilename.trim();
+		newHrefWithoutFilename = newHrefWithoutFilename
+				.replaceAll("\\s", "%20")
+				.replaceAll("\\\\", "/");
 		// Each existing a[href] contains a full path with the filename as the last text element.
 		// Here we have to replace only the URL and leave the original filename.
 		if (!newHrefWithoutFilename.endsWith("/")) {
 			// Every new href has to end with '/'
 			newHrefWithoutFilename = newHrefWithoutFilename.concat("/");
 		}
-		newHrefWithoutFilename = newHrefWithoutFilename
-				.replaceAll("\\s", "%20")
-				.replaceAll("\\\\", "/");
 		log.trace("Trimmed href without filename will be returned as '{}'", newHrefWithoutFilename);
 		return newHrefWithoutFilename;
 	}
