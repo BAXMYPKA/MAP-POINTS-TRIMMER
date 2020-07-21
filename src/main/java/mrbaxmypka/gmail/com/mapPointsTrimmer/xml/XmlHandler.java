@@ -54,7 +54,7 @@ public abstract class XmlHandler {
 	 * @return A fully processed xml string.
 	 */
 	public abstract String processXml(InputStream inputStream, MultipartDto multipartDto)
-		throws IOException, ParserConfigurationException, SAXException, TransformerException;
+			throws IOException, ParserConfigurationException, SAXException, TransformerException;
 	
 	protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
 		log.info("Getting 'document' from InputStream from a MultipartFile...");
@@ -68,9 +68,15 @@ public abstract class XmlHandler {
 		} catch (SAXParseException e) {
 			if (e.getMessage().contains("The prefix \"lc\" for element \"lc:attachment\" is not bound")) {
 				log.info("The prefix 'lc' for element 'lc:attachment' is not bound within XML file." +
-					" 'lc:' namespace will be added into xml header...");
+						" 'lc:' namespace will be added into xml header...");
 				xmlInputStream.reset();
 				xmlInputStream = fixNamespaceForLcPrefixMethod(xmlInputStream);
+				document = documentBuilder.parse(xmlInputStream);
+			} else if (e.getMessage().contains("The prefix \"xsi\" for attribute \"xsi:schemaLocation\" associated with an element type \"Document\" is not bound")) {
+				log.info("The prefix \"xsi\" for attribute \"xsi:schemaLocation\" associated with an element type \"Document\" is not bound." +
+						"The attribute \"xsi:schemaLocation\" will be added into xml header...");
+				xmlInputStream.reset();
+				xmlInputStream = fixXsiSchemaLocationAttributeMethod(xmlInputStream);
 				document = documentBuilder.parse(xmlInputStream);
 			} else {
 				throw e;
@@ -139,6 +145,31 @@ public abstract class XmlHandler {
 	}
 	
 	/**
+	 * This happens when:
+	 * {@code kml.contains(<Document xsi:schemaLocation="http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd">) &&
+	 * !kmlHeader.contains("xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance") for bounding that namespace}
+	 * A really stupid quickfix for GoogleEarth reproducing
+	 * Document xsi:schemaLocation="http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd"
+	 * without bounding that namespace.
+	 * @param xmlInputStream Initial {@link InputStream} with malformed .kml
+	 * @return .kml String as InputStream with the <kml (...) xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></kml>
+	 * in the header.
+	 */
+	private InputStream fixXsiSchemaLocationAttributeMethod(InputStream xmlInputStream) throws IOException {
+		String kml = new String(xmlInputStream.readAllBytes(), StandardCharsets.UTF_8);
+		int firstHeaderIndex = kml.indexOf("<kml");
+		int lastHeaderIndex = kml.indexOf(">", firstHeaderIndex);
+		log.info("The xml header '{}' without \"xsi:schemaLocation\" attribute is being fixed...", kml.substring(firstHeaderIndex, lastHeaderIndex + 1));
+		String header = kml.substring(firstHeaderIndex, lastHeaderIndex + 1);
+		if (!header.contains("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"")) {
+			String newHeader = header.replace(">", " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n");
+			kml = kml.replace(header, newHeader);
+		}
+		log.info("'xmlns:xsi=' attribute has been fixed into XML header.");
+		return new ByteArrayInputStream(kml.getBytes(StandardCharsets.UTF_8));
+	}
+	
+	/**
 	 * Deletes all whitespaces between all nodes deep recursively from the given {@link Node}
 	 *
 	 * @param node The root {@link Node} whose all the children should be cleared from whitespaces between
@@ -166,7 +197,7 @@ public abstract class XmlHandler {
 	private String clearFix(StringWriter rawXml) {
 		String xmlResult = rawXml.toString().replaceAll("\r\n", "\n").replaceAll("&gt;\t", "");
 		log.info(
-			"Clear fix to delete all the unnecessary '>\\t' and replace '\\r\\n' with standard '\\n' has been completed");
+				"Clear fix to delete all the unnecessary '>\\t' and replace '\\r\\n' with standard '\\n' has been completed");
 		return xmlResult;
 	}
 	

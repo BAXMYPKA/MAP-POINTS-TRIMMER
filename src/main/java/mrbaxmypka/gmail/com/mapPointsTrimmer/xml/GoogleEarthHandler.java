@@ -15,6 +15,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -52,8 +53,8 @@ public class GoogleEarthHandler {
 		}
 		//If something dynamic is set we create and assign <StyleMap>'s if absent
 		if (multipartDto.getPointIconSizeDynamic() != null ||
-			multipartDto.getPointTextSizeDynamic() != null ||
-			multipartDto.getPointTextHexColorDynamic() != null) {
+				multipartDto.getPointTextSizeDynamic() != null ||
+				multipartDto.getPointTextHexColorDynamic() != null) {
 			createStyleMaps();
 		}
 		if (multipartDto.getPointIconSizeDynamic() != null) {
@@ -84,18 +85,21 @@ public class GoogleEarthHandler {
 		}
 		for (int i = 0; i < styleNodes.getLength(); i++) {
 			Node styleNode = styleNodes.item(i);
-			styleObjectsMap.put(styleNode.getAttributes().getNamedItem("id").getTextContent(), styleNode);
+			if (styleNode.getAttributes() != null && styleNode.getAttributes().getNamedItem("id") != null) {
+				//<Style> can be without "id" as a container for <ListStyle>
+				styleObjectsMap.put(styleNode.getAttributes().getNamedItem("id").getTextContent(), styleNode);
+			}
 		}
 		log.trace("Style objects map's set with the size={}", styleObjectsMap.size());
 	}
 	
 	private void setStyleUrlsFromPlacemarks() {
 		styleUrlsFromPlacemarks =
-			xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false
-				, false)
-				.stream()
-				.map(styleUrlNode -> styleUrlNode.getTextContent().substring(1))
-				.collect(Collectors.toList());
+				xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false
+						, false)
+						.stream()
+						.map(styleUrlNode -> styleUrlNode.getTextContent().substring(1))
+						.collect(Collectors.toList());
 		log.trace("The List<String> of StyleUrls from Placemarks has been set with size={}", styleUrlsFromPlacemarks.size());
 	}
 	
@@ -302,13 +306,13 @@ public class GoogleEarthHandler {
 	 * }
 	 */
 	private Node getNormalStyleNodeFromStyleMap(Node styleMap) {
-		return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
-			.stream()
-			.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "normal", false, false, false).isEmpty())
-			.findFirst()
-			.map(normalPairNode -> xmlDomUtils.getChildNodesFromParent(normalPairNode, "styleUrl", null, false, false, false).get(0))
-			.map(normalStyleUrl -> styleObjectsMap.get(normalStyleUrl.getTextContent().substring(1)))
-			.get();
+			return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
+					.stream()
+					.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "normal", false, false, false).isEmpty())
+					.findFirst()
+					.map(normalPairNode -> xmlDomUtils.getChildNodesFromParent(normalPairNode, "styleUrl", null, false, false, false).get(0))
+					.map(normalStyleUrl -> styleObjectsMap.get(normalStyleUrl.getTextContent().substring(1)))
+					.get();
 	}
 	
 	/**
@@ -351,12 +355,12 @@ public class GoogleEarthHandler {
 	 */
 	private Node getHighlightStyleNodeFromStyleMap(Node styleMap) {
 		return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
-			.stream()
-			.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "highlight", false, false, false).isEmpty())
-			.findFirst()
-			.map(highlightPairNode -> xmlDomUtils.getChildNodesFromParent(highlightPairNode, "styleUrl", null, false, false, false).get(0))
-			.map(highlightStyleUrl -> styleObjectsMap.get(highlightStyleUrl.getTextContent().substring(1)))
-			.get();
+				.stream()
+				.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "highlight", false, false, false).isEmpty())
+				.findFirst()
+				.map(highlightPairNode -> xmlDomUtils.getChildNodesFromParent(highlightPairNode, "styleUrl", null, false, false, false).get(0))
+				.map(highlightStyleUrl -> styleObjectsMap.get(highlightStyleUrl.getTextContent().substring(1)))
+				.get();
 	}
 	
 	/**
@@ -364,23 +368,23 @@ public class GoogleEarthHandler {
 	 */
 	private void createStyleMaps() {
 		List<Node> placemarksStyleUrlNodes =
-			xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false, false);
+				xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false, false);
 		placemarksStyleUrlNodes.stream()
-			.filter(styleUrlNode -> styleObjectsMap.get(styleUrlNode.getTextContent().substring(1)) != null)
-			.forEach(styleUrlNode -> {
-				Node styleObjectNode = styleObjectsMap.get(styleUrlNode.getTextContent().substring(1));
-				if (styleObjectNode.getNodeName().equals("Style")) {
-					//Replace styleUrl to <Style/> with <StyleMap/>
-					Node styleMapNode = createStyleMapNode(styleObjectNode);
-					styleUrlNode.setTextContent("#" + styleMapNode.getAttributes().getNamedItem("id").getTextContent());
-					styleObjectsMap.put(styleMapNode.getAttributes().getNamedItem("id").getTextContent(), styleMapNode);
-				}
-			});
+				.filter(styleUrlNode -> styleObjectsMap.get(styleUrlNode.getTextContent().substring(1)) != null)
+				.forEach(styleUrlNode -> {
+					Node styleObjectNode = styleObjectsMap.get(styleUrlNode.getTextContent().substring(1));
+					if (styleObjectNode.getNodeName().equals("Style")) {
+						//Replace styleUrl to <Style/> with <StyleMap/>
+						Node styleMapNode = createStyleMapNode(styleObjectNode);
+						styleUrlNode.setTextContent("#" + styleMapNode.getAttributes().getNamedItem("id").getTextContent());
+						styleObjectsMap.put(styleMapNode.getAttributes().getNamedItem("id").getTextContent(), styleMapNode);
+					}
+				});
 		//Refresh existing collections
 		setStyleObjectsMap();
 		setStyleUrlsFromPlacemarks();
 		log.info("<StyleMap>'s have been created for all the <Placemark><styleUrl/></Placemark>. ({} StyleObjects)",
-			styleObjectsMap.size());
+				styleObjectsMap.size());
 	}
 	
 	/**
@@ -551,7 +555,7 @@ public class GoogleEarthHandler {
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node childNode = childNodes.item(i);
 			if (childNode.getNodeName() != null &&
-				(childNode.getNodeName().equals("Style") || childNode.getNodeName().equals("StyleMap"))) {
+					(childNode.getNodeName().equals("Style") || childNode.getNodeName().equals("StyleMap"))) {
 				insertBeforeNode = childNode;
 				break;
 			}
@@ -591,7 +595,7 @@ public class GoogleEarthHandler {
 		log.info("Got '{}' hex color input with {} opacity", hexColor, opacity != null ? opacity : "null");
 		if (!hexColor.matches("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")) {
 			throw new IllegalArgumentException(
-				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
+					"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
 		}
 		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
 		String kmlOpacity = opacity != null ? getHexFromPercentage(opacity) : "ff";
@@ -629,7 +633,7 @@ public class GoogleEarthHandler {
 		log.info("Got '{}' hex color input with {} opacity", hexColor, hexOpacity != null ? hexOpacity : "null");
 		if (!hexColor.matches("^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")) {
 			throw new IllegalArgumentException(
-				"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
+					"Color value is not correct! (It has to correspond to '#rrggbb' hex pattern");
 		}
 		String kmlColor = hexColor.substring(5, 7) + hexColor.substring(3, 5) + hexColor.substring(1, 3);
 		log.info("KML color with opacity will be returned as '{}'", hexOpacity + kmlColor);
