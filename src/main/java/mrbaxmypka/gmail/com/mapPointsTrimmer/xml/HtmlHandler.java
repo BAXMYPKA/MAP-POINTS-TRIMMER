@@ -78,7 +78,7 @@ public class HtmlHandler {
 			return trimDescriptions(parsedHtmlFragment);
 		}
 		parsedHtmlFragment.prependText(plainTextDescription);
-		log.info("The fully processed description is being returned...");
+		log.debug("The fully processed description is being returned...");
 		return parsedHtmlFragment.html();
 	}
 	

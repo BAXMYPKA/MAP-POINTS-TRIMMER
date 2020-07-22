@@ -122,7 +122,7 @@ public class ExceptionsController extends AbstractController {
 	/**
 	 * 1) Deletes the temporary file if it is exists in the temp directory
 	 * 1.1) If {@link MapPointsTrimmerApplication#debugModeIsOn()} = true
-	 * returns {@link ModelAndView} with redirecting to "/error" page with the localized message for a User
+	 * returns {@link ModelAndView} with forwarding to "/error" page with the localized message for a User
 	 * and the full stack trace as the {@link Model} attribute "debugMessage" and the given {@link HttpStatus}.
 	 * 1.2) If {@link MapPointsTrimmerApplication#debugModeIsOn()} = false
 	 * returns {@link ModelAndView} with redirecting to "/trimmer" page with just the

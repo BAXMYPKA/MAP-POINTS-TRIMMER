@@ -3,7 +3,7 @@
 		const userMessage = document.querySelector("#userMessage");
 		const previewSize = document.getElementById("previewSize");
 		
-		let userMessageClose = document.querySelector(".userMessage__close");
+		let userMessageClose = document.querySelector(".specialButtons_close");
 		if (userMessageClose !== null) {
 			userMessageClose.addEventListener('click', ev => {
 				userMessage.innerHTML = "";

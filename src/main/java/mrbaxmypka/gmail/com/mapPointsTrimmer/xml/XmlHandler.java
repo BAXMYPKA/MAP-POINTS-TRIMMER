@@ -66,18 +66,22 @@ public abstract class XmlHandler {
 		try {
 			document = documentBuilder.parse(xmlInputStream);
 		} catch (SAXParseException e) {
+			//KML exception
 			if (e.getMessage().contains("The prefix \"lc\" for element \"lc:attachment\" is not bound")) {
 				log.info("The prefix 'lc' for element 'lc:attachment' is not bound within XML file." +
 						" 'lc:' namespace will be added into xml header...");
 				xmlInputStream.reset();
 				xmlInputStream = fixNamespaceForLcPrefixMethod(xmlInputStream);
-				document = documentBuilder.parse(xmlInputStream);
+//				document = documentBuilder.parse(xmlInputStream);
+				return getDocument(xmlInputStream);
 			} else if (e.getMessage().contains("The prefix \"xsi\" for attribute \"xsi:schemaLocation\" associated with an element type \"Document\" is not bound")) {
+				//KML exception
 				log.info("The prefix \"xsi\" for attribute \"xsi:schemaLocation\" associated with an element type \"Document\" is not bound." +
 						"The attribute \"xsi:schemaLocation\" will be added into xml header...");
 				xmlInputStream.reset();
 				xmlInputStream = fixXsiSchemaLocationAttributeMethod(xmlInputStream);
-				document = documentBuilder.parse(xmlInputStream);
+//				document = documentBuilder.parse(xmlInputStream);
+				return getDocument(xmlInputStream);
 			} else {
 				throw e;
 			}
@@ -151,6 +155,7 @@ public abstract class XmlHandler {
 	 * A really stupid quickfix for GoogleEarth reproducing
 	 * Document xsi:schemaLocation="http://www.opengis.net/kml/2.2 http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd"
 	 * without bounding that namespace.
+	 *
 	 * @param xmlInputStream Initial {@link InputStream} with malformed .kml
 	 * @return .kml String as InputStream with the <kml (...) xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></kml>
 	 * in the header.

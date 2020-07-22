@@ -11,24 +11,23 @@
 		
 		document.getElementById("clickHere").addEventListener('click', ev => {
 			ev.preventDefault();
+			let errorDetails = document.getElementById("errorDetails");
+			errorDetails.open = true; //Otherwise it won't be ranged for being copied
 			let closableSection = document.getElementById("closableSection");
 			let range = document.createRange();
 			range.selectNode(closableSection);
+			window.getSelection().removeAllRanges();
 			window.getSelection().addRange(range);
 			let copied = document.execCommand('copy');
 			if (!copied) {
 				alert("Unable to copy the text!");
 			}
+			window.getSelection().removeAllRanges();
+			errorDetails.open = false;
 		});
-		
-		document.querySelector(".article__section_closed").addEventListener('click', ev => {
-			if (document.getElementById("closableSection").classList.contains("article__section_closed")) {
-				document.getElementById("closableSection").classList.toggle("article__section_closed");
-			}
-		});
-		
+
 		const articleAbout = document.querySelector(".articleAbout");
-		
+
 		articleAbout.addEventListener('click', evt => {
 			if (articleAbout.style.display === "none") {
 				articleAbout.style.display = "block";

@@ -103,6 +103,7 @@ h3 {
 
 .specialButtons_close:hover {
 	color: rgba(255, 80, 36, 0.71);
+	cursor: pointer;
 }
 
 .specialButtons_close:active {
