@@ -1,10 +1,8 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -12,10 +10,7 @@ import org.w3c.dom.NodeList;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -114,9 +109,10 @@ public class GoogleEarthHandler {
 				Node iconStyleScaleNode = getIconStyleScaleNodeFromStyle(styleObject);
 				iconStyleScaleNode.setTextContent(scale);
 			} else if (styleObject.getNodeName().equals("StyleMap")) {
-				Node normalStyleNode = getNormalStyleNodeFromStyleMap(styleObject);
-				Node iconStyleScaleNode = getIconStyleScaleNodeFromStyle(normalStyleNode);
-				iconStyleScaleNode.setTextContent(scale);
+				getNormalStyleNodeFromStyleMap(styleObject).ifPresent(normalStyleNode -> {
+					Node iconStyleScaleNode = getIconStyleScaleNodeFromStyle(normalStyleNode);
+					iconStyleScaleNode.setTextContent(scale);
+				});
 			}
 		});
 		log.info("Icons size has been set.");
@@ -138,9 +134,10 @@ public class GoogleEarthHandler {
 				Node iconStyleColorNode = getIconsStyleColorNodeFromStyle(styleObject);
 				iconStyleColorNode.setTextContent(opacityColor);
 			} else if (styleObject.getNodeName().equals("StyleMap")) {
-				Node normalStyleNode = getNormalStyleNodeFromStyleMap(styleObject);
-				Node iconStyleColorNode = getIconsStyleColorNodeFromStyle(normalStyleNode);
-				iconStyleColorNode.setTextContent(opacityColor);
+				getNormalStyleNodeFromStyleMap(styleObject).ifPresent(normalStyleNode -> {
+					Node iconStyleColorNode = getIconsStyleColorNodeFromStyle(normalStyleNode);
+					iconStyleColorNode.setTextContent(opacityColor);
+				});
 			}
 		});
 		log.info("Icons opacity has been set.");
@@ -160,9 +157,10 @@ public class GoogleEarthHandler {
 				Node labelStyleScaleNode = getLabelStyleScaleNodeFromStyle(styleObject);
 				labelStyleScaleNode.setTextContent(scale);
 			} else if (styleObject.getNodeName().equals("StyleMap")) {
-				Node normalStyleNode = getNormalStyleNodeFromStyleMap(styleObject);
-				Node labelStyleScaleNode = getLabelStyleScaleNodeFromStyle(normalStyleNode);
-				labelStyleScaleNode.setTextContent(scale);
+				getNormalStyleNodeFromStyleMap(styleObject).ifPresent(normalStyleNode -> {
+					Node labelStyleScaleNode = getLabelStyleScaleNodeFromStyle(normalStyleNode);
+					labelStyleScaleNode.setTextContent(scale);
+				});
 			}
 		});
 		log.info("Points names size has been set.");
@@ -178,9 +176,10 @@ public class GoogleEarthHandler {
 				Node labelStyleColorNode = getLabelStyleColorNodeFromStyle(styleObject);
 				labelStyleColorNode.setTextContent(kmlColor);
 			} else if (styleObject.getNodeName().equals("StyleMap")) {
-				Node normalStyleNode = getNormalStyleNodeFromStyleMap(styleObject);
-				Node labelStyleColorNode = getLabelStyleColorNodeFromStyle(normalStyleNode);
-				labelStyleColorNode.setTextContent(kmlColor);
+				getNormalStyleNodeFromStyleMap(styleObject).ifPresent(normalStyleNode -> {
+					Node labelStyleColorNode = getLabelStyleColorNodeFromStyle(normalStyleNode);
+					labelStyleColorNode.setTextContent(kmlColor);
+				});
 			}
 		});
 		log.info("Names color has been set.");
@@ -304,15 +303,25 @@ public class GoogleEarthHandler {
 	 * </LabelStyle>
 	 * </Style>
 	 * }
+	 *
+	 * @return {@literal <Style id="id"/> or Optional.empty() if the "normal" <Style/> from <Pair/> isn't presented or
+	 * has no "id" attribute and cannot be directly used for icons as in the following e.g.:
+	 * <Style>
+	 * <ListStyle>
+	 * <listItemType>check</listItemType>
+	 * <bgColor>00ffffff</bgColor>
+	 * <maxSnippetLines>2</maxSnippetLines>
+	 * </ListStyle>
+	 * </Style>
+	 * }
 	 */
-	private Node getNormalStyleNodeFromStyleMap(Node styleMap) {
-			return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
-					.stream()
-					.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "normal", false, false, false).isEmpty())
-					.findFirst()
-					.map(normalPairNode -> xmlDomUtils.getChildNodesFromParent(normalPairNode, "styleUrl", null, false, false, false).get(0))
-					.map(normalStyleUrl -> styleObjectsMap.get(normalStyleUrl.getTextContent().substring(1)))
-					.get();
+	private Optional<Node> getNormalStyleNodeFromStyleMap(Node styleMap) {
+		return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
+				.stream()
+				.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "normal", false, false, false).isEmpty())
+				.findFirst()
+				.map(normalPairNode -> xmlDomUtils.getChildNodesFromParent(normalPairNode, "styleUrl", null, false, false, false).get(0))
+				.map(normalStyleUrl -> styleObjectsMap.get(normalStyleUrl.getTextContent().substring(1)));
 	}
 	
 	/**
@@ -352,15 +361,25 @@ public class GoogleEarthHandler {
 	 * </LabelStyle>
 	 * </Style>
 	 * }
+	 *
+	 * @return {@literal <Style id="id"/> or Optional.empty() if the "normal" <Style/> from <Pair/> isn't presented or
+	 * has no "id" attribute and cannot be directly used for icons as in the following e.g.:
+	 * <Style>
+	 * <ListStyle>
+	 * <listItemType>check</listItemType>
+	 * <bgColor>00ffffff</bgColor>
+	 * <maxSnippetLines>2</maxSnippetLines>
+	 * </ListStyle>
+	 * </Style>
+	 * }
 	 */
-	private Node getHighlightStyleNodeFromStyleMap(Node styleMap) {
+	private Optional<Node> getHighlightStyleNodeFromStyleMap(Node styleMap) {
 		return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
 				.stream()
 				.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "highlight", false, false, false).isEmpty())
 				.findFirst()
 				.map(highlightPairNode -> xmlDomUtils.getChildNodesFromParent(highlightPairNode, "styleUrl", null, false, false, false).get(0))
-				.map(highlightStyleUrl -> styleObjectsMap.get(highlightStyleUrl.getTextContent().substring(1)))
-				.get();
+				.map(highlightStyleUrl -> styleObjectsMap.get(highlightStyleUrl.getTextContent().substring(1)));
 	}
 	
 	/**
@@ -472,10 +491,11 @@ public class GoogleEarthHandler {
 		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
 		for (int i = 0; i < styleMapNodes.getLength(); i++) {
 			Node styleMapNode = styleMapNodes.item(i);
-			Node highlightStyleNode = getHighlightStyleNodeFromStyleMap(styleMapNode);
-			Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
-			Node scaleNode = xmlDomUtils.getChildNodesFromParent(iconStyleNode, "scale", null, false, true, true).get(0);
-			scaleNode.setTextContent(multipartDto.getPointIconSizeScaledDynamic().toString());
+			getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
+				Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
+				Node scaleNode = xmlDomUtils.getChildNodesFromParent(iconStyleNode, "scale", null, false, true, true).get(0);
+				scaleNode.setTextContent(multipartDto.getPointIconSizeScaledDynamic().toString());
+			});
 		}
 		log.info("All the points icons dynamic size has been set.");
 	}
@@ -502,10 +522,11 @@ public class GoogleEarthHandler {
 		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
 		for (int i = 0; i < styleMapNodes.getLength(); i++) {
 			Node styleMapNode = styleMapNodes.item(i);
-			Node highlightStyleNode = getHighlightStyleNodeFromStyleMap(styleMapNode);
-			Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
-			Node colorNode = xmlDomUtils.getChildNodesFromParent(iconStyleNode, "color", null, false, true, true).get(0);
-			colorNode.setTextContent(opacityColor);
+			getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
+				Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
+				Node colorNode = xmlDomUtils.getChildNodesFromParent(iconStyleNode, "color", null, false, true, true).get(0);
+				colorNode.setTextContent(opacityColor);
+			});
 		}
 		log.info("Icons dynamic opacity has been set.");
 	}
@@ -516,10 +537,11 @@ public class GoogleEarthHandler {
 		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
 		for (int i = 0; i < styleMapNodes.getLength(); i++) {
 			Node styleMapNode = styleMapNodes.item(i);
-			Node highlightStyleNode = getHighlightStyleNodeFromStyleMap(styleMapNode);
-			Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
-			Node scaleNode = xmlDomUtils.getChildNodesFromParent(labelStyleNode, "scale", null, false, true, true).get(0);
-			scaleNode.setTextContent(multipartDto.getPointTextSizeScaledDynamic().toString());
+			getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
+				Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
+				Node scaleNode = xmlDomUtils.getChildNodesFromParent(labelStyleNode, "scale", null, false, true, true).get(0);
+				scaleNode.setTextContent(multipartDto.getPointTextSizeScaledDynamic().toString());
+			});
 		}
 		log.info("All the points text dynamic size has been set.");
 	}
@@ -530,10 +552,11 @@ public class GoogleEarthHandler {
 		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
 		for (int i = 0; i < styleMapNodes.getLength(); i++) {
 			Node styleMapNode = styleMapNodes.item(i);
-			Node highlightStyleNode = getHighlightStyleNodeFromStyleMap(styleMapNode);
-			Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
-			Node colorNode = xmlDomUtils.getChildNodesFromParent(labelStyleNode, "color", null, false, true, true).get(0);
-			colorNode.setTextContent(kmlColor);
+			getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
+				Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
+				Node colorNode = xmlDomUtils.getChildNodesFromParent(labelStyleNode, "color", null, false, true, true).get(0);
+				colorNode.setTextContent(kmlColor);
+			});
 		}
 		log.info("All the points text dynamic color has been set.");
 	}
