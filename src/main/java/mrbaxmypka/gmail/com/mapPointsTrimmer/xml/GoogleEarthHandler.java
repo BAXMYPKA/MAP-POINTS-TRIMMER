@@ -104,7 +104,7 @@ public class GoogleEarthHandler {
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
 		styleUrlsFromPlacemarks.forEach(styleUrl -> {
-			Node styleObject = styleObjectsMap.get(styleUrl);
+			Node styleObject = getStyleObject(styleUrl);
 			if (styleObject.getNodeName().equals("Style")) {
 				Node iconStyleScaleNode = getIconStyleScaleNodeFromStyle(styleObject);
 				iconStyleScaleNode.setTextContent(scale);
@@ -128,7 +128,7 @@ public class GoogleEarthHandler {
 		String opacityColor = getKmlColor("#ffffff", multipartDto.getPointIconHexOpacity());
 		
 		styleUrlsFromPlacemarks.forEach(styleUrl -> {
-			Node styleObject = styleObjectsMap.get(styleUrl);
+			Node styleObject = getStyleObject(styleUrl);
 			if (styleObject.getNodeName().equals("Style")) {
 				getIconsStyleColorNodeFromStyle(styleObject);
 				Node iconStyleColorNode = getIconsStyleColorNodeFromStyle(styleObject);
@@ -152,7 +152,7 @@ public class GoogleEarthHandler {
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
 		styleUrlsFromPlacemarks.forEach(styleUrl -> {
-			Node styleObject = styleObjectsMap.get(styleUrl);
+			Node styleObject = getStyleObject(styleUrl);
 			if (styleObject.getNodeName().equals("Style")) {
 				Node labelStyleScaleNode = getLabelStyleScaleNodeFromStyle(styleObject);
 				labelStyleScaleNode.setTextContent(scale);
@@ -171,7 +171,7 @@ public class GoogleEarthHandler {
 		String kmlColor = getKmlColor(multipartDto.getPointTextHexColor(), multipartDto.getPointTextOpacity());
 		
 		styleUrlsFromPlacemarks.forEach(styleUrl -> {
-			Node styleObject = styleObjectsMap.get(styleUrl);
+			Node styleObject = getStyleObject(styleUrl);
 			if (styleObject.getNodeName().equals("Style")) {
 				Node labelStyleColorNode = getLabelStyleColorNodeFromStyle(styleObject);
 				labelStyleColorNode.setTextContent(kmlColor);
@@ -321,7 +321,7 @@ public class GoogleEarthHandler {
 				.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "normal", false, false, false).isEmpty())
 				.findFirst()
 				.map(normalPairNode -> xmlDomUtils.getChildNodesFromParent(normalPairNode, "styleUrl", null, false, false, false).get(0))
-				.map(normalStyleUrl -> styleObjectsMap.get(normalStyleUrl.getTextContent().substring(1)));
+				.map(normalStyleUrl -> getStyleObject(normalStyleUrl.getTextContent().substring(1)));
 	}
 	
 	/**
@@ -379,7 +379,7 @@ public class GoogleEarthHandler {
 				.filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "highlight", false, false, false).isEmpty())
 				.findFirst()
 				.map(highlightPairNode -> xmlDomUtils.getChildNodesFromParent(highlightPairNode, "styleUrl", null, false, false, false).get(0))
-				.map(highlightStyleUrl -> styleObjectsMap.get(highlightStyleUrl.getTextContent().substring(1)));
+				.map(highlightStyleUrl -> getStyleObject(highlightStyleUrl.getTextContent().substring(1)));
 	}
 	
 	/**
@@ -389,9 +389,9 @@ public class GoogleEarthHandler {
 		List<Node> placemarksStyleUrlNodes =
 				xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false, false);
 		placemarksStyleUrlNodes.stream()
-				.filter(styleUrlNode -> styleObjectsMap.get(styleUrlNode.getTextContent().substring(1)) != null)
+				.filter(styleUrlNode -> getStyleObject(styleUrlNode.getTextContent().substring(1)) != null)
 				.forEach(styleUrlNode -> {
-					Node styleObjectNode = styleObjectsMap.get(styleUrlNode.getTextContent().substring(1));
+					Node styleObjectNode = getStyleObject(styleUrlNode.getTextContent().substring(1));
 					if (styleObjectNode.getNodeName().equals("Style")) {
 						//Replace styleUrl to <Style/> with <StyleMap/>
 						Node styleMapNode = createStyleMapNode(styleObjectNode);
@@ -680,5 +680,16 @@ public class GoogleEarthHandler {
 		String hexFormat = String.format("%02x", hexPercentage.toBigInteger());
 		log.info("Hex format '{}' will be returned", hexFormat);
 		return hexFormat;
+	}
+	
+	/**
+	 * @param styleUrl
+	 * @return {@link Node} as StyleObject from {@link #styleObjectsMap}.
+	 * If "styleUrl" is null returns a new {@link Node} with "Default" tagName.
+	 */
+	private Node getStyleObject(String styleUrl) {
+		return styleObjectsMap.getOrDefault(
+				Objects.requireNonNullElseGet(styleUrl, () -> "Default"),
+				document.createElement("Default"));
 	}
 }
