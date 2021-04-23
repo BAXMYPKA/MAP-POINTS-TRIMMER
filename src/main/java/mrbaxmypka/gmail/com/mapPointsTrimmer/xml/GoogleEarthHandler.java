@@ -14,13 +14,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-//@NoArgsConstructor
-//@Component
 public class GoogleEarthHandler {
 	
 	private Document document;
 	/**
-	 * {@literal <Style>'s and <StyleMap>'s Nodes by their "id" attributes}
+	 * {@literal All the <Style>s and <StyleMap>s Nodes from the Document's start by their "id" attributes}
 	 */
 	private Map<String, Node> styleObjectsMap;
 	private List<String> styleUrlsFromPlacemarks;
