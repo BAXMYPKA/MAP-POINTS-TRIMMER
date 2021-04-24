@@ -63,8 +63,7 @@ public class FilesController extends AbstractController {
 			return encodedFilename.toASCIIString();
 		} catch (URISyntaxException e) {
 			log.info(e.getMessage(), e);
-			String filename = pathToFile.getFileName().toString().replaceAll("\\s", "");
-			return filename;
+			return pathToFile.getFileName().toString().replaceAll("\\s", "");
 		}
 	}
 }
