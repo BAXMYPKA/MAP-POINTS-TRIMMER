@@ -688,8 +688,10 @@ public class GoogleEarthHandler {
 	 * If "styleUrl" is null returns a new {@link Node} with "Default" tagName.
 	 */
 	private Node getStyleObject(String styleUrl) {
-		return styleObjectsMap.getOrDefault(
-				Objects.requireNonNullElseGet(styleUrl, () -> "Default"),
-				document.createElement("Default"));
+		Node styleNode = styleObjectsMap.getOrDefault(styleUrl, document.createElement("Default"));
+		if (styleNode.getNodeName().contentEquals("Default")) {
+			log.warn("The Document is incorrect because <styleUrl>#{}</styleUrl> points to non-existent <Style> with no such id", styleUrl);
+		}
+		return styleNode;
 	}
 }
