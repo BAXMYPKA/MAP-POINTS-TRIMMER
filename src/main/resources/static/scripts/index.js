@@ -11,7 +11,28 @@
 				
 			});
 		}
-		
+
+		let verifyAdminCredentials = function (login, password) {
+			if ((!login || login.length === 0) || (!login || login.length === 0)) return;
+			let adminCredentials = {
+				"login": login,
+				"password": password
+			}
+			fetch(serverAddress.concat("/admin"), {
+				method: "POST",
+				body: JSON.stringify(adminCredentials),
+				headers: {
+					"Content-Type": "application/json;charset=utf-8"
+				}
+			}).then(function (response) {
+				if (!response.ok) {
+					userMessage.textContent = "Bad admin credentials";
+				} else {
+					document.getElemenById("fieldSetLocusAdmin").style.display = 'block';
+				}
+			});
+		};
+
 		/**
 		 *
 		 * @param level TRACE, DEBUG, INFO, ERROR, WARN
@@ -251,5 +272,12 @@
 				setLoggingLevel("WARN");
 			}
 		});
+
+		document.getElementById("adminVerifyButton").addEventListener('click', ev => {
+			let adminLogin = document.getElementById("adminLogin").value;
+			let adminPassword = document.getElementById("adminPassword").value;
+			verifyAdminCredentials(adminLogin, adminPassword);
+		});
+
 	}
 )();

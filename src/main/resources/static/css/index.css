@@ -60,6 +60,10 @@ h3 {
 	font-weight: bold;
 }
 
+.details:hover {
+	cursor: pointer;
+}
+
 .specialButtons {
 	font-family: Consolas, sans-serif;
 	font-weight: bold;

@@ -97,7 +97,7 @@
 			
 			</section>
 			
-			<details>
+			<details class="details">
 				<summary class="summaryOption" th:text="#{html.text.open-close}">Open\Close</summary>
 				
 				<section id="closableSection" class="article__section"
@@ -213,7 +213,7 @@
 				<br>
 				<br>
 				
-				<details>
+				<details class="details">
 					<summary class="summaryOption" th:utext="#{html.text.optionalParameters}"><b>Optional parameters...</b></summary>
 					
 					<br>
@@ -267,7 +267,21 @@
 				</div>
 				
 				<br>
-			
+
+				<fieldset id="fieldSetLocusAdmin" class="loadForm loadForm__fieldSet" style="display: block">
+					<input id="replaceIcons" name="asAttachmentInLocus" type="checkbox">
+					<label for="replaceIcons" class="loadForm__label"
+						   th:text="#{html.label.replaceLocusIcons}">
+						Replace photo POI icons in Locus Map Pro
+					</label>
+					<div class="interrogation" title="Description"
+						 th:title="#{commonMessages.interrogationAsDescription.replaceLocusIcons}">
+						?
+					</div>
+					<br>
+
+				</fieldset>
+
 			</fieldset>
 			
 			<br>
@@ -510,7 +524,7 @@
 				</span>
 			
 			</fieldset>
-		
+
 		</form>
 		
 		<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet__debugFieldset">
@@ -563,7 +577,28 @@
 			</div>
 		
 		</fieldset>
-	
+
+		<br>
+
+		<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_adminFieldset">
+
+			<details class="details">
+				<summary class="summaryOption" th:utext="#{html.text.adminLogin}"><small>Admin login...</small></summary>
+
+				<br>
+
+				<input type="text" id="adminLogin" placeholder="Login...">
+				<br>
+				<input type="password" id="adminPassword" placeholder="Password...">
+				<br>
+				<input type="button" id="adminVerifyButton" value="Verify">
+
+				<br>
+
+			</details>
+
+		</fieldset>
+
 	</main>
 	
 	<article class="articleAbout" th:utext="#{commonMessages.about}" th:title="#{html.title.close}" title="Close"
