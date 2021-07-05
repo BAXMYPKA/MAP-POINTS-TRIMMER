@@ -4,15 +4,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * @author BAXMYPKA
@@ -23,8 +30,13 @@ public class FileService {
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Autowired
+	private ResourceLoader resourceLoader;
+	
 	@Value("${logging.file.name}")
 	private String pathToLogFile;
+	
 	private String stackTrace;
 	
 	
@@ -96,4 +108,22 @@ public class FileService {
 		return filename.isBlank() ? "" : filename;
 	}
 	
+	/**
+	 * Collects a list of pictograms names in 'resources/static/pictograms' directory.
+	 * @return {@literal ArrayList<String> pictogramNames}
+	 */
+	public ArrayList<String> getPictogramsNames() {
+		final String pathToPics = "static/pictograms";
+		final Resource resource = resourceLoader.getResource(pathToPics);
+		try(BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+			ArrayList<String> pictogramNames = reader.lines().collect(Collectors.toCollection(ArrayList::new));
+			log.info("{} Pictograms have been collected.", pictogramNames.size());
+			return pictogramNames;
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+			e.printStackTrace();
+			return new ArrayList<String>(0);
+		}
+	}
+	//TODO: to test the above
 }

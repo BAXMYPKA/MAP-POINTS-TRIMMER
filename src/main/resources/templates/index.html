@@ -1,633 +1,679 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<link rel="icon" type="image/png" sizes="32x32" href="../static/img/favicon32x32.png"
-		  th:href="@{/img/favicon32x32.png}">
-	<link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
-		  th:href="@{/img/favicon32x32.png}">
-	<link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
-	<script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}"
-			defer></script>
-	<script src="../static/scripts/index.js" th:src="@{scripts/index.js}" defer></script>
-	<script src="../static/scripts/presets.js" th:src="@{scripts/presets.js}" defer></script>
-	<script th:inline="javascript">
-		/*<![CDATA[*/
-		const maxFileSizeMb = [[${maxFileSizeMb}]];
-		const serverAddress = [[${serverAddress}]];
-		/*]]>*/
-	</script>
-	<title>Map Points Trimmer</title>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/img/favicon32x32.png"
+          th:href="@{/img/favicon32x32.png}">
+    <link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
+          th:href="@{/img/favicon32x32.png}">
+    <link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
+    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}"
+            defer></script>
+    <script src="../static/scripts/index.js" th:src="@{scripts/index.js}" defer></script>
+    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.js}" defer></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const maxFileSizeMb = [[${maxFileSizeMb}]];
+        const serverAddress = [[${serverAddress}]];
+        /*]]>*/
+    </script>
+    <title>Map Points Trimmer</title>
 </head>
 <body>
 
 <div id="main" class="main">
-	
-	<header class="mainHeader">
-		
-		<img src="../static/img/MapPointsTrimmerLogo.png" th:src="@{/img/MapPointsTrimmerLogo.png}" alt="logo"
-			 class="mainHeader__logoImg">
-		
-		<div class="nameHeaderGroup">
-			
-			<a href="/" th:href="@{/}" class="nameHeaderGroup__appName">
-				<h1 class="nameHeaderGroup__appName" th:utext="#{html.h1.header}">
-					MAP POINTS TRIMMER
-				</h1>
-			</a>
-			<h2 class="nameHeaderGroup__appSlogan" th:text="#{html.h2.slogan}">
-				The handler for your custom POI with photos
-			</h2>
-		
-		</div>
-		
-		
-		<div class="rightHeaderGroup">
-			
-			<select class="rightHeaderGroup__langSelector" onchange="location = this.value">
-				<option th:text="#{html.header.option.lang}">Language...</option>
-				<option th:value="@{/(lang=en)}">EN</option>
-				<option th:value="@{/(lang=ru)}">RU</option>
-			</select>
-			<img src="../static/img/turnOffBtn.png" alt="SHUTDOWN" class="rightHeaderGroup__shutdownButtonOn_img"
-				 th:alt="#{html.text.shutdown}" th:title="#{html.text.shutdown}"
-				 th:src="@{/img/turnOffBtn.png}"
-				 th:class="${#request.getAttribute('shutdownBtnClass')} != null ?
+
+    <header class="mainHeader">
+
+        <img src="../static/img/MapPointsTrimmerLogo.png" th:src="@{/img/MapPointsTrimmerLogo.png}" alt="logo"
+             class="mainHeader__logoImg">
+
+        <div class="nameHeaderGroup">
+
+            <a href="/" th:href="@{/}" class="nameHeaderGroup__appName">
+                <h1 class="nameHeaderGroup__appName" th:utext="#{html.h1.header}">
+                    MAP POINTS TRIMMER
+                </h1>
+            </a>
+            <h2 class="nameHeaderGroup__appSlogan" th:text="#{html.h2.slogan}">
+                The handler for your custom POI with photos
+            </h2>
+
+        </div>
+
+
+        <div class="rightHeaderGroup">
+
+            <select class="rightHeaderGroup__langSelector" onchange="location = this.value">
+                <option th:text="#{html.header.option.lang}">Language...</option>
+                <option th:value="@{/(lang=en)}">EN</option>
+                <option th:value="@{/(lang=ru)}">RU</option>
+            </select>
+            <img src="../static/img/turnOffBtn.png" alt="SHUTDOWN" class="rightHeaderGroup__shutdownButtonOn_img"
+                 th:alt="#{html.text.shutdown}" th:title="#{html.text.shutdown}"
+                 th:src="@{/img/turnOffBtn.png}"
+                 th:class="${#request.getAttribute('shutdownBtnClass')} != null ?
 				  ${#request.getAttribute('shutdownBtnClass')} : 'rightHeaderGroup__shutdownButtonOn_img'">
-		
-		</div>
-	
-	</header>
-	
-	<main class="mainBody">
-		
-		<h2 th:text="#{html.h2.howToConvert}" class="h2">
-			How to properly trim and process your custom Points of Interest (POI) with photos
-		</h2>
-		
-		
-		<article class="article">
-			
-			<section class="article__section" th:utext="#{commonMessages.article.howToUse}">
-				
-				<p>The aim of this utility is to help transfer your map points with photos in their descriptions from
-					one program to another one so that embedded photos will be properly displayed according to your
-					wishes and screen resolution as preview, and also have the ability to be magnified by click.
-					<br>Also it proposes a few additional options.
-				</p>
-				<img class="imageInText imageInText_vertical" src="../static/img/locusMapPhotoPoint.jpg"
-					 alt="Locus Pro with photo it its description" title="Click and hold to zoom image">
-				<img class="imageInText imageInText_horizontal" src="../static/img/GoogleEarthDynamic.gif"
-					 alt="Google Earth Pro dynamic points on map animation" title="Click and hold to zoom animation">
-				<img class="imageInText imageInText_horizontal" src="../static/img/googleEarthPhoto.jpg"
-					 alt="Google Earth Pro with photo in its description" title="Click and hold to zoom image">
-				<img class="imageInText imageInText_horizontal" src="../static/img/googleEarthPoints.jpg"
-					 alt="Google Earth Pro points on map" title="Click and hold to zoom image">
-				<p>First of all the utility supports transferring points between Locus Map pro and Google Earth Pro so
-					that your points in Locus Map and Google Earth will be displayed as on the examples.</p>
-				<p>It may be helpful for people who have a big amount of geo-tagged images within points and who would
-					like to keep them under control.</p>
-				<p>At the moment it supports only .kml (<a href=”https://en.wikipedia.org/wiki/Keyhole_Markup_Language”>those
-					are the files with the points (POI) description</a>) and .kmz (<a
-					href="https://developers.google.com/kml/documentation/kmzarchives">those are obvious archives
-					which
-					can be opened with any zip or rar archiver </a> with a points file .kml (named “doc.kml” as usual)
-					and a folder with photos for that file (named "files" as usual).</p>
-				<p>Below there are some possible scenarios how to use this…</p>
-			
-			</section>
-			
-			<details class="details">
-				<summary class="summaryOption" th:text="#{html.text.open-close}">Open\Close</summary>
-				
-				<section id="closableSection" class="article__section"
-						 th:utext="#{commonMessages.article.scenarios}">
-					<p>First of all the utility supports transferring points between Locus Map pro and Google Earth Pro
-						so that your points in Locus Map and Google Earth will be displayed as on the examples.</p>
-				</section>
-			
-			</details>
-		
-		
-		</article>
-		
-		<div id="userMessage" class="userMessage"
-			 th:class="${userMessage} ? 'userMessage' : (${#request.getParameter('userMessage')} ? 'userMessage' : 'userMessage.hidden')">
-			
-			<span th:utext="${userMessage} ? ${userMessage} : ''"></span>
-			<span
-				th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
-			<span class="specialButtons_close" title="Close"
-				  th:title="#{html.title.close}"
-				  th:if="${userMessage != null || #request.getParameter('userMessage') != null}">
+
+        </div>
+
+    </header>
+
+    <main class="mainBody">
+
+        <h2 th:text="#{html.h2.howToConvert}" class="h2">
+            How to properly trim and process your custom Points of Interest (POI) with photos
+        </h2>
+
+
+        <article class="article">
+
+            <section class="article__section" th:utext="#{commonMessages.article.howToUse}">
+
+                <p>The aim of this utility is to help transfer your map points with photos in their descriptions from
+                    one program to another one so that embedded photos will be properly displayed according to your
+                    wishes and screen resolution as preview, and also have the ability to be magnified by click.
+                    <br>Also it proposes a few additional options.
+                </p>
+                <img class="imageInText imageInText_vertical" src="../static/img/locusMapPhotoPoint.jpg"
+                     alt="Locus Pro with photo it its description" title="Click and hold to zoom image">
+                <img class="imageInText imageInText_horizontal" src="../static/img/GoogleEarthDynamic.gif"
+                     alt="Google Earth Pro dynamic points on map animation" title="Click and hold to zoom animation">
+                <img class="imageInText imageInText_horizontal" src="../static/img/googleEarthPhoto.jpg"
+                     alt="Google Earth Pro with photo in its description" title="Click and hold to zoom image">
+                <img class="imageInText imageInText_horizontal" src="../static/img/googleEarthPoints.jpg"
+                     alt="Google Earth Pro points on map" title="Click and hold to zoom image">
+                <p>First of all the utility supports transferring points between Locus Map pro and Google Earth Pro so
+                    that your points in Locus Map and Google Earth will be displayed as on the examples.</p>
+                <p>It may be helpful for people who have a big amount of geo-tagged images within points and who would
+                    like to keep them under control.</p>
+                <p>At the moment it supports only .kml (<a href=”https://en.wikipedia.org/wiki/Keyhole_Markup_Language”>those
+                    are the files with the points (POI) description</a>) and .kmz (<a
+                        href="https://developers.google.com/kml/documentation/kmzarchives">those are obvious archives
+                    which
+                    can be opened with any zip or rar archiver </a> with a points file .kml (named “doc.kml” as usual)
+                    and a folder with photos for that file (named "files" as usual).</p>
+                <p>Below there are some possible scenarios how to use this…</p>
+
+            </section>
+
+            <details class="details">
+                <summary class="summaryOption" th:text="#{html.text.open-close}">Open\Close</summary>
+
+                <section id="closableSection" class="article__section"
+                         th:utext="#{commonMessages.article.scenarios}">
+                    <p>First of all the utility supports transferring points between Locus Map pro and Google Earth Pro
+                        so that your points in Locus Map and Google Earth will be displayed as on the examples.</p>
+                </section>
+
+            </details>
+
+
+        </article>
+
+        <div id="userMessage" class="userMessage"
+             th:class="${userMessage} ? 'userMessage' : (${#request.getParameter('userMessage')} ? 'userMessage' : 'userMessage.hidden')">
+
+            <span th:utext="${userMessage} ? ${userMessage} : ''"></span>
+            <span
+                    th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
+            <span class="specialButtons_close" title="Close"
+                  th:title="#{html.title.close}"
+                  th:if="${userMessage != null || #request.getParameter('userMessage') != null}">
 				 x
 			</span>
-		
-		</div>
-		
-		<form id="poiFile" class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
-			  th:action="@{/poi}" name="poiFile">
-			<label for="locusFile" th:text="#{html.label.loadPoi}" class="loadForm__label">
-				Load custom points file
-			</label>
-			<div class="interrogation" title="Description"
-				 th:title="#{commonMessages.interrogationAsDescription.pointsFile}">?
-			</div>
-			<br>
-			<input id="locusFile" type="file" accept=".kmz, .kml" class="inputButton" name="multipartFile"
-				   required autofocus>
-			<br><br>
-			
-			<label for="fieldSetMain" class="loadForm__label loadForm__label_LoadFieldSet"
-				   th:text="#{html.label.additionalParams}">
-				Set additional parameters
-			</label>
-			
-			<fieldset id="fieldSetMain" class="loadForm loadForm__fieldSet">
-				
-				<input id="setPreviewSize" name="setPreviewSize" type="checkbox">
-				<label for="setPreviewSize" class="loadForm__label" th:text="#{html.label.previewSize}">
-					Set photos preview size
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.setPhotosPreview}">
-					?
-				</div>
-				<br>
-				<input id="previewSize" name="previewSize" type="number" placeholder="600" value="600"
-					   min="0" max="2440" step="20" class="loadForm_previewSizeInput" disabled>
-				<select id="previewSizeUnits" name="previewSizeUnit">
-					<option value="pixels" selected th:title="#{html.span.px}">px</option>
-					<option value="percentage">%</option>
-				</select>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.previewSizeUnits}">?
-				</div>
-				<br>
-				<input id="setPath" type="checkbox">
-				<label for="setPath" class="loadForm__label" th:text="#{html.input.setPath}">
-					Set paths to all image files in map points
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.setPath}">?
-				</div>
-				<br>
-				<input type="radio" name="pathType" id="relativePath" value="relative" checked disabled>
-				<label for="relativePath" class="loadForm__label loadForm__label_subSelectLabel"
-					   th:text="#{html.text.relativePath}">
-					Relative path
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.relativePath}">
-					?
-				</div>
-				<br>
-				<input type="radio" name="pathType" value="absolute" id="absolutePath" disabled>
-				<label for="absolutePath" class="loadForm__label loadForm__label_subSelectLabel"
-					   th:text="#{html.text.absolutePath}">
-					Absolute path
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.absolutePath}">
-					?
-				</div>
-				<br>
-				<input type="radio" name="pathType" value="web" id="webPath" disabled>
-				<label for="webPath" class="loadForm__label loadForm__label_subSelectLabel"
-					   th:text="#{html.text.webPath}">
-					WEB path
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.webPath}">
-					?
-				</div>
-				<br>
-				<input id="path" name="path" type="text" disabled
-					   th:title="#{html.input.placeholder.defaultPath}"
-					   title="Input a path to your photos here..."
-					   th:placeholder="#{html.input.placeholder.defaultPath}"
-					   placeholder="Input a path to your photos here...">
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.path}">?
-				</div>
-				<br>
-				<br>
-				
-				<details class="details">
-					<summary class="summaryOption" th:utext="#{html.text.optionalParameters}"><b>Optional parameters...</b></summary>
-					
-					<br>
-					<input id="trimXml" name="trimXml" type="checkbox">
-					<label for="trimXml" th:text="#{html.label.trimXml}" class="loadForm__label">
-						Trim whitespaces in xml markup to compress
-					</label>
-					<div class="interrogation" title="Description"
-						 th:title="#{commonMessages.interrogationAsDescription.trimXml}">?
-					</div>
-					<br>
-					<input id="trimDescriptions" name="trimDescriptions" type="checkbox">
-					<label for="trimDescriptions" class="loadForm__label" th:text="#{html.label.trimDescriptions}">
-						Trim whitespaces in user descriptions to compress
-					</label>
-					<div class="interrogation" title="Description"
-						 th:title="#{commonMessages.interrogationAsDescription.trimDescription}">
-						?
-					</div>
-					<br>
-				
-				</details>
-				
-				<br>
-			</fieldset>
-			<br>
-			
-			<label for="fieldSetLocus" class="loadForm__label loadForm__label_LoadFieldSet"
-				   th:utext="#{html.label.locusParams}">
-				Set Locus Map&copy; specific parameters
-			</label>
-			
-			<fieldset id="fieldSetLocus" class="loadForm loadForm__fieldSet">
-				<input id="asAttachmentInLocus" name="asAttachmentInLocus" type="checkbox">
-				<label for="asAttachmentInLocus" class="loadForm__label"
-					   th:text="#{html.label.locusAsAttachments}">
-					Add as attachments in Locus Map Pro
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.asAttachmentInLocus}">
-					?
-				</div>
-				<br>
-				<input id="clearDescriptions" name="clearOutdatedDescriptions" type="checkbox">
-				<label for="clearDescriptions" class="loadForm__label"
-					   th:text="#{html.label.clearDescriptions}">
-					Clear outdated POIs descriptions
-				</label>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.clearOutdatedPoiDesc}">?
-				</div>
-				
-				<br>
 
-				<fieldset id="fieldSetLocusAdmin" class="loadForm loadForm__fieldSet" style="display: block">
-					<input id="replaceIcons" name="asAttachmentInLocus" type="checkbox">
-					<label for="replaceIcons" class="loadForm__label"
-						   th:text="#{html.label.replaceLocusIcons}">
-						Replace photo POI icons in Locus Map Pro
-					</label>
-					<div class="interrogation" title="Description"
-						 th:title="#{commonMessages.interrogationAsDescription.replaceLocusIcons}">
-						?
-					</div>
-					<br>
+        </div>
 
-				</fieldset>
+        <form id="poiFile" class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
+              th:action="@{/poi}" name="poiFile">
+            <label for="locusFile" th:text="#{html.label.loadPoi}" class="loadForm__label">
+                Load custom points file
+            </label>
+            <div class="interrogation" title="Description"
+                 th:title="#{commonMessages.interrogationAsDescription.pointsFile}">?
+            </div>
+            <br>
+            <input id="locusFile" type="file" accept=".kmz, .kml" class="inputButton" name="multipartFile"
+                   required autofocus>
+            <br><br>
 
-			</fieldset>
-			
-			<br>
-			
-			<label for="googleEarthFieldset" class="loadForm__label loadForm__label_LoadFieldSet"
-				   th:utext="#{html.label.googleEarthParameters}">
-				Set Google Earth specific parameters
-			</label>
-			
-			<fieldset id="googleEarthFieldset" class="loadForm loadForm__fieldSet">
-				
-				<table>
-					
-					<tr>
-						<td>
-							
-							<label for="fieldSetGoogleEarthStatic"
-								   class="loadForm__label loadForm__label_LoadFieldSet loadForm__label_LoadFieldSet_subFieldset"
-								   th:utext="#{html.label.googleEarthStaticParameters}">
-								Static parameters
-							</label>
-							
-							<div class="interrogation" title="Description"
-								 th:title="#{commonMessages.interrogationAsDescription.googleEarthStaticParameters}">
-								?
-							</div>
-							
-							<fieldset id="fieldSetGoogleEarthStatic"
-									  class="loadForm loadForm__fieldSet">
-								
-								<input id="pointIconSize" class="loadForm_percentageInput" name="pointIconSize"
-									   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%"
-									   disabled>
-								<input id="setPointIconSize" type="checkbox">
-								<label for="setPointIconSize" class="loadForm__label"
-									   th:text="#{html.label.pointsIconsSize}">
-									Set point icons size
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsIconSize}">
-									?
-								</div>
-								
-								<br>
-								
-								<input id="pointIconOpacity" class="loadForm_percentageInput" name="pointIconOpacity"
-									   type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%"
-									   disabled>
-								<input id="setPointIconOpacity" type="checkbox">
-								<label for="setPointIconOpacity" class="loadForm__label"
-									   th:text="#{html.label.setPointsIconOpacity}">
-									Set icons opacity
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsIconOpacity}">
-									?
-								</div>
-								
-								<br>
-								
-								<input id="pointTextSize" class="loadForm_percentageInput" name="pointTextSize"
-									   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%"
-									   disabled>
-								<input id="setPointTextSize" type="checkbox">
-								<label for="setPointTextSize" class="loadForm__label"
-									   th:text="#{html.label.setPointTextSize}">
-									Set point labels text size
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsTextSize}">
-									?
-								</div>
-								
-								<br>
-								
-								<input id="pointTextOpacity" class="loadForm_percentageInput" name="pointTextOpacity"
-									   type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%"
-									   disabled>
-								<input id="setPointTextOpacity" type="checkbox">
-								<label for="setPointTextOpacity" class="loadForm__label"
-									   th:text="#{html.label.setPointsTextOpacity}">
-									Set text opacity for points names
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsTextOpacity}">
-									?
-								</div>
-								
-								<br>
-								
-								<input id="pointTextHexColor" class="loadForm_colorInput" name="pointTextHexColor"
-									   type="color" disabled>
-								<input id="setPointTextHexColor" type="checkbox">
-								<label for="setPointTextHexColor" class="loadForm__label"
-									   th:text="#{html.label.setPointsTextHexColor}">
-									Set color for points names
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsTextColor}">
-									?
-								</div>
-								
-								<br>
-							
-							</fieldset>
-						
-						</td>
-						<td>
-							
-							<!--						<br>-->
-							
-							<label for="fieldSetGoogleEarthDynamic"
-								   class="loadForm__label loadForm__label_LoadFieldSet loadForm__label_LoadFieldSet_subFieldset"
-								   th:utext="#{html.label.googleEarthDynamicParameters}">
-								Dynamic parameters
-							</label>
-							
-							<div class="interrogation" title="Description"
-								 th:title="#{commonMessages.interrogationAsDescription.googleEarthDynamicParameters}">
-								?
-							</div>
-							
-							<fieldset id="fieldSetGoogleEarthDynamic"
-									  class="loadForm loadForm__fieldSet">
-								
-								<input id="pointIconSizeDynamic" class="loadForm_percentageInput"
-									   name="pointIconSizeDynamic"
-									   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%"
-									   disabled>
-								<input id="setPointIconSizeDynamic" type="checkbox">
-								<label for="setPointIconSizeDynamic" class="loadForm__label"
-									   th:text="#{html.label.pointsIconsSize}">
-									Set dynamic points icons size
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsIconSizeDynamic}">
-									?
-								</div>
-								
-								<br>
-								
-								<input id="pointIconOpacityDynamic" class="loadForm_percentageInput"
-									   name="pointIconOpacityDynamic"
-									   type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%"
-									   disabled>
-								<input id="setPointIconOpacityDynamic" type="checkbox">
-								<label for="setPointIconOpacityDynamic" class="loadForm__label"
-									   th:text="#{html.label.setPointsIconOpacity}">
-									Set dynamic icons opacity
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsIconOpacityDynamic}">
-									?
-								</div>
-								
-								<br>
-								
-								<input id="pointTextSizeDynamic" class="loadForm_percentageInput"
-									   name="pointTextSizeDynamic"
-									   type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%"
-									   disabled>
-								<input id="setPointTextSizeDynamic" type="checkbox">
-								<label for="setPointTextSizeDynamic" class="loadForm__label"
-									   th:text="#{html.label.setPointTextSize}">
-									Set dynamic text size for points names
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsTextSizeDynamic}">
-									?
-								</div>
-								
-								<br>
-								
-								<input id="pointTextOpacityDynamic" class="loadForm_percentageInput"
-									   name="pointTextOpacityDynamic"
-									   type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%"
-									   disabled>
-								<input id="setPointTextOpacityDynamic" type="checkbox">
-								<label for="setPointTextOpacityDynamic" class="loadForm__label"
-									   th:text="#{html.label.setPointsTextOpacity}">
-									Set dynamic text opacity for points names
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsTextOpacityDynamic}">
-									?
-								</div>
-								
-								<br>
-								
-								<input id="pointTextHexColorDynamic" class="loadForm_colorInput"
-									   name="pointTextHexColorDynamic"
-									   type="color" disabled>
-								<input id="setPointTextHexColorDynamic" type="checkbox">
-								<label for="setPointTextHexColorDynamic" class="loadForm__label"
-									   th:text="#{html.label.setPointsTextHexColor}">
-									Set dynamic text color for points names
-								</label>
-								<div class="interrogation" title="Description"
-									 th:title="#{commonMessages.interrogationAsDescription.pointsTextHexColorDynamic}">
-									?
-								</div>
-								
-								<br>
-							
-							</fieldset>
-						
-						</td>
-					</tr>
-				
-				</table>
-			
-			</fieldset>
-			
-			<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
-				
-				<input type="submit" id="trim" value="PROCESS"
-					   class="inputButton loadForm__inputButton_processSpecialButton"
-					   th:value="#{html.input.value.convert}">
-				
-				<select id="downloadAs" name="downloadAs" class="loadForm__selectDownloadAs"
-						th:title="#{html.title.select.downloadAs}"
-						title="Download as... (.kml by default)">
-					<option value="kml" selected title="A processed file with the points and tracks inside."
-							th:title="#{html.title.select.downloadAsKml}">
-						.kml
-					</option>
-					<option value="kmz" title="A full archive with photos and the processed .kml file inside."
-							th:title="#{html.title.select.downloadAsKmz}">
-						.kmz
-					</option>
-				</select>
-				<div class="interrogation" title="Description"
-					 th:title="#{commonMessages.interrogationAsDescription.downloadAs}">
-					?
-				</div>
-				
-				
-				<span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
+            <label for="fieldSetMain" class="loadForm__label loadForm__label_LoadFieldSet"
+                   th:text="#{html.label.additionalParams}">
+                Set additional parameters
+            </label>
+
+            <fieldset id="fieldSetMain" class="loadForm loadForm__fieldSet">
+
+                <input id="setPreviewSize" name="setPreviewSize" type="checkbox">
+                <label for="setPreviewSize" class="loadForm__label" th:text="#{html.label.previewSize}">
+                    Set photos preview size
+                </label>
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.setPhotosPreview}">
+                    ?
+                </div>
+                <br>
+                <input id="previewSize" name="previewSize" type="number" placeholder="600" value="600"
+                       min="0" max="2440" step="20" class="loadForm_previewSizeInput" disabled>
+                <select id="previewSizeUnits" name="previewSizeUnit">
+                    <option value="pixels" selected th:title="#{html.span.px}">px</option>
+                    <option value="percentage">%</option>
+                </select>
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.previewSizeUnits}">?
+                </div>
+                <br>
+                <input id="setPath" type="checkbox">
+                <label for="setPath" class="loadForm__label" th:text="#{html.input.setPath}">
+                    Set paths to all image files in map points
+                </label>
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.setPath}">?
+                </div>
+                <br>
+                <input type="radio" name="pathType" id="relativePath" value="relative" checked disabled>
+                <label for="relativePath" class="loadForm__label loadForm__label_subSelectLabel"
+                       th:text="#{html.text.relativePath}">
+                    Relative path
+                </label>
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.relativePath}">
+                    ?
+                </div>
+                <br>
+                <input type="radio" name="pathType" value="absolute" id="absolutePath" disabled>
+                <label for="absolutePath" class="loadForm__label loadForm__label_subSelectLabel"
+                       th:text="#{html.text.absolutePath}">
+                    Absolute path
+                </label>
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.absolutePath}">
+                    ?
+                </div>
+                <br>
+                <input type="radio" name="pathType" value="web" id="webPath" disabled>
+                <label for="webPath" class="loadForm__label loadForm__label_subSelectLabel"
+                       th:text="#{html.text.webPath}">
+                    WEB path
+                </label>
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.webPath}">
+                    ?
+                </div>
+                <br>
+                <input id="path" name="path" type="text" disabled
+                       th:title="#{html.input.placeholder.defaultPath}"
+                       title="Input a path to your photos here..."
+                       th:placeholder="#{html.input.placeholder.defaultPath}"
+                       placeholder="Input a path to your photos here...">
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.path}">?
+                </div>
+                <br>
+                <br>
+
+                <details class="details">
+                    <summary class="summaryOption" th:utext="#{html.text.optionalParameters}"><b>Optional
+                        parameters...</b></summary>
+
+                    <br>
+                    <input id="trimXml" name="trimXml" type="checkbox">
+                    <label for="trimXml" th:text="#{html.label.trimXml}" class="loadForm__label">
+                        Trim whitespaces in xml markup to compress
+                    </label>
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.trimXml}">?
+                    </div>
+                    <br>
+                    <input id="trimDescriptions" name="trimDescriptions" type="checkbox">
+                    <label for="trimDescriptions" class="loadForm__label" th:text="#{html.label.trimDescriptions}">
+                        Trim whitespaces in user descriptions to compress
+                    </label>
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.trimDescription}">
+                        ?
+                    </div>
+                    <br>
+
+                </details>
+
+                <br>
+            </fieldset>
+            <br>
+
+            <label for="fieldSetLocus" class="loadForm__label loadForm__label_LoadFieldSet"
+                   th:utext="#{html.label.locusParams}">
+                Set Locus Map&copy; specific parameters
+            </label>
+
+            <fieldset id="fieldSetLocus" class="loadForm loadForm__fieldSet">
+                <input id="asAttachmentInLocus" name="asAttachmentInLocus" type="checkbox">
+                <label for="asAttachmentInLocus" class="loadForm__label"
+                       th:text="#{html.label.locusAsAttachments}">
+                    Add as attachments in Locus Map Pro
+                </label>
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.asAttachmentInLocus}">
+                    ?
+                </div>
+                <br>
+                <input id="clearDescriptions" name="clearOutdatedDescriptions" type="checkbox">
+                <label for="clearDescriptions" class="loadForm__label"
+                       th:text="#{html.label.clearDescriptions}">
+                    Clear outdated POIs descriptions
+                </label>
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.clearOutdatedPoiDesc}">?
+                </div>
+
+                <br>
+                <br>
+
+                <details class="details" open>
+                    <summary class="summaryOption" th:utext="#{html.text.OptionalLocusParameters}">
+                        <b>Optional Locus parameters...</b>
+                    </summary>
+
+                    <br>
+
+
+
+
+
+                    <input type="text" value="" id="trace"/>
+
+                    <div id="image-dropdown" >
+                        <input checked="checked" type="radio" id="line1" name="line-style" value="1"  /><label for="line1"></label>
+                        <input type="radio" id="line2" name="line-style" value="2"  /> <label for="line2"></label>
+                        <input type="radio" id="line3" name="line-style" value="3"  /> <label for="line3"></label>
+                        <input type="radio" id="line4" name="line-style" value="4"  /> <label for="line4"></label>
+                        <input type="radio" id="line5" name="line-style" value="5"  /> <label for="line5"></label>
+                        <input type="radio" id="line6" name="line-style" value="6"  /> <label for="line6"></label>
+                        <input type="radio" id="line7" name="line-style" value="7"  /> <label for="line7"></label>
+                    </div>
+
+
+
+
+
+                    <select id="locusPoiPictogram" name="locusPoiPictogram" class="loadForm__selectLocusPioPictogram"
+                            th:title="#{html.title.select.locusPoiPictogram}"
+                            title="Select a pictogram instead of thumbnail for displaying on map">
+                        <option value="option1" selected title="TITLE."
+                                th:title="#{html.title.select.locusPoiPic1}">
+                            Some icon one
+                        </option>
+                        <option value="option2" title="TITLE."
+                                th:title="#{html.title.select.locusPoiPic2}">
+                            Some icon two
+                        </option>
+                    </select>
+
+                    <input id="replaceIcons" name="replaceLocusIcons" type="checkbox">
+                    <label for="replaceIcons" class="loadForm__label"
+                           th:text="#{html.label.replaceLocusIcons}">
+                        Replace photo POI icons in Locus Map Pro
+                    </label>
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.replaceLocusIcons}">?
+                    </div>
+
+                    <br>
+
+                </details>
+
+            </fieldset>
+
+            <br>
+
+            <label for="googleEarthFieldset" class="loadForm__label loadForm__label_LoadFieldSet"
+                   th:utext="#{html.label.googleEarthParameters}">
+                Set Google Earth specific parameters
+            </label>
+
+            <fieldset id="googleEarthFieldset" class="loadForm loadForm__fieldSet">
+
+                <table>
+
+                    <tr>
+                        <td>
+
+                            <label for="fieldSetGoogleEarthStatic"
+                                   class="loadForm__label loadForm__label_LoadFieldSet loadForm__label_LoadFieldSet_subFieldset"
+                                   th:utext="#{html.label.googleEarthStaticParameters}">
+                                Static parameters
+                            </label>
+
+                            <div class="interrogation" title="Description"
+                                 th:title="#{commonMessages.interrogationAsDescription.googleEarthStaticParameters}">
+                                ?
+                            </div>
+
+                            <fieldset id="fieldSetGoogleEarthStatic"
+                                      class="loadForm loadForm__fieldSet">
+
+                                <input id="pointIconSize" class="loadForm_percentageInput" name="pointIconSize"
+                                       type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%"
+                                       disabled>
+                                <input id="setPointIconSize" type="checkbox">
+                                <label for="setPointIconSize" class="loadForm__label"
+                                       th:text="#{html.label.pointsIconsSize}">
+                                    Set point icons size
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsIconSize}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                                <input id="pointIconOpacity" class="loadForm_percentageInput" name="pointIconOpacity"
+                                       type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%"
+                                       disabled>
+                                <input id="setPointIconOpacity" type="checkbox">
+                                <label for="setPointIconOpacity" class="loadForm__label"
+                                       th:text="#{html.label.setPointsIconOpacity}">
+                                    Set icons opacity
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsIconOpacity}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                                <input id="pointTextSize" class="loadForm_percentageInput" name="pointTextSize"
+                                       type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%"
+                                       disabled>
+                                <input id="setPointTextSize" type="checkbox">
+                                <label for="setPointTextSize" class="loadForm__label"
+                                       th:text="#{html.label.setPointTextSize}">
+                                    Set point labels text size
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsTextSize}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                                <input id="pointTextOpacity" class="loadForm_percentageInput" name="pointTextOpacity"
+                                       type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%"
+                                       disabled>
+                                <input id="setPointTextOpacity" type="checkbox">
+                                <label for="setPointTextOpacity" class="loadForm__label"
+                                       th:text="#{html.label.setPointsTextOpacity}">
+                                    Set text opacity for points names
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsTextOpacity}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                                <input id="pointTextHexColor" class="loadForm_colorInput" name="pointTextHexColor"
+                                       type="color" disabled>
+                                <input id="setPointTextHexColor" type="checkbox">
+                                <label for="setPointTextHexColor" class="loadForm__label"
+                                       th:text="#{html.label.setPointsTextHexColor}">
+                                    Set color for points names
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsTextColor}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                            </fieldset>
+
+                        </td>
+                        <td>
+
+                            <!--						<br>-->
+
+                            <label for="fieldSetGoogleEarthDynamic"
+                                   class="loadForm__label loadForm__label_LoadFieldSet loadForm__label_LoadFieldSet_subFieldset"
+                                   th:utext="#{html.label.googleEarthDynamicParameters}">
+                                Dynamic parameters
+                            </label>
+
+                            <div class="interrogation" title="Description"
+                                 th:title="#{commonMessages.interrogationAsDescription.googleEarthDynamicParameters}">
+                                ?
+                            </div>
+
+                            <fieldset id="fieldSetGoogleEarthDynamic"
+                                      class="loadForm loadForm__fieldSet">
+
+                                <input id="pointIconSizeDynamic" class="loadForm_percentageInput"
+                                       name="pointIconSizeDynamic"
+                                       type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%"
+                                       disabled>
+                                <input id="setPointIconSizeDynamic" type="checkbox">
+                                <label for="setPointIconSizeDynamic" class="loadForm__label"
+                                       th:text="#{html.label.pointsIconsSize}">
+                                    Set dynamic points icons size
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsIconSizeDynamic}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                                <input id="pointIconOpacityDynamic" class="loadForm_percentageInput"
+                                       name="pointIconOpacityDynamic"
+                                       type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%"
+                                       disabled>
+                                <input id="setPointIconOpacityDynamic" type="checkbox">
+                                <label for="setPointIconOpacityDynamic" class="loadForm__label"
+                                       th:text="#{html.label.setPointsIconOpacity}">
+                                    Set dynamic icons opacity
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsIconOpacityDynamic}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                                <input id="pointTextSizeDynamic" class="loadForm_percentageInput"
+                                       name="pointTextSizeDynamic"
+                                       type="number" min="0" max="300" step="10" pattern="[0-9]" placeholder="%"
+                                       disabled>
+                                <input id="setPointTextSizeDynamic" type="checkbox">
+                                <label for="setPointTextSizeDynamic" class="loadForm__label"
+                                       th:text="#{html.label.setPointTextSize}">
+                                    Set dynamic text size for points names
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsTextSizeDynamic}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                                <input id="pointTextOpacityDynamic" class="loadForm_percentageInput"
+                                       name="pointTextOpacityDynamic"
+                                       type="number" min="0" max="100" step="10" pattern="[0-9]" placeholder="%"
+                                       disabled>
+                                <input id="setPointTextOpacityDynamic" type="checkbox">
+                                <label for="setPointTextOpacityDynamic" class="loadForm__label"
+                                       th:text="#{html.label.setPointsTextOpacity}">
+                                    Set dynamic text opacity for points names
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsTextOpacityDynamic}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                                <input id="pointTextHexColorDynamic" class="loadForm_colorInput"
+                                       name="pointTextHexColorDynamic"
+                                       type="color" disabled>
+                                <input id="setPointTextHexColorDynamic" type="checkbox">
+                                <label for="setPointTextHexColorDynamic" class="loadForm__label"
+                                       th:text="#{html.label.setPointsTextHexColor}">
+                                    Set dynamic text color for points names
+                                </label>
+                                <div class="interrogation" title="Description"
+                                     th:title="#{commonMessages.interrogationAsDescription.pointsTextHexColorDynamic}">
+                                    ?
+                                </div>
+
+                                <br>
+
+                            </fieldset>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </fieldset>
+
+            <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
+
+                <input type="submit" id="trim" value="PROCESS"
+                       class="inputButton loadForm__inputButton_processSpecialButton"
+                       th:value="#{html.input.value.convert}">
+
+                <select id="downloadAs" name="downloadAs" class="loadForm__selectDownloadAs"
+                        th:title="#{html.title.select.downloadAs}"
+                        title="Download as... (.kml by default)">
+                    <option value="kml" selected title="A processed file with the points and tracks inside."
+                            th:title="#{html.title.select.downloadAsKml}">
+                        .kml
+                    </option>
+                    <option value="kmz" title="A full archive with photos and the processed .kml file inside."
+                            th:title="#{html.title.select.downloadAsKmz}">
+                        .kmz
+                    </option>
+                </select>
+                <div class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.downloadAs}">
+                    ?
+                </div>
+
+
+                <span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					Download
 				</span>
-			
-			</fieldset>
 
-		</form>
-		
-		<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet__debugFieldset">
-			
-			<div class="loadForm__fieldSet__settingsContainer">
-				
-				<div class="loadForm__fieldSet__setting_preset">
-					
-					<input id="presetsInput" list="presetsDatalist" placeholder="Presets..." title="Local presets list"
-						   th:title="#{html.title.select.localPresets}"
-						   th:placeholder="#{html.input.placeholder.presets}">
-					<datalist id="presetsDatalist">
-					</datalist>
-					
-					<span id="presetClear" class="specialButtons specialButtons_clear" title="Clear..."
-						  th:title="#{html.title.clearTextArea}">
+            </fieldset>
+
+        </form>
+
+        <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet__debugFieldset">
+
+            <div class="loadForm__fieldSet__settingsContainer">
+
+                <div class="loadForm__fieldSet__setting_preset">
+
+                    <input id="presetsInput" list="presetsDatalist" placeholder="Presets..." title="Local presets list"
+                           th:title="#{html.title.select.localPresets}"
+                           th:placeholder="#{html.input.placeholder.presets}">
+                    <datalist id="presetsDatalist">
+                    </datalist>
+
+                    <span id="presetClear" class="specialButtons specialButtons_clear" title="Clear..."
+                          th:title="#{html.title.clearTextArea}">
 						&#9851;
 					</span>
-					
-					<span id="presetSave" class="specialButtons specialButtons_accept" title="Save or Update preset"
-						  th:title="#{html.title.saveUpdatePreset}">
+
+                    <span id="presetSave" class="specialButtons specialButtons_accept" title="Save or Update preset"
+                          th:title="#{html.title.saveUpdatePreset}">
 						&#10004;
 					</span>
-					
-					<span id="presetDelete" class="specialButtons specialButtons_close" title="Delete preset"
-						  th:title="#{html.title.deletePreset}">
+
+                    <span id="presetDelete" class="specialButtons specialButtons_close" title="Delete preset"
+                          th:title="#{html.title.deletePreset}">
 						x
 					</span>
-					
-					<div class="interrogation" title="Description" style="margin-left: 0.7em"
-						 th:title="#{commonMessages.interrogationAsDescription.presets}">
-						?
-					</div>
-				
-				</div>
-				
-				<div class="loadForm__fieldSet__setting_debug">
-					
-					<input type="checkbox" id="debugMode">
-					<span th:utext="#{html.input.checkbox.debugMode}" style="font-size: smaller">Debug mode</span>
-					</input>
-					
-					<div id="debugInterrogation" class="interrogation" title="Description"
-						 th:title="#{commonMessages.interrogationAsDescription.debugMode}">
-						?
-					</div>
-				
-				</div>
-			
-			</div>
-		
-		</fieldset>
 
-		<br>
+                    <div class="interrogation" title="Description" style="margin-left: 0.7em"
+                         th:title="#{commonMessages.interrogationAsDescription.presets}">
+                        ?
+                    </div>
 
-		<fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_adminFieldset">
+                </div>
 
-			<details class="details">
-				<summary class="summaryOption" th:utext="#{html.text.adminLogin}"><small>Admin login...</small></summary>
+                <div class="loadForm__fieldSet__setting_debug">
 
-				<br>
+                    <input type="checkbox" id="debugMode">
+                    <span th:utext="#{html.input.checkbox.debugMode}" style="font-size: smaller">Debug mode</span>
+                    </input>
 
-				<input type="text" id="adminLogin" placeholder="Login...">
-				<br>
-				<input type="password" id="adminPassword" placeholder="Password...">
-				<br>
-				<input type="button" id="adminVerifyButton" value="Verify">
+                    <div id="debugInterrogation" class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.debugMode}">
+                        ?
+                    </div>
 
-				<br>
+                </div>
 
-			</details>
+            </div>
 
-		</fieldset>
+        </fieldset>
 
-	</main>
-	
-	<article class="articleAbout" th:utext="#{commonMessages.about}" th:title="#{html.title.close}" title="Close"
-			 style="display: none">
-		About application text.
-	</article>
-	
-	<footer class="mainFooter">
-		
-		<div id="aboutItem" class="mainFooter__item" th:text="#{html.text.about}">About</div>
-		
-		<div>
-			<ul class="listSmall">
-				<li title="Developer's Github" th:title="#{html.title.footer.contacts.github}">
-					<a href="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases" target="_blank"
-					   class="mainFooter__item_smaller">
-						Github
-					</a>
-				</li>
-				<li title="Email" th:title="#{html.title.footer.email}">
-					<a href="mailto:mrbaxmypka@yandex.ru" class="mainFooter__item_smaller">Email</a>
-				</li>
-				<li class="mainFooter__item_noStyle" title="Location" th:title="#{html.title.footer.location}">
-					RU, Moscow
-				</li>
-			</ul>
-		</div>
-	
-	</footer>
+        <br>
+
+        <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_adminFieldset">
+
+            <details class="details">
+                <summary class="summaryOption" th:utext="#{html.text.adminLogin}"><small>Admin login...</small>
+                </summary>
+
+                <br>
+                <input type="text" id="adminLogin" class="textInput" placeholder="Login...">
+                <br>
+                <input type="password" id="adminPassword" class="textInput" placeholder="Password...">
+                <br>
+                <input type="button" id="adminVerifyButton" class="inputButton" value="Verify">
+                <span> </span>
+                <div id="adminInterrogation" class="interrogation" title="Description"
+                     th:title="#{commonMessages.interrogationAsDescription.adminLoginDescription}">
+                    ?
+                </div>
+
+                <br>
+
+            </details>
+
+        </fieldset>
+
+    </main>
+
+    <article class="articleAbout" th:utext="#{commonMessages.about}" th:title="#{html.title.close}" title="Close"
+             style="display: none">
+        About application text.
+    </article>
+
+    <footer class="mainFooter">
+
+        <div id="aboutItem" class="mainFooter__item" th:text="#{html.text.about}">About</div>
+
+        <div>
+            <ul class="listSmall">
+                <li title="Developer's Github" th:title="#{html.title.footer.contacts.github}">
+                    <a href="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/releases" target="_blank"
+                       class="mainFooter__item_smaller">
+                        Github
+                    </a>
+                </li>
+                <li title="Email" th:title="#{html.title.footer.email}">
+                    <a href="mailto:mrbaxmypka@yandex.ru" class="mainFooter__item_smaller">Email</a>
+                </li>
+                <li class="mainFooter__item_noStyle" title="Location" th:title="#{html.title.footer.location}">
+                    RU, Moscow
+                </li>
+            </ul>
+        </div>
+
+    </footer>
 
 </div>
 

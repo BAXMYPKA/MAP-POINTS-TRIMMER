@@ -365,6 +365,73 @@ input[type=radio] {
 	display: inline-block;
 }
 
+.loadForm__selectLocusPioPictogram {
+	display: inline-block;
+}
+
+.loadForm__selectLocusPioPictogram option {
+	background-image: url(static/img/favicon32x32.png);
+	/*background-color: #1f389c;*/
+}
+
+
+
+
+
+
+#image-dropdown {
+	/*style the "box" in its minimzed state*/
+	border:1px solid black; width:200px; height:50px; overflow:hidden;
+	/*animate collapsing the dropdown from open to closed state (v. fast)*/
+	-moz-transition: height 0.1s;
+	-webkit-transition: height 0.1s;
+	-ms-transition: height 0.1s;
+	-o-transition: height 0.1s;
+	transition: height 0.1s;
+}
+#image-dropdown:hover {
+	/*when expanded, the dropdown will get native means of scrolling*/
+	height:200px; overflow-y:scroll;
+	/*nice and smooth expand - speed this up at your preference or remove animation altogether*/
+	-moz-transition: height 0.5s;
+	-webkit-transition: height 0.5s;
+	-ms-transition: height 0.5s;
+	-o-transition: height 0.5s;
+	transition: height 0.5s;
+}
+#image-dropdown input {
+	/*hide the nasty default radio buttons. like, completely!*/
+	position:absolute;top:0;left:0;opacity:0;
+}
+
+#image-dropdown label {
+	/*style the labels to look like dropdown options, kinda*/
+	display:none; margin:2px; height:46px; opacity:0.2;
+	/*setting correct backgrounds - add additional rules with selectors based on "for" attribute, something like label[for=line2]{background-image:...}*/
+	background:url("http://www.google.com/images/srpr/logo3w.png") 50% 50%;}
+#image-dropdown:hover label{
+	/*this is how labels render in the "expanded" state. we want to see only the selected radio button in the collapsed menu, and all of them when expanded*/
+	display:block;
+}
+#image-dropdown label:hover {
+	opacity:0.5;
+}
+#image-dropdown input:checked + label {
+	/*tricky! labels immediately following a checked radio button (with our markup they are semantically related) should be fully opaque regardless of hover, and they should always be visible (i.e. even in the collapsed menu*/
+	opacity:1 !important; display:block;
+}
+
+/*pfft, nothing as cool here, just the value trace*/
+#trace {margin:0 0 20px;}
+
+
+/*IMPORTANT PIECE OF JS CODE TO BE INCLUDED INTO JS FILE*/
+/*var i = setInterval(function(){$("#trace").val($("input[name=line-style]:checked").val());},100);*/
+
+
+
+
+
 .loadForm_previewSizeInput {
 	width: 4em;
 }
@@ -390,6 +457,15 @@ input[type=radio] {
 	font-weight: bold;
 	border: goldenrod 0.1em solid;
 	border-radius: 0.2em;
+}
+
+.inputButton:hover {
+
+	border: darkgoldenrod 0.1em dashed;
+}
+
+.textInput {
+	margin-bottom: 0.5em;
 }
 
 #prevSize {
