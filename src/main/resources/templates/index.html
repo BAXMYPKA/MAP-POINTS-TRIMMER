@@ -277,39 +277,6 @@
 
                     <br>
 
-
-
-
-
-                    <input type="text" value="" id="trace"/>
-
-                    <div id="image-dropdown" >
-                        <input checked="checked" type="radio" id="line1" name="line-style" value="1"  /><label for="line1"></label>
-                        <input type="radio" id="line2" name="line-style" value="2"  /> <label for="line2"></label>
-                        <input type="radio" id="line3" name="line-style" value="3"  /> <label for="line3"></label>
-                        <input type="radio" id="line4" name="line-style" value="4"  /> <label for="line4"></label>
-                        <input type="radio" id="line5" name="line-style" value="5"  /> <label for="line5"></label>
-                        <input type="radio" id="line6" name="line-style" value="6"  /> <label for="line6"></label>
-                        <input type="radio" id="line7" name="line-style" value="7"  /> <label for="line7"></label>
-                    </div>
-
-
-
-
-
-                    <select id="locusPoiPictogram" name="locusPoiPictogram" class="loadForm__selectLocusPioPictogram"
-                            th:title="#{html.title.select.locusPoiPictogram}"
-                            title="Select a pictogram instead of thumbnail for displaying on map">
-                        <option value="option1" selected title="TITLE."
-                                th:title="#{html.title.select.locusPoiPic1}">
-                            Some icon one
-                        </option>
-                        <option value="option2" title="TITLE."
-                                th:title="#{html.title.select.locusPoiPic2}">
-                            Some icon two
-                        </option>
-                    </select>
-
                     <input id="replaceIcons" name="replaceLocusIcons" type="checkbox">
                     <label for="replaceIcons" class="loadForm__label"
                            th:text="#{html.label.replaceLocusIcons}">
@@ -320,7 +287,37 @@
                     </div>
 
                     <br>
+                    <br>
 
+                    <div id="pictogram-dropdown" style="display: none">
+
+                        <th:block th:each="pic:${pictograms}">
+
+                        <input type="radio" id="pictogram1" th:id="${pic}" name="pictogram" value="pic"
+                               th:value="${pic}"/>
+                        <label for="pictogram1" style="background:url('static/pictograms/sport-cyclingsport.png') 33px 38px no-repeat"
+                               th:for="${pic}" th:style="'background:url(' + @{pictograms/{p}(p=${pic})} + ')'"></label>
+
+                        </th:block>
+
+                        <input type="text" value="" id="trace" hidden/>
+
+                        <br>
+
+                    </div>
+
+<!--
+                    <div id="image-dropdown">
+                        <input checked="checked" type="radio" id="line1" name="line-style" value="1"/>
+                        <label for="line1"></label>
+                        <input type="radio" id="line2" name="line-style" value="2"/> <label for="line2"></label>
+                        <input type="radio" id="line3" name="line-style" value="3"/> <label for="line3"></label>
+                        <input type="radio" id="line4" name="line-style" value="4"/> <label for="line4"></label>
+                        <input type="radio" id="line5" name="line-style" value="5"/> <label for="line5"></label>
+                        <input type="radio" id="line6" name="line-style" value="6"/> <label for="line6"></label>
+                        <input type="radio" id="line7" name="line-style" value="7"/> <label for="line7"></label>
+                    </div>
+-->
                 </details>
 
             </fieldset>

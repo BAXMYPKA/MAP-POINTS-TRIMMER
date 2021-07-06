@@ -109,19 +109,17 @@ public class FileService {
 	}
 	
 	/**
-	 * Collects a list of pictograms names in 'resources/static/pictograms' directory.
-	 * @return {@literal ArrayList<String> pictogramNames}
+	 * Collects a list of pictograms names from the 'resources/static/pictograms' directory.
+	 * @return {@literal ArrayList<String> pictogramNames} or an empty Array of nothing found.
 	 */
 	public ArrayList<String> getPictogramsNames() {
-		final String pathToPics = "static/pictograms";
-		final Resource resource = resourceLoader.getResource(pathToPics);
+		final Resource resource = resourceLoader.getResource("classpath:static/pictograms");
 		try(BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
 			ArrayList<String> pictogramNames = reader.lines().collect(Collectors.toCollection(ArrayList::new));
 			log.info("{} Pictograms have been collected.", pictogramNames.size());
 			return pictogramNames;
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
-			e.printStackTrace();
 			return new ArrayList<String>(0);
 		}
 	}
