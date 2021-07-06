@@ -425,7 +425,7 @@ input[type=radio] {
 }
 
 /*pfft, nothing as cool here, just the value trace*/
-#trace {margin:0 0 20px;}
+#pictogramValueTrace {margin:0 0 2px;}
 
 
 /*IMPORTANT PIECE OF JS CODE TO BE INCLUDED INTO JS FILE*/

@@ -33,6 +33,7 @@ public abstract class AbstractController {
 		model.addAttribute("maxFileSizeMb", maxFileSizeMb);
 		model.addAttribute("serverAddress", serverAddress);
 		model.addAttribute("pictograms", fileService.getPictogramsNames());
+		model.addAttribute("pictogramsMap", fileService.getPictogramsNamesMap());
 		log.trace("ServerAddress={}, maxFileSizeMb={}, pictograms={} attributes have been added and the 'index' page is being " +
 				"returned.",
 			serverAddress, maxFileSizeMb, fileService.getPictogramsNames().size());

@@ -16,8 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -71,7 +72,7 @@ public class FileService {
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			
 			stackTrace = messageSource.getMessage(
-				"exceptions.logFileReadFailure(1)",	new Object[]{e.getMessage()}, locale);
+				  "exceptions.logFileReadFailure(1)", new Object[]{e.getMessage()}, locale);
 		}
 		return stackTrace;
 	}
@@ -101,21 +102,23 @@ public class FileService {
 		if (!pathWithFilename.matches("[.\\S]{1,100}\\.[a-zA-Z1-9]{3,5}")) return "";
 		//If index of '/' or '\' return -1 the 'oldHrefWithFilename' consist of only the filename without href
 		int lastIndexOFSlash = pathWithFilename.lastIndexOf("/") != -1 ?
-				pathWithFilename.lastIndexOf("/") :
-				pathWithFilename.lastIndexOf("\\");
+			  pathWithFilename.lastIndexOf("/") :
+			  pathWithFilename.lastIndexOf("\\");
 		String filename = pathWithFilename.substring(lastIndexOFSlash + 1);
 		log.trace("Filename as '{}' will be returned", filename);
 		return filename.isBlank() ? "" : filename;
 	}
 	
 	/**
-	 * Collects a list of pictograms names from the 'resources/static/pictograms' directory.
-	 * @return {@literal ArrayList<String> pictogramNames} or an empty Array of nothing found.
+	 * Collects a list of only pictograms names as .png files from the 'resources/static/pictograms' directory.
+	 *
+	 * @return {@literal ArrayList<String> pictogramNames} or an empty Array if nothing found.
 	 */
 	public ArrayList<String> getPictogramsNames() {
 		final Resource resource = resourceLoader.getResource("classpath:static/pictograms");
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
 			ArrayList<String> pictogramNames = reader.lines().collect(Collectors.toCollection(ArrayList::new));
+			pictogramNames.removeIf(s -> !s.endsWith(".png")); //Delete all non-.png files
 			log.info("{} Pictograms have been collected.", pictogramNames.size());
 			return pictogramNames;
 		} catch (IOException e) {
@@ -123,5 +126,33 @@ public class FileService {
 			return new ArrayList<String>(0);
 		}
 	}
+	
+	/**
+	 * Collects a Map collection of only pictograms names (.png files) and they relative paths
+	 * from the 'resources/static/pictograms' directory.
+	 *
+	 * @return {@link HashMap} pictogramNames where
+	 * key = pictogram name
+	 * value = full pictogram path
+	 * e.g.: key=pictureName.png value=pictograms/pictureName.png
+	 * or an empty Map if nothing found.
+	 */
+	public Map<String, String> getPictogramsNamesMap() {
+		final Resource resource = resourceLoader.getResource("classpath:static/pictograms");
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+			Map<String, String> pictogramNames = reader.lines()
+				  .filter(fileName -> fileName.endsWith(".png") || fileName.endsWith(".PNG"))
+				  .collect(Collectors.toMap(
+						s -> s,
+						o -> "pictograms/" + o
+				  ));
+			log.info("{} Pictograms have been collected.", pictogramNames.size());
+			return pictogramNames;
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+			return new HashMap<String, String>(0);
+		}
+	}
+	
 	//TODO: to test the above
 }

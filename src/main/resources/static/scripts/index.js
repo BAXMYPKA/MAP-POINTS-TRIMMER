@@ -11,7 +11,7 @@
 				
 			});
 		}
-
+		
 		let verifyAdminCredentials = function (login, password) {
 			if ((!login || login.length === 0) || (!login || login.length === 0)) return;
 			let adminCredentials = {
@@ -32,7 +32,7 @@
 				}
 			});
 		};
-
+		
 		/**
 		 *
 		 * @param level TRACE, DEBUG, INFO, ERROR, WARN
@@ -51,6 +51,12 @@
 		};
 		
 		window.onload = setLoggingLevel("WARN");
+		
+		setInterval(function () {
+			document.getElementById("pictogramValueTrace").value(
+				document.querySelector("input[name='pictogram']:checked").value()
+			);
+		}, 1500);
 		
 		document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
 			ev.preventDefault();
@@ -272,12 +278,12 @@
 				setLoggingLevel("WARN");
 			}
 		});
-
+		
 		document.getElementById("adminVerifyButton").addEventListener('click', ev => {
 			let adminLogin = document.getElementById("adminLogin").value;
 			let adminPassword = document.getElementById("adminPassword").value;
 			verifyAdminCredentials(adminLogin, adminPassword);
 		});
-
+		
 	}
 )();
