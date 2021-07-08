@@ -11,7 +11,6 @@ import org.w3c.dom.NodeList;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class GoogleEarthHandler {
@@ -20,17 +19,24 @@ public class GoogleEarthHandler {
 	/**
 	 * {@literal All the <Style>s and <StyleMap>s Nodes from the Document's start by their "id" attributes}
 	 */
+/*
 	private Map<String, Node> styleObjectsMap;
 	private List<String> styleUrlsFromPlacemarks;
+*/
 	private XmlDomUtils xmlDomUtils;
-	
-	Document processXml(Document document, MultipartDto multipartDto) {
+	private KmlUtils kmlUtils;
+
+	public GoogleEarthHandler(KmlUtils kmlUtils) {
+		this.kmlUtils = kmlUtils;
+	}
+
+	Document processKml(Document document, MultipartDto multipartDto) {
 		this.document = document;
 		xmlDomUtils = new XmlDomUtils(document);
 		log.info("Document and {} are received", multipartDto);
 		
-		setStyleObjectsMap();
-		setStyleUrlsFromPlacemarks();
+//		setStyleObjectsMap();
+//		setStyleUrlsFromPlacemarks();
 		
 		if (multipartDto.getPointIconSize() != null) {
 			setPointsIconsSize(multipartDto);
@@ -68,6 +74,7 @@ public class GoogleEarthHandler {
 	/**
 	 * {@code Puts aLL the <Style/>'s and <StyleMap/>'s Nodes from the Document by their "id" attribute.}
 	 */
+/*
 	private void setStyleObjectsMap() {
 		styleObjectsMap = new HashMap<>();
 		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
@@ -95,13 +102,14 @@ public class GoogleEarthHandler {
 						.collect(Collectors.toList());
 		log.trace("The List<String> of StyleUrls from Placemarks has been set with size={}", styleUrlsFromPlacemarks.size());
 	}
-	
+*/
+
 	private void setPointsIconsSize(MultipartDto multipartDto) {
 		log.info("Setting the icons size...");
 		
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
-		styleUrlsFromPlacemarks.forEach(styleUrl -> {
+		kmlUtils.getStyleUrlsFromPlacemarks().forEach(styleUrl -> {
 			Node styleObject = getStyleObject(styleUrl);
 			if (styleObject.getNodeName().equals("Style")) {
 				Node iconStyleScaleNode = getIconStyleScaleNodeFromStyle(styleObject);
@@ -125,7 +133,7 @@ public class GoogleEarthHandler {
 		
 		String opacityColor = getKmlColor("#ffffff", multipartDto.getPointIconHexOpacity());
 		
-		styleUrlsFromPlacemarks.forEach(styleUrl -> {
+		kmlUtils.getStyleUrlsFromPlacemarks().forEach(styleUrl -> {
 			Node styleObject = getStyleObject(styleUrl);
 			if (styleObject.getNodeName().equals("Style")) {
 				getIconsStyleColorNodeFromStyle(styleObject);
@@ -149,7 +157,7 @@ public class GoogleEarthHandler {
 		log.info("Setting the points names size...");
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		styleUrlsFromPlacemarks.forEach(styleUrl -> {
+		kmlUtils.getStyleUrlsFromPlacemarks().forEach(styleUrl -> {
 			Node styleObject = getStyleObject(styleUrl);
 			if (styleObject.getNodeName().equals("Style")) {
 				Node labelStyleScaleNode = getLabelStyleScaleNodeFromStyle(styleObject);
@@ -168,7 +176,7 @@ public class GoogleEarthHandler {
 		log.info("Setting the names text color...");
 		String kmlColor = getKmlColor(multipartDto.getPointTextHexColor(), multipartDto.getPointTextOpacity());
 		
-		styleUrlsFromPlacemarks.forEach(styleUrl -> {
+		kmlUtils.getStyleUrlsFromPlacemarks().forEach(styleUrl -> {
 			Node styleObject = getStyleObject(styleUrl);
 			if (styleObject.getNodeName().equals("Style")) {
 				Node labelStyleColorNode = getLabelStyleColorNodeFromStyle(styleObject);
@@ -392,16 +400,16 @@ public class GoogleEarthHandler {
 					Node styleObjectNode = getStyleObject(styleUrlNode.getTextContent().substring(1));
 					if (styleObjectNode.getNodeName().equals("Style")) {
 						//Replace styleUrl to <Style/> with <StyleMap/>
-						Node styleMapNode = createStyleMapNode(styleObjectNode);
+						Node styleMapNode = kmlUtils.createInsertedStyleMapNode(styleObjectNode);
 						styleUrlNode.setTextContent("#" + styleMapNode.getAttributes().getNamedItem("id").getTextContent());
-						styleObjectsMap.put(styleMapNode.getAttributes().getNamedItem("id").getTextContent(), styleMapNode);
+						kmlUtils.getStyleObjectsMap().put(styleMapNode.getAttributes().getNamedItem("id").getTextContent(), styleMapNode);
 					}
 				});
 		//Refresh existing collections
-		setStyleObjectsMap();
-		setStyleUrlsFromPlacemarks();
+		kmlUtils.setStyleObjectsMap();
+		kmlUtils.setStyleUrlsFromPlacemarks();
 		log.info("<StyleMap>'s have been created for all the <Placemark><styleUrl/></Placemark>. ({} StyleObjects)",
-				styleObjectsMap.size());
+				kmlUtils.getStyleObjectsMap().size());
 	}
 	
 	/**
@@ -442,12 +450,13 @@ public class GoogleEarthHandler {
 	 * </Style>
 	 * }
 	 */
+/*
 	private Node createStyleMapNode(Node styleNode) {
 		String idAttribute = "styleMapOf:" + styleNode.getAttributes().getNamedItem("id").getTextContent();
 		
-		if (styleObjectsMap.containsKey(idAttribute)) {
+		if (kmlUtils.getStyleObjectsMap().containsKey(idAttribute)) {
 			//Not to create duplicates
-			return styleObjectsMap.get(idAttribute);
+			return kmlUtils.getStyleObjectsMap().get(idAttribute);
 		}
 		Element styleMapNode = document.createElement("StyleMap");
 		styleMapNode.setAttribute("id", idAttribute);
@@ -472,12 +481,13 @@ public class GoogleEarthHandler {
 		pairHighlightNode.appendChild(styleUrlHighlightNode);
 		styleMapNode.appendChild(pairHighlightNode);
 		
-		insertIntoDocumentNode(highlightStyleNode);
-		insertIntoDocumentNode(styleMapNode);
+		kmlUtils.insertIntoDocument(highlightStyleNode);
+		kmlUtils.insertIntoDocument(styleMapNode);
 		
 		return styleMapNode;
 	}
-	
+*/
+
 	private Node createHighlightStyleNode(Node styleNode) {
 		Element styleHighlightNode = (Element) styleNode.cloneNode(true);
 		styleHighlightNode.setAttribute("id", "highlightOf:" + styleNode.getAttributes().getNamedItem("id").getTextContent());
@@ -568,6 +578,7 @@ public class GoogleEarthHandler {
 	 *
 	 * @return A given "styleMapNode" parameter as the inserted into Document one.
 	 */
+/*
 	private Node insertIntoDocumentNode(Node styleMapNode) {
 		Node documentNode = document.getElementsByTagName("Document").item(0);
 		Node insertBeforeNode = null;
@@ -585,7 +596,8 @@ public class GoogleEarthHandler {
 		documentNode.insertBefore(styleMapNode, insertBeforeNode);
 		return styleMapNode;
 	}
-	
+*/
+
 	/**
 	 * Converts standard HEX color from HTML User input into KML color standard.
 	 * ====================================================================
@@ -682,11 +694,11 @@ public class GoogleEarthHandler {
 	
 	/**
 	 * @param styleUrl
-	 * @return {@link Node} as StyleObject from {@link #styleObjectsMap}.
+	 * @return {@link Node} as StyleObject from {@link KmlUtils#getStyleObjectsMap()}.
 	 * If "styleUrl" is null returns a new {@link Node} with "Default" tagName.
 	 */
 	private Node getStyleObject(String styleUrl) {
-		Node styleNode = styleObjectsMap.getOrDefault(styleUrl, document.createElement("Default"));
+		Node styleNode = kmlUtils.getStyleObjectsMap().getOrDefault(styleUrl, document.createElement("Default"));
 		if (styleNode.getNodeName().contentEquals("Default")) {
 			log.warn("The Document is incorrect because <styleUrl>#{}</styleUrl> points to non-existent <Style> with no such id", styleUrl);
 		}

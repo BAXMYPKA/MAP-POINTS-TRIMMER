@@ -14,11 +14,7 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * Kml processing class based on the StAX xml-library.
@@ -27,10 +23,21 @@ import java.util.stream.Collectors;
 @Component
 public class KmlHandler extends XmlHandler {
 	
+		/**
+	 * {@literal All the <Style>s and <StyleMap>s Nodes from the Document's start by their "id" attributes}
+	 */
+/*
+	Map<String, Node> styleObjectsMap;
+
+	List<String> styleUrlsFromPlacemarks;
+*/
+	private XmlDomUtils xmlDomUtils;
+	private KmlUtils kmlUtils;
 	private Document document;
-	
-	public KmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService, LocusMapHandler locusMapHandler) {
-		super(htmlHandler, googleIconsService, fileService, locusMapHandler);
+	private LocusMapHandler locusMapHandler;
+
+	public KmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService) {
+		super(htmlHandler, googleIconsService, fileService);
 	}
 	
 	/**
@@ -41,13 +48,22 @@ public class KmlHandler extends XmlHandler {
 	public String processXml(InputStream kmlInputStream, MultipartDto multipartDto)
 			throws IOException, ParserConfigurationException, SAXException, TransformerException {
 		log.info("The given KML is being processed...");
+
 		document = getDocument(kmlInputStream);
 		Element documentRoot = document.getDocumentElement();
-		//Processing Google Earth specific options
-		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
-		googleEarthHandler.processXml(document, multipartDto);
+		xmlDomUtils = new XmlDomUtils(document);
+		kmlUtils = new KmlUtils(document, xmlDomUtils);
+		locusMapHandler = new LocusMapHandler(
+				getGoogleIconsService(), getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
 
-		getLocusMapHandler().processXml(document, multipartDto);
+//		setStyleObjectsMap();
+//		setStyleUrlsFromPlacemarks();
+
+		//Processing Google Earth specific options
+		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
+		googleEarthHandler.processKml(document, multipartDto);
+
+		locusMapHandler.processKml(document, multipartDto);
 
 		log.info("Setting the new path to images...");
 		processHref(documentRoot, multipartDto);
@@ -69,8 +85,40 @@ public class KmlHandler extends XmlHandler {
 		log.info("The KML has been processed");
 		return writeTransformedDocument(document, !multipartDto.isTrimXml());
 	}
-	
-	
+
+	/**
+	 * {@code Puts aLL the <Style/>'s and <StyleMap/>'s Nodes from the Document by their "id" attribute.}
+	 */
+/*
+	private void setStyleObjectsMap() {
+		styleObjectsMap = new HashMap<>();
+		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
+		NodeList styleNodes = document.getElementsByTagName("Style");
+		for (int i = 0; i < styleMapNodes.getLength(); i++) {
+			Node styleMapNode = styleMapNodes.item(i);
+			styleObjectsMap.put(styleMapNode.getAttributes().getNamedItem("id").getTextContent(), styleMapNode);
+		}
+		for (int i = 0; i < styleNodes.getLength(); i++) {
+			Node styleNode = styleNodes.item(i);
+			if (styleNode.getAttributes() != null && styleNode.getAttributes().getNamedItem("id") != null) {
+				//<Style> can be without "id" as a container for <ListStyle>
+				styleObjectsMap.put(styleNode.getAttributes().getNamedItem("id").getTextContent(), styleNode);
+			}
+		}
+		log.trace("Style objects map's set with the size={}", styleObjectsMap.size());
+	}
+
+	private void setStyleUrlsFromPlacemarks() {
+		styleUrlsFromPlacemarks =
+				xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false
+						, false)
+						.stream()
+						.map(styleUrlNode -> styleUrlNode.getTextContent().substring(1))
+						.collect(Collectors.toList());
+		log.trace("The List<String> of StyleUrls from Placemarks has been set with size={}", styleUrlsFromPlacemarks.size());
+	}
+*/
+
 	/**
 	 * Every old href tag contains path to file and a filename. So here we derive an existing filename
 	 * and append it to the new path.

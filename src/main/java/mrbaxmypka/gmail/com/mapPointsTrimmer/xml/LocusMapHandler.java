@@ -3,40 +3,54 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.lang.NonNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.stream.events.XMLEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
 public class LocusMapHandler {
 
-    private HtmlHandler htmlHandler;
-
+    private GoogleIconsService googleIconsService;
     private FileService fileService;
-
+    private XmlDomUtils xmlDomUtils;
+    private KmlUtils kmlUtils;
+    private HtmlHandler htmlHandler;
     private Document document;
+    private final String standardThumbnailName = "/Locus/cache/images/".toLowerCase();
 
+    public LocusMapHandler(GoogleIconsService googleIconsService,
+                           FileService fileService,
+                           XmlDomUtils xmlDomUtils,
+                           KmlUtils kmlUtils,
+                           HtmlHandler htmlHandler) {
+        this.googleIconsService = googleIconsService;
+        this.fileService = fileService;
+        this.xmlDomUtils = xmlDomUtils;
+        this.kmlUtils = kmlUtils;
+        this.htmlHandler = htmlHandler;
+    }
+
+/*
     @Autowired
     public LocusMapHandler(HtmlHandler htmlHandler, FileService fileService) {
+        super(htmlHandler);
         this.htmlHandler = htmlHandler;
         this.fileService = fileService;
     }
+*/
 
-
-    Document processXml(Document document, MultipartDto multipartDto) {
+    Document processKml(Document document, MultipartDto multipartDto) {
         this.document = document;
+        this.xmlDomUtils = new XmlDomUtils(document);
+
         Element documentRoot = document.getDocumentElement();
         if (multipartDto.isAsAttachmentInLocus()) {
             log.info("Images are being attached for Locus...");
@@ -220,7 +234,34 @@ public class LocusMapHandler {
         return extendedData;
     }
 
-    private void replaceLocusIcons(Element documentRoot, MultipartDto multipartDto) {
-        
+
+    //TODO: the following
+
+    /**
+     * 1. Найти все Style c id="/Locus/cache/images/"
+     * 2. Если есть родительский StyleMap - убиваем его. Если нет - убиваем сам Style
+     * 3. Создаем новый Style
+     * 4. Создаем новый StyleMap с новым Style и вставляем это в Document
+     * 5. Ищем все Placemarks с теперь ведущими вникуда styleUrl
+     * 6. Заменяем их styleUrl на новый StyleMap
+     * <p>
+     * If {@link MultipartDto#isReplaceLocusIcons()}=true it will replace all the photo thumbnails from Locus with the
+     * given {@link MultipartDto#getPictogramName()}
+     *
+     * @param documentRoot
+     * @param multipartDto
+     */
+    private void replaceLocusIcons(@NonNull Element documentRoot, @NonNull MultipartDto multipartDto) {
+        String pictogramName = multipartDto.getPictogramName();
+        if (pictogramName == null || pictogramName.isBlank()) {
+            log.warn("Pictogram name is null or empty!");
+            return;
+        }
+        if (!fileService.getPictogramsNames().contains(pictogramName)) {
+            log.warn("Such a pictogram={} is not presented in 'resources/static/pictograms' directory!", pictogramName);
+            return;
+        }
+
+        //Kml document may always contain <Style> with the same id and the same pictogram
     }
 }

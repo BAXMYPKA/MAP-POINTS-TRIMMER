@@ -239,7 +239,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(50);
 		
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -304,7 +304,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(50);
 		
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -361,7 +361,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(50); //0.5 as the scale
 		
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -420,7 +420,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointTextSizeDynamic(60); //0.6 as the scale
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -479,7 +479,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointTextHexColorDynamic("#ffffff");
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -539,7 +539,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointTextOpacityDynamic(00);
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -602,7 +602,7 @@ public class GoogleEarthHandlerDynamicTest {
 		}
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -642,7 +642,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(80);
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -686,7 +686,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(80);
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -783,7 +783,7 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto.setPointIconSizeDynamic(50);
 		
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 		System.out.println(resultingKml);

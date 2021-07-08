@@ -199,7 +199,7 @@ class GoogleEarthHandlerStaticTest {
 		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
-		document = googleEarthHandler.processXml(document, multipartDto);
+		document = googleEarthHandler.processKml(document, multipartDto);
 		String processedKml = kmlHandler.writeTransformedDocument(document, true);
 //		System.out.println(processedKml);
 		//THEN
@@ -254,7 +254,7 @@ class GoogleEarthHandlerStaticTest {
 		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
-		document = googleEarthHandler.processXml(document, multipartDto);
+		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
 		
 		//THEN
@@ -311,7 +311,7 @@ class GoogleEarthHandlerStaticTest {
 		}
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -367,7 +367,7 @@ class GoogleEarthHandlerStaticTest {
 		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
-		document = googleEarthHandler.processXml(document, multipartDto);
+		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
 		
 		//THEN
@@ -432,7 +432,7 @@ class GoogleEarthHandlerStaticTest {
 		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
-		document = googleEarthHandler.processXml(document, multipartDto);
+		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
 		
 		//THEN
@@ -489,7 +489,7 @@ class GoogleEarthHandlerStaticTest {
 		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
-		document = googleEarthHandler.processXml(document, multipartDto);
+		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
 		
 		//THEN
@@ -567,7 +567,7 @@ class GoogleEarthHandlerStaticTest {
 		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
-		document = googleEarthHandler.processXml(document, multipartDto);
+		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
 //		System.out.println(processedKml);
 		
@@ -651,7 +651,7 @@ class GoogleEarthHandlerStaticTest {
 		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
-		document = googleEarthHandler.processXml(document, multipartDto);
+		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
 //		System.out.println(processedKml);
 		
@@ -904,7 +904,7 @@ class GoogleEarthHandlerStaticTest {
 		Document document = XmlTestUtils.getDocument(multipartDto);
 		
 		//WHEN
-		document = googleEarthHandler.processXml(document, multipartDto);
+		document = googleEarthHandler.processKml(document, multipartDto);
 		String processedKml = kmlHandler.writeTransformedDocument(document, true);
 //		System.out.println(processedKml);
 		
@@ -1007,7 +1007,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto.setPointTextSize(50);
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -1197,7 +1197,7 @@ class GoogleEarthHandlerStaticTest {
 		
 		
 		//WHEN
-		Document processedDocument = googleEarthHandler.processXml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 		System.out.println(resultingKml);
