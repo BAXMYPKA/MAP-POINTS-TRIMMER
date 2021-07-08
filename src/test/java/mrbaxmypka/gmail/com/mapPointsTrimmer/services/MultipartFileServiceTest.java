@@ -6,6 +6,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.LocusMapHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,7 @@ class MultipartFileServiceTest {
 	private FileService mockFileService;
 	private GoogleIconsCache googleIconsCache;
 	private FileService fileService;
+	private LocusMapHandler locusMapHandler;
 	private HtmlHandler htmlHandler;
 	private MultipartFileService multipartFileService;
 	private MessageSource mockMessageSource;
@@ -137,7 +139,7 @@ class MultipartFileServiceTest {
 		multipartDto.setDownloadAs(DownloadAs.KML);
 		
 		KmlHandler kmlHandler = new KmlHandler(
-				new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService);
+				new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService, new LocusMapHandler());
 		multipartFileService = new MultipartFileService(kmlHandler, fileService, mockMessageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
@@ -159,7 +161,7 @@ class MultipartFileServiceTest {
 		//GIVEN If while uploading KML set "downloadAs KMZ"
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
-		KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService);
+		KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService, new LocusMapHandler());
 		multipartFileService = new MultipartFileService(kmlHandler, fileService, mockMessageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
@@ -350,7 +352,7 @@ class MultipartFileServiceTest {
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
 		multipartFileService = new MultipartFileService(
-				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
+				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService, new LocusMapHandler()),
 				fileService,
 				null);
 		
@@ -390,7 +392,7 @@ class MultipartFileServiceTest {
 		multipartDto.setPathType(PathTypes.ABSOLUTE.getType());
 		
 		multipartFileService = new MultipartFileService(
-				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
+				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService, new LocusMapHandler()),
 				fileService,
 				null);
 		

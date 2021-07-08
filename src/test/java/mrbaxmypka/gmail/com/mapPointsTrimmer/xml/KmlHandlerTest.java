@@ -31,8 +31,9 @@ class KmlHandlerTest {
 	private static FileService fileService = new FileService();
 	private static GoogleIconsCache googleIconsCache = new GoogleIconsCache();
 	private static HtmlHandler htmlHandler = new HtmlHandler(fileService);
+	private static LocusMapHandler locusMapHandler;
 	private static GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
-	private KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
+	private KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService, locusMapHandler);
 	private static String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
 		"xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +

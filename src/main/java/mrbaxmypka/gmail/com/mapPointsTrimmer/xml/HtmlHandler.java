@@ -59,7 +59,7 @@ public class HtmlHandler {
 		//A possible plain text outside html markup
 		String plainTextDescription = extractPlainTextDescriptions(parsedHtmlFragment).trim();
 		//MUST be the first treatment
-		if (multipartDto.isClearOutdatedDescriptions()) {
+		if (multipartDto.isClearOutdatedDescriptions()) { //Locus Map specific
 			log.debug("Outdated descriptions will be cleared...");
 			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
 		}
@@ -267,7 +267,7 @@ public class HtmlHandler {
 				.forEach(element -> element.replaceWith(getAElementWithInnerImgElement(element)));
 		//Finally creates a new User description within <!-- desc_user:start --> ... <!-- desc_user:end -->
 		// with User's text and images inside it.
-		if (!multipartDto.isClearOutdatedDescriptions()) {
+		if (!multipartDto.isClearOutdatedDescriptions()) { //Locus Map specific
 			log.trace("Clearing outdated description as this option isn't presented in MultipartDto...");
 			//All is not clear and need to be placed within UserDescStartEnd comments
 			clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);

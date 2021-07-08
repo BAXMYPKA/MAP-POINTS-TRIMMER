@@ -29,8 +29,8 @@ public class KmlHandler extends XmlHandler {
 	
 	private Document document;
 	
-	public KmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService) {
-		super(htmlHandler, googleIconsService, fileService);
+	public KmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService, LocusMapHandler locusMapHandler) {
+		super(htmlHandler, googleIconsService, fileService, locusMapHandler);
 	}
 	
 	/**
@@ -47,6 +47,8 @@ public class KmlHandler extends XmlHandler {
 		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
 		googleEarthHandler.processXml(document, multipartDto);
 
+		getLocusMapHandler().processXml(document, multipartDto);
+
 		log.info("Setting the new path to images...");
 		processHref(documentRoot, multipartDto);
 
@@ -54,10 +56,12 @@ public class KmlHandler extends XmlHandler {
 		//Processing the further text options regarding to inner CDATA or plain text from <description>s
 		processDescriptionsTexts(documentRoot, multipartDto);
 		
+/*
 		if (multipartDto.isAsAttachmentInLocus()) {
 			log.info("Images are being attached for Locus...");
 			processLocusAttachments(documentRoot, multipartDto);
 		}
+*/
 		if (multipartDto.isTrimXml()) {
 			log.info("KML is being trimmed...");
 			trimWhitespaces(documentRoot);
@@ -135,6 +139,7 @@ public class KmlHandler extends XmlHandler {
 	 * @return A new {@link LinkedList<XMLEvent>} with modified or new <lc:attachments></lc:attachments>.
 	 * Or the old unmodified List if no changes were done.</ExtendedData>
 	 */
+/*
 	private void processLocusAttachments(Element documentRoot, MultipartDto multipartDto) {
 		NodeList placemarks = documentRoot.getElementsByTagName("Placemark");
 		//Iterate though every <Placemark>
@@ -172,7 +177,8 @@ public class KmlHandler extends XmlHandler {
 		}
 		log.info("All <attachment>'s for Locus has been processed and added.");
 	}
-	
+*/
+
 	/**
 	 * 1) Compares the given List of images src from user description to the existing <lc:attacmhent></lc:attacmhent>
 	 * from <ExtendedData></ExtendedData> from Locus xml.
@@ -199,6 +205,7 @@ public class KmlHandler extends XmlHandler {
 	 * @param placemark             A Parent {@link Node} for adding a new <ExtendedData></ExtendedData> if the last one is not
 	 *                              presented.
 	 */
+/*
 	private void processImagesFromDescription(
 			List<String> imgSrcFromDescription, List<Node> attachmentNodes, Node placemark, MultipartDto multipartDto) {
 		log.trace("'{}' images for '{}' attachments are being processed", imgSrcFromDescription.size(), attachmentNodes.size());
@@ -252,7 +259,9 @@ public class KmlHandler extends XmlHandler {
 			log.trace("A new <ExtendedData> with <attachment>'s has been added for the images from the <description>");
 		}
 	}
-	
+*/
+
+/*
 	private List<String> getLocusSpecificAttachmentsHref(List<String> imagesToAttach, MultipartDto multipartDto) {
 		imagesToAttach = imagesToAttach.stream()
 				.map(imgSrc -> {
@@ -265,12 +274,14 @@ public class KmlHandler extends XmlHandler {
 		log.trace("{} processed 'src' for Locus <attachment> will be returned", imagesToAttach.size());
 		return imagesToAttach;
 	}
-	
+*/
+
 	/**
 	 * @param imagesToAttach Src to images from User description
 	 * @return {@link XMLEvent#CHARACTERS} as <lc:attachment>src/to/image.img</lc:attachment>
 	 * to be added to <ExtendedData></ExtendedData> to Locus Map xml.
 	 */
+/*
 	private List<Element> getImagesSrcAsLcAttachments(List<String> imagesToAttach) {
 		List<Element> lcAttachments = new ArrayList<>();
 		imagesToAttach.forEach(img -> {
@@ -281,13 +292,15 @@ public class KmlHandler extends XmlHandler {
 		log.trace("{} <attachment>'s with the processed 'src' for images will be returned", lcAttachments.size());
 		return lcAttachments;
 	}
-	
+*/
+
 	/**
 	 * @param elementsToBeInside All {@link XMLEvent}'s to be written inside <ExtendedData></ExtendedData> with
 	 *                           Locus namespace.
 	 * @return {@link LinkedList<XMLEvent>} with XMLEvents inside to be written into existing document as:
 	 * <ExtendedData xmlns:lc="http://www.locusmap.eu">... xmlEventsToBeInside ...</ExtendedData>
 	 */
+/*
 	private Node getNewExtendedData(List<Element> elementsToBeInside) {
 		Element extendedData = document.createElement("ExtendedData");
 //		Element extendedData = document.createElementNS("http://www.locusmap.eu", "ExtendedData");
@@ -295,7 +308,8 @@ public class KmlHandler extends XmlHandler {
 		log.trace("A new <ExtendedData> will be returned");
 		return extendedData;
 	}
-	
+*/
+
 	/**
 	 * Just for pretty printing and mark out CDATA descriptions.
 	 * If the whole XML document is inline except CDATA so as to emphasize that CDATA among XML this method add start

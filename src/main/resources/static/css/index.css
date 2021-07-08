@@ -381,7 +381,8 @@ input[type=radio] {
 
 #pictogram-dropdown {
 	/*style the "box" in its minimzed state*/
-	display: inline-block;
+	/*display: inline-block;*/
+	display: none;
 	border:1px solid black; width:37px; height:39px; overflow:hidden;
 	/*animate collapsing the dropdown from open to closed state (v. fast)*/
 	-moz-transition: height 0.1s;
@@ -409,7 +410,7 @@ input[type=radio] {
 	/*style the labels to look like dropdown options, kinda*/
 	display:none; margin:2px; height:38px; width: 48px; opacity:0.2;
 	/*setting correct backgrounds - add additional rules with selectors based on "for" attribute, something like label[for=line2]{background-image:...}*/
-	/*background:url("http://www.google.com/images/srpr/logo3w.png") 50% 50%;*/
+	/*background:url("../pictograms/sport-cyclingsport.png") no-repeat;*/
 	background: no-repeat;
 }
 #pictogram-dropdown:hover label{

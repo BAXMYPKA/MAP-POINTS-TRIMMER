@@ -118,12 +118,12 @@ public class FileService {
 		final Resource resource = resourceLoader.getResource("classpath:static/pictograms");
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
 			ArrayList<String> pictogramNames = reader.lines().collect(Collectors.toCollection(ArrayList::new));
-			pictogramNames.removeIf(s -> !s.endsWith(".png")); //Delete all non-.png files
+			pictogramNames.removeIf(s -> !s.endsWith(".png") || !s.endsWith(".PNG")); //Delete all non-.png files
 			log.info("{} Pictograms have been collected.", pictogramNames.size());
 			return pictogramNames;
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
-			return new ArrayList<String>(0);
+			return new ArrayList<>(0);
 		}
 	}
 	
@@ -150,7 +150,7 @@ public class FileService {
 			return pictogramNames;
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
-			return new HashMap<String, String>(0);
+			return new HashMap<>(0);
 		}
 	}
 	

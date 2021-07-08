@@ -391,6 +391,19 @@ public class MultipartDto implements Serializable {
 	@PositiveOrZero(message = "{validation.positiveOrZero}")
 	@Max(value = 100, message = "{validation.maxNumber}")
 	private Integer pointTextOpacityDynamic;
+
+	/**
+	 * For POIs with included photos Locus creates icons on a map as thumbnails.
+	 * For a better visibility you can change them all to a specific pictogram.
+	 */
+	private boolean replaceLocusIcons;
+
+	/**
+	 * A name of the existing pictogram in the 'resources/static/pictograms' directory.
+	 * This pictogram is intended to replace all the Locus photo thumbnails in placemarks.
+	 */
+	@Nullable
+	private String pictogramName;
 	
 	@NotNull
 	private DownloadAs downloadAs;

@@ -24,7 +24,8 @@ class XmlHandlerTest {
 	private GoogleIconsCache googleIconsCache = new GoogleIconsCache();
 	private GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
 	private HtmlHandler htmlHandler = new HtmlHandler(fileService);
-	private XmlHandler xmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
+	private LocusMapHandler locusMapHandler;
+	private XmlHandler xmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService, locusMapHandler);
 	
 	@Test
 	public void kml_header_Should_Be_Added_With_Lc_Locusmap_Namespace_Prefix_If_Contain_Lc_Attachments_Without_Namespace_In_ExtendedData_And_Attachment()

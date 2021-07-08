@@ -37,12 +37,15 @@ public abstract class XmlHandler {
 	private GoogleIconsService googleIconsService;
 	@Getter(value = AccessLevel.PROTECTED)
 	private FileService fileService;
+	@Getter(value = AccessLevel.PROTECTED)
+	private LocusMapHandler locusMapHandler;
 	
 	@Autowired
-	public XmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService) {
+	public XmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService, LocusMapHandler locusMapHandler) {
 		this.htmlHandler = htmlHandler;
 		this.googleIconsService = googleIconsService;
 		this.fileService = fileService;
+		this.locusMapHandler = locusMapHandler;
 	}
 	
 	/**
