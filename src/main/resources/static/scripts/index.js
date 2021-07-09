@@ -42,23 +42,23 @@
          *
          * @param level TRACE, DEBUG, INFO, ERROR, WARN
          */
-        //TODO: to enable the following
-/*
+            //TODO: to enable the following
         let setLoggingLevel = function (level) {
-            let logLevel = {
-                "configuredLevel": level
-            }
-            fetch(serverAddress.concat("/actuator/loggers/mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication"), {
-                method: "POST",
-                body: JSON.stringify(logLevel),
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8"
+                let logLevel = {
+                    "configuredLevel": level
                 }
-            });
-        };
+                if (typeof serverAddress !== 'undefined' && serverAddress) {
+                    fetch(serverAddress.concat("/actuator/loggers/mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication"), {
+                        method: "POST",
+                        body: JSON.stringify(logLevel),
+                        headers: {
+                            "Content-Type": "application/json;charset=utf-8"
+                        }
+                    });
+                }
+            };
 
         window.onload = setLoggingLevel("WARN");
-*/
 
         document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
             ev.preventDefault();

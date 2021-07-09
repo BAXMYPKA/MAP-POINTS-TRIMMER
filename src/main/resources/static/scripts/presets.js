@@ -37,6 +37,18 @@
 					formInput.disabled = presetInput.disabled;
 				}
 			});
+			//Open <details> tags if inner inputs are checked or have values
+			//Optional parameters summary
+			const trimXml = document.getElementById('trimXml');
+			const trimDescriptions = document.getElementById('trimDescriptions');
+			if (trimXml.checked || trimDescriptions.checked) {
+				document.getElementById('optionalParametersDetails').open = true;
+			}
+			//Optional Locus parameters summary
+			const replaceLocusIcons = document.getElementById('replaceLocusIcons');
+			if (replaceLocusIcons.checked) {
+				document.getElementById('optionalLocusDetails').open = true;
+			}
 		}
 		
 		function clearInputs() {

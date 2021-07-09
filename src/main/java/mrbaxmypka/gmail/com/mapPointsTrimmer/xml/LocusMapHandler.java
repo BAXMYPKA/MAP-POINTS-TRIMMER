@@ -262,6 +262,5 @@ public class LocusMapHandler {
             return;
         }
 
-        //Kml document may always contain <Style> with the same id and the same pictogram
     }
 }

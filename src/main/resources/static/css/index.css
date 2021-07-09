@@ -56,7 +56,6 @@ h3 {
 }
 
 .summaryOption {
-	/*font-family: Arial, serif;*/
 	font-weight: bold;
 }
 
@@ -374,11 +373,6 @@ input[type=radio] {
 	/*background-color: #1f389c;*/
 }
 
-
-
-
-
-
 #pictogram-dropdown {
 	/*style the "box" in its minimzed state*/
 	/*display: inline-block;*/
@@ -431,10 +425,6 @@ input[type=radio] {
 
 /*IMPORTANT PIECE OF JS CODE TO BE INCLUDED INTO JS FILE*/
 /*var i = setInterval(function(){$("#trace").val($("input[name=line-style]:checked").val());},100);*/
-
-
-
-
 
 .loadForm_previewSizeInput {
 	width: 4em;
