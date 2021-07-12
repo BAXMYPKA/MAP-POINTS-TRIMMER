@@ -281,8 +281,8 @@ public class GoogleEarthHandler {
 					}
 				});
 		//Refresh existing collections
-		kmlUtils.setStyleObjectsMap();
-		kmlUtils.setStyleUrlsFromPlacemarks();
+		kmlUtils.refreshStyleObjectsMap();
+		kmlUtils.refreshStyleUrlsFromPlacemarks();
 		log.info("<StyleMap>'s have been created for all the <Placemark><styleUrl/></Placemark>. ({} StyleObjects)",
 				kmlUtils.getStyleObjectsMap().size());
 	}

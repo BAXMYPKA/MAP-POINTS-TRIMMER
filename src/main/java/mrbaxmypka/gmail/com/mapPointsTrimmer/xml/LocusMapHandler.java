@@ -243,14 +243,14 @@ public class LocusMapHandler {
      * 2. {@literal If a <StyleMap> with a previously created "id" to the current } {@link MultipartDto#getPictogramName()} exists it:
      * 2.1 {@literal Replaces all the <Placemark>s <styleUrl>s with that existing <StyleMap>}
      * 2.2 {@literal Deletes all the <StyleMap>s from the Document with "id" to photo thumbnails. As well as their included "Normal" and "Highlighted" <Style>s}
-     * <p>
+     * 3. {@literal If no <StyleMap> for that} {@link MultipartDto#getPictogramName()} exists it:
+     * 3.1
      * 1. Найти все Style c id="/Locus/cache/images/"
      * 2. Если есть родительский StyleMap - убиваем его. Если нет - убиваем сам Style
      * 3. Создаем новый Style
      * 4. Создаем новый StyleMap с новым Style и вставляем это в Document
      * 5. Ищем все Placemarks с теперь ведущими вникуда styleUrl
      * 6. Заменяем их styleUrl на новый StyleMap
-     * <p>
      * If {@link MultipartDto#isReplaceLocusIcons()}=true it will replace all the photo thumbnails from Locus with the
      * given {@link MultipartDto#getPictogramName()}
      *
@@ -269,8 +269,8 @@ public class LocusMapHandler {
         }
         replaceInStyleMaps(documentRoot, pictogramName);
         //Refresh the current Nodes from Document
-        kmlUtils.setStyleObjectsMap();
-        kmlUtils.setStyleUrlsFromPlacemarks();
+        kmlUtils.refreshStyleObjectsMap();
+        kmlUtils.refreshStyleUrlsFromPlacemarks();
     }
 
     /**
@@ -291,24 +291,27 @@ public class LocusMapHandler {
         List<String> thumbnailsStyleUrlsFromPlacemarks = kmlUtils.getStyleUrlsFromPlacemarks();
         thumbnailsStyleUrlsFromPlacemarks.retainAll(styleMapsWithThumbnails.keySet());
 
-        //If all the Placemarks now referring to the existing StyleMap with a previously created id to pictogramName
+        //Kml may contain previously created <MapStyle> with the given pictogramName
         if (replacePlacemarksStyleUrlsWithExistingStyleMap(pictogramName, thumbnailsStyleUrlsFromPlacemarks)) {
+            //If all the Placemarks now referring to the existing StyleMap with a previously created id to pictogramName
+            //We can safely delete <StyleMap>s and their <Style>s with icon thumbnails
             styleMapsWithThumbnails.values().forEach(styleMapNode -> {
-                //Delete the NormalStyle from Style map
                 kmlUtils.getNormalStyleNodeFromStyleMap(styleMapNode).ifPresent(documentRoot::removeChild);
-                //Delete the HighlightStyle from StyleMap
                 kmlUtils.getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(documentRoot::removeChild);
-                //And delete the StyleMap with id attribute references to a photo thumbnail
                 documentRoot.removeChild(styleMapNode);
             });
-            //Refresh existing collections
-            kmlUtils.setStyleObjectsMap();
-            kmlUtils.setStyleUrlsFromPlacemarks();
+            kmlUtils.refreshStyleObjectsMap();
+            kmlUtils.refreshStyleUrlsFromPlacemarks();
             return;
-        } else { //No previously created StyleMap with this pictogramName. Have to create a new one
-            Node updatedStyleMap = cloneUpdatedStyleMap(styleMapsWithThumbnails.values(), pictogramName);
+        } else {
+            //No previously created StyleMap with this pictogramName. Have to create a new one with the new <Style>s
+            //Based on a template settings from any existing <StyleMap> as a clone
+            Node clonedStyleMap = cloneStyleMap(styleMapsWithThumbnails.values());
+            Node updatedStyleMap = updateStyleMap(clonedStyleMap, pictogramName);
             kmlUtils.insertIntoDocument(updatedStyleMap);
-            //TODO: to start from here
+
+            kmlUtils.refreshStyleObjectsMap();
+            //TODO: to start from here. Get styleMapsWithThumbnails and make them referring to the new StyleMap
         }
 
 
@@ -342,17 +345,23 @@ public class LocusMapHandler {
         return isReplaced.get();
     }
 
-    private Node cloneUpdatedStyleMap(Collection<Node> styleMapsWithThumbnails, String pictogramName) {
-        Node styleMapNodeWithPictogram = styleMapsWithThumbnails.stream()
-                .limit(1)
-                .peek(styleMapNode -> {
-                    Node clonedStyleMapNode = document.cloneNode(true);
-                    Node updatedNormalStyle = updateNormalStyleNode(clonedStyleMapNode, pictogramName);
-                    Node updatedHighlightStyle = updateHighlightStyleNode(clonedStyleMapNode, pictogramName);
-                    updateClonedStyleMap(clonedStyleMapNode, pictogramName);
-                })
-                .collect(Collectors.toList()).get(0);
-        return styleMapNodeWithPictogram;
+    /**
+     * @return Just a cloned example for using {@literal an old <StyleMap> settings for the new one}
+     */
+    private Node cloneStyleMap(@NonNull Collection<Node> styleMapsWithThumbnails) {
+        Node styleMapExample = styleMapsWithThumbnails.iterator().next();
+        return styleMapExample.cloneNode(true);
+    }
+
+    /**
+     * @param pictogramName
+     * @return {@literal An updated clone of the <StyleMap> with all the included <Styles> (normal and highlight) as well}
+     */
+    private Node updateStyleMap(Node styleMapClone, String pictogramName) {
+        updateNormalStyleNode(styleMapClone, pictogramName);
+        updateHighlightStyleNode(styleMapClone, pictogramName);
+        updateClonedStyleMap(styleMapClone, pictogramName);
+        return styleMapClone;
     }
 
     private Node updateNormalStyleNode(Node clonedStyleMapNode, String pictogramName) {

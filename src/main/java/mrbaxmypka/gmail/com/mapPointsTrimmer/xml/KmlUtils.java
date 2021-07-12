@@ -40,15 +40,15 @@ public class KmlUtils {
     public KmlUtils(Document document, XmlDomUtils xmlDomUtils) {
         this.document = document;
         this.xmlDomUtils = xmlDomUtils;
-        setStyleObjectsMap();
-        setStyleUrlsFromPlacemarks();
+        refreshStyleObjectsMap();
+        refreshStyleUrlsFromPlacemarks();
     }
 
     /**
      * Refreshing method.
      * {@code Puts aLL the <Style/>'s and <StyleMap/>'s Nodes from the Document by their "id" attribute.}
      */
-    void setStyleObjectsMap() {
+    void refreshStyleObjectsMap() {
         styleObjectsMap = new HashMap<>();
         NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
         NodeList styleNodes = document.getElementsByTagName("Style");
@@ -70,7 +70,7 @@ public class KmlUtils {
      * Refreshing method.
      * {@code Puts aLL the <Style/>'s and <StyleMap/>'s Nodes from the Document by their "id" attribute.}
      */
-    void setStyleUrlsFromPlacemarks() {
+    void refreshStyleUrlsFromPlacemarks() {
         styleUrlsFromPlacemarks =
                 xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false
                         , false)
