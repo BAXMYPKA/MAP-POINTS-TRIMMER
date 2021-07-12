@@ -110,7 +110,7 @@ public class FileService {
 	}
 	
 	/**
-	 * Collects a list of only pictograms names as .png files from the 'resources/static/pictograms' directory.
+	 * Collects a list of pictograms names as .png files from the 'resources/static/pictograms' directory.
 	 *
 	 * @return {@literal ArrayList<String> pictogramNames} or an empty Array if nothing found.
 	 */

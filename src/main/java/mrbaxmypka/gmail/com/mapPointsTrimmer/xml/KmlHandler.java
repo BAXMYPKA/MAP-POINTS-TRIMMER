@@ -62,7 +62,7 @@ public class KmlHandler extends XmlHandler {
 		//Processing Google Earth specific options
 		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
 		googleEarthHandler.processKml(document, multipartDto);
-
+		//TODO: to treat BEFORE GoogleEarth options???
 		locusMapHandler.processKml(document, multipartDto);
 
 		log.info("Setting the new path to images...");
