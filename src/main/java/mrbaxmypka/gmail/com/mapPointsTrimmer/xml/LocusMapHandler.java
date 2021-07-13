@@ -291,8 +291,22 @@ public class LocusMapHandler {
         List<String> thumbnailsStyleUrlsFromPlacemarks = kmlUtils.getStyleUrlsFromPlacemarks();
         thumbnailsStyleUrlsFromPlacemarks.retainAll(styleMapsWithThumbnails.keySet());
 
+        replacePlacemarksStyleUrlsWithNewStyleMap(pictogramName, styleMapsWithThumbnails);
+
+        //If all the Placemarks now referring to the existing StyleMap with a previously created id to pictogramName
+        //We can safely delete <StyleMap>s and their <Style>s with icon thumbnails
+        styleMapsWithThumbnails.values().forEach(styleMapNode -> {
+            kmlUtils.getNormalStyleNodeFromStyleMap(styleMapNode).ifPresent(documentRoot::removeChild);
+            kmlUtils.getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(documentRoot::removeChild);
+            documentRoot.removeChild(styleMapNode);
+        });
+
+        kmlUtils.refreshStyleObjectsMap();
+        kmlUtils.refreshStyleUrlsFromPlacemarks();
+
+/*
         //Kml may contain previously created <MapStyle> with the given pictogramName
-        if (replacePlacemarksStyleUrlsWithExistingStyleMap(pictogramName, thumbnailsStyleUrlsFromPlacemarks)) {
+        if (replacePlacemarksStyleUrlsWithNewStyleMap(pictogramName, thumbnailsStyleUrlsFromPlacemarks)) {
             //If all the Placemarks now referring to the existing StyleMap with a previously created id to pictogramName
             //We can safely delete <StyleMap>s and their <Style>s with icon thumbnails
             styleMapsWithThumbnails.values().forEach(styleMapNode -> {
@@ -308,12 +322,12 @@ public class LocusMapHandler {
             //Based on a template settings from any existing <StyleMap> as a clone
             Node clonedStyleMap = cloneStyleMap(styleMapsWithThumbnails.values());
             Node updatedStyleMap = updateStyleMap(clonedStyleMap, pictogramName);
-            kmlUtils.insertIntoDocument(updatedStyleMap);
+            Node insertedStyleMap = kmlUtils.insertIntoDocument(updatedStyleMap);
 
             kmlUtils.refreshStyleObjectsMap();
-            //TODO: to start from here. Get styleMapsWithThumbnails and make them referring to the new StyleMap
         }
-
+*/
+        //TODO: to start from here. Get styleMapsWithThumbnails and make them referring to the new StyleMap
 
         documentRoot.removeChild(null);
 
@@ -326,8 +340,8 @@ public class LocusMapHandler {
      * and all the <Placemark>s <styleUrl>s have been replaced with it.
      * False if no previously created <StyleMap> exists and no replacement has been done.}
      */
-    private boolean replacePlacemarksStyleUrlsWithExistingStyleMap(String pictogramName, List<String> thumbnailsStyleUrlsFromPlacemarks) {
-        AtomicBoolean isReplaced = new AtomicBoolean(false);
+    private void replacePlacemarksStyleUrlsWithNewStyleMap(String pictogramName, Map<String, Node> styleMapsWithThumbnails) {
+        AtomicBoolean isReplacedWithExisting = new AtomicBoolean(false);
         //If KML contains the previously created <MapStyle> with this pictogram name.
         //All the <Placemark>s <styleUrl/>s with a photo thumbnails will be redirected to it
         String existingStyleUrl = kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + pictogramName;
@@ -336,13 +350,29 @@ public class LocusMapHandler {
                 .filter(styleMapNode -> styleMapNode.getAttributes().getNamedItem("id").getTextContent().equals(existingStyleUrl))
                 .findFirst()
                 .ifPresent(existingStyleMapNode -> {
-                    isReplaced.set(true);
-                    thumbnailsStyleUrlsFromPlacemarks.forEach(thumbnailsStyleUrls -> {
-                        kmlUtils.getPlacemarksByStyleUrl(thumbnailsStyleUrls)
-                                .forEach(placemarkNode -> kmlUtils.setStyleUrlToPlacemark(placemarkNode, existingStyleUrl));
-                    });
+                    replacePlacemarksThumbnailStyleUrls(styleMapsWithThumbnails, existingStyleUrl);
+                    isReplacedWithExisting.set(true);
                 });
-        return isReplaced.get();
+        if (isReplacedWithExisting.get()) {
+            return;
+        } else {
+            //No previously created StyleMap with this pictogramName. Have to create a new one with the new <Style>s
+            //Based on a template settings from any existing <StyleMap> as a clone
+            Node clonedStyleMap = cloneStyleMap(styleMapsWithThumbnails.values());
+            Node updatedStyleMap = updateStyleMap(clonedStyleMap, pictogramName);
+            Node insertedStyleMap = kmlUtils.insertIntoDocument(updatedStyleMap);
+        }
+    }
+
+    private void replacePlacemarksThumbnailStyleUrls(Map<String, Node> styleMapsWithThumbnails, String newStyleUrl) {
+        //<Placemark>s referring to <StyleMap>s with photo thumbnails
+        List<String> thumbnailsStyleUrlsFromPlacemarks = kmlUtils.getStyleUrlsFromPlacemarks();
+        thumbnailsStyleUrlsFromPlacemarks.retainAll(styleMapsWithThumbnails.keySet());
+
+        thumbnailsStyleUrlsFromPlacemarks.forEach(thumbnailsStyleUrls -> {
+            kmlUtils.getPlacemarksByStyleUrl(thumbnailsStyleUrls)
+                    .forEach(placemarkNode -> kmlUtils.setStyleUrlToPlacemark(placemarkNode, newStyleUrl));
+        });
     }
 
     /**
