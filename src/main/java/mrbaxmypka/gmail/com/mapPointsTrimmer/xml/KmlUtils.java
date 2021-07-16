@@ -35,7 +35,7 @@ public class KmlUtils {
     @Getter(AccessLevel.PACKAGE)
     private final String HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX = "highlightOf:";
     @Getter(AccessLevel.PACKAGE)
-    private final String KML_FILES_DIRECTORY = "files/";
+    private final String KML_FILES_DEFAULT_DIRECTORY = "files/";
 
     public KmlUtils(Document document, XmlDomUtils xmlDomUtils) {
         this.document = document;
@@ -141,7 +141,7 @@ public class KmlUtils {
         Element iconStyleNode = document.createElement("IconStyle");
         Element iconNode = document.createElement("Icon");
         Element hrefNode = document.createElement("href");
-        hrefNode.setTextContent(pictogramFullName != null ? pictogramFullName : KML_FILES_DIRECTORY + id);
+        hrefNode.setTextContent(pictogramFullName != null ? pictogramFullName : KML_FILES_DEFAULT_DIRECTORY + id);
 
         iconNode.appendChild(hrefNode);
         iconStyleNode.appendChild(iconNode);
@@ -403,6 +403,8 @@ public class KmlUtils {
      * <scale>0.7</scale>
      * </LabelStyle>
      * </Style>}
+     *
+     * @return Returns the existing 'IconStyle' node or created and inserted new one
      */
     Node getIconStyleNodeFromStyle(Node styleNode) {
         return xmlDomUtils.getChildNodesFromParent(styleNode, "IconStyle", null, false, true, false).get(0);
@@ -422,6 +424,8 @@ public class KmlUtils {
      * <scale>0.7</scale>
      * </LabelStyle>
      * </Style>}
+     *
+     * @return Returns the existing 'Icon' node or a new one created with its parent ('IconStyle')
      */
     Node getIconNodeFromStyle(Node styleNode) {
         Node iconStyleNode = getIconStyleNodeFromStyle(styleNode);
@@ -442,6 +446,8 @@ public class KmlUtils {
      * <scale>0.7</scale>
      * </LabelStyle>
      * </Style>}
+     *
+     * @return Returns the existing 'href' node or a new one created with all its parents ('IconStyle' -> 'Icon' -> 'href')
      */
     Node getIconHrefNodeFromStyle(Node styleNode) {
         Node iconNode = getIconNodeFromStyle(styleNode);
