@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,13 +44,13 @@ class GoogleEarthHandlerStaticTest {
 	
 	private MultipartDto multipartDto;
 	private MultipartFile multipartFile;
-	private GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
 	private FileService fileService = new FileService();
 	private GoogleIconsCache googleIconsCache = new GoogleIconsCache();
 	private HtmlHandler htmlHandler = new HtmlHandler(fileService);
-	private LocusMapHandler locusMapHandler;
 	private GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
-	private KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService, locusMapHandler);
+	private KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
+	private GoogleEarthHandler googleEarthHandler;
+
 	private String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 		  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
 		  "<Document>\n" +
@@ -197,6 +198,7 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSize(percentageSize);
 		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
 		
 		//WHEN
 		document = googleEarthHandler.processKml(document, multipartDto);
@@ -252,7 +254,8 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSize(percentageSize);
 		Document document = XmlTestUtils.getDocument(multipartDto);
-		
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
@@ -309,9 +312,11 @@ class GoogleEarthHandlerStaticTest {
 		} else if (opacity == 100) {
 			iconOpacityWithColor = "ffffffff";
 		}
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -365,7 +370,8 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(percentageSize);
 		Document document = XmlTestUtils.getDocument(multipartDto);
-		
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
@@ -430,7 +436,8 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(percentageSize);
 		Document document = XmlTestUtils.getDocument(multipartDto);
-		
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
@@ -487,7 +494,8 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(percentageSize);
 		Document document = XmlTestUtils.getDocument(multipartDto);
-		
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
@@ -565,7 +573,8 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColor(hexColor);
 		Document document = XmlTestUtils.getDocument(multipartDto);
-		
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
@@ -649,7 +658,8 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColor(hexColor);
 		Document document = XmlTestUtils.getDocument(multipartDto);
-		
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		document = googleEarthHandler.processKml(document, multipartDto);
 //		String processedKml = kmlHandler.writeTransformedDocument(document);
@@ -686,10 +696,13 @@ class GoogleEarthHandlerStaticTest {
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {"#112233", "#ff10ab", "#affbfc", "#374b5c"})
-	public void incoming_Hex_Input_as_RRGGBB_Colors_Should_Be_Converted_To_Kml_Colors_as_AABBGGRR(String hexColor) {
+	public void incoming_Hex_Input_as_RRGGBB_Colors_Should_Be_Converted_To_Kml_Colors_as_AABBGGRR(String hexColor)
+			throws IOException, SAXException, ParserConfigurationException {
 		//GIVEN input hex colors from HTML color picker as #rrggbb
 		multipartDto = new MultipartDto(new MockMultipartFile("name", new byte[]{}));
-		
+		Document document = XmlTestUtils.getMockDocument();
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		String kmlColor = googleEarthHandler.getKmlColor(hexColor, multipartDto.getPointTextOpacity());
 		
@@ -703,10 +716,13 @@ class GoogleEarthHandlerStaticTest {
 	
 	@ParameterizedTest
 	@ValueSource(strings = {"#1112233", "#ff10abc", "affbfc", "#374g5c"})
-	public void incoming_Incorrect_Hex_Input_Colors_Should_Throw_IllegalArgException(String hexColor) {
+	public void incoming_Incorrect_Hex_Input_Colors_Should_Throw_IllegalArgException(String hexColor)
+			throws IOException, SAXException, ParserConfigurationException {
 		//GIVEN input hex colors from HTML color picker as #rrggbb
 		multipartDto = new MultipartDto(new MockMultipartFile("name", new byte[]{}));
-		
+		Document document = XmlTestUtils.getMockDocument();
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
 			  () -> googleEarthHandler.getKmlColor(hexColor, multipartDto.getPointTextOpacity()));
@@ -721,11 +737,15 @@ class GoogleEarthHandlerStaticTest {
 	 */
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 50, 73, 99, 100})
-	public void percentage_Conversion_Into_Hex_Should_Be_Correct(Integer percent) {
+	public void percentage_Conversion_Into_Hex_Should_Be_Correct(Integer percent) throws IOException, SAXException, ParserConfigurationException {
 		//GIVEN
 		// 100% = 255(hex)
 		// 1% = 2.55(Rounded.HALF_UP) as two hex digits (e.g. 00, 03, 7F, FF)
 		// WHERE: 0 = 00, 1 = 03, 2 = 05, 50 = 127, 99 = FC, 100 = FF
+		multipartDto = new MultipartDto(new MockMultipartFile("name", new byte[]{}));
+		Document document = XmlTestUtils.getMockDocument();
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		
 /*
 		BigDecimal hex = new BigDecimal(percent * 2.55).setScale(0, RoundingMode.HALF_UP);
@@ -757,12 +777,14 @@ class GoogleEarthHandlerStaticTest {
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {"#000088", "#ff0000", "#ffffff", "#374b5c"})
-	public void pointTextColors_Without_setTextOpacity_Should_Starts_With_Max_Opacity_Value_FF(String hexColor) {
+	public void pointTextColors_Without_setTextOpacity_Should_Starts_With_Max_Opacity_Value_FF(String hexColor) throws IOException, SAXException, ParserConfigurationException {
 		//GIVEN
 		multipartFile = new MockMultipartFile("TestPoi.kml", new byte[]{});
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColor(hexColor);
-		
+		Document document = XmlTestUtils.getMockDocument();
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		String kmlColorWithOpacity = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), (Integer) null);
 		
@@ -781,13 +803,15 @@ class GoogleEarthHandlerStaticTest {
 	 */
 	@ParameterizedTest
 	@ValueSource(strings = {"#000088", "#ff0000", "#ffffff", "#374b5c"})
-	public void pointTextColors_With_setTextOpacity_Should_Starts_With_Opacity_Value_But_Not_Default_FF(String hexColor) {
+	public void pointTextColors_With_setTextOpacity_Should_Starts_With_Opacity_Value_But_Not_Default_FF(String hexColor) throws IOException, SAXException, ParserConfigurationException {
 		//GIVEN
 		multipartFile = new MockMultipartFile("TestPoi.kml", new byte[]{});
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColor(hexColor);
 		multipartDto.setPointTextOpacity((int) (Math.random() * 100 + 1));
-		
+		Document document = XmlTestUtils.getMockDocument();
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		String kmlColorWithOpacity = googleEarthHandler.getKmlColor(multipartDto.getPointTextHexColor(), multipartDto.getPointTextOpacity());
 		String separateHexOpacityValue = googleEarthHandler.getHexFromPercentage(multipartDto.getPointTextOpacity());
@@ -902,7 +926,8 @@ class GoogleEarthHandlerStaticTest {
 			multipartDto.setPointTextHexColor(htmlPointsTextColor);
 		}
 		Document document = XmlTestUtils.getDocument(multipartDto);
-		
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
 		document = googleEarthHandler.processKml(document, multipartDto);
 		String processedKml = kmlHandler.writeTransformedDocument(document, true);
@@ -1005,9 +1030,11 @@ class GoogleEarthHandlerStaticTest {
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSize(50);
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -1194,10 +1221,11 @@ class GoogleEarthHandlerStaticTest {
 		multipartDto.setPointTextOpacityDynamic(80);
 		multipartDto.setPointTextHexColorDynamic("#A5CFE3");
 		multipartDto.setDownloadAs(DownloadAs.KML);
-		
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 		System.out.println(resultingKml);

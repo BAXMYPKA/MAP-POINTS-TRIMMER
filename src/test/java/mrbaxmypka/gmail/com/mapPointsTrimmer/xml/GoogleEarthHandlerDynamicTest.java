@@ -102,13 +102,13 @@ public class GoogleEarthHandlerDynamicTest {
 	
 	private MultipartDto multipartDto;
 	private MultipartFile multipartFile;
-	private GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler();
+	private GoogleEarthHandler googleEarthHandler;
 	private GoogleIconsCache googleIconsCache = new GoogleIconsCache();
 	private FileService fileService = new FileService();
 	private HtmlHandler htmlHandler = new HtmlHandler(fileService);
 	private LocusMapHandler locusMapHandler;
 	private GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
-	private KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService, locusMapHandler);
+	private KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
 	private String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
 		"\t<Document>\n" +
@@ -237,9 +237,11 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSizeDynamic(50);
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
 		
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -302,9 +304,11 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSizeDynamic(50);
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -359,9 +363,11 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSizeDynamic(50); //0.5 as the scale
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -418,9 +424,11 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextSizeDynamic(60); //0.6 as the scale
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -477,9 +485,11 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColorDynamic("#ffffff");
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -537,9 +547,11 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointTextHexColorDynamic("#ffffff");
 		multipartDto.setPointTextOpacityDynamic(00);
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -600,9 +612,11 @@ public class GoogleEarthHandlerDynamicTest {
 		} else if (opacity == 100){
 			iconOpacityWithColor = "ffffffff";
 		}
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -640,9 +654,11 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSize(60);
 		multipartDto.setPointIconSizeDynamic(80);
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -684,9 +700,11 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSize(60);
 		multipartDto.setPointIconSizeDynamic(80);
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 //		System.out.println(resultingKml);
@@ -781,9 +799,11 @@ public class GoogleEarthHandlerDynamicTest {
 		multipartFile = new MockMultipartFile("GoogleEarth.kml", googleKml.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setPointIconSizeDynamic(50);
-		
+		Document document = XmlTestUtils.getDocument(multipartDto);
+		googleEarthHandler = new GoogleEarthHandler(new KmlUtils(document, new XmlDomUtils(document)));
+
 		//WHEN set any dynamic
-		Document processedDocument = googleEarthHandler.processKml(XmlTestUtils.getDocument(multipartDto), multipartDto);
+		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
 		System.out.println(resultingKml);

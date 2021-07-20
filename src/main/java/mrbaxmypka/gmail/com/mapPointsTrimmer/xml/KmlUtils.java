@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.w3c.dom.Document;
@@ -37,7 +38,7 @@ public class KmlUtils {
     @Getter(AccessLevel.PACKAGE)
     private final String KML_FILES_DEFAULT_DIRECTORY = "files/";
 
-    public KmlUtils(Document document, XmlDomUtils xmlDomUtils) {
+    public KmlUtils(@NonNull Document document, XmlDomUtils xmlDomUtils) {
         this.document = document;
         this.xmlDomUtils = xmlDomUtils;
         refreshStyleObjectsMap();
@@ -429,7 +430,7 @@ public class KmlUtils {
      */
     Node getIconNodeFromStyle(Node styleNode) {
         Node iconStyleNode = getIconStyleNodeFromStyle(styleNode);
-        return xmlDomUtils.getChildNodesFromParent(iconStyleNode, "IconStyle", null, false, true, false).get(0);
+        return xmlDomUtils.getChildNodesFromParent(iconStyleNode, "Icon", null, false, true, false).get(0);
     }
 
     /**

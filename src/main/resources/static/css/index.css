@@ -373,6 +373,10 @@ input[type=radio] {
 	/*background-color: #1f389c;*/
 }
 
+.loadForm__fieldSet_adminFieldset {
+	margin-top: 0.5em;
+}
+
 #pictogram-dropdown {
 	/*style the "box" in its minimzed state*/
 	/*display: inline-block;*/
@@ -511,7 +515,7 @@ input[type=radio] {
 	flex-direction: row;
 	justify-content: space-around;
 	align-items: center;
-	margin-top: 1em;
+	margin-top: 0.8em;
 	padding: 0.5em;
 	background: linear-gradient(to bottom, rgba(240, 240, 174, 0.04), rgba(107, 68, 19, 0.35));
 	border-top: goldenrod 0.1em solid;

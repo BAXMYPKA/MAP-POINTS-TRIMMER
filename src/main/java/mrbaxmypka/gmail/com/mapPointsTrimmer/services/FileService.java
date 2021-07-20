@@ -113,7 +113,10 @@ public class FileService {
      * @return The only path without the filename ('files:/' or 'C:\images\' etc) or an empty String if no path found.
      */
     public String getPath(String pathWithFilename) {
-        if (!pathWithFilename.matches("[.\\S]{1,100}\\.[a-zA-Z1-9]{3,5}")) return "";
+        if (!pathWithFilename.matches("[.\\S]{1,100}\\.[a-zA-Z1-9]{3,5}")) {
+            return "";
+        }
+
         //If index of '/' or '\' return -1 the 'pathWithFilename' consist of only the filename without a path
         int lastIndexOFSlash = pathWithFilename.lastIndexOf("/") != -1 ? pathWithFilename.lastIndexOf("/") :
                 pathWithFilename.lastIndexOf("\\") != -1 ? pathWithFilename.lastIndexOf("\\") : 0;

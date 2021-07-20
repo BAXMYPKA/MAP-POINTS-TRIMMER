@@ -4,9 +4,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.LocusMapHandler;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,11 +37,14 @@ class MultipartFileServiceTest {
 	
 	private KmlHandler mockKmlHandler;
 	private FileService mockFileService;
+	private GoogleIconsService googleIconsService;
 	private GoogleIconsCache googleIconsCache;
 	private FileService fileService;
 	private LocusMapHandler locusMapHandler;
 	private HtmlHandler htmlHandler;
+	private XmlDomUtils xmlDomUtils;
 	private MultipartFileService multipartFileService;
+	private KmlUtils kmlUtils;
 	private MessageSource mockMessageSource;
 	private MultipartDto multipartDto;
 	private Path tmpFile;
@@ -67,11 +69,19 @@ class MultipartFileServiceTest {
 		multipartFileService = new MultipartFileService(mockKmlHandler, mockFileService, mockMessageSource);
 		
 		googleIconsCache = new GoogleIconsCache();
+
+		googleIconsService = new GoogleIconsService(googleIconsCache);
 		
 		fileService = new FileService();
 		
 		htmlHandler = new HtmlHandler(fileService);
-		
+
+		Document mockDocument = XmlTestUtils.getMockDocument();
+
+		xmlDomUtils = new XmlDomUtils(mockDocument);
+
+		kmlUtils = new KmlUtils(mockDocument, xmlDomUtils);
+
 		multipartFile = new MockMultipartFile(originalKmlFilename, originalKmlFilename, null, testKml.getBytes());
 		
 		multipartDto = new MultipartDto(multipartFile);
@@ -139,7 +149,7 @@ class MultipartFileServiceTest {
 		multipartDto.setDownloadAs(DownloadAs.KML);
 		
 		KmlHandler kmlHandler = new KmlHandler(
-				new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService, new LocusMapHandler());
+				new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache),	fileService);
 		multipartFileService = new MultipartFileService(kmlHandler, fileService, mockMessageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
@@ -161,7 +171,7 @@ class MultipartFileServiceTest {
 		//GIVEN If while uploading KML set "downloadAs KMZ"
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
-		KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService, new LocusMapHandler());
+		KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService);
 		multipartFileService = new MultipartFileService(kmlHandler, fileService, mockMessageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
@@ -352,7 +362,7 @@ class MultipartFileServiceTest {
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
 		multipartFileService = new MultipartFileService(
-				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService, new LocusMapHandler()),
+				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
 				fileService,
 				null);
 		
@@ -392,7 +402,7 @@ class MultipartFileServiceTest {
 		multipartDto.setPathType(PathTypes.ABSOLUTE.getType());
 		
 		multipartFileService = new MultipartFileService(
-				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService, new LocusMapHandler()),
+				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
 				fileService,
 				null);
 		
