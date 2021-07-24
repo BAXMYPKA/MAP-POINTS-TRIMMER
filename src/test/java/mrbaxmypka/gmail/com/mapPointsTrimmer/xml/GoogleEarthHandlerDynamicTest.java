@@ -249,19 +249,19 @@ public class GoogleEarthHandlerDynamicTest {
 		//THEN
 		// 2 <StyleMap> have to be created
 		assertTrue(
-			XmlTestUtils.containsParentsWithChildren(processedDocument, "StyleMap", 2, "Pair", null));
+			XmlTestUtils.containsTagsWithChildren(processedDocument, "StyleMap", 2, "Pair", null));
 		// 2 additional <Style> 4 have to be created as "highlight" styles (4 <Style> in total>
 		assertTrue(
-			XmlTestUtils.containsParentsWithChildren(processedDocument, "Style", 4, "IconStyle", null));
+			XmlTestUtils.containsTagsWithChildren(processedDocument, "Style", 4, "IconStyle", null));
 		// <Placemark>'s are no more reference to <Style>'s
 		assertFalse(
-			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style1"));
-		assertFalse(XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style2"));
+			XmlTestUtils.containsTagWithChild(processedDocument, "Placemark", "styleUrl", "#style1"));
+		assertFalse(XmlTestUtils.containsTagWithChild(processedDocument, "Placemark", "styleUrl", "#style2"));
 		// <Placemark>'s are reference to <StyleMap>'s
 		assertTrue(
-			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style1"));
+			XmlTestUtils.containsTagWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style1"));
 		assertTrue(
-			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style2"));
+			XmlTestUtils.containsTagWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style2"));
 	}
 	
 	@Test
@@ -316,13 +316,13 @@ public class GoogleEarthHandlerDynamicTest {
 		//THEN
 		// <Placemark> 1 still references to #styleMap1
 		assertTrue(
-			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMap1"));
+			XmlTestUtils.containsTagWithChild(processedDocument, "Placemark", "styleUrl", "#styleMap1"));
 		// <Placemark> 2 no more references to #style3
 		assertFalse(
-			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
+			XmlTestUtils.containsTagWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
 		// <Placemark> 2 references to a new #styleMapOf:style3
 		assertTrue(
-			XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style3"));
+			XmlTestUtils.containsTagWithChild(processedDocument, "Placemark", "styleUrl", "#styleMapOf:style3"));
 		
 	}
 	
@@ -374,9 +374,9 @@ public class GoogleEarthHandlerDynamicTest {
 		
 		//THEN
 		//Normal <Style id="style1"> IconStyle scale should be unchanged (0.0)
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.0"));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.0"));
 		//Highlight <Style id="style2"> IconStyle scale should be "0.5"
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.5"));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.5"));
 	}
 	
 	@Test
@@ -435,9 +435,9 @@ public class GoogleEarthHandlerDynamicTest {
 		
 		//THEN
 		//Normal <Style id="style1"> LabelStyle scale should be unchanged (0.0)
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "scale", "0.0"));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "LabelStyle", 1, "scale", "0.0"));
 		//Highlight <Style id="style2"> LabelStyle scale should be "0.6"
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "scale", "0.6"));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "LabelStyle", 1, "scale", "0.6"));
 	}
 	
 	@Test
@@ -496,9 +496,9 @@ public class GoogleEarthHandlerDynamicTest {
 		
 		//THEN
 		//Normal <Style id="style1"> LabelStyle color should be unchanged (00000000)
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
 		//Highlight <Style id="style2"> LabelStyle color should be "ffffffff"
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "ffffffff"));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "LabelStyle", 1, "color", "ffffffff"));
 	}
 	
 	@Test
@@ -558,9 +558,9 @@ public class GoogleEarthHandlerDynamicTest {
 		
 		//THEN
 		//Normal <Style id="style1"> LabelStyle color should be unchanged (00000000)
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "LabelStyle", 1, "color", "00000000"));
 		//Highlight <Style id="style2"> LabelStyle color should be "ffffffff"
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "LabelStyle", 1, "color", "00ffffff"));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "LabelStyle", 1, "color", "00ffffff"));
 	}
 	
 	@ParameterizedTest
@@ -623,7 +623,7 @@ public class GoogleEarthHandlerDynamicTest {
 		
 		//THEN
 		//Only highlight <Style id="style2"> IconStyle should exist and be with required <color> text
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "IconStyle", 1, "color", iconOpacityWithColor));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "IconStyle", 1, "color", iconOpacityWithColor));
 	}
 	
 	@Test
@@ -666,10 +666,10 @@ public class GoogleEarthHandlerDynamicTest {
 		//THEN
 		//Normal <Style id="style1"> IconStyle scale should be 0.6
 		assertTrue(XmlTestUtils
-			.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.6"));
+			.containsTagsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.6"));
 		//Highlight <Style id="#styleMapOf:style1"> IconsStyle scale should be 0.8
 		assertTrue(XmlTestUtils
-			.containsParentsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.8"));
+			.containsTagsWithChildren(processedDocument, "IconStyle", 1, "scale", "0.8"));
 	}
 	
 	@Test
@@ -712,10 +712,10 @@ public class GoogleEarthHandlerDynamicTest {
 		//THEN
 		//Only single <StyleMap/> is presented
 		assertTrue(XmlTestUtils
-			.containsParentsWithChildren(processedDocument, "StyleMap", 1, "Pair", null));
+			.containsTagsWithChildren(processedDocument, "StyleMap", 1, "Pair", null));
 		//Only two <Style/>'s are presented
 		assertTrue(XmlTestUtils
-			.containsParentsWithChildren(processedDocument, "Style", 2, "IconStyle", null));
+			.containsTagsWithChildren(processedDocument, "Style", 2, "IconStyle", null));
 	}
 	
 	/**
@@ -811,18 +811,18 @@ public class GoogleEarthHandlerDynamicTest {
 		//THEN
 		// 2 additional <StyleMap>'s for <Placemark> 3 and 4 have to be created (4 <StyleMap>'s in total)
 		assertTrue(
-			XmlTestUtils.containsParentsWithChildren(
+			XmlTestUtils.containsTagsWithChildren(
 				processedDocument, "StyleMap", 4, "Pair", null));
 		// 2 additional <Style>'s for <Placemark> 3 and 4 have to be created as "highlight" styles (6 <Style> in total>
 		assertTrue(
-			XmlTestUtils.containsParentsWithChildren(
+			XmlTestUtils.containsTagsWithChildren(
 				processedDocument, "Style", 6, "IconStyle", null));
 		// <Placemark>'s 3 and 4 no more references to <Style>'s
 		assertFalse(
-			XmlTestUtils.containsParentsWithChildren(
+			XmlTestUtils.containsTagsWithChildren(
 				processedDocument, "Placemark", 4, "styleUrl", "#style1"));
 		assertFalse(
-			XmlTestUtils.containsParentsWithChildren(
+			XmlTestUtils.containsTagsWithChildren(
 				processedDocument, "Placemark", 4, "styleUrl", "#style4"));
 		
 	}

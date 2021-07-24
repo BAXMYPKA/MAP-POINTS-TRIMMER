@@ -12,7 +12,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -207,7 +206,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
-		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "IconStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(document, "IconStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -263,7 +262,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointIconSizeScaled().toString();
 		
-		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "IconStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(document, "IconStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -323,7 +322,7 @@ class GoogleEarthHandlerStaticTest {
 		
 		//THEN
 		//Only normal <Style id="style1"> IconStyle color should be with the <IconStyle> and the required <color> text
-		assertTrue(XmlTestUtils.containsParentsWithChildren(processedDocument, "IconStyle", 1, "color", iconOpacityWithColor));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(processedDocument, "IconStyle", 1, "color", iconOpacityWithColor));
 	}
 	
 	@ParameterizedTest
@@ -379,7 +378,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(document, "LabelStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -445,7 +444,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(document, "LabelStyle", 2, "scale", scale));
 	}
 	
 	@ParameterizedTest
@@ -503,7 +502,7 @@ class GoogleEarthHandlerStaticTest {
 		//THEN
 		String scale = multipartDto.getPointTextSizeScaled().toString();
 		
-		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "scale", scale));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(document, "LabelStyle", 2, "scale", scale));
 	}
 	
 	
@@ -585,7 +584,7 @@ class GoogleEarthHandlerStaticTest {
 //		System.out.println("HEX COLOR : " + hexColor);
 //		System.out.println("KML COLOR : " + kmlColor);
 		
-		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
 	}
 	
 	/**
@@ -670,7 +669,7 @@ class GoogleEarthHandlerStaticTest {
 //		System.out.println("HEX COLOR : " + hexColor);
 //		System.out.println("KML COLOR : " + kmlColor);
 		
-		assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
+		assertTrue(XmlTestUtils.containsTagsWithChildren(document, "LabelStyle", 2, "color", kmlColor));
 	}
 	
 	
@@ -938,16 +937,16 @@ class GoogleEarthHandlerStaticTest {
 		//But "highlighted" #style3 from <StyleMap> and unused #style4 should be unchanged (2 pieces)
 		if (staticType.equals("iconSize")) {
 			String pointIconScale = multipartDto.getPointIconSizeScaled().toString();
-			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "IconStyle", 3, "scale", pointIconScale));
-			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "IconStyle", 2, "scale", "0.8"));
+			assertTrue(XmlTestUtils.containsTagsWithChildren(document, "IconStyle", 3, "scale", pointIconScale));
+			assertTrue(XmlTestUtils.containsTagsWithChildren(document, "IconStyle", 2, "scale", "0.8"));
 		} else if (staticType.equals("textSize")) {
 			String pointsTextScale = multipartDto.getPointTextSizeScaled().toString();
-			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 3, "scale", pointsTextScale));
-			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "scale", "0.8"));
+			assertTrue(XmlTestUtils.containsTagsWithChildren(document, "LabelStyle", 3, "scale", pointsTextScale));
+			assertTrue(XmlTestUtils.containsTagsWithChildren(document, "LabelStyle", 2, "scale", "0.8"));
 		} else if (staticType.equals("textColor")) {
 			String kmlColor = googleEarthHandler.getKmlColor(htmlPointsTextColor, multipartDto.getPointTextOpacity());
-			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 3, "color", kmlColor));
-			assertTrue(XmlTestUtils.containsParentsWithChildren(document, "LabelStyle", 2, "color", "00000000"));
+			assertTrue(XmlTestUtils.containsTagsWithChildren(document, "LabelStyle", 3, "color", kmlColor));
+			assertTrue(XmlTestUtils.containsTagsWithChildren(document, "LabelStyle", 2, "color", "00000000"));
 		}
 		
 	}
@@ -1041,7 +1040,7 @@ class GoogleEarthHandlerStaticTest {
 		
 		//THEN
 		assertTrue(resultingKml.contains("<styleUrl>#style3</styleUrl>"));
-		assertTrue(XmlTestUtils.containsParentWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
+		assertTrue(XmlTestUtils.containsTagWithChild(processedDocument, "Placemark", "styleUrl", "#style3"));
 	}
 	
 	@Disabled

@@ -60,13 +60,13 @@ class LocusIconsHandler {
             return;
         }
         Map<String, Node> replacedStyleMaps = replaceStyleMapsInStyleUrls(documentRoot, pictogramName);
-        deleteStyleObjectsFromDocument(replacedStyleMaps, documentRoot);
+        deleteStyleObjectsFromDocument(replacedStyleMaps);
         //Refresh the current Nodes from Document
         kmlUtils.refreshStyleObjectsMap();
         kmlUtils.refreshStyleUrlsFromPlacemarks();
 
         Map<String, Node> replacedStyles = replaceStylesInStyleUrls(documentRoot, pictogramName);
-        deleteStyleObjectsFromDocument(replacedStyles, documentRoot);
+        deleteStyleObjectsFromDocument(replacedStyles);
         //Refresh the current Nodes from Document
         kmlUtils.refreshStyleObjectsMap();
         kmlUtils.refreshStyleUrlsFromPlacemarks();
@@ -318,15 +318,16 @@ class LocusIconsHandler {
      * We can safely delete StyleMaps and their Styles (or just Styles) with icon thumbnails
      *
      * @param styleObjectsWithThumbnails Where {@link Node} is StyleMap or Style with 'id' attribute references to a photo thumbnail
-     * @param documentRoot               The root of the {@link Document} where given Style objects are placed.
      */
-    private void deleteStyleObjectsFromDocument(Map<String, Node> styleObjectsWithThumbnails, Element documentRoot) {
+    private void deleteStyleObjectsFromDocument(Map<String, Node> styleObjectsWithThumbnails) {
         styleObjectsWithThumbnails.values().forEach(styleObject -> {
             if (styleObject.getNodeName().equalsIgnoreCase("StyleMap")) {
-                kmlUtils.getNormalStyleNodeFromStyleMap(styleObject).ifPresent(documentRoot::removeChild);
-                kmlUtils.getHighlightStyleNodeFromStyleMap(styleObject).ifPresent(documentRoot::removeChild);
+                kmlUtils.getNormalStyleNodeFromStyleMap(styleObject)
+                        .ifPresent(normalStyle -> normalStyle.getParentNode().removeChild(normalStyle));
+                kmlUtils.getHighlightStyleNodeFromStyleMap(styleObject)
+                        .ifPresent(highlightStyle -> highlightStyle.getParentNode().removeChild(highlightStyle));
             }
-            documentRoot.removeChild(styleObject);
+            styleObject.getParentNode().removeChild(styleObject);
         });
     }
 

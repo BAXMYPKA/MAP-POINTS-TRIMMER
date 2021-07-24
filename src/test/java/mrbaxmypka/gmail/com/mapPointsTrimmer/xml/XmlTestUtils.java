@@ -80,23 +80,23 @@ public class XmlTestUtils {
 
     /**
      * @param document                The source to be parsed
-     * @param requiredParentTagName   Parent tagName to be created or an existing one
+     * @param requiredTagName   Parent tagName to be created or an existing one
      * @param requiredNumberOfParents How many parents with the desired child should be presented within the given document
      * @param requiredChildrenTagName Parent's children tagName that should be presented strictly within parent's tag
      * @param requiredChildrenValue   If not null, what exact text value should those children have.
      *                                Otherwise will be ignored. And only num of parents and children tag name will be considered.
      * @return True if all the conditions are valid
      */
-    public static boolean containsParentsWithChildren(
+    public static boolean containsTagsWithChildren(
             Document document,
-            String requiredParentTagName,
+            String requiredTagName,
             int requiredNumberOfParents,
             String requiredChildrenTagName,
             @Nullable String requiredChildrenValue) {
 
         int parentsWithDesiredChildCount = 0;
 
-        NodeList parents = document.getElementsByTagName(requiredParentTagName);
+        NodeList parents = document.getElementsByTagName(requiredTagName);
         parents:
         for (int i = 0; i < parents.getLength(); i++) {
 
@@ -123,15 +123,15 @@ public class XmlTestUtils {
 
     /**
      * @param document
-     * @param requiredParentTagName Parent Nodes to be looked for their children
+     * @param requiredTagName Parent Nodes to be looked for their children
      * @param requiredChildTagName  A child tag name to found in every Parent
      * @param requiredChildValue    A child text value to be kept in a child Node
      * @return true if any of the Parent contains the Child with the desired value
      */
-    public static boolean containsParentWithChild(
-            Document document, String requiredParentTagName, String requiredChildTagName, String requiredChildValue) {
+    public static boolean containsTagWithChild(
+            Document document, String requiredTagName, String requiredChildTagName, String requiredChildValue) {
 
-        NodeList parentNodes = document.getElementsByTagName(requiredParentTagName);
+        NodeList parentNodes = document.getElementsByTagName(requiredTagName);
         for (int i = 0; i < parentNodes.getLength(); i++) {
             Node parentNode = parentNodes.item(i);
 
@@ -140,6 +140,30 @@ public class XmlTestUtils {
                 Node child = childNodes.item(j);
                 if (child.getNodeName() != null && child.getNodeName().equals(requiredChildTagName) &&
                         child.getTextContent().equals(requiredChildValue)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param document
+     * @param requiredTagName        Parent Nodes to be looked for their children
+     * @param requiredAttributeName  An attribute name to be found in every appropriate tag
+     * @param requiredAttributeValue An attribute text value to be found
+     * @return true if any of a desired tag is found and contains the desired value.
+     */
+    public static boolean containsTagWithId(
+            Document document, String requiredTagName, String requiredAttributeName, String requiredAttributeValue) {
+
+        NodeList requiredNodes = document.getElementsByTagName(requiredTagName);
+        for (int i = 0; i < requiredNodes.getLength(); i++) {
+            Node requiredNode = requiredNodes.item(i);
+
+            if (requiredNode.hasAttributes() && requiredNode.getAttributes().getNamedItem(requiredAttributeName) != null) {
+                Node requiredAttribute = requiredNode.getAttributes().getNamedItem(requiredAttributeName);
+                if (requiredAttribute.getTextContent().equals(requiredAttributeValue)) {
                     return true;
                 }
             }
