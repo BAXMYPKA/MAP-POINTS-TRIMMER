@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.xml.sax.SAXException;
 
@@ -31,13 +33,15 @@ class GoogleIconsServiceTest {
 	private GoogleIconsService googleIconsService;
 	private MultipartFileService mockMultipartFileService;
 	private GoogleIconsCache googleIconsCache;
+	private MessageSource messageSource = Mockito.mock(MessageSource.class);
+	private ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
 	private FileService fileService;
 	private Path testKmz = Paths.get("src/test/java/resources/TestKmz.kmz");
 	
 	@BeforeEach
 	public void beforeEach() {
 		googleIconsCache = new GoogleIconsCache();
-		fileService = new FileService();
+		fileService = new FileService(messageSource, resourceLoader);
 		mockMultipartFileService = Mockito.mock(MultipartFileService.class);
 		googleIconsService = new GoogleIconsService(googleIconsCache);
 		multipartDto = new MultipartDto(new MockMultipartFile("Test.kml", "Test.kml", null, new byte[]{}));

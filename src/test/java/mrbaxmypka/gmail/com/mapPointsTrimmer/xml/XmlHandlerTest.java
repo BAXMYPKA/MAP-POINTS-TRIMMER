@@ -5,6 +5,9 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -19,8 +22,10 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.*;
 
 class XmlHandlerTest {
-	
-	private FileService fileService = new FileService();
+
+	private MessageSource messageSource = Mockito.mock(MessageSource.class);
+	private ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
+	private FileService fileService = new FileService(messageSource, resourceLoader);
 	private GoogleIconsCache googleIconsCache = new GoogleIconsCache();
 	private GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
 	private HtmlHandler htmlHandler = new HtmlHandler(fileService);

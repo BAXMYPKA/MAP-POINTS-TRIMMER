@@ -40,6 +40,11 @@ public class FileService {
 
     private String stackTrace;
 
+    public FileService(MessageSource messageSource, ResourceLoader resourceLoader) {
+        this.messageSource = messageSource;
+        this.resourceLoader = resourceLoader;
+    }
+
 
     /**
      * Asynchronous method.
@@ -87,12 +92,15 @@ public class FileService {
         }
     }
 
+    //TODO: to test all the following
+
     /**
      * Extract the exact filename from a given path or http link as img[src] or a[href].
      * E.g. 'files:/image.png' or 'C:\images\image.jpg' will be returned as 'image.png', and 'image.jpg' will be returned as it.
      *
-     * @param pathWithFilename Href or src to the image
-     * @return The name of the file from the given src or empty string if nothing found.
+     * @param pathWithFilename Href or src to the image. E.g. "file:///D:/MyFolder/MyPOI/picture.jpg" or "files/picture.png"
+     * @return The name of the file from the given src (e.g. "picture.jpg") or empty string if nothing found
+     * or the given path is not a valid path.
      */
     public String getFileName(String pathWithFilename) {
         if (!pathWithFilename.matches("[.\\S]{1,100}\\.[a-zA-Z1-9]{3,5}")) return "";
@@ -130,7 +138,7 @@ public class FileService {
     }
 
     /**
-     * Collects a list of pictograms names as .png files from the 'resources/static/pictograms' directory.
+     * Collects a list of pictograms names ONLY as '.png' OR '.PNG' files from the 'resources/static/pictograms' directory.
      *
      * @return {@literal ArrayList<String> pictogramNames} or an empty Array if nothing found.
      */
@@ -138,7 +146,7 @@ public class FileService {
         final Resource resource = resourceLoader.getResource("classpath:static/pictograms");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             ArrayList<String> pictogramNames = reader.lines().collect(Collectors.toCollection(ArrayList::new));
-            pictogramNames.removeIf(s -> !s.endsWith(".png") || !s.endsWith(".PNG")); //Delete all non-.png files
+            pictogramNames.removeIf(s -> !s.toLowerCase().endsWith(".png")); //Delete all non-.png files
             log.info("{} Pictograms have been collected.", pictogramNames.size());
             return pictogramNames;
         } catch (IOException e) {
@@ -161,7 +169,7 @@ public class FileService {
         final Resource resource = resourceLoader.getResource("classpath:static/pictograms");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             Map<String, String> pictogramNames = reader.lines()
-                    .filter(fileName -> fileName.endsWith(".png") || fileName.endsWith(".PNG"))
+                    .filter(fileName -> fileName.toLowerCase().endsWith(".png"))
                     .collect(Collectors.toMap(
                             s -> s,
                             o -> "pictograms/" + o
@@ -173,6 +181,4 @@ public class FileService {
             return new HashMap<>(0);
         }
     }
-
-    //TODO: to test the above
 }

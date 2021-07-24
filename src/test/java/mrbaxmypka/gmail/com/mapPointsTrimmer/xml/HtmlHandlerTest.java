@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,8 +19,10 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HtmlHandlerTest {
-	
-	static HtmlHandler htmlHandler = new HtmlHandler(new FileService());
+
+	private static MessageSource messageSource = Mockito.mock(MessageSource.class);
+	private static ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
+	static HtmlHandler htmlHandler = new HtmlHandler(new FileService(messageSource, resourceLoader));
 	static String html = "<!-- desc_gen:start -->\n" +
 		"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
 		"<!-- desc_user:start -->\n" +

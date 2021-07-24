@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -36,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MultipartFileServiceTest {
 	
 	private KmlHandler mockKmlHandler;
+	private ResourceLoader resourceLoader;
 	private FileService mockFileService;
 	private GoogleIconsService googleIconsService;
 	private GoogleIconsCache googleIconsCache;
@@ -63,7 +65,9 @@ class MultipartFileServiceTest {
 		
 		mockKmlHandler = Mockito.mock(KmlHandler.class);
 		Mockito.when(mockKmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartDto.class))).thenReturn(testKml);
-		
+
+		resourceLoader = Mockito.mock(ResourceLoader.class);
+
 		mockFileService = Mockito.mock(FileService.class);
 		
 		multipartFileService = new MultipartFileService(mockKmlHandler, mockFileService, mockMessageSource);
@@ -72,7 +76,7 @@ class MultipartFileServiceTest {
 
 		googleIconsService = new GoogleIconsService(googleIconsCache);
 		
-		fileService = new FileService();
+		fileService = new FileService(mockMessageSource, resourceLoader);
 		
 		htmlHandler = new HtmlHandler(fileService);
 

@@ -9,6 +9,9 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
+import org.springframework.context.MessageSource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -43,7 +46,9 @@ class GoogleEarthHandlerStaticTest {
 	
 	private MultipartDto multipartDto;
 	private MultipartFile multipartFile;
-	private FileService fileService = new FileService();
+	private MessageSource messageSource = Mockito.mock(MessageSource.class);
+	private ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
+	private FileService fileService = new FileService(messageSource, resourceLoader);
 	private GoogleIconsCache googleIconsCache = new GoogleIconsCache();
 	private HtmlHandler htmlHandler = new HtmlHandler(fileService);
 	private GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
