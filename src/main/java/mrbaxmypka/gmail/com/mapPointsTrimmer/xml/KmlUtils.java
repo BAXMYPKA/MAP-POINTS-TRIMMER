@@ -82,8 +82,8 @@ public class KmlUtils {
     }
 
     /**
-     * @param styleUrl Doesn't matter if it starts with '#' or not.
-     * @return List of concrete {@literal <Placemark/>} objects from the {@link Document}
+     * @param styleUrl {@literal To be found in all <Placemark/>s.} Doesn't matter if it starts with '#' or not.
+     * @return List of concrete {@literal <Placemark/>s} objects from the {@link Document} {@literal  with such a <styleUrl/>}
      */
     List<Node> getPlacemarksByStyleUrl(String styleUrl) {
         styleUrl = styleUrl.startsWith("#") ? styleUrl : "#" + styleUrl;
@@ -101,7 +101,7 @@ public class KmlUtils {
                 Node childNode = childNodes.item(j);
                 if (childNode.getNodeName() != null && childNode.getNodeName().equals("styleUrl")) {
                     if (childNode.getTextContent() != null && childNode.getTextContent().equals(styleUrl)) {
-                        foundPlacemarks.add(childNode);
+                        foundPlacemarks.add(placemarkNode);
                         break;
                     }
                 }
@@ -123,10 +123,10 @@ public class KmlUtils {
     }
 
     void setStyleUrlToPlacemark(Node placemark, String styleUrl) {
-        final String correctedStyleUrl = styleUrl.startsWith("#") ? styleUrl : "#" + styleUrl;
+        final String correctStyleUrl = styleUrl.startsWith("#") ? styleUrl : "#" + styleUrl;
         xmlDomUtils.getChildNodesFromParent(placemark, "styleUrl", null, false, true, false)
                 .forEach(styleUrlNode -> {
-                    styleUrlNode.setTextContent(styleUrl);
+                    styleUrlNode.setTextContent(correctStyleUrl);
                 });
     }
 

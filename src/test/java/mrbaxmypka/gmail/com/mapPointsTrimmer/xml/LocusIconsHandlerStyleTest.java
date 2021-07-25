@@ -473,4 +473,232 @@ class LocusIconsHandlerStyleTest {
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Icon", "href", customPath + PIC1));
     }
 
+    @Test
+    public void styleUrl_Should_Be_Replaced_With_New_Style()
+            throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        final String photoId1 = "file:///sdcard/Locus/cache/images/1604137344718";
+        final String photoStyleUrl = "#" + photoId1;
+        final String photoStyleWithPlacemark = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+                "<Document>\n" +
+                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+                "\t\t<Style id=\"" +
+                photoId1 +
+                "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1604137344718.png</href></Icon>\n" +
+                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+                "<Placemark>\n" +
+                "\t<name>Placemark1</name>\n" +
+                "\t<description><![CDATA[]]></description>\n" +
+                "\t<styleUrl>" +
+                photoStyleUrl +
+                "</styleUrl>\n" +
+                "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+                "\t\t<lc:attachment>files/_1377860540648.jpg</lc:attachment>\n" +
+                "\t</ExtendedData>\n" +
+                "</Placemark>" +
+                "</Document>\n" +
+                "</kml>\n";
+        multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
+                null, new ByteArrayInputStream(photoStyleWithPlacemark.getBytes(StandardCharsets.UTF_8)));
+        multipartDto = new MultipartDto(multipartFile);
+        multipartDto.setReplaceLocusIcons(true);
+        multipartDto.setPictogramName(PIC1);
+        document = XmlTestUtils.getDocument(multipartDto);
+        kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
+        locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
+        Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
+
+
+        //WHEN
+        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+
+        //THEN
+//        System.out.println(XmlTestUtils.getAsText(document));
+        assertEquals(1, document.getElementsByTagName("Placemark").getLength());
+        assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", "#" + PIC1));
+        //        assertFalse(processedKml.contains("<href>files/file-sdcardLocuscacheimages1589191676952.png</href>"));
+
+    }
+
+    @Test
+    public void only_Photo_StyleUrl_Should_Be_Replaced()
+            throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        final String photoId1 = "file:///sdcard/Locus/cache/images/123";
+        final String photoStyleUrl = "#" + photoId1;
+        final String pictogram2StyleUrl = "#" + PIC2;
+        final String photoAndPictogramStylesWithPlacemarks = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+                "<Document>\n" +
+                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+                "\t\t<Style id=\"" +
+                photoId1 +
+                "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages123.png</href></Icon>\n" +
+                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+                "\t\t<Style id=\"" +
+                PIC2 +
+                "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<Icon><href>files/Pictogram2.png</href></Icon>\n" +
+                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+                "<Placemark>\n" +
+                "\t<name>Placemark1</name>\n" +
+                "\t<description><![CDATA[]]></description>\n" +
+                "\t<styleUrl>" +
+                photoStyleUrl +
+                "</styleUrl>\n" +
+                "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+                "\t\t<lc:attachment>files/_1.jpg</lc:attachment>\n" +
+                "\t</ExtendedData>\n" +
+                "</Placemark>" +
+                "<Placemark>\n" +
+                "\t<name>Placemark2</name>\n" +
+                "\t<description><![CDATA[]]></description>\n" +
+                "\t<styleUrl>" +
+                pictogram2StyleUrl +
+                "</styleUrl>\n" +
+                "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+                "\t\t<lc:attachment>files/_2.jpg</lc:attachment>\n" +
+                "\t</ExtendedData>\n" +
+                "</Placemark>" +
+                "</Document>\n" +
+                "</kml>\n";
+        multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
+                null, new ByteArrayInputStream(photoAndPictogramStylesWithPlacemarks.getBytes(StandardCharsets.UTF_8)));
+        multipartDto = new MultipartDto(multipartFile);
+        multipartDto.setReplaceLocusIcons(true);
+        multipartDto.setPictogramName(PIC1);
+        document = XmlTestUtils.getDocument(multipartDto);
+        kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
+        locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
+        Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
+
+
+        //WHEN
+        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+
+        //THEN
+//        System.out.println(XmlTestUtils.getAsText(document));
+
+        assertEquals(2, document.getElementsByTagName("Placemark").getLength());
+        assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", "#" + PIC1));
+        assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", pictogram2StyleUrl));
+
+        assertFalse(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", photoStyleUrl));
+        //        assertFalse(processedKml.contains("<href>files/file-sdcardLocuscacheimages1589191676952.png</href>"));
+
+    }
+
+    @Test
+    public void all_Photo_StyleUrls_Should_Be_Replaced()
+            throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        final String photoId1 = "file:///sdcard/Locus/cache/images/123";
+        final String photoId2 = "file:///sdcard/Locus/cache/images/1234";
+        final String photo1StyleUrl = "#" + photoId1;
+        final String photo2StyleUrl = "#" + photoId2;
+        final String pictogram2StyleUrl = "#" + PIC2;
+        final String photoAndPictogramStylesWithPlacemarks = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+                "<Document>\n" +
+                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+                "\t\t<Style id=\"" +
+                photoId1 +
+                "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages123.png</href></Icon>\n" +
+                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+                "\t\t<Style id=\"" +
+                photoId2 +
+                "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1234.png</href></Icon>\n" +
+                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+                "\t\t<Style id=\"" +
+                PIC2 +
+                "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<Icon><href>files/Pictogram2.png</href></Icon>\n" +
+                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+                "<Placemark>\n" +
+                "\t<name>Placemark1</name>\n" +
+                "\t<description><![CDATA[]]></description>\n" +
+                "\t<styleUrl>" +
+                photo1StyleUrl +
+                "</styleUrl>\n" +
+                "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+                "\t\t<lc:attachment>files/_1.jpg</lc:attachment>\n" +
+                "\t</ExtendedData>\n" +
+                "</Placemark>" +
+                "<Placemark>\n" +
+                "\t<name>Placemark2</name>\n" +
+                "\t<description><![CDATA[]]></description>\n" +
+                "\t<styleUrl>" +
+                photo2StyleUrl +
+                "</styleUrl>\n" +
+                "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+                "\t\t<lc:attachment>files/_2.jpg</lc:attachment>\n" +
+                "\t</ExtendedData>\n" +
+                "</Placemark>" +
+                "<Placemark>\n" +
+                "\t<name>Placemark3</name>\n" +
+                "\t<description><![CDATA[]]></description>\n" +
+                "\t<styleUrl>" +
+                pictogram2StyleUrl +
+                "</styleUrl>\n" +
+                "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+                "\t\t<lc:attachment>files/_3.jpg</lc:attachment>\n" +
+                "\t</ExtendedData>\n" +
+                "</Placemark>" +
+                "</Document>\n" +
+                "</kml>\n";
+        multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
+                null, new ByteArrayInputStream(photoAndPictogramStylesWithPlacemarks.getBytes(StandardCharsets.UTF_8)));
+        multipartDto = new MultipartDto(multipartFile);
+        multipartDto.setReplaceLocusIcons(true);
+        multipartDto.setPictogramName(PIC1);
+        document = XmlTestUtils.getDocument(multipartDto);
+        kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
+        locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
+        Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
+
+
+        //WHEN
+        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+
+        //THEN
+//        System.out.println(XmlTestUtils.getAsText(document));
+        assertEquals(3, document.getElementsByTagName("Placemark").getLength());
+        assertEquals(2, document.getElementsByTagName("Style").getLength());
+
+        assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", "#" + PIC1));
+        assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", "#" + PIC2));
+
+        assertFalse(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", photo1StyleUrl));
+        assertFalse(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", photo2StyleUrl));
+
+        //        assertFalse(processedKml.contains("<href>files/file-sdcardLocuscacheimages1589191676952.png</href>"));
+
+    }
+
 }

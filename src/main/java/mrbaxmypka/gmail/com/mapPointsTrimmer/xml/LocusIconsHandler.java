@@ -35,7 +35,8 @@ class LocusIconsHandler {
      * 3.1 {@literal It gets a first <StyleMap> as an example, clones it and its 'normal' and 'highlight' <Style>s}
      * 3.2 {@literal Creates a new <StyleMap> and its 'normal' and 'highlight' inner <Style>s based on the clone.}
      * 3.3 {@literal Replaces all the <Placemark>s <styleUrl>s with that new cloned <StyleMap>}
-     * 4. {@literal Deletes all the <StyleMap>s from the Document with "id" to photo thumbnails. As well as their included "Normal" and "Highlighted" <Style>s}
+     * 4. {@literal Deletes all the <StyleMap>s from the Document with "id" to photo thumbnails.
+     * As well as their included "Normal" and "Highlighted" <Style>s}
      * 5. {@literal Finds all the <Style>s with "id" references to photo thumbnails}
      * 6. {@literal If <Style> with 'id' as a such a pictogram name as:} {@link MultipartDto#getPictogramName()} exists it:
      * 6.1 {@literal Replaces all the <Placemark>s <styleUrl>s to thumbnail with that existing <Style>}
@@ -65,7 +66,7 @@ class LocusIconsHandler {
         kmlUtils.refreshStyleObjectsMap();
         kmlUtils.refreshStyleUrlsFromPlacemarks();
 
-        Map<String, Node> replacedStyles = replaceStylesInStyleUrls(documentRoot, pictogramName);
+        Map<String, Node> replacedStyles = replaceStylesInStyleUrls(pictogramName);
         deleteStyleObjectsFromDocument(replacedStyles);
         //Refresh the current Nodes from Document
         kmlUtils.refreshStyleObjectsMap();
@@ -78,11 +79,10 @@ class LocusIconsHandler {
      * {@literal  and <IconHref> is updated as well.}
      * Its better to execute this method after replacing StyleMaps in {@link #replaceStyleMapsInStyleUrls(Element, String)}.
      *
-     * @param documentRoot
      * @param pictogramName
      * @return {@literal Map<String,Node(Style)> where <Style>s Nodes can by safely deleted from the }{@link Document}
      */
-    private Map<String, Node> replaceStylesInStyleUrls(Element documentRoot, String pictogramName) {
+    private Map<String, Node> replaceStylesInStyleUrls(String pictogramName) {
         Map<String, Node> stylesWithThumbnails = kmlUtils.getStyleObjectsMap().entrySet().stream()
                 .filter(entry -> entry.getValue().getNodeName().equalsIgnoreCase("Style"))
                 .filter(entry -> entry.getKey().contains(PHOTO_THUMBNAIL_NAME))
@@ -211,7 +211,8 @@ class LocusIconsHandler {
     /**
      * {@literal Creates a new <StyleMap> with inner 'normal' and 'highlight' <Style>s as a clone of existing one.
      * Updates them ids and hrefs. Insert in into the }{@link Document} {@literal and finally replaces all the <style<Url>s
-     *  in <Placemark>s with this new <StyleMap>.}
+     * in <Placemark>s with this new <StyleMap>.}
+     *
      * @param pictogramName
      * @param styleMapsWithThumbnails
      */
