@@ -42,7 +42,6 @@
          *
          * @param level TRACE, DEBUG, INFO, ERROR, WARN
          */
-            //TODO: to enable the following
         let setLoggingLevel = function (level) {
                 let logLevel = {
                     "configuredLevel": level

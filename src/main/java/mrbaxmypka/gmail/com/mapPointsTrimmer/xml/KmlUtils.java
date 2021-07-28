@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
@@ -484,8 +485,16 @@ public class KmlUtils {
                 if (pairChildNode.getNodeName() != null
                         && pairChildNode.getNodeName().equals("key")
                         && pairChildNode.getTextContent().equals("normal")) {
-                    normalStyleUrl = pairChildNode;
-                    break start;
+
+                    NodeList normalPairNodeChildren = pairNode.getChildNodes();
+                    for (int i = 0; i < normalPairNodeChildren.getLength(); i++) {
+                        Node normalPairNodeChild = normalPairNodeChildren.item(i);
+                        if (normalPairNodeChild.getNodeName() != null &&
+                                normalPairNodeChild.getNodeName().equals("styleUrl")) {
+                            normalStyleUrl = normalPairNodeChild;
+                            break start;
+                        }
+                    }
                 }
             }
         }
@@ -525,8 +534,16 @@ public class KmlUtils {
                 if (pairChildNode.getNodeName() != null
                         && pairChildNode.getNodeName().equals("key")
                         && pairChildNode.getTextContent().equals("highlight")) {
-                    highlightStyleUrl = pairChildNode;
-                    break start;
+
+                    NodeList highlightPairNodeChildren = pairNode.getChildNodes();
+                    for (int i = 0; i < highlightPairNodeChildren.getLength(); i++) {
+                        Node highlightPairNodeChild = highlightPairNodeChildren.item(i);
+                        if (highlightPairNodeChild.getNodeName() != null &&
+                                highlightPairNodeChild.getNodeName().equals("styleUrl")) {
+                            highlightStyleUrl = highlightPairNodeChild;
+                            break start;
+                        }
+                    }
                 }
             }
         }

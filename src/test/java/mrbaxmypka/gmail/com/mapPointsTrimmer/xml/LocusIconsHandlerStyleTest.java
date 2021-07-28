@@ -79,7 +79,7 @@ class LocusIconsHandlerStyleTest {
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
-        assertFalse(XmlTestUtils.containsTagWithId(document, "Style", "id", photoId));
+        assertFalse(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", photoId));
         //        assertFalse(processedKml.contains("<href>files/file-sdcardLocuscacheimages1589191676952.png</href>"));
     }
 
@@ -121,7 +121,7 @@ class LocusIconsHandlerStyleTest {
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
-        assertTrue(XmlTestUtils.containsTagWithId(document, "Style", "id", PIC1));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC1));
     }
 
     @Test
@@ -171,7 +171,7 @@ class LocusIconsHandlerStyleTest {
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
         assertEquals(1, document.getElementsByTagName("Style").getLength());
-        assertTrue(XmlTestUtils.containsTagWithId(document, "Style", "id", PIC1));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC1));
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Icon", "href", PIC1_KML_PATH));
     }
 
@@ -229,9 +229,9 @@ class LocusIconsHandlerStyleTest {
         locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
 
         //THEN
-//        System.out.println(XmlTestUtils.getAsText(document));
-        assertFalse(XmlTestUtils.containsTagWithId(document, "Style", "id", photoId1));
-        assertFalse(XmlTestUtils.containsTagWithId(document, "Style", "id", photoId2));
+        System.out.println(XmlTestUtils.getAsText(document));
+        assertFalse(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", photoId1));
+        assertFalse(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", photoId2));
     }
 
     @Test
@@ -290,7 +290,7 @@ class LocusIconsHandlerStyleTest {
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
         assertEquals(1, document.getElementsByTagName("Style").getLength());
-        assertTrue(XmlTestUtils.containsTagWithId(document, "Style", "id", PIC1));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC1));
         //        assertFalse(processedKml.contains("<href>files/file-sdcardLocuscacheimages1589191676952.png</href>"));
     }
 
@@ -361,10 +361,10 @@ class LocusIconsHandlerStyleTest {
 //        System.out.println(XmlTestUtils.getAsText(document));
         assertEquals(2, document.getElementsByTagName("Style").getLength());
 
-        assertTrue(XmlTestUtils.containsTagWithId(document, "Style", "id", PIC1));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC1));
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Icon", "href", PIC1_KML_PATH));
 
-        assertTrue(XmlTestUtils.containsTagWithId(document, "Style", "id", PIC2));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC2));
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Icon", "href", PIC2_KML_PATH));
         //        assertFalse(processedKml.contains("<href>files/file-sdcardLocuscacheimages1589191676952.png</href>"));
     }
@@ -416,12 +416,12 @@ class LocusIconsHandlerStyleTest {
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
-        assertFalse(XmlTestUtils.containsTagWithId(document, "Style", "id", photoId));
+        assertFalse(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", photoId));
 
-        assertTrue(XmlTestUtils.containsTagWithId(document, "Style", "id", PIC1));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC1));
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Icon", "href", PIC1_KML_PATH));
 
-        assertTrue(XmlTestUtils.containsTagWithId(document, "Style", "id", PIC2));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC2));
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Icon", "href", PIC2_KML_PATH));
         //        assertFalse(processedKml.contains("<href>files/file-sdcardLocuscacheimages1589191676952.png</href>"));
     }
@@ -469,7 +469,7 @@ class LocusIconsHandlerStyleTest {
         //Only customPath should be preserved but with the pictogramName
 //        System.out.println(XmlTestUtils.getAsText(document));
         assertEquals(1, document.getElementsByTagName("Style").getLength());
-        assertTrue(XmlTestUtils.containsTagWithId(document, "Style", "id", PIC1));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC1));
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Icon", "href", customPath + PIC1));
     }
 

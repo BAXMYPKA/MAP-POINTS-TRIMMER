@@ -80,7 +80,7 @@ public class XmlTestUtils {
 
     /**
      * @param document                The source to be parsed
-     * @param requiredTagName   Parent tagName to be created or an existing one
+     * @param requiredParentTagName   Parent tagName to be created or an existing one
      * @param requiredNumberOfParents How many parents with the desired child should be presented within the given document
      * @param requiredChildrenTagName Parent's children tagName that should be presented strictly within parent's tag
      * @param requiredChildrenValue   If not null, what exact text value should those children have.
@@ -89,14 +89,14 @@ public class XmlTestUtils {
      */
     public static boolean containsTagsWithChildren(
             Document document,
-            String requiredTagName,
+            String requiredParentTagName,
             int requiredNumberOfParents,
             String requiredChildrenTagName,
             @Nullable String requiredChildrenValue) {
 
         int parentsWithDesiredChildCount = 0;
 
-        NodeList parents = document.getElementsByTagName(requiredTagName);
+        NodeList parents = document.getElementsByTagName(requiredParentTagName);
         parents:
         for (int i = 0; i < parents.getLength(); i++) {
 
@@ -150,19 +150,19 @@ public class XmlTestUtils {
     /**
      * @param document
      * @param requiredTagName        Parent Nodes to be looked for their children
-     * @param requiredAttributeName  An attribute name to be found in every appropriate tag
+     * @param requiredTagAttributeName  An attribute name to be found in every appropriate tag
      * @param requiredAttributeValue An attribute text value to be found
      * @return true if any of a desired tag is found and contains the desired value.
      */
-    public static boolean containsTagWithId(
-            Document document, String requiredTagName, String requiredAttributeName, String requiredAttributeValue) {
+    public static boolean containsTagWithAttribute(
+            Document document, String requiredTagName, String requiredTagAttributeName, String requiredAttributeValue) {
 
         NodeList requiredNodes = document.getElementsByTagName(requiredTagName);
         for (int i = 0; i < requiredNodes.getLength(); i++) {
             Node requiredNode = requiredNodes.item(i);
 
-            if (requiredNode.hasAttributes() && requiredNode.getAttributes().getNamedItem(requiredAttributeName) != null) {
-                Node requiredAttribute = requiredNode.getAttributes().getNamedItem(requiredAttributeName);
+            if (requiredNode.hasAttributes() && requiredNode.getAttributes().getNamedItem(requiredTagAttributeName) != null) {
+                Node requiredAttribute = requiredNode.getAttributes().getNamedItem(requiredTagAttributeName);
                 if (requiredAttribute.getTextContent().equals(requiredAttributeValue)) {
                     return true;
                 }

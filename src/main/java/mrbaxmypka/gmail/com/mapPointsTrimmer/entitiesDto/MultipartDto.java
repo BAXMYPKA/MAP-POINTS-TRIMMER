@@ -399,7 +399,8 @@ public class MultipartDto implements Serializable {
 	private boolean replaceLocusIcons;
 
 	/**
-	 * A name of the existing pictogram in the 'resources/static/pictograms' directory.
+	 * A full names of the existing pictograms in the 'resources/static/pictograms' directory.
+	 * E.g. 'pictogram1.png', 'pictogram2.PNG' etc.
 	 * This pictogram is intended to replace all the Locus photo thumbnails in placemarks.
 	 */
 	@Nullable

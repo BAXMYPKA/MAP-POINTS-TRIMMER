@@ -36,9 +36,9 @@ class LocusIconsHandler {
      * So the next math has to start with 'styleMapOf:file:///[...]'
      * 3)
      */
-    boolean isLocusPhotoIconThumbnail(String styleObjectUrl) {
-        return styleObjectUrl.matches("^file:///[\\w]*/Locus/cache/images/[\\w\\.]{4,}") ||
-                styleObjectUrl.matches("styleMapOf:file:///[\\w]*/Locus/cache/images/[\\w\\.]{4,}");
+    boolean isLocusPhotoIconThumbnail(String styleObjectId) {
+        return styleObjectId.matches("^file:///[\\w]*/Locus/cache/images/[\\w\\.]{4,}") ||
+                styleObjectId.matches("styleMapOf:file:///[\\w]*/Locus/cache/images/[\\w\\.]{4,}");
     }
 
     /**
@@ -74,7 +74,7 @@ class LocusIconsHandler {
             log.warn("Such a pictogram={} is not presented in 'resources/static/pictograms' directory!", pictogramName);
             return;
         }
-        Map<String, Node> replacedStyleMaps = replaceStyleMapsInStyleUrls(documentRoot, pictogramName);
+        Map<String, Node> replacedStyleMaps = replaceStyleMapsInStyleUrls(pictogramName);
         deleteStyleObjectsFromDocument(replacedStyleMaps);
         //Refresh the current Nodes from Document
         kmlUtils.refreshStyleObjectsMap();
@@ -91,7 +91,7 @@ class LocusIconsHandler {
      * {@literal All the <styleUrl>s pointers in <Placemark>s with the <Style>
      * (with existing or newly created one) where the 'id' attribute is corresponding to }{@link MultipartDto#getPictogramName()}
      * {@literal  and <IconHref> is updated as well.}
-     * Its better to execute this method after replacing StyleMaps in {@link #replaceStyleMapsInStyleUrls(Element, String)}.
+     * Its better to execute this method after replacing StyleMaps in {@link #replaceStyleMapsInStyleUrls(String)}.
      *
      * @param pictogramName
      * @return {@literal Map<String,Node(Style)> where <Style>s Nodes can by safely deleted from the }{@link Document}
@@ -156,7 +156,7 @@ class LocusIconsHandler {
      * @return {@literal An updated clone of the <Style> with all the included <IconStyle>s }
      */
     private Node updateStyle(Node clonedStyle, String pictogramName) {
-        clonedStyle.getAttributes().getNamedItem("id").setTextContent(pictogramName);
+        clonedStyle.getAttributes().getNamedItem("id").setTextContent(getPictogramId(pictogramName));
         Node clonedStyleIconHrefNode = kmlUtils.getIconHrefNodeFromStyle(clonedStyle);
 
         String originalPathWithFilename = kmlUtils.getIconHrefNodeFromStyle(clonedStyle).getTextContent();
@@ -166,12 +166,11 @@ class LocusIconsHandler {
             clonedStyleIconHrefNode.setTextContent(kmlUtils.getKML_FILES_DEFAULT_DIRECTORY() + pictogramName);
             log.warn("No path from a previous 'Icon href' found! The default path to a pictogram is applied!" +
                     "Style Node from cloned Style has been updated.");
-            return clonedStyle;
         } else {
             clonedStyleIconHrefNode.setTextContent(originalPath + pictogramName);
             log.trace("Style Node from cloned Style has been updated.");
-            return clonedStyle;
         }
+        return clonedStyle;
     }
 
     /**
@@ -180,11 +179,10 @@ class LocusIconsHandler {
      * {@literal  and <IconHref>s in 'normal' and 'highlight' inner <Style>s are updated as well.}
      * Its better to execute this method before replacing Styles.
      *
-     * @param documentRoot
      * @param pictogramName
      * @return {@literal Map<String,Node(StyleMap)> where <StyleMap>s Nodes can by safely deleted from the }{@link Document}
      */
-    private Map<String, Node> replaceStyleMapsInStyleUrls(Element documentRoot, String pictogramName) {
+    private Map<String, Node> replaceStyleMapsInStyleUrls(String pictogramName) {
         Map<String, Node> styleMapsWithThumbnails = kmlUtils.getStyleObjectsMap().entrySet().stream()
                 .filter(entry -> entry.getValue().getNodeName().equalsIgnoreCase("StyleMap"))
                 .filter(entry -> isLocusPhotoIconThumbnail(entry.getKey()))
@@ -193,7 +191,7 @@ class LocusIconsHandler {
         if (styleMapsWithThumbnails.isEmpty()) return styleMapsWithThumbnails;
 
         if (!replacePlacemarksStyleUrlsWithExistingPicStyleMap(pictogramName, styleMapsWithThumbnails)) {
-            replacePlacemarksStyleUrlsWithNewPicStyleMap(pictogramName, styleMapsWithThumbnails);
+            replacePlacemarksStyleUrlsWithNewPictogramStyleMap(pictogramName, styleMapsWithThumbnails);
         }
         return styleMapsWithThumbnails;
     }
@@ -208,7 +206,7 @@ class LocusIconsHandler {
     private boolean replacePlacemarksStyleUrlsWithExistingPicStyleMap(String pictogramName, Map<String, Node> styleMapsWithThumbnails) {
         AtomicBoolean isReplacedWithExisting = new AtomicBoolean(false);
         //Standard styleUrl to an existing pictogram as "styleMapOf:"+pictogram name
-        String existingStyleUrl = kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + pictogramName;
+        String existingStyleUrl = kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + getPictogramId(pictogramName);
         //If KML contains the previously created <MapStyle> with this pictogram name.
         //All the <Placemark>s <styleUrl/>s with a photo thumbnails will be redirected to it
         kmlUtils.getStyleObjectsMap().values().stream()
@@ -230,15 +228,15 @@ class LocusIconsHandler {
      * @param pictogramName
      * @param styleMapsWithThumbnails
      */
-    private void replacePlacemarksStyleUrlsWithNewPicStyleMap(String pictogramName, Map<String, Node> styleMapsWithThumbnails) {
-        //Standard styleUrl to an existing pictogram as "styleMapOf:"+pictogram name
-        String existingStyleUrl = kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + pictogramName;
+    private void replacePlacemarksStyleUrlsWithNewPictogramStyleMap(String pictogramName, Map<String, Node> styleMapsWithThumbnails) {
+        //Standard <StyleMap> 'id' attribute to an existing pictogram as "styleMapOf:"+pictogram name
+        String pictogramStyleMapId = kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + pictogramName;
         //No previously created StyleMap with this pictogramName. Have to create a new one with the new <Style>s
         //Based on a template settings from any existing <StyleMap> as a clone. And replace Placemarks styleUrls
         Node clonedStyleMap = cloneStyleObject(styleMapsWithThumbnails.values());
         Node updatedStyleMap = updateStyleMap(clonedStyleMap, pictogramName);
         kmlUtils.insertIntoDocument(updatedStyleMap);
-        replacePlacemarksStyleUrls(styleMapsWithThumbnails, existingStyleUrl);
+        replacePlacemarksStyleUrls(styleMapsWithThumbnails, pictogramStyleMapId);
     }
 
     /**
@@ -269,7 +267,7 @@ class LocusIconsHandler {
 
     /**
      * @param pictogramName
-     * @return {@literal An updated clone of the <StyleMap> with all the included <Styles> (normal and highlight) as well}
+     * @return {@literal An updated clone of the <StyleMap> with all the included Style <Pair>s (normal and highlight) as well}
      */
     private Node updateStyleMap(Node clonedStyleMap, String pictogramName) {
         updateNormalStyleNode(clonedStyleMap, pictogramName);
@@ -278,53 +276,64 @@ class LocusIconsHandler {
         return clonedStyleMap;
     }
 
+    /**
+     * {@literal Finds 'normal' <Style> from a given cloned <StyleMap> and turn it into the correct Style with a pictogram}
+     * @param clonedStyleMapNode {@literal A clone of <StyleMap> whose normal and highlight <Pair>s are points to a photo <Style>}
+     * @param pictogramName
+     * @return {@literal The corrected <Style> with a pictogram to be used as a 'normal' on in a <Pair> of a given 'clonedStyleMapNode'}
+     */
     private Node updateNormalStyleNode(Node clonedStyleMapNode, String pictogramName) {
         Node clonedNormalStyleNode = kmlUtils.getNormalStyleNodeFromStyleMap(clonedStyleMapNode)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "A not valid xml (kml) document! There is no 'NormalStyle' inside 'StyleMap'!"));
-        clonedNormalStyleNode.getAttributes().getNamedItem("id").setTextContent(pictogramName);
+                        "A not valid xml (kml) as there is no 'NormalStyle' from 'StyleMap' within a Document!"))
+                .cloneNode(true);
+        clonedNormalStyleNode.getAttributes().getNamedItem("id").setTextContent(getPictogramId(pictogramName));
         Node clonedNormalStyleIconHrefNode = kmlUtils.getIconHrefNodeFromStyle(clonedNormalStyleNode);
-        String originalPathWithFilename = kmlUtils.getIconHrefNodeFromStyle(clonedNormalStyleIconHrefNode).getTextContent();
+        String originalPathWithFilename = clonedNormalStyleIconHrefNode.getTextContent();
         String originalPath = fileService.getPath(originalPathWithFilename);
         if (originalPath.isBlank()) { //No previous path found
             clonedNormalStyleIconHrefNode.setTextContent(kmlUtils.getKML_FILES_DEFAULT_DIRECTORY() + pictogramName);
             log.warn("No path from a previous 'Icon href' found! The default path to a pictogram is applied!" +
                     "Normal Style Node from cloned StyleMap has been updated.");
-            return clonedNormalStyleNode;
         } else {
             clonedNormalStyleIconHrefNode.setTextContent(originalPath + pictogramName);
             log.trace("Normal Style Node from cloned StyleMap has been updated.");
-            return clonedNormalStyleNode;
         }
+        kmlUtils.insertIntoDocument(clonedNormalStyleNode);
+        log.trace("Normal Style Node from cloned StyleMap has been cloned, updated and inserted into the Document.");
+        return clonedNormalStyleNode;
     }
 
     private Node updateHighlightStyleNode(Node clonedStyleMapNode, String pictogramName) {
         Node clonedHighStyleNode = kmlUtils.getHighlightStyleNodeFromStyleMap(clonedStyleMapNode)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "A not valid xml (kml) document! There is no 'HighlightStyle' inside 'StyleMap'!"));
+                        "A not valid xml (kml) document! There is no 'HighlightStyle' inside 'StyleMap'!"))
+                .cloneNode(true);
         clonedHighStyleNode.getAttributes().getNamedItem("id")
-                .setTextContent(kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + pictogramName);
-        Node highStyleIconHrefNode = kmlUtils.getIconHrefNodeFromStyle(clonedHighStyleNode);
-        String originalPathWithFilename = kmlUtils.getIconHrefNodeFromStyle(highStyleIconHrefNode).getTextContent();
+                .setTextContent(kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + getPictogramId(pictogramName));
+        Node clonedHighStyleIconHrefNode = kmlUtils.getIconHrefNodeFromStyle(clonedHighStyleNode);
+        String originalPathWithFilename = clonedHighStyleIconHrefNode.getTextContent();
         String originalPath = fileService.getPath(originalPathWithFilename);
         if (originalPath.isBlank()) { //No previous path found
-            highStyleIconHrefNode.setTextContent(kmlUtils.getKML_FILES_DEFAULT_DIRECTORY() + pictogramName);
+            clonedHighStyleIconHrefNode.setTextContent(kmlUtils.getKML_FILES_DEFAULT_DIRECTORY() + pictogramName);
             log.warn("No path from a previous 'Icon href' found! The default path to a pictogram is applied!" +
                     "Highlight Style Node from cloned StyleMap has been updated.");
-            return clonedHighStyleNode;
         } else {
-            highStyleIconHrefNode.setTextContent(originalPath + pictogramName);
+            clonedHighStyleIconHrefNode.setTextContent(originalPath + pictogramName);
             log.trace("Highlight Style Node from cloned StyleMap has been updated.");
-            return clonedHighStyleNode;
         }
+        kmlUtils.insertIntoDocument(clonedHighStyleNode);
+        log.trace("Highlight Style Node from cloned StyleMap has been cloned, updated and inserted into the Document.");
+        return clonedHighStyleNode;
     }
 
     private void updateClonedStyleMap(Node clonedStyleMapNode, String pictogramName) {
         clonedStyleMapNode.getAttributes().getNamedItem("id")
-                .setTextContent(kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + pictogramName);
-        kmlUtils.getStyleUrlNodeFromNormalStylePair(clonedStyleMapNode).setTextContent("#" + pictogramName);
+                .setTextContent(kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + getPictogramId(pictogramName));
+
+        kmlUtils.getStyleUrlNodeFromNormalStylePair(clonedStyleMapNode).setTextContent("#" + getPictogramId(pictogramName));
         kmlUtils.getStyleUrlNodeFromHighlightedStylePair(clonedStyleMapNode).setTextContent(
-                "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + pictogramName);
+                "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + getPictogramId(pictogramName));
     }
 
     /**
@@ -345,4 +354,8 @@ class LocusIconsHandler {
         });
     }
 
+    private String getPictogramId(String pictogramFullName) {
+        return pictogramFullName.substring(0, pictogramFullName.lastIndexOf("."));
+
+    }
 }
