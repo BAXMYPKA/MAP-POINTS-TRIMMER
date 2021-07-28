@@ -530,7 +530,7 @@ class LocusIconsHandlerStyleTest {
     public void only_Photo_StyleUrl_Should_Be_Replaced()
             throws IOException, ParserConfigurationException, SAXException {
         //GIVEN
-        final String photoId1 = "file:///sdcard/Locus/cache/images/123";
+        final String photoId1 = "file:///sdcard/Locus/cache/images/1234";
         final String photoStyleUrl = "#" + photoId1;
         final String pictogram2StyleUrl = "#" + PIC2;
         final String photoAndPictogramStylesWithPlacemarks = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -542,7 +542,7 @@ class LocusIconsHandlerStyleTest {
                 photoId1 +
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
-                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages123.png</href></Icon>\n" +
+                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1234.png</href></Icon>\n" +
                 "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
@@ -591,7 +591,7 @@ class LocusIconsHandlerStyleTest {
         locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
 
         //THEN
-//        System.out.println(XmlTestUtils.getAsText(document));
+        System.out.println(XmlTestUtils.getAsText(document));
 
         assertEquals(2, document.getElementsByTagName("Placemark").getLength());
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", "#" + PIC1));
@@ -606,8 +606,8 @@ class LocusIconsHandlerStyleTest {
     public void all_Photo_StyleUrls_Should_Be_Replaced()
             throws IOException, ParserConfigurationException, SAXException {
         //GIVEN
-        final String photoId1 = "file:///sdcard/Locus/cache/images/123";
-        final String photoId2 = "file:///sdcard/Locus/cache/images/1234";
+        final String photoId1 = "file:///sdcard/Locus/cache/images/1234";
+        final String photoId2 = "file:///sdcard/Locus/cache/images/12345";
         final String photo1StyleUrl = "#" + photoId1;
         final String photo2StyleUrl = "#" + photoId2;
         final String pictogram2StyleUrl = "#" + PIC2;
@@ -620,7 +620,7 @@ class LocusIconsHandlerStyleTest {
                 photoId1 +
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
-                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages123.png</href></Icon>\n" +
+                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1234.png</href></Icon>\n" +
                 "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
@@ -628,7 +628,7 @@ class LocusIconsHandlerStyleTest {
                 photoId2 +
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
-                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1234.png</href></Icon>\n" +
+                "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages12345.png</href></Icon>\n" +
                 "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
