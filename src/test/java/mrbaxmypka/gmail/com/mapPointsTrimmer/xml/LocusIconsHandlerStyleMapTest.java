@@ -645,19 +645,15 @@ class LocusIconsHandlerStyleMapTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"files/", "../myFiles/", "/storage/0/Locus/data/media/photo/", "file:///D:/MyFolder/MyPOI/"})
+    @ValueSource(strings = {"../myFiles/", "/storage/0/Locus/data/media/photo/", "file:///D:/MyFolder/MyPOI/", "files/"})
     public void custom_Path_Should_Be_Used_For_StyleMap_Styles(String customPath)
             throws IOException, ParserConfigurationException, SAXException {
         //GIVEN
-        final String existingPngFilename = "12345.png";
-        final String existingPngFilenameId = "12345";
         final String photoFileId = "file:///sdcard/Locus/cache/images/54321";
-        final String photoFileName = "file:///sdcard/Locus/cache/images/54321.png";
-        final String styleMapCustomId = STYLEMAP_ID_ATTRIBUTE_PREFIX + customPath + existingPngFilenameId;
+        final String photoFileName = "file-sdcardLocuscacheimages54321.png";
         final String photoIconCustomPathStyleMap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:lc=\"http://www.locusmap.eu\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                 "\t<Document>\n" +
-
                 "\t\t\t<StyleMap id=\"" +
                 STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId +
                 "\">\n" +
@@ -696,45 +692,234 @@ class LocusIconsHandlerStyleMapTest {
                 "\t\t\t\t\t</Icon>\n" +
                 "\t\t\t\t</IconStyle>\n" +
                 "\t\t\t</Style>\n" +
+                "\t</Document>\n" +
+                "</kml>";
+        multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
+                null, new ByteArrayInputStream(photoIconCustomPathStyleMap.getBytes(StandardCharsets.UTF_8)));
+        multipartDto = new MultipartDto(multipartFile);
+        multipartDto.setReplaceLocusIcons(true);
+        multipartDto.setPictogramName(PIC1);
+        document = XmlTestUtils.getDocument(multipartDto);
+        kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
+        locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
+        Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(customPath);
 
+        //WHEN
+        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+
+        //THEN
+//        System.out.println(XmlTestUtils.getAsText(document));
+        assertAll(
+                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(
+                        document, "StyleMap", "id", STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1)),
+                () -> assertTrue(XmlTestUtils.containsTagWithChild(
+                        document, "Pair", "key", "normal")),
+                () -> assertTrue(XmlTestUtils.containsTagWithChild(
+                        document, "Pair", "styleUrl", "#" + PIC1)),
+                () -> assertTrue(XmlTestUtils.containsTagWithChild(
+                        document, "Pair", "key", "highlight")),
+                () -> assertTrue(XmlTestUtils.containsTagWithChild(
+                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PIC1))
+        );
+        assertAll(
+                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC1)),
+                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PIC1)),
+                () -> assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Icon", 2, "href", customPath + PIC1))
+        );
+    }
+
+    @Test
+    public void placemark_StyleUrl_Should_Be_Replaced() throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        final String photoFileId = "file:///sdcard/Locus/cache/images/54321";
+        final String photoFileName = "file-sdcardLocuscacheimages54321.png";
+        final String photoIconStyleMap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:lc=\"http://www.locusmap.eu\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                "\t<Document>\n" +
                 "\t\t\t<StyleMap id=\"" +
-                styleMapCustomId +
+                STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId +
                 "\">\n" +
                 "\t\t\t\t<Pair>\n" +
                 "\t\t\t\t\t<key>normal</key>\n" +
                 "\t\t\t\t\t<styleUrl>" +
-                "#" + customPath + existingPngFilenameId +
+                "#" + photoFileId +
                 "</styleUrl>\n" +
                 "\t\t\t\t</Pair>\n" +
                 "\t\t\t\t<Pair>\n" +
                 "\t\t\t\t\t<key>highlight</key>\n" +
                 "\t\t\t\t\t<styleUrl>" +
-                "#" + HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + customPath + existingPngFilenameId +
+                "#" + HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId +
                 "</styleUrl>\n" +
                 "\t\t\t\t</Pair>\n" +
                 "\t\t\t</StyleMap>\n" +
                 "\t\t\t<Style id=\"" +
-                customPath + existingPngFilenameId +
+                photoFileId +
                 "\">\n" +
                 "\t\t\t\t<IconStyle>\n" +
                 "\t\t\t\t\t<Icon>\n" +
                 "\t\t\t\t\t\t<href>" +
-                customPath + existingPngFilename +
+                KML_DEFAULT_PATH + photoFileName +
                 "</href>\n" +
                 "\t\t\t\t\t</Icon>\n" +
                 "\t\t\t\t</IconStyle>\n" +
                 "\t\t\t</Style>\n" +
                 "\t\t\t<Style id=\"" +
-                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + customPath + existingPngFilenameId +
+                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId +
                 "\">\n" +
                 "\t\t\t\t<IconStyle>\n" +
                 "\t\t\t\t\t<Icon>\n" +
                 "\t\t\t\t\t\t<href>" +
-                customPath + existingPngFilename +
+                KML_DEFAULT_PATH + photoFileName +
                 "</href>\n" +
                 "\t\t\t\t\t</Icon>\n" +
                 "\t\t\t\t</IconStyle>\n" +
                 "\t\t\t</Style>\n" +
+                "\t\t\t<Placemark>\n" +
+                "\t\t\t\t<name>Photo poi 1</name>\n" +
+                "\t\t\t\t<description><![CDATA[]]></description>\n" +
+                "\t\t\t\t<styleUrl>" +
+                "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId +
+                "</styleUrl>\n" +
+                "\t\t\t\t<ExtendedData>\n" +
+                "\t\t\t\t\t<lc:attachment>files/p__20180819_133740.jpg</lc:attachment>\n" +
+                "\t\t\t\t</ExtendedData>\n" +
+                "\t\t\t\t<Point>\n" +
+                "\t\t\t\t</Point>\n" +
+                "\t\t\t</Placemark>\n" +
+                "\t</Document>\n" +
+                "</kml>";
+        multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
+                null, new ByteArrayInputStream(photoIconStyleMap.getBytes(StandardCharsets.UTF_8)));
+        multipartDto = new MultipartDto(multipartFile);
+        multipartDto.setReplaceLocusIcons(true);
+        multipartDto.setPictogramName(PIC1);
+        document = XmlTestUtils.getDocument(multipartDto);
+        kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
+        locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
+        Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
+
+        //WHEN
+        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+
+        //THEN
+//        System.out.println(XmlTestUtils.getAsText(document));
+        assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1));
+    }
+
+    @Test
+    public void placemarks_StyleUrls_Should_Be_Replaced() throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        final String photoFileId1 = "file:///sdcard/Locus/cache/images/12345";
+        final String photoFileId2 = "file:///sdcard/Locus/cache/images/54321";
+        final String photoFileName1 = "file-sdcardLocuscacheimages12345.png";
+        final String photoFileName2 = "file-sdcardLocuscacheimages54321.png";
+        final String photoIconCustomPathStyleMap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:lc=\"http://www.locusmap.eu\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                "\t<Document>\n" +
+                "\t\t\t<StyleMap id=\"" +
+                STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId1 +
+                "\">\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>normal</key>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + photoFileId1 +
+                "</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>highlight</key>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId1 +
+                "</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t</StyleMap>\n" +
+                "\t\t\t<Style id=\"" +
+                photoFileId1 +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t\t<href>" +
+                KML_DEFAULT_PATH + photoFileName1 +
+                "</href>\n" +
+                "\t\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
+                "\t\t\t<Style id=\"" +
+                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId1 +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t\t<href>" +
+                KML_DEFAULT_PATH + photoFileName1 +
+                "</href>\n" +
+                "\t\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
+
+                "\t\t\t<StyleMap id=\"" +
+                STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId2 +
+                "\">\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>normal</key>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + photoFileId2 +
+                "</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>highlight</key>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId2 +
+                "</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t</StyleMap>\n" +
+                "\t\t\t<Style id=\"" +
+                photoFileId2 +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t\t<href>" +
+                KML_DEFAULT_PATH + photoFileName2 +
+                "</href>\n" +
+                "\t\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
+                "\t\t\t<Style id=\"" +
+                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId2 +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t\t<href>" +
+                KML_DEFAULT_PATH + photoFileName2 +
+                "</href>\n" +
+                "\t\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
+
+                "\t\t\t<Placemark>\n" +
+                "\t\t\t\t<name>Photo poi 1</name>\n" +
+                "\t\t\t\t<description><![CDATA[]]></description>\n" +
+                "\t\t\t\t<styleUrl>" +
+                "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId1 +
+                "</styleUrl>\n" +
+                "\t\t\t\t<ExtendedData>\n" +
+                "\t\t\t\t\t<lc:attachment>files/p__20180819_133740.jpg</lc:attachment>\n" +
+                "\t\t\t\t</ExtendedData>\n" +
+                "\t\t\t\t<Point>\n" +
+                "\t\t\t\t</Point>\n" +
+                "\t\t\t</Placemark>\n" +
+
+                "\t\t\t<Placemark>\n" +
+                "\t\t\t\t<name>Photo poi 2</name>\n" +
+                "\t\t\t\t<description><![CDATA[]]></description>\n" +
+                "\t\t\t\t<styleUrl>" +
+                "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId2 +
+                "</styleUrl>\n" +
+                "\t\t\t\t<ExtendedData>\n" +
+                "\t\t\t\t\t<lc:attachment>files/p__20180819_133740.jpg</lc:attachment>\n" +
+                "\t\t\t\t</ExtendedData>\n" +
+                "\t\t\t\t<Point>\n" +
+                "\t\t\t\t</Point>\n" +
+                "\t\t\t</Placemark>\n" +
+
                 "\t</Document>\n" +
                 "</kml>";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
@@ -752,27 +937,143 @@ class LocusIconsHandlerStyleMapTest {
 
         //THEN
         System.out.println(XmlTestUtils.getAsText(document));
-        assertAll(
-                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(
-                        document, "StyleMap", "id", STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1.substring(0, PIC1.lastIndexOf(".")))),
-                () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "key", "normal")),
-                () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + PIC1.substring(0, PIC1.lastIndexOf(".")))),
-                () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "key", "highlight")),
-                () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PIC1.substring(0, PIC1.lastIndexOf("."))))
-        );
-        assertAll(
-                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC1.substring(0, PIC1.lastIndexOf(".")))),
-                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PIC1.substring(0, PIC1.lastIndexOf(".")))),
-                () -> assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Icon", 2, "href", customPath + PIC1))
-        );
+        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Placemark", 2, "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1));
+        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "StyleMap", 1,"Pair", null));
     }
 
     @Test
-    public void placemark_StyleUrl_Should_Be_Replaced() {
+    public void only_Photo_StyleUrls_Should_Be_Replaced() throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        final String photoFileId1 = "file:///sdcard/Locus/cache/images/12345";
+        final String photoFileId2 = "file:///sdcard/Locus/cache/images/54321";
+        final String photoFileName1 = "file-sdcardLocuscacheimages12345.png";
+        final String photoFileName2 = "file-sdcardLocuscacheimages54321.png";
+        final String photoIconCustomPathStyleMap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:lc=\"http://www.locusmap.eu\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                "\t<Document>\n" +
+                "\t\t\t<StyleMap id=\"" +
+                STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId1 +
+                "\">\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>normal</key>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + photoFileId1 +
+                "</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>highlight</key>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId1 +
+                "</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t</StyleMap>\n" +
+                "\t\t\t<Style id=\"" +
+                photoFileId1 +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t\t<href>" +
+                KML_DEFAULT_PATH + photoFileName1 +
+                "</href>\n" +
+                "\t\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
+                "\t\t\t<Style id=\"" +
+                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId1 +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t\t<href>" +
+                KML_DEFAULT_PATH + photoFileName1 +
+                "</href>\n" +
+                "\t\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
 
+                "\t\t\t<StyleMap id=\"" +
+                STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId2 +
+                "\">\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>normal</key>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + photoFileId2 +
+                "</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>highlight</key>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId2 +
+                "</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t</StyleMap>\n" +
+                "\t\t\t<Style id=\"" +
+                photoFileId2 +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t\t<href>" +
+                KML_DEFAULT_PATH + photoFileName2 +
+                "</href>\n" +
+                "\t\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
+                "\t\t\t<Style id=\"" +
+                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + photoFileId2 +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t\t<href>" +
+                KML_DEFAULT_PATH + photoFileName2 +
+                "</href>\n" +
+                "\t\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
+
+                "\t\t\t<Placemark>\n" +
+                "\t\t\t\t<name>Photo poi 1</name>\n" +
+                "\t\t\t\t<description><![CDATA[]]></description>\n" +
+                "\t\t\t\t<styleUrl>" +
+                "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId1 +
+                "</styleUrl>\n" +
+                "\t\t\t\t<ExtendedData>\n" +
+                "\t\t\t\t\t<lc:attachment>files/p__20180819_133740.jpg</lc:attachment>\n" +
+                "\t\t\t\t</ExtendedData>\n" +
+                "\t\t\t\t<Point>\n" +
+                "\t\t\t\t</Point>\n" +
+                "\t\t\t</Placemark>\n" +
+
+                "\t\t\t<Placemark>\n" +
+                "\t\t\t\t<name>Photo poi 2</name>\n" +
+                "\t\t\t\t<description><![CDATA[]]></description>\n" +
+                "\t\t\t\t<styleUrl>" +
+                "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + photoFileId2 +
+                "</styleUrl>\n" +
+                "\t\t\t\t<ExtendedData>\n" +
+                "\t\t\t\t\t<lc:attachment>files/p__20180819_133740.jpg</lc:attachment>\n" +
+                "\t\t\t\t</ExtendedData>\n" +
+                "\t\t\t\t<Point>\n" +
+                "\t\t\t\t</Point>\n" +
+                "\t\t\t</Placemark>\n" +
+
+                "\t</Document>\n" +
+                "</kml>";
+        multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
+                null, new ByteArrayInputStream(photoIconCustomPathStyleMap.getBytes(StandardCharsets.UTF_8)));
+        multipartDto = new MultipartDto(multipartFile);
+        multipartDto.setReplaceLocusIcons(true);
+        multipartDto.setPictogramName(PIC1);
+        document = XmlTestUtils.getDocument(multipartDto);
+        kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
+        locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
+        Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
+
+        //WHEN
+        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+
+        //THEN
+        System.out.println(XmlTestUtils.getAsText(document));
+        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Placemark", 2, "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1));
+        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "StyleMap", 1,"Pair", null));
     }
+
 }
