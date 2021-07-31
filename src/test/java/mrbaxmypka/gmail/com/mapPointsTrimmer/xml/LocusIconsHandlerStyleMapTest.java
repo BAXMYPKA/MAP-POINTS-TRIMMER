@@ -29,15 +29,14 @@ class LocusIconsHandlerStyleMapTest {
     private static MultipartDto multipartDto;
     private static MultipartFile multipartFile;
     private static Document document;
-    private static final String PIC1 = "Pictogram1.png";
-    private static final String PIC2 = "Pictogram2.PNG";
+    private static final String PICTOGRAM1_PNG = "Pictogram1.png";
+    private static final String PICTOGRAM2_PNG = "Pictogram2.PNG";
     private final String STYLEMAP_ID_ATTRIBUTE_PREFIX = "styleMapOf:";
     private final String HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX = "highlightOf:";
     private static final String KML_DEFAULT_PATH = "files/";
-    private static final String PIC1_KML_PATH = KML_DEFAULT_PATH + PIC1;
-    private static final String PIC2_KML_PATH = KML_DEFAULT_PATH + PIC2;
-    private static final ArrayList<String> PICTOGRAM_NAMES = new ArrayList<>(Arrays.asList(PIC1, PIC2));
-
+    private static final String PICTOGRAM1_KML_PATH = KML_DEFAULT_PATH + PICTOGRAM1_PNG;
+    private static final String PICTOGRAM2_KML_PATH = KML_DEFAULT_PATH + PICTOGRAM2_PNG;
+    private static final ArrayList<String> PICTOGRAM_NAMES = new ArrayList<>(Arrays.asList(PICTOGRAM1_PNG, PICTOGRAM2_PNG));
 
     //TODO: сделать тест с полнотекстовыми точками в конце
 
@@ -45,8 +44,6 @@ class LocusIconsHandlerStyleMapTest {
     public static void beforeAll() {
         fileService = Mockito.mock(FileService.class);
         Mockito.when(fileService.getPictogramsNames()).thenReturn(PICTOGRAM_NAMES);
-//        document = Mockito.mock(Document.class);
-//        kmlUtils = new KmlUtils(document, null); //Just to use some final Strings
     }
 
     @Test
@@ -90,7 +87,7 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -112,7 +109,7 @@ class LocusIconsHandlerStyleMapTest {
             throws IOException, ParserConfigurationException, SAXException {
         //GIVEN
         final String styleMapPhotoId = "styleMapOf:file:///sdcard/Locus/cache/images/12345";
-        final String styleMapPictogramId = "styleMapOf:" + PIC1.substring(0, PIC1.lastIndexOf("."));
+        final String styleMapPictogramId = "styleMapOf:" + PICTOGRAM1_PNG;
         final String photoIconStyleMap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:lc=\"http://www.locusmap.eu\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                 "\t<Document>\n" +
@@ -150,7 +147,7 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -209,13 +206,13 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
 
-        final String styleMapPictogramId = kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + PIC1.substring(0, PIC1.lastIndexOf("."));
+        final String styleMapPictogramId = kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + PICTOGRAM1_PNG;
 
         //WHEN
         locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
@@ -229,11 +226,11 @@ class LocusIconsHandlerStyleMapTest {
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "normal")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + PIC1.substring(0, PIC1.lastIndexOf(".")))),
+                        document, "Pair", "styleUrl", "#" + PICTOGRAM1_PNG)),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "highlight")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PIC1.substring(0, PIC1.lastIndexOf("."))))
+                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PICTOGRAM1_PNG))
         );
         assertFalse(XmlTestUtils.containsTagWithAttribute(document, "StyleMap", "id", styleMapPhotoId));
     }
@@ -243,7 +240,7 @@ class LocusIconsHandlerStyleMapTest {
             throws IOException, ParserConfigurationException, SAXException {
         //GIVEN
         final String styleMapPhotoId = "styleMapOf:file:///sdcard/Locus/cache/images/12345";
-        final String styleMapPictogram1Id = STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1.substring(0, PIC1.lastIndexOf("."));
+        final String styleMapPictogram1Id = STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG;
         final String photoIconStyleMapsWithExistingPictogramStyleMap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:lc=\"http://www.locusmap.eu\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                 "\t<Document>\n" +
@@ -279,27 +276,31 @@ class LocusIconsHandlerStyleMapTest {
                 "\">\n" +
                 "\t\t\t\t<Pair>\n" +
                 "\t\t\t\t\t<key>normal</key>\n" +
-                "\t\t\t\t\t<styleUrl>#Pictogram1</styleUrl>\n" +
+                "\t\t\t\t\t<styleUrl>#Pictogram1.png</styleUrl>\n" +
                 "\t\t\t\t</Pair>\n" +
                 "\t\t\t\t<Pair>\n" +
                 "\t\t\t\t\t<key>highlight</key>\n" +
-                "\t\t\t\t\t<styleUrl>#highlightOf:Pictogram1</styleUrl>\n" +
+                "\t\t\t\t\t<styleUrl>#highlightOf:Pictogram1.png</styleUrl>\n" +
                 "\t\t\t\t</Pair>\n" +
                 "\t\t\t</StyleMap>\n" +
-                "\t\t\t<Style id=\"highlightOf:Pictogram1\">\n" +
+                "\t\t\t<Style id=\"" +
+                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG +
+                "\">\n" +
                 "\t\t\t\t<IconStyle>\n" +
                 "\t\t\t\t<Icon>\n" +
                 "\t\t\t\t\t<href>" +
-                PIC1_KML_PATH +
+                PICTOGRAM1_KML_PATH +
                 "</href>\n" +
                 "\t\t\t\t</Icon>\n" +
                 "\t\t\t\t</IconStyle>\n" +
                 "\t\t\t</Style>\n" +
-                "\t\t\t<Style id=\"Pictogram1\">\n" +
+                "\t\t\t<Style id=\"" +
+                PICTOGRAM1_PNG +
+                "\">\n" +
                 "\t\t\t\t<IconStyle>\n" +
                 "\t\t\t\t\t<Icon>\n" +
                 "\t\t\t\t\t\t<href>" +
-                PIC1_KML_PATH +
+                PICTOGRAM1_KML_PATH +
                 "</href>\n" +
                 "\t\t\t\t\t</Icon>\n" +
                 "\t\t\t\t</IconStyle>\n" +
@@ -310,7 +311,7 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconStyleMapsWithExistingPictogramStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -329,11 +330,11 @@ class LocusIconsHandlerStyleMapTest {
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "normal")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + PIC1.substring(0, PIC1.lastIndexOf(".")))),
+                        document, "Pair", "styleUrl", "#" + PICTOGRAM1_PNG)),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "highlight")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PIC1.substring(0, PIC1.lastIndexOf("."))))
+                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PICTOGRAM1_PNG))
         );
     }
 
@@ -343,8 +344,8 @@ class LocusIconsHandlerStyleMapTest {
             throws IOException, ParserConfigurationException, SAXException {
         //GIVEN
         final String styleMapPhotoId = "styleMapOf:file:///sdcard/Locus/cache/images/12345";
-        final String styleMapPictogram1Id = STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1.substring(0, PIC1.lastIndexOf("."));
-        final String styleMapPictogram2Id = STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC2.substring(0, PIC1.lastIndexOf("."));
+        final String styleMapPictogram1Id = STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG;
+        final String styleMapPictogram2Id = STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM2_PNG;
         final String photoIconStyleMapsWithSecondPictogramStyleMap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:lc=\"http://www.locusmap.eu\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                 "\t<Document>\n" +
@@ -380,27 +381,35 @@ class LocusIconsHandlerStyleMapTest {
                 "\">\n" +
                 "\t\t\t\t<Pair>\n" +
                 "\t\t\t\t\t<key>normal</key>\n" +
-                "\t\t\t\t\t<styleUrl>#Pictogram1</styleUrl>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + PICTOGRAM1_PNG +
+                "</styleUrl>\n" +
                 "\t\t\t\t</Pair>\n" +
                 "\t\t\t\t<Pair>\n" +
                 "\t\t\t\t\t<key>highlight</key>\n" +
-                "\t\t\t\t\t<styleUrl>#highlightOf:Pictogram1</styleUrl>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG +
+                "</styleUrl>\n" +
                 "\t\t\t\t</Pair>\n" +
                 "\t\t\t</StyleMap>\n" +
-                "\t\t\t<Style id=\"highlightOf:Pictogram1\">\n" +
+                "\t\t\t<Style id=\"" +
+                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG +
+                "\">\n" +
                 "\t\t\t\t<IconStyle>\n" +
                 "\t\t\t\t<Icon>\n" +
                 "\t\t\t\t\t<href>" +
-                PIC1_KML_PATH +
+                PICTOGRAM1_KML_PATH +
                 "</href>\n" +
                 "\t\t\t\t</Icon>\n" +
                 "\t\t\t\t</IconStyle>\n" +
                 "\t\t\t</Style>\n" +
-                "\t\t\t<Style id=\"Pictogram1\">\n" +
+                "\t\t\t<Style id=\"" +
+                PICTOGRAM1_PNG +
+                "\">\n" +
                 "\t\t\t\t<IconStyle>\n" +
                 "\t\t\t\t\t<Icon>\n" +
                 "\t\t\t\t\t\t<href>" +
-                PIC1_KML_PATH +
+                PICTOGRAM1_KML_PATH +
                 "</href>\n" +
                 "\t\t\t\t\t</Icon>\n" +
                 "\t\t\t\t</IconStyle>\n" +
@@ -410,27 +419,35 @@ class LocusIconsHandlerStyleMapTest {
                 "\">\n" +
                 "\t\t\t\t<Pair>\n" +
                 "\t\t\t\t\t<key>normal</key>\n" +
-                "\t\t\t\t\t<styleUrl>#Pictogram2</styleUrl>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + PICTOGRAM2_PNG +
+                "</styleUrl>\n" +
                 "\t\t\t\t</Pair>\n" +
                 "\t\t\t\t<Pair>\n" +
                 "\t\t\t\t\t<key>highlight</key>\n" +
-                "\t\t\t\t\t<styleUrl>#highlightOf:Pictogram2</styleUrl>\n" +
+                "\t\t\t\t\t<styleUrl>" +
+                "#" + HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PICTOGRAM2_PNG +
+                "</styleUrl>\n" +
                 "\t\t\t\t</Pair>\n" +
                 "\t\t\t</StyleMap>\n" +
-                "\t\t\t<Style id=\"highlightOf:Pictogram2\">\n" +
+                "\t\t\t<Style id=\"" +
+                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PICTOGRAM2_PNG +
+                "\">\n" +
                 "\t\t\t\t<IconStyle>\n" +
                 "\t\t\t\t<Icon>\n" +
                 "\t\t\t\t\t<href>" +
-                PIC2_KML_PATH +
+                PICTOGRAM2_KML_PATH +
                 "</href>\n" +
                 "\t\t\t\t</Icon>\n" +
                 "\t\t\t\t</IconStyle>\n" +
                 "\t\t\t</Style>\n" +
-                "\t\t\t<Style id=\"Pictogram2\">\n" +
+                "\t\t\t<Style id=\"" +
+                PICTOGRAM2_PNG +
+                "\">\n" +
                 "\t\t\t\t<IconStyle>\n" +
                 "\t\t\t\t\t<Icon>\n" +
                 "\t\t\t\t\t\t<href>" +
-                PIC2_KML_PATH +
+                PICTOGRAM2_KML_PATH +
                 "</href>\n" +
                 "\t\t\t\t\t</Icon>\n" +
                 "\t\t\t\t</IconStyle>\n" +
@@ -441,7 +458,7 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconStyleMapsWithSecondPictogramStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -460,11 +477,11 @@ class LocusIconsHandlerStyleMapTest {
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "normal")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + PIC1.substring(0, PIC1.lastIndexOf(".")))),
+                        document, "Pair", "styleUrl", "#" + PICTOGRAM1_PNG)),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "highlight")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PIC1.substring(0, PIC1.lastIndexOf("."))))
+                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PICTOGRAM1_PNG))
         );
         assertAll(
                 () -> assertTrue(XmlTestUtils.containsTagWithAttribute(
@@ -472,11 +489,11 @@ class LocusIconsHandlerStyleMapTest {
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "normal")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + PIC2.substring(0, PIC2.lastIndexOf(".")))),
+                        document, "Pair", "styleUrl", "#" + PICTOGRAM2_PNG)),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "highlight")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PIC2.substring(0, PIC2.lastIndexOf("."))))
+                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PICTOGRAM2_PNG))
         );
     }
 
@@ -548,7 +565,7 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconStyleMaps.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -619,7 +636,7 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconCustomPathStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -698,7 +715,7 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconCustomPathStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -711,20 +728,20 @@ class LocusIconsHandlerStyleMapTest {
 //        System.out.println(XmlTestUtils.getAsText(document));
         assertAll(
                 () -> assertTrue(XmlTestUtils.containsTagWithAttribute(
-                        document, "StyleMap", "id", STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1)),
+                        document, "StyleMap", "id", STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG)),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "normal")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + PIC1)),
+                        document, "Pair", "styleUrl", "#" + PICTOGRAM1_PNG)),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
                         document, "Pair", "key", "highlight")),
                 () -> assertTrue(XmlTestUtils.containsTagWithChild(
-                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PIC1))
+                        document, "Pair", "styleUrl", "#" + kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + PICTOGRAM1_PNG))
         );
         assertAll(
-                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PIC1)),
-                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PIC1)),
-                () -> assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Icon", 2, "href", customPath + PIC1))
+                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PICTOGRAM1_PNG)),
+                () -> assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG)),
+                () -> assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Icon", 2, "href", customPath + PICTOGRAM1_PNG))
         );
     }
 
@@ -792,7 +809,7 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -803,7 +820,7 @@ class LocusIconsHandlerStyleMapTest {
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
-        assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1));
+        assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG));
     }
 
     @Test
@@ -926,7 +943,7 @@ class LocusIconsHandlerStyleMapTest {
                 null, new ByteArrayInputStream(photoIconCustomPathStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -936,13 +953,13 @@ class LocusIconsHandlerStyleMapTest {
         locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
 
         //THEN
-        System.out.println(XmlTestUtils.getAsText(document));
-        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Placemark", 2, "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1));
-        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "StyleMap", 1,"Pair", null));
+//        System.out.println(XmlTestUtils.getAsText(document));
+        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Placemark", 2, "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG));
+        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "StyleMap", 1, "Pair", null));
     }
 
     @Test
-    public void only_Photo_StyleUrls_Should_Be_Replaced() throws IOException, ParserConfigurationException, SAXException {
+    public void only_Placemarks_Photo_StyleUrls_Should_Be_Replaced() throws IOException, ParserConfigurationException, SAXException {
         //GIVEN
         final String photoFileId1 = "file:///sdcard/Locus/cache/images/12345";
         final String photoFileId2 = "file:///sdcard/Locus/cache/images/54321";
@@ -1029,6 +1046,37 @@ class LocusIconsHandlerStyleMapTest {
                 "\t\t\t\t</IconStyle>\n" +
                 "\t\t\t</Style>\n" +
 
+                "\t\t\t<StyleMap id=\"" +
+                STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM2_PNG +
+                "\">\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>normal</key>\n" +
+                "\t\t\t\t\t<styleUrl>#Pictogram2.PNG</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t\t<Pair>\n" +
+                "\t\t\t\t\t<key>highlight</key>\n" +
+                "\t\t\t\t\t<styleUrl>#highlightOf:Pictogram2.PNG</styleUrl>\n" +
+                "\t\t\t\t</Pair>\n" +
+                "\t\t\t</StyleMap>\n" +
+                "\t\t\t<Style id=\"" +
+                PICTOGRAM2_PNG +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t\t<href>files/Pictogram2.PNG</href>\n" +
+                "\t\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
+                "\t\t\t<Style id=\"" +
+                HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PICTOGRAM2_PNG +
+                "\">\n" +
+                "\t\t\t\t<IconStyle>\n" +
+                "\t\t\t\t<Icon>\n" +
+                "\t\t\t\t\t<href>files/Pictogram2.PNG</href>\n" +
+                "\t\t\t\t</Icon>\n" +
+                "\t\t\t\t</IconStyle>\n" +
+                "\t\t\t</Style>\n" +
+
                 "\t\t\t<Placemark>\n" +
                 "\t\t\t\t<name>Photo poi 1</name>\n" +
                 "\t\t\t\t<description><![CDATA[]]></description>\n" +
@@ -1055,13 +1103,26 @@ class LocusIconsHandlerStyleMapTest {
                 "\t\t\t\t</Point>\n" +
                 "\t\t\t</Placemark>\n" +
 
+                "\t\t\t<Placemark>\n" +
+                "\t\t\t\t<name>Pictogram poi 2</name>\n" +
+                "\t\t\t\t<description><![CDATA[]]></description>\n" +
+                "\t\t\t\t<styleUrl>" +
+                "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM2_PNG +
+                "</styleUrl>\n" +
+                "\t\t\t\t<ExtendedData>\n" +
+                "\t\t\t\t\t<lc:attachment>files/p__3.jpg</lc:attachment>\n" +
+                "\t\t\t\t</ExtendedData>\n" +
+                "\t\t\t\t<Point>\n" +
+                "\t\t\t\t</Point>\n" +
+                "\t\t\t</Placemark>\n" +
+
                 "\t</Document>\n" +
                 "</kml>";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoIconCustomPathStyleMap.getBytes(StandardCharsets.UTF_8)));
         multipartDto = new MultipartDto(multipartFile);
         multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PIC1);
+        multipartDto.setPictogramName(PICTOGRAM1_PNG);
         document = XmlTestUtils.getDocument(multipartDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
@@ -1071,9 +1132,12 @@ class LocusIconsHandlerStyleMapTest {
         locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
 
         //THEN
-        System.out.println(XmlTestUtils.getAsText(document));
-        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Placemark", 2, "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PIC1));
-        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "StyleMap", 1,"Pair", null));
+//        System.out.println(XmlTestUtils.getAsText(document));
+        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Placemark", 2, "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM1_PNG));
+        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "Placemark", 1, "styleUrl", "#" + STYLEMAP_ID_ATTRIBUTE_PREFIX + PICTOGRAM2_PNG));
+        assertTrue(XmlTestUtils.containsTagsWithChildren(document, "StyleMap", 2, "Pair", null));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", PICTOGRAM2_PNG));
+        assertTrue(XmlTestUtils.containsTagWithAttribute(document, "Style", "id", HIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX + PICTOGRAM2_PNG));
     }
 
 }
