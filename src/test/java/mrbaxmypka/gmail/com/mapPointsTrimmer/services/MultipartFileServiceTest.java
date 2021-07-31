@@ -8,6 +8,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ResourceLoader;
@@ -25,9 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -54,8 +53,14 @@ class MultipartFileServiceTest {
 	private String testKml = "<kml>test</kml>";
 	private MultipartFile multipartFile;
 	private Path testKmz = Paths.get("src/test/java/resources/TestKmz.kmz");
-	
-	
+	private Path testKmzLocusPhotoIcons = Paths.get("src/test/java/resources/TestKmzLocusPhotoIcons.kmz");
+	private final String PICTOGRAM1_PNG = "Pictogram1.png";
+	private final String PICTOGRAM2_PNG = "Pictogram2.png";
+	private final ArrayList<String> PICTOGRAM_NAMES = new ArrayList<>(Arrays.asList(PICTOGRAM1_PNG, PICTOGRAM2_PNG));
+	private final String LOCUS_PHOTO_ICON1 = "file-sdcardLocuscacheimages1234567.png";
+	private final String LOCUS_PHOTO_ICON2 = "1234567890.png";
+
+
 	@BeforeEach
 	public void beforeEach() throws ParserConfigurationException, TransformerException, SAXException,
 			IOException, ClassNotFoundException {
@@ -430,5 +435,89 @@ class MultipartFileServiceTest {
 		assertTrue(zipEntriesNames.contains("files/parks.png"));
 		assertTrue(zipEntriesNames.contains("files/cabs.png"));
 	}
-	
+
+	@Test
+	public void kmz_With_Locus_Photo_Icons_Should_Exclude_Them_When_Replace_Locus_Photo_Icons()
+			throws ParserConfigurationException, TransformerException, SAXException, IOException {
+		multipartDto = new MultipartDto(new MockMultipartFile(
+				"TestKmzLocusPhotoIcons.kmz", "TestKmzLocusPhotoIcons.kmz", null, Files.newInputStream(testKmzLocusPhotoIcons)));
+		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartDto.setReplaceLocusIcons(true);
+		multipartDto.setPictogramName("Pictogram1.png");
+		Set<String> locusPhotoIconsInKmz = new HashSet<>(Arrays.asList(LOCUS_PHOTO_ICON1, LOCUS_PHOTO_ICON2));
+		multipartDto.setFilesToBeExcluded(locusPhotoIconsInKmz);
+
+		fileService = Mockito.mock(FileService.class);
+		Mockito.when(fileService.getPictogramsNames()).thenReturn(PICTOGRAM_NAMES);
+		Mockito.when(fileService.getPath(Mockito.anyString())).thenCallRealMethod();
+		Mockito.when(fileService.getFileName(Mockito.anyString())).thenCallRealMethod();
+
+		multipartFileService = new MultipartFileService(
+				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
+				fileService,
+				null);
+
+		//WHEN
+		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+
+		//THEN
+		assertEquals("TestKmzLocusPhotoIcons.kmz", tmpFile.getFileName().toString());
+
+		List<String> zipEntriesNames = new ArrayList<>(3);
+
+		assertDoesNotThrow(() -> {
+			ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
+			ZipEntry zipEntry;
+			while ((zipEntry = zis.getNextEntry()) != null) {
+				zipEntriesNames.add(zipEntry.getName());
+			}
+		});
+
+		assertFalse((zipEntriesNames.contains("files/file-sdcardLocuscacheimages1234567.png")));
+		assertFalse(zipEntriesNames.contains("files/1234567890.png"));
+		assertTrue(zipEntriesNames.contains("doc.kml"));//Just an additional check
+	}
+
+	@Test
+	public void kmz_With_Replaced_Locus_Icons_Should_Include_Desired_Pictogram_From_Server_Pictograms_Directory()
+			throws ParserConfigurationException, TransformerException, SAXException, IOException {
+		multipartDto = new MultipartDto(new MockMultipartFile(
+				"TestKmzLocusPhotoIcons.kmz", "TestKmzLocusPhotoIcons.kmz", null, Files.newInputStream(testKmzLocusPhotoIcons)));
+		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartDto.setReplaceLocusIcons(true);
+		multipartDto.setPictogramName("Pictogram2.png");
+		Set<String> locusPhotoIconsInKmz = new HashSet<>(Arrays.asList(LOCUS_PHOTO_ICON1, LOCUS_PHOTO_ICON2));
+		multipartDto.setFilesToBeExcluded(locusPhotoIconsInKmz);
+
+		fileService = Mockito.mock(FileService.class);
+		Mockito.when(fileService.getPictogramsNames()).thenReturn(PICTOGRAM_NAMES);
+		Mockito.when(fileService.getPath(Mockito.anyString())).thenCallRealMethod();
+		Mockito.when(fileService.getFileName(Mockito.anyString())).thenCallRealMethod();
+
+		multipartFileService = new MultipartFileService(
+				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
+				fileService,
+				null);
+
+		//WHEN
+		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+
+		//THEN
+		assertEquals("TestKmzLocusPhotoIcons.kmz", tmpFile.getFileName().toString());
+
+		List<String> zipEntriesNames = new ArrayList<>(3);
+
+		assertDoesNotThrow(() -> {
+			ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
+			ZipEntry zipEntry;
+			while ((zipEntry = zis.getNextEntry()) != null) {
+				zipEntriesNames.add(zipEntry.getName());
+			}
+		});
+
+		assertTrue(zipEntriesNames.contains("files/Pictogram2.png"));
+		assertTrue(zipEntriesNames.contains("files/Pictogram1.png"));//Just an additional check
+	}
+
+
 }

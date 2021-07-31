@@ -396,7 +396,7 @@ public class MultipartDto implements Serializable {
 	 * For POIs with included photos Locus creates icons on a map as thumbnails.
 	 * For a better visibility you can change them all to a specific pictogram.
 	 */
-	private boolean replaceLocusIcons;
+	private boolean replaceLocusIcons = false;
 
 	/**
 	 * A full names of the existing pictograms in the 'resources/static/pictograms' directory.
@@ -422,6 +422,11 @@ public class MultipartDto implements Serializable {
 	 * {@link #getMultipartFile()}
 	 */
 	private Map<String, byte[]> googleIconsToBeZipped = new HashMap<>();
+
+	/**
+	 * Filenames which have to be excluded from the resultant .zip (.kmz)
+	 */
+	private Set<String> filesToBeExcluded = new HashSet<>(10);
 	
 	/**
 	 * Scale has to be presented as digits divided by a dot and not exceeding the {@link #MAX_SCALE}

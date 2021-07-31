@@ -50,7 +50,7 @@ class LocusIconsHandlerStyleTest {
         final String photoIconStyle = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 photoId +
@@ -92,7 +92,7 @@ class LocusIconsHandlerStyleTest {
         final String photoIconStyle = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 photoId +
@@ -132,7 +132,7 @@ class LocusIconsHandlerStyleTest {
         final String photoIconAndPictogramStyles = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 photoId +
@@ -184,14 +184,13 @@ class LocusIconsHandlerStyleTest {
         final String photoIconStyles = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 photoId1 +
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1604137344718.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -199,7 +198,6 @@ class LocusIconsHandlerStyleTest {
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1604137344719.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -209,7 +207,6 @@ class LocusIconsHandlerStyleTest {
                 "\t\t\t<Icon><href>" +
                 PICTOGRAM1_KML_PATH +
                 "</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "</Document>\n" +
@@ -243,14 +240,13 @@ class LocusIconsHandlerStyleTest {
         final String photoIconAndExistingPictogramStyles = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 photoId1 +
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1604137344718.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -258,7 +254,6 @@ class LocusIconsHandlerStyleTest {
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1604137344719.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -268,7 +263,6 @@ class LocusIconsHandlerStyleTest {
                 "\t\t\t<Icon><href>" +
                 PICTOGRAM1_KML_PATH +
                 "</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "</Document>\n" +
@@ -302,14 +296,13 @@ class LocusIconsHandlerStyleTest {
         final String pictogram1And2Styles = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 photoId1 +
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1604137344718.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -317,7 +310,6 @@ class LocusIconsHandlerStyleTest {
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1604137344719.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -327,7 +319,6 @@ class LocusIconsHandlerStyleTest {
                 "\t\t\t<Icon><href>" +
                 PICTOGRAM1_KML_PATH +
                 "</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -337,7 +328,6 @@ class LocusIconsHandlerStyleTest {
                 "\t\t\t<Icon><href>" +
                 PICTOGRAM2_KML_PATH +
                 "</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "</Document>\n" +
@@ -375,7 +365,7 @@ class LocusIconsHandlerStyleTest {
         final String photoIconAndPictogram1Styles = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 PICTOGRAM2_PNG +
@@ -392,7 +382,6 @@ class LocusIconsHandlerStyleTest {
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1604137344718.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "</Document>\n" +
@@ -479,7 +468,7 @@ class LocusIconsHandlerStyleTest {
         final String photoStyleWithPlacemark = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 photoId1 +
@@ -491,12 +480,10 @@ class LocusIconsHandlerStyleTest {
                 "\t</Style>\n" +
                 "<Placemark>\n" +
                 "\t<name>Placemark1</name>\n" +
-                "\t<description><![CDATA[]]></description>\n" +
                 "\t<styleUrl>" +
                 photoStyleUrl +
                 "</styleUrl>\n" +
                 "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-                "\t\t<lc:attachment>files/_1377860540648.jpg</lc:attachment>\n" +
                 "\t</ExtendedData>\n" +
                 "</Placemark>" +
                 "</Document>\n" +
@@ -531,14 +518,13 @@ class LocusIconsHandlerStyleTest {
         final String photoAndPictogramStylesWithPlacemarks = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 photoId1 +
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1234.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -548,7 +534,6 @@ class LocusIconsHandlerStyleTest {
                 "\t\t\t<Icon><href>" +
                 PICTOGRAM2_KML_PATH +
                 "</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "<Placemark>\n" +
@@ -563,13 +548,9 @@ class LocusIconsHandlerStyleTest {
                 "</Placemark>" +
                 "<Placemark>\n" +
                 "\t<name>Placemark2</name>\n" +
-                "\t<description><![CDATA[]]></description>\n" +
                 "\t<styleUrl>" +
                 pictogram2StyleUrl +
                 "</styleUrl>\n" +
-                "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-                "\t\t<lc:attachment>files/_2.jpg</lc:attachment>\n" +
-                "\t</ExtendedData>\n" +
                 "</Placemark>" +
                 "</Document>\n" +
                 "</kml>\n";
@@ -609,14 +590,13 @@ class LocusIconsHandlerStyleTest {
         final String photoAndPictogramStylesWithPlacemarks = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
-                "\t<name>LOCUS03.07.2021</name>\n" +
+                "\t<name>Test doc</name>\n" +
                 "\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
                 "\t\t<Style id=\"" +
                 photoId1 +
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages1234.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -624,7 +604,6 @@ class LocusIconsHandlerStyleTest {
                 "\">\n" +
                 "\t\t<IconStyle>\n" +
                 "\t\t\t<Icon><href>files/file-sdcardLocuscacheimages12345.png</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "\t\t<Style id=\"" +
@@ -634,7 +613,6 @@ class LocusIconsHandlerStyleTest {
                 "\t\t\t<Icon><href>" +
                 PICTOGRAM2_KML_PATH +
                 "</href></Icon>\n" +
-                "\t\t\t<hotSpot x=\"0.5\" y=\"0.0\" xunits=\"fraction\" yunits=\"fraction\" />\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
                 "<Placemark>\n" +
@@ -643,9 +621,6 @@ class LocusIconsHandlerStyleTest {
                 "\t<styleUrl>" +
                 photo1StyleUrl +
                 "</styleUrl>\n" +
-                "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-                "\t\t<lc:attachment>files/_1.jpg</lc:attachment>\n" +
-                "\t</ExtendedData>\n" +
                 "</Placemark>" +
                 "<Placemark>\n" +
                 "\t<name>Placemark2</name>\n" +
@@ -659,13 +634,9 @@ class LocusIconsHandlerStyleTest {
                 "</Placemark>" +
                 "<Placemark>\n" +
                 "\t<name>Placemark3</name>\n" +
-                "\t<description><![CDATA[]]></description>\n" +
                 "\t<styleUrl>" +
                 pictogram2StyleUrl +
                 "</styleUrl>\n" +
-                "\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
-                "\t\t<lc:attachment>files/_3.jpg</lc:attachment>\n" +
-                "\t</ExtendedData>\n" +
                 "</Placemark>" +
                 "</Document>\n" +
                 "</kml>\n";
