@@ -22,7 +22,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -146,6 +148,7 @@ public class MultipartFileService {
             //Create a new .kmz file (where we have to write downloaded Google icons if any)
             createNewZip(zos, processedXml, multipartDto);
         }
+/*
         //Write downloaded icons if there are
         String imagesFolderName = DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
         for (Map.Entry<String, byte[]> iconEntry : multipartDto.getGoogleIconsToBeZipped().entrySet()) {
@@ -155,8 +158,39 @@ public class MultipartFileService {
             zos.closeEntry();
         }
         log.info("{} downloaded icons have been added to the resulting zip", multipartDto.getGoogleIconsToBeZipped().size());
+*/
+        writeDownloadedGoogleIcons(zos, multipartDto);
+        writeLocusPictogram(zos, multipartDto);
         zos.close();
         log.info("Temp zip file {} has been written to the temp dir", tempFile);
+    }
+
+    private void writeDownloadedGoogleIcons(ZipOutputStream zos, MultipartDto multipartDto) throws IOException {
+        //Write downloaded icons if there are
+        String imagesFolderName = DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
+        for (Map.Entry<String, byte[]> iconEntry : multipartDto.getGoogleIconsToBeZipped().entrySet()) {
+            ZipEntry zipEntry = new ZipEntry(imagesFolderName + iconEntry.getKey());
+            zos.putNextEntry(zipEntry);
+            zos.write(iconEntry.getValue());
+            zos.closeEntry();
+        }
+        log.info("{} downloaded icons have been added to the resulting zip", multipartDto.getGoogleIconsToBeZipped().size());
+    }
+
+    private void writeLocusPictogram(ZipOutputStream zos, MultipartDto multipartDto) throws IOException {
+        if (!multipartDto.isReplaceLocusIcons() ||
+                multipartDto.getImagesNamesFromZip().contains(multipartDto.getPictogramName())) return;
+        //Write Locus pictograms if there are
+        String imagesFolderName = DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
+        String pictogramFullPath = fileService.getPictogramsNamesMap().get(multipartDto.getPictogramName());
+//        byte[] pictogram = Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(pictogramFullPath))
+//                .readAllBytes();
+        byte[] pictogram = this.getClass().getClassLoader().getResourceAsStream(pictogramFullPath).readAllBytes();
+        ZipEntry zipEntry = new ZipEntry(imagesFolderName + multipartDto.getPictogramName());
+            zos.putNextEntry(zipEntry);
+            zos.write(pictogram);
+            zos.closeEntry();
+        log.info("{} pictogram icon have been added to the resulting zip", multipartDto.getPictogramName());
     }
 
     private void processExistingZip(ZipOutputStream zos, String processedXml, MultipartDto multipartDto) throws IOException {

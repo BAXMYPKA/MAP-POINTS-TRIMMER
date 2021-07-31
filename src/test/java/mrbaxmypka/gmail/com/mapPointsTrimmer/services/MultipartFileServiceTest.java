@@ -57,6 +57,9 @@ class MultipartFileServiceTest {
 	private final String PICTOGRAM1_PNG = "Pictogram1.png";
 	private final String PICTOGRAM2_PNG = "Pictogram2.png";
 	private final ArrayList<String> PICTOGRAM_NAMES = new ArrayList<>(Arrays.asList(PICTOGRAM1_PNG, PICTOGRAM2_PNG));
+	private final String PICTOGRAM1_PATH = "src/test/java/resources/Pictogram1.png";
+	private final String PICTOGRAM2_PATH = "src/test/java/resources/Pictogram2.png";
+	private final Map<String, String> PICTOGRAMS_NAMES_MAP = new HashMap<>(2);
 	private final String LOCUS_PHOTO_ICON1 = "file-sdcardLocuscacheimages1234567.png";
 	private final String LOCUS_PHOTO_ICON2 = "1234567890.png";
 
@@ -95,6 +98,9 @@ class MultipartFileServiceTest {
 		
 		multipartDto = new MultipartDto(multipartFile);
 		multipartDto.setDownloadAs(DownloadAs.KML);
+
+		PICTOGRAMS_NAMES_MAP.put(PICTOGRAM1_PNG, PICTOGRAM1_PATH);
+		PICTOGRAMS_NAMES_MAP.put(PICTOGRAM2_PNG, PICTOGRAM2_PATH);
 	}
 	
 	@AfterEach
@@ -449,6 +455,7 @@ class MultipartFileServiceTest {
 
 		fileService = Mockito.mock(FileService.class);
 		Mockito.when(fileService.getPictogramsNames()).thenReturn(PICTOGRAM_NAMES);
+		Mockito.when(fileService.getPictogramsNamesMap()).thenReturn(PICTOGRAMS_NAMES_MAP);
 		Mockito.when(fileService.getPath(Mockito.anyString())).thenCallRealMethod();
 		Mockito.when(fileService.getFileName(Mockito.anyString())).thenCallRealMethod();
 
@@ -491,6 +498,7 @@ class MultipartFileServiceTest {
 
 		fileService = Mockito.mock(FileService.class);
 		Mockito.when(fileService.getPictogramsNames()).thenReturn(PICTOGRAM_NAMES);
+		Mockito.when(fileService.getPictogramsNamesMap()).thenReturn(PICTOGRAMS_NAMES_MAP);
 		Mockito.when(fileService.getPath(Mockito.anyString())).thenCallRealMethod();
 		Mockito.when(fileService.getFileName(Mockito.anyString())).thenCallRealMethod();
 
