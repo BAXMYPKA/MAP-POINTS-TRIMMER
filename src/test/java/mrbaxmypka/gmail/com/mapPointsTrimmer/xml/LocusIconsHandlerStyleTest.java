@@ -75,7 +75,7 @@ class LocusIconsHandlerStyleTest {
 
         //WHEN
 
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -117,7 +117,7 @@ class LocusIconsHandlerStyleTest {
 
         //WHEN
 
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -166,7 +166,7 @@ class LocusIconsHandlerStyleTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -226,7 +226,7 @@ class LocusIconsHandlerStyleTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -285,7 +285,7 @@ class LocusIconsHandlerStyleTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -354,7 +354,7 @@ class LocusIconsHandlerStyleTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -410,7 +410,7 @@ class LocusIconsHandlerStyleTest {
 
         //WHEN
 
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -460,7 +460,7 @@ class LocusIconsHandlerStyleTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
         //Only customPath should be preserved but with the pictogramName
@@ -513,7 +513,7 @@ class LocusIconsHandlerStyleTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -585,7 +585,7 @@ class LocusIconsHandlerStyleTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
         System.out.println(XmlTestUtils.getAsText(document));
@@ -681,7 +681,7 @@ class LocusIconsHandlerStyleTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));

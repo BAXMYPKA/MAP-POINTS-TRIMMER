@@ -96,7 +96,7 @@ class LocusIconsHandlerStyleMapTest {
 
         //WHEN
 
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -156,7 +156,7 @@ class LocusIconsHandlerStyleMapTest {
 
         //WHEN
 
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -215,7 +215,7 @@ class LocusIconsHandlerStyleMapTest {
         final String styleMapPictogramId = kmlUtils.getSTYLEMAP_ID_ATTRIBUTE_PREFIX() + PICTOGRAM1_PNG;
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -319,7 +319,7 @@ class LocusIconsHandlerStyleMapTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -466,7 +466,7 @@ class LocusIconsHandlerStyleMapTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -573,7 +573,7 @@ class LocusIconsHandlerStyleMapTest {
 
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -643,7 +643,7 @@ class LocusIconsHandlerStyleMapTest {
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -722,7 +722,7 @@ class LocusIconsHandlerStyleMapTest {
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(customPath);
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -816,7 +816,7 @@ class LocusIconsHandlerStyleMapTest {
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -950,7 +950,7 @@ class LocusIconsHandlerStyleMapTest {
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
@@ -1129,7 +1129,7 @@ class LocusIconsHandlerStyleMapTest {
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(document.getDocumentElement(), multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
