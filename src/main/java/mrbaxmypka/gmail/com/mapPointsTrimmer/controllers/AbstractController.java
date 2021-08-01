@@ -30,12 +30,12 @@ public abstract class AbstractController {
 	
 	@ModelAttribute
 	public void addAttributes(Model model) {
-		model.addAttribute("maxFileSizeMb", maxFileSizeMb);
-		model.addAttribute("serverAddress", serverAddress);
-		model.addAttribute("pictograms", fileService.getPictogramsNames());
-		model.addAttribute("pictogramsMap", fileService.getPictogramsNamesMap());
+		if (!model.containsAttribute("maxFileSizeMb")) model.addAttribute("maxFileSizeMb", maxFileSizeMb);
+		if (!model.containsAttribute("serverAddress")) model.addAttribute("serverAddress", serverAddress);
+		if (!model.containsAttribute("pictograms")) model.addAttribute("pictograms", fileService.getPictogramsNames());
+		if (!model.containsAttribute("pictogramsMap")) model.addAttribute("pictogramsMap", fileService.getPictogramsNamesPaths());
 		log.trace("ServerAddress={}, maxFileSizeMb={}, pictograms={} attributes have been added and the 'index' page is being " +
 				"returned.",
-			serverAddress, maxFileSizeMb, fileService.getPictogramsNames().size());
+			serverAddress, maxFileSizeMb, fileService.getPictogramsNamesPaths().size());
 	}
 }

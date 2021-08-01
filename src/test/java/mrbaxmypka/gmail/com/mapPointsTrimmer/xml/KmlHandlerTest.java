@@ -5,10 +5,12 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,13 +33,15 @@ class KmlHandlerTest {
 	private static InputStream inputStream;
 	private static MultipartDto multipartDto;
 	private static MultipartFile multipartFile;
-	private static MessageSource messageSource = Mockito.mock(MessageSource.class);
-	private static ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
-	private static FileService fileService = new FileService(messageSource, resourceLoader);
-	private static GoogleIconsCache googleIconsCache = new GoogleIconsCache();
-	private static HtmlHandler htmlHandler = new HtmlHandler(fileService);
-	private static GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
-	private KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
+	private static MessageSource messageSource;
+	private static Resource resource;
+	private static ResourceLoader resourceLoader;
+	private static FileService fileService;
+	private static GoogleIconsCache googleIconsCache;
+	private static HtmlHandler htmlHandler;
+	private static GoogleIconsService googleIconsService;
+	private KmlHandler kmlHandler;
+	private static final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
 	private static String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 		"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
 		"xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -120,6 +124,21 @@ class KmlHandlerTest {
 		"</Placemark>\n" +
 		"</Document>\n" +
 		"</kml>\n";
+	
+	@BeforeEach
+	public void beforeEach() throws IOException {
+		messageSource = Mockito.mock(MessageSource.class);
+		resourceLoader = Mockito.mock(ResourceLoader.class);
+		resource = Mockito.mock(Resource.class);
+		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
+		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
+		fileService = new FileService(messageSource, resourceLoader);
+		
+		htmlHandler = new HtmlHandler(fileService);
+		googleIconsCache = new GoogleIconsCache();
+		googleIconsService = new GoogleIconsService(googleIconsCache);
+		kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
+	}
 	
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body()

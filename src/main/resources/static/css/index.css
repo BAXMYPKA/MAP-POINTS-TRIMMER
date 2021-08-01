@@ -495,7 +495,8 @@ input[type=radio] {
 }
 
 .interrogation:hover {
-	background-color: #c8ff36;
+	background-color: green;
+	/*background-color: #0066FF;*/
 	cursor: help;
 }
 

@@ -141,6 +141,11 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<testResources>
+			<testResource>
+				<directory>${project.basedir}/src/test/java/resources</directory>
+			</testResource>
+		</testResources>
 	</build>
 
 </project>

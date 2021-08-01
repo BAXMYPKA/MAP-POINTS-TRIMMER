@@ -24,7 +24,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -182,10 +181,9 @@ public class MultipartFileService {
                 multipartDto.getImagesNamesFromZip().contains(multipartDto.getPictogramName())) return;
         //Write Locus pictograms if there are
         String imagesFolderName = DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
-        String pictogramFullPath = fileService.getPictogramsNamesMap().get(multipartDto.getPictogramName());
-//        byte[] pictogram = Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(pictogramFullPath))
-//                .readAllBytes();
-        byte[] pictogram = this.getClass().getClassLoader().getResourceAsStream(pictogramFullPath).readAllBytes();
+        String pictogramFullPath = fileService.getPictogramsNamesPaths().get(multipartDto.getPictogramName());
+        byte[] pictogram = Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(pictogramFullPath))
+              .readAllBytes();
         ZipEntry zipEntry = new ZipEntry(imagesFolderName + multipartDto.getPictogramName());
             zos.putNextEntry(zipEntry);
             zos.write(pictogram);
@@ -254,7 +252,6 @@ public class MultipartFileService {
     }
 
     private Path writeTempFile(String processedXml, MultipartDto multipartDto, Locale locale) throws IOException {
-//		String originalFilename = multipartDto.getMultipartFile().getOriginalFilename();
         if (DownloadAs.KML.equals(multipartDto.getDownloadAs())) {
             //Write .kml file
             log.info("Temp file will be written to the temp directory as '{}' before returning as it is.", xmlFileName);

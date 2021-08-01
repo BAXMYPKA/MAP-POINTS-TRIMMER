@@ -41,7 +41,6 @@ public class ExceptionsController extends AbstractController {
 	public ModelAndView nullPinterHandler(NullPointerException npe, Locale locale) {
 		//code 428
 		return returnPageWithError(HttpStatus.PRECONDITION_REQUIRED, npe.getMessage(), npe, locale);
-//		return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED).body(npe.getMessage());
 	}
 	
 	/**
@@ -52,7 +51,6 @@ public class ExceptionsController extends AbstractController {
 	public ModelAndView illegalArgException(IllegalArgumentException iae, Locale locale) {
 		//code 406
 		return returnPageWithError(HttpStatus.NOT_ACCEPTABLE, iae.getMessage(), iae, locale);
-//		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(iae.getMessage());
 	}
 	
 	/**
@@ -65,7 +63,6 @@ public class ExceptionsController extends AbstractController {
 		String xmlErrorPrefix = messageSource.getMessage("exception.xmlParseError", null, locale);
 		return returnPageWithError(
 			HttpStatus.UNPROCESSABLE_ENTITY, xmlErrorPrefix + xmlError.getMessage(), xmlError, locale);
-//		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(sae.getMessage());
 	}
 	
 	/**
@@ -78,7 +75,6 @@ public class ExceptionsController extends AbstractController {
 	public ModelAndView interruptedException(InterruptedException ie, Locale locale) {
 		String shutdownFailureMessage = messageSource.getMessage("exception.shutdownFailure", null, locale);
 		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, shutdownFailureMessage, ie, locale);
-//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(shutdownFailureMessage);
 	}
 	
 	@ExceptionHandler(IOException.class)
@@ -86,7 +82,6 @@ public class ExceptionsController extends AbstractController {
 		String fileSavingFailure = messageSource.getMessage(
 			"exception.fileException(1)", new Object[]{io.getMessage()}, locale);
 		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, fileSavingFailure, io, locale);
-//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(shutdownFailureMessage);
 	}
 	
 	/**
@@ -105,7 +100,6 @@ public class ExceptionsController extends AbstractController {
 				messageSource.getMessage("exception.fieldError(2)", new Object[]{e.getKey(), e.getValue()}, locale))
 			.collect(Collectors.joining());
 		return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, ve, locale);
-//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessages);
 	}
 	
 	/**
@@ -116,7 +110,6 @@ public class ExceptionsController extends AbstractController {
 	public ModelAndView internalExceptions(Exception exception, Locale locale) {
 		//code 500
 		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception, locale);
-//		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
 	}
 	
 	/**

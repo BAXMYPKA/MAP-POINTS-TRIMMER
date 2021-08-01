@@ -8,10 +8,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,10 +23,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HtmlHandlerTest {
 
-	private static MessageSource messageSource = Mockito.mock(MessageSource.class);
-	private static ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
-	static HtmlHandler htmlHandler = new HtmlHandler(new FileService(messageSource, resourceLoader));
-	static String html = "<!-- desc_gen:start -->\n" +
+	private MessageSource messageSource;
+	private ResourceLoader resourceLoader;
+	private Resource resource;
+	private FileService fileService;
+	private HtmlHandler htmlHandler;
+	private final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
+	private String html = "<!-- desc_gen:start -->\n" +
 		"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">\n" +
 		"<!-- desc_user:start -->\n" +
 		"User description within comments\n" +
@@ -50,12 +56,20 @@ class HtmlHandlerTest {
 		"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:31</td></tr>\n" +
 		"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 		"<!-- desc_gen:end -->";
-	static MultipartDto multipartDto;
+	private MultipartDto multipartDto;
 	
 	@BeforeEach
-	public void beforeEach() {
+	public void beforeEach() throws IOException {
 		MultipartFile multipartFile = new MockMultipartFile("html", html.getBytes(StandardCharsets.UTF_8));
 		multipartDto = new MultipartDto(multipartFile);
+		messageSource = Mockito.mock(MessageSource.class);
+		resourceLoader = Mockito.mock(ResourceLoader.class);
+		resource = Mockito.mock(Resource.class);
+		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
+		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
+		fileService = new FileService(messageSource, resourceLoader);
+		htmlHandler = new HtmlHandler(fileService);
+	
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////

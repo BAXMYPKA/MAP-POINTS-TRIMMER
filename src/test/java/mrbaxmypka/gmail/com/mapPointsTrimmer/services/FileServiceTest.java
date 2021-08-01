@@ -1,5 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -21,8 +22,18 @@ class FileServiceTest {
 
     private MessageSource messageSource = Mockito.mock(MessageSource.class);
     private ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
-    private final FileService fileService = new FileService(messageSource, resourceLoader);
-
+    private FileService fileService;
+    private Resource resource;
+    private final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
+    
+    @BeforeEach
+    public void beforeEach() throws IOException {
+        resource = Mockito.mock(Resource.class);
+        Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
+        Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
+        fileService = new FileService(messageSource, resourceLoader);
+    }
+    
     @ParameterizedTest
     @ValueSource(strings = {"files/", "../myFiles/", "/storage/0/data/media/", "file:///D:/Folder/MyPOI/", "http://site/"})
     public void only_Filename_Should_Be_Returned_Whet_GetFilename(String path) {
@@ -79,13 +90,10 @@ class FileServiceTest {
     public void pictogram_Names_Should_Be_Returned_When_GetPictogramNames() throws IOException {
         //GIVEN
         final String PICTOGRAMS_IN_DIRECTORY = "pic1.png\npic2.PNG";
-        final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
         InputStream inputStream = new ByteArrayInputStream(PICTOGRAMS_IN_DIRECTORY.getBytes(StandardCharsets.UTF_8));
-        Resource resource = Mockito.mock(Resource.class);
-
-        Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
         Mockito.when(resource.getInputStream()).thenReturn(inputStream);
-
+        fileService = new FileService(messageSource, resourceLoader);
+    
         //WHEN
         ArrayList<String> pictogramsNames = fileService.getPictogramsNames();
 
@@ -99,13 +107,11 @@ class FileServiceTest {
     public void only_Pictogram_Names_Should_Be_Returned_When_GetPictogramNames() throws IOException {
         //GIVEN
         final String PICTOGRAMS_TEXT_IN_DIRECTORY = "pic1.PNG\nreadMe.txt\npic2.png";
-        final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
         InputStream inputStream = new ByteArrayInputStream(PICTOGRAMS_TEXT_IN_DIRECTORY.getBytes(StandardCharsets.UTF_8));
-        Resource resource = Mockito.mock(Resource.class);
-
-        Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
         Mockito.when(resource.getInputStream()).thenReturn(inputStream);
 
+        fileService = new FileService(messageSource, resourceLoader);
+    
         //WHEN
         ArrayList<String> pictogramsNames = fileService.getPictogramsNames();
 
@@ -121,13 +127,11 @@ class FileServiceTest {
     public void empty_List_Should_Be_Returned_When_No_Pictograms_In_Directory() throws IOException {
         //GIVEN
         final String PICTOGRAMS_IN_DIRECTORY = "wrongFile.jpg";
-        final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
         InputStream inputStream = new ByteArrayInputStream(PICTOGRAMS_IN_DIRECTORY.getBytes(StandardCharsets.UTF_8));
-        Resource resource = Mockito.mock(Resource.class);
-
-        Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
         Mockito.when(resource.getInputStream()).thenReturn(inputStream);
-
+    
+        fileService = new FileService(messageSource, resourceLoader);
+    
         //WHEN
         ArrayList<String> pictogramsNames = fileService.getPictogramsNames();
 
@@ -139,15 +143,13 @@ class FileServiceTest {
     public void pictogram_Names_Map_Should_Be_Returned_When_GetPictogramNamesMap() throws IOException {
         //GIVEN
         final String PICTOGRAMS_IN_DIRECTORY = "pic1.png\npic2.PNG";
-        final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
         InputStream inputStream = new ByteArrayInputStream(PICTOGRAMS_IN_DIRECTORY.getBytes(StandardCharsets.UTF_8));
-        Resource resource = Mockito.mock(Resource.class);
-
-        Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
         Mockito.when(resource.getInputStream()).thenReturn(inputStream);
-
+    
+        fileService = new FileService(messageSource, resourceLoader);
+    
         //WHEN
-        Map<String, String> pictogramsNamesWithPaths = fileService.getPictogramsNamesMap();
+        Map<String, String> pictogramsNamesWithPaths = fileService.getPictogramsNamesPaths();
 
         //THEN
         assertEquals(2, pictogramsNamesWithPaths.size());
@@ -163,15 +165,13 @@ class FileServiceTest {
     public void only_Pictogram_Names_Map_Should_Be_Returned_When_GetPictogramNamesMap() throws IOException {
         //GIVEN
         final String PICTOGRAMS_IN_DIRECTORY = "pic1.png\npic2.PNG\npic3.jpg";
-        final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
         InputStream inputStream = new ByteArrayInputStream(PICTOGRAMS_IN_DIRECTORY.getBytes(StandardCharsets.UTF_8));
-        Resource resource = Mockito.mock(Resource.class);
-
-        Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
         Mockito.when(resource.getInputStream()).thenReturn(inputStream);
-
+    
+        fileService = new FileService(messageSource, resourceLoader);
+    
         //WHEN
-        Map<String, String> pictogramsNamesWithPaths = fileService.getPictogramsNamesMap();
+        Map<String, String> pictogramsNamesWithPaths = fileService.getPictogramsNamesPaths();
 
         //THEN
         assertEquals(2, pictogramsNamesWithPaths.size());

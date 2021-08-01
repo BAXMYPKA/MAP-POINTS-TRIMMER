@@ -4,9 +4,11 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,14 +25,31 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class XmlHandlerTest {
 
-	private MessageSource messageSource = Mockito.mock(MessageSource.class);
-	private ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
-	private FileService fileService = new FileService(messageSource, resourceLoader);
-	private GoogleIconsCache googleIconsCache = new GoogleIconsCache();
-	private GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
-	private HtmlHandler htmlHandler = new HtmlHandler(fileService);
-	private LocusMapHandler locusMapHandler;
-	private XmlHandler xmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
+	private MessageSource messageSource;
+	private ResourceLoader resourceLoader;
+	private Resource resource;
+	private FileService fileService;
+	private GoogleIconsCache googleIconsCache;
+	private GoogleIconsService googleIconsService;
+	private HtmlHandler htmlHandler;
+	private XmlHandler xmlHandler;
+	private final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
+	
+	
+	@BeforeEach
+	public void beforeEach() throws IOException {
+		messageSource = Mockito.mock(MessageSource.class);
+		resourceLoader = Mockito.mock(ResourceLoader.class);
+		resource = Mockito.mock(Resource.class);
+		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
+		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
+		fileService = new FileService(messageSource, resourceLoader);
+		
+		htmlHandler = new HtmlHandler(fileService);
+		googleIconsCache = new GoogleIconsCache();
+		googleIconsService = new GoogleIconsService(googleIconsCache);
+		xmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
+	}
 	
 	@Test
 	public void kml_header_Should_Be_Added_With_Lc_Locusmap_Namespace_Prefix_If_Contain_Lc_Attachments_Without_Namespace_In_ExtendedData_And_Attachment()

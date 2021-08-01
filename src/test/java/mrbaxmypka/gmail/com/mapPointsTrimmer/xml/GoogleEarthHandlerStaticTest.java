@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
@@ -11,6 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,7 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -46,109 +49,32 @@ class GoogleEarthHandlerStaticTest {
 	
 	private MultipartDto multipartDto;
 	private MultipartFile multipartFile;
-	private MessageSource messageSource = Mockito.mock(MessageSource.class);
-	private ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
-	private FileService fileService = new FileService(messageSource, resourceLoader);
-	private GoogleIconsCache googleIconsCache = new GoogleIconsCache();
-	private HtmlHandler htmlHandler = new HtmlHandler(fileService);
-	private GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
-	private KmlHandler kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
+	private MessageSource messageSource;
+	private ResourceLoader resourceLoader;
+	private FileService fileService;
+	private GoogleIconsCache googleIconsCache;
+	private HtmlHandler htmlHandler;
+	private GoogleIconsService googleIconsService;
+	private Resource resource;
+	private KmlHandler kmlHandler;
 	private GoogleEarthHandler googleEarthHandler;
-
-	private String googleEarthKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-		  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
-		  "<Document>\n" +
-		  "\t<name>Google Earth Test Poi</name>\n" +
-		  "\t<StyleMap id=\"styleMap1\">\n" +
-		  "\t\t<Pair>\n" +
-		  "\t\t\t<key>normal</key>\n" +
-		  "\t\t\t<styleUrl>#style1</styleUrl>\n" +
-		  "\t\t</Pair>\n" +
-		  "\t\t<Pair>\n" +
-		  "\t\t\t<key>highlight</key>\n" +
-		  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
-		  "\t\t</Pair>\n" +
-		  "\t</StyleMap>\n" +
-		  "\t<StyleMap id=\"styleMap2\">\n" +
-		  "\t\t<Pair>\n" +
-		  "\t\t\t<key>normal</key>\n" +
-		  "\t\t\t<styleUrl>#style2</styleUrl>\n" +
-		  "\t\t</Pair>\n" +
-		  "\t\t<Pair>\n" +
-		  "\t\t\t<key>highlight</key>\n" +
-		  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
-		  "\t\t</Pair>\n" +
-		  "\t</StyleMap>\n" +
-		  "\t<Style id=\"style1\">\n" +
-		  "\t\t<IconStyle>\n" +
-		  "\t\t\t<scale>0.8</scale>\n" +
-		  "\t\t\t<Icon>\n" +
-		  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-		  "\t\t\t</Icon>\n" +
-		  "\t\t</IconStyle>\n" +
-		  "\t</Style>\n" +
-		  "\t<Style id=\"style2\">\n" +
-		  "\t\t<IconStyle>\n" +
-		  "\t\t\t<scale>0.8</scale>\n" +
-		  "\t\t\t<Icon>\n" +
-		  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>\n" +
-		  "\t\t\t</Icon>\n" +
-		  "\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
-		  "\t\t</IconStyle>\n" +
-		  "\t</Style>\n" +
-		  "\t<Style id=\"style3\">\n" +
-		  "\t\t<IconStyle>\n" +
-		  "\t\t\t<scale>0.6</scale>\n" +
-		  "\t\t\t<Icon>\n" +
-		  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
-		  "\t\t\t</Icon>\n" +
-		  "\t\t</IconStyle>\n" +
-		  "\t</Style>\n" +
-		  "\t<Style id=\"style4\">\n" +
-		  "\t\t<IconStyle>\n" +
-		  "\t\t\t<scale>0.709091</scale>\n" +
-		  "\t\t\t<Icon>\n" +
-		  "\t\t\t\t<href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\n" +
-		  "\t\t\t</Icon>\n" +
-		  "\t\t\t<hotSpot x=\"0.5\" y=\"0\" xunits=\"fraction\" yunits=\"fraction\"/>\n" +
-		  "\t\t</IconStyle>\n" +
-		  "\t\t<LabelStyle>\n" +
-		  "\t\t\t<scale>0.8</scale>\n" +
-		  "\t\t</LabelStyle>\n" +
-		  "\t</Style>\n" +
-		  "\t<Folder>\n" +
-		  "\t\t<name>Folder with POI</name>\n" +
-		  "\t\t<Placemark>\n" +
-		  "\t\t\t<name>Test Placemark 1</name>\n" +
-		  "\t\t\t<styleUrl>#styleMap1</styleUrl>\n" +
-		  "\t\t\t<Point>\n" +
-		  "\t\t\t\t<coordinates>38.547163,55.88113662000001,133</coordinates>\n" +
-		  "\t\t\t</Point>\n" +
-		  "\t\t</Placemark>\n" +
-		  "\t\t<Placemark>\n" +
-		  "\t\t\t<name>Test Placemark 2</name>\n" +
-		  "\t\t\t<styleUrl>#styleMap2</styleUrl>\n" +
-		  "\t\t\t<Point>\n" +
-		  "\t\t\t\t<coordinates>38.54269981,55.88994587,145</coordinates>\n" +
-		  "\t\t\t</Point>\n" +
-		  "\t\t</Placemark>\n" +
-		  "\t\t<Placemark>\n" +
-		  "\t\t\t<name>Test Placemark 3</name>\n" +
-		  "\t\t\t<styleUrl>#style3</styleUrl>\n" +
-		  "\t\t\t<Point>\n" +
-		  "\t\t\t\t<coordinates>38.5409832,55.89456632,143</coordinates>\n" +
-		  "\t\t\t</Point>\n" +
-		  "\t\t</Placemark>\n" +
-		  "\t\t<Placemark>\n" +
-		  "\t\t\t<name>Test Placemark 4</name>\n" +
-		  "\t\t\t<styleUrl>#style4</styleUrl>\n" +
-		  "\t\t\t<Point>\n" +
-		  "\t\t\t\t<coordinates>38.53305459,55.91967435,136</coordinates>\n" +
-		  "\t\t\t</Point>\n" +
-		  "\t\t</Placemark>\n" +
-		  "\t</Folder>\n" +
-		  "</Document>\n" +
-		  "</kml>";
+	private final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
+	
+	
+	@BeforeEach
+	public void beforeEach() throws IOException {
+		messageSource = Mockito.mock(MessageSource.class);
+		resourceLoader = Mockito.mock(ResourceLoader.class);
+		resource = Mockito.mock(Resource.class);
+		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
+		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
+		fileService = new FileService(messageSource, resourceLoader);
+		
+		htmlHandler = new HtmlHandler(fileService);
+		googleIconsCache = new GoogleIconsCache();
+		googleIconsService = new GoogleIconsService(googleIconsCache);
+		kmlHandler = new KmlHandler(htmlHandler, googleIconsService, fileService);
+	}
 	
 	@ParameterizedTest
 	@ValueSource(ints = {12, 57, 111})
@@ -1232,7 +1158,7 @@ class GoogleEarthHandlerStaticTest {
 		Document processedDocument = googleEarthHandler.processKml(document, multipartDto);
 		
 		String resultingKml = kmlHandler.writeTransformedDocument(processedDocument, true);
-		System.out.println(resultingKml);
+//		System.out.println(resultingKml);
 		
 		//THEN
 //		assertTrue(resultingKml.contains("<styleUrl>#style3</styleUrl>"));

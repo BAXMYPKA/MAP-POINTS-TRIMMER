@@ -1,27 +1,20 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.GoogleEarthHandler;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.HtmlHandler;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,20 +24,26 @@ class GoogleIconsServiceTest {
 	
 	private MultipartDto multipartDto;
 	private GoogleIconsService googleIconsService;
-	private MultipartFileService mockMultipartFileService;
 	private GoogleIconsCache googleIconsCache;
-	private MessageSource messageSource = Mockito.mock(MessageSource.class);
-	private ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
+	private MessageSource messageSource;
+	private ResourceLoader resourceLoader;
 	private FileService fileService;
-	private Path testKmz = Paths.get("src/test/java/resources/TestKmz.kmz");
+	private Resource resource;
+	private final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
+	
 	
 	@BeforeEach
-	public void beforeEach() {
-		googleIconsCache = new GoogleIconsCache();
+	public void beforeEach() throws IOException {
+		messageSource = Mockito.mock(MessageSource.class);
+		resourceLoader = Mockito.mock(ResourceLoader.class);
+		resource = Mockito.mock(Resource.class);
+		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
+		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
 		fileService = new FileService(messageSource, resourceLoader);
-		mockMultipartFileService = Mockito.mock(MultipartFileService.class);
-		googleIconsService = new GoogleIconsService(googleIconsCache);
 		multipartDto = new MultipartDto(new MockMultipartFile("Test.kml", "Test.kml", null, new byte[]{}));
+		
+		googleIconsCache = new GoogleIconsCache();
+		googleIconsService = new GoogleIconsService(googleIconsCache);
 	}
 	
 	@ParameterizedTest
