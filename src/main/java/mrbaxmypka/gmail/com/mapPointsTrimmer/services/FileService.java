@@ -34,9 +34,6 @@ public class FileService {
 	@Autowired
 	private MessageSource messageSource;
 	
-	@Autowired
-	private ResourceLoader resourceLoader;
-	
 	final Resource pictogramsResource;
 	
 	/**
@@ -48,6 +45,7 @@ public class FileService {
 	private ArrayList<String> pictogramsNames;
     
     /**
+	 * MUST be set AFTER {@link #setPictogramNames()}
      * Collects a Map collection of only pictograms names (.png files) and they relative paths
      * from the 'resources/static/pictograms' directory.
      *
@@ -63,11 +61,13 @@ public class FileService {
 	@Value("${logging.file.name}")
 	private String pathToLogFile;
 	
+	private final String PICTOGRAMS_PATH = "pictograms/";
+	
 	private String stackTrace;
 	
+	@Autowired
 	public FileService(MessageSource messageSource, ResourceLoader resourceLoader) {
 		this.messageSource = messageSource;
-		this.resourceLoader = resourceLoader;
 		pictogramsResource = resourceLoader.getResource("classpath:static/pictograms");
 		setPictogramNames();
 		setPictogramsNamesPaths();
@@ -133,19 +133,9 @@ public class FileService {
 	}
 	
 	private void setPictogramsNamesPaths() {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(pictogramsResource.getInputStream()))) {
-			pictogramsNamesPaths = reader.lines()
-				  .filter(fileName -> fileName.toLowerCase().endsWith(".png"))
-				  .collect(Collectors.toMap(
-						s -> s,
-						o -> "pictograms/" + o
-				  ));
-			log.info("{} Pictograms names with full paths have been collected.", pictogramsNamesPaths.size());
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-			pictogramsNamesPaths = new HashMap<>(0);
-		}
-		
+		pictogramsNamesPaths = new HashMap<>(pictogramsNames.size());
+		pictogramsNames.forEach(pictogram -> pictogramsNamesPaths.put(pictogram, PICTOGRAMS_PATH + pictogram));
+		log.info("{} Pictograms names with full paths have been collected.", pictogramsNamesPaths.size());
 	}
 	
 	/**
@@ -178,7 +168,6 @@ public class FileService {
 		if (!pathWithFilename.matches("[.\\S]{1,100}\\.[a-zA-Z1-9]{3,5}")) {
 			return "";
 		}
-		
 		//If index of '/' or '\' return -1 the 'pathWithFilename' consist of only the filename without a path
 		int lastIndexOFSlash = pathWithFilename.lastIndexOf("/") != -1 ? pathWithFilename.lastIndexOf("/") :
 			  pathWithFilename.lastIndexOf("\\") != -1 ? pathWithFilename.lastIndexOf("\\") : 0;

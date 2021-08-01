@@ -20,14 +20,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileServiceTest {
 
-    private MessageSource messageSource = Mockito.mock(MessageSource.class);
-    private ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
+    private MessageSource messageSource;
+    private ResourceLoader resourceLoader;
     private FileService fileService;
     private Resource resource;
     private final String CLASSPATH_TO_DIRECTORY = "classpath:static/pictograms";
     
     @BeforeEach
     public void beforeEach() throws IOException {
+        messageSource = Mockito.mock(MessageSource.class);
+        resourceLoader = Mockito.mock(ResourceLoader.class);
         resource = Mockito.mock(Resource.class);
         Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
         Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
@@ -145,7 +147,6 @@ class FileServiceTest {
         final String PICTOGRAMS_IN_DIRECTORY = "pic1.png\npic2.PNG";
         InputStream inputStream = new ByteArrayInputStream(PICTOGRAMS_IN_DIRECTORY.getBytes(StandardCharsets.UTF_8));
         Mockito.when(resource.getInputStream()).thenReturn(inputStream);
-    
         fileService = new FileService(messageSource, resourceLoader);
     
         //WHEN

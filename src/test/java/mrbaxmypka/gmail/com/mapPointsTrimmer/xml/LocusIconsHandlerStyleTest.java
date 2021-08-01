@@ -569,12 +569,10 @@ class LocusIconsHandlerStyleTest {
         locusIconsHandler.replaceLocusIcons(multipartDto);
 
         //THEN
-        System.out.println(XmlTestUtils.getAsText(document));
-
+//        System.out.println(XmlTestUtils.getAsText(document));
         assertEquals(2, document.getElementsByTagName("Placemark").getLength());
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", "#" + PICTOGRAM1_PNG));
         assertTrue(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", pictogram2StyleUrl));
-
         assertFalse(XmlTestUtils.containsTagWithChild(document, "Placemark", "styleUrl", photoStyleUrl));
     }
 
