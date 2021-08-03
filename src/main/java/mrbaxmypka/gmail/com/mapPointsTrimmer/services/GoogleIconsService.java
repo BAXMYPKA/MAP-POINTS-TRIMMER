@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,8 @@ public class GoogleIconsService {
 	
 	/**
 	 * Google Earth has special href to icons it internally redirects to it local image store.
-	 * If the given href starts with {@link #MAPS_GOOGLE_URL} this method will try do download the icon.
+	 * If the given {@link MultipartDto#getDownloadAs()} == {@link DownloadAs#KMZ}
+	 *  and the given href starts with {@link #MAPS_GOOGLE_URL} this method will try do download the icon.
 	 *
 	 * @param href         Href or src to an icon to be evaluated
 	 * @param multipartDto To examine its current icons and images cache {@link MultipartDto#getImagesNamesFromZip()} (if any)

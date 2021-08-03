@@ -17,10 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +32,13 @@ public class FileService {
 	private MessageSource messageSource;
 	
 	final Resource pictogramsResource;
-	
+
+	/**
+	 * All possible images files extensions in lower case.
+	 */
+	@Getter(AccessLevel.PUBLIC)
+	private List<String> imagesExtensions;
+
 	/**
 	 * Collects a list of pictograms names ONLY as '.png' OR '.PNG' files from the 'resources/static/pictograms' directory.
 	 * <p>
@@ -71,6 +74,9 @@ public class FileService {
 		pictogramsResource = resourceLoader.getResource("classpath:static/pictograms");
 		setPictogramNames();
 		setPictogramsNamesPaths();
+		imagesExtensions = new ArrayList<>(5);
+		imagesExtensions.addAll(Arrays.asList(
+				".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".gif", ".raw", ".psd", ".xcf", "cdr"));
 	}
 	
 	

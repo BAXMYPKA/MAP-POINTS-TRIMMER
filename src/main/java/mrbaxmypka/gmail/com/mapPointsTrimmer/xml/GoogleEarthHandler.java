@@ -60,39 +60,6 @@ public class GoogleEarthHandler {
 		}
 		return this.document;
 	}
-	
-	/**
-	 * {@code Puts aLL the <Style/>'s and <StyleMap/>'s Nodes from the Document by their "id" attribute.}
-	 */
-/*
-	private void setStyleObjectsMap() {
-		styleObjectsMap = new HashMap<>();
-		NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
-		NodeList styleNodes = document.getElementsByTagName("Style");
-		for (int i = 0; i < styleMapNodes.getLength(); i++) {
-			Node styleMapNode = styleMapNodes.item(i);
-			styleObjectsMap.put(styleMapNode.getAttributes().getNamedItem("id").getTextContent(), styleMapNode);
-		}
-		for (int i = 0; i < styleNodes.getLength(); i++) {
-			Node styleNode = styleNodes.item(i);
-			if (styleNode.getAttributes() != null && styleNode.getAttributes().getNamedItem("id") != null) {
-				//<Style> can be without "id" as a container for <ListStyle>
-				styleObjectsMap.put(styleNode.getAttributes().getNamedItem("id").getTextContent(), styleNode);
-			}
-		}
-		log.trace("Style objects map's set with the size={}", styleObjectsMap.size());
-	}
-	
-	private void setStyleUrlsFromPlacemarks() {
-		styleUrlsFromPlacemarks =
-				xmlDomUtils.getChildNodesFromParents(document.getElementsByTagName("Placemark"), "styleUrl", false, false
-						, false)
-						.stream()
-						.map(styleUrlNode -> styleUrlNode.getTextContent().substring(1))
-						.collect(Collectors.toList());
-		log.trace("The List<String> of StyleUrls from Placemarks has been set with size={}", styleUrlsFromPlacemarks.size());
-	}
-*/
 
 	private void setPointsIconsSize(MultipartDto multipartDto) {
 		log.info("Setting the icons size...");
@@ -286,82 +253,6 @@ public class GoogleEarthHandler {
 		log.info("<StyleMap>'s have been created for all the <Placemark><styleUrl/></Placemark>. ({} StyleObjects)",
 				kmlUtils.getStyleObjectsMap().size());
 	}
-	
-	/**
-	 * {@code
-	 * <StyleMap id="styleMap1">
-	 * <Pair>
-	 * <key>normal</key>
-	 * <styleUrl>#style1</styleUrl>
-	 * </Pair>
-	 * <Pair>
-	 * <key>highlight</key>
-	 * <styleUrl>#style-1-cloned</styleUrl>
-	 * </Pair>
-	 * </StyleMap>
-	 * <Style id="style1">
-	 * <IconStyle>
-	 * <scale>0.8</scale>
-	 * <Icon>
-	 * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
-	 * </Icon>
-	 * <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
-	 * </IconStyle>
-	 * <LabelStyle>
-	 * <scale>0.7</scale>
-	 * </LabelStyle>
-	 * </Style>
-	 * <Style id="style-1-cloned">
-	 * <IconStyle>
-	 * <scale>0.8</scale>
-	 * <Icon>
-	 * <href>http://maps.google.com/mapfiles/kml/shapes/poi.png</href>
-	 * </Icon>
-	 * <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
-	 * </IconStyle>
-	 * <LabelStyle>
-	 * <scale>0.7</scale>
-	 * </LabelStyle>
-	 * </Style>
-	 * }
-	 */
-/*
-	private Node createStyleMapNode(Node styleNode) {
-		String idAttribute = "styleMapOf:" + styleNode.getAttributes().getNamedItem("id").getTextContent();
-		
-		if (kmlUtils.getStyleObjectsMap().containsKey(idAttribute)) {
-			//Not to create duplicates
-			return kmlUtils.getStyleObjectsMap().get(idAttribute);
-		}
-		Element styleMapNode = document.createElement("StyleMap");
-		styleMapNode.setAttribute("id", idAttribute);
-		
-		Element pairNormalNode = document.createElement("Pair");
-		Element keyNormalNode = document.createElement("key");
-		keyNormalNode.setTextContent("normal");
-		Element styleUrlNormal = document.createElement("styleUrl");
-		styleUrlNormal.setTextContent("#" + styleNode.getAttributes().getNamedItem("id").getTextContent());
-		pairNormalNode.appendChild(keyNormalNode);
-		pairNormalNode.appendChild(styleUrlNormal);
-		styleMapNode.appendChild(pairNormalNode);
-		
-		Node highlightStyleNode = createHighlightStyleNode(styleNode);
-		
-		Element pairHighlightNode = document.createElement("Pair");
-		Element keyHighlightNode = document.createElement("key");
-		keyHighlightNode.setTextContent("highlight");
-		Element styleUrlHighlightNode = document.createElement("styleUrl");
-		styleUrlHighlightNode.setTextContent("#" + highlightStyleNode.getAttributes().getNamedItem("id").getTextContent());
-		pairHighlightNode.appendChild(keyHighlightNode);
-		pairHighlightNode.appendChild(styleUrlHighlightNode);
-		styleMapNode.appendChild(pairHighlightNode);
-		
-		kmlUtils.insertIntoDocument(highlightStyleNode);
-		kmlUtils.insertIntoDocument(styleMapNode);
-		
-		return styleMapNode;
-	}
-*/
 
 	private Node createHighlightStyleNode(Node styleNode) {
 		Element styleHighlightNode = (Element) styleNode.cloneNode(true);
@@ -443,35 +334,6 @@ public class GoogleEarthHandler {
 		}
 		log.info("All the points text dynamic color has been set.");
 	}
-	
-	/**
-	 * {@literal
-	 * A Kml Document must contain a single header as a <Document/> Node.
-	 * The new created <StyleMap/>'s have to be inserted either before elder ones or the a first child of the
-	 * <Document/>
-	 * }
-	 *
-	 * @return A given "styleMapNode" parameter as the inserted into Document one.
-	 */
-/*
-	private Node insertIntoDocumentNode(Node styleMapNode) {
-		Node documentNode = document.getElementsByTagName("Document").item(0);
-		Node insertBeforeNode = null;
-		//<Document/>
-		NodeList childNodes = documentNode.getChildNodes();
-		for (int i = 0; i < childNodes.getLength(); i++) {
-			Node childNode = childNodes.item(i);
-			if (childNode.getNodeName() != null &&
-					(childNode.getNodeName().equals("Style") || childNode.getNodeName().equals("StyleMap"))) {
-				insertBeforeNode = childNode;
-				break;
-			}
-		}
-		insertBeforeNode = insertBeforeNode != null ? insertBeforeNode : childNodes.item(0).getFirstChild();
-		documentNode.insertBefore(styleMapNode, insertBeforeNode);
-		return styleMapNode;
-	}
-*/
 
 	/**
 	 * Converts standard HEX color from HTML User input into KML color standard.

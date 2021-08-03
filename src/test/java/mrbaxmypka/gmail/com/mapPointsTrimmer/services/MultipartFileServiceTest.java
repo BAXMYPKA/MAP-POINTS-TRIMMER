@@ -78,6 +78,7 @@ class MultipartFileServiceTest {
 		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
 		
 		mockFileService = Mockito.mock(FileService.class);
+		Mockito.when(mockFileService.getFileName(Mockito.anyString())).thenCallRealMethod();
 		
 		multipartFileService = new MultipartFileService(mockKmlHandler, mockFileService, mockMessageSource);
 		
@@ -464,6 +465,8 @@ class MultipartFileServiceTest {
 		Mockito.when(fileService.getPictogramsNamesPaths()).thenReturn(PICTOGRAMS_NAMES_PATHS);
 		Mockito.when(fileService.getPath(Mockito.anyString())).thenCallRealMethod();
 		Mockito.when(fileService.getFileName(Mockito.anyString())).thenCallRealMethod();
+		Mockito.when(fileService.getImagesExtensions()).thenReturn(Arrays.asList(
+				".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".gif", ".raw", ".psd", ".xcf", "cdr"));
 		
 		multipartFileService = new MultipartFileService(
 			  new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),

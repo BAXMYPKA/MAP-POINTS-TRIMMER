@@ -82,12 +82,16 @@ public class MultipartFileService {
     }
 
     /**
+     * 1) Looks through all the .zip(.kmz)
+     * 2) Searches for .xml (.kml) file inside the given .zip (.kml) to return it in the end
+     * 3) Adds all found images files to the instant cache in {@link MultipartDto#getImagesNamesFromZip()}
+     *
      * @param multipartDto     Which contains .gpz, .kmz or any other ZIP archives
      * @param xmlFileExtension .kml, .gpx or any possible extension of the file to be extracted from the given ZIP
      *                         archive as it must be a single one inside.
      * @param locale           To send a localized error messages.
      * @return {@link InputStream} from the file with the given file extension (.kml as usual).
-     * @throws IOException
+     * @throws IOException If something wrong with the given .zip file
      */
     private InputStream getXmlFromZip(MultipartDto multipartDto, DownloadAs xmlFileExtension, Locale locale)
             throws IOException {
@@ -105,7 +109,8 @@ public class MultipartFileService {
                     buffer.writeBytes(zis.readAllBytes());
                     log.info("File '{}' has been extracted from zip and will be returned as InputStream", xmlFileName);
                 } else {
-                    multipartDto.getImagesNamesFromZip().add(fileService.getFileName(zipEntry.getName()));
+                    addImageNameFromZip(zipEntry, multipartDto);
+//                    multipartDto.getImagesNamesFromZip().add(fileService.getFileName(zipEntry.getName()));
                 }
             }
         }
@@ -114,6 +119,15 @@ public class MultipartFileService {
         } else {
             throw new IllegalArgumentException(messageSource.getMessage("exception.noXmlInZipFound",
                     new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, locale));
+        }
+    }
+
+    private void addImageNameFromZip(ZipEntry zipEntry, MultipartDto multipartDto) {
+        String filename = fileService.getFileName(zipEntry.getName());
+        if (!filename.contains(".")) return; //The filename doesn't contain an extension
+        String extension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
+        if (fileService.getImagesExtensions().contains(extension)) {
+            multipartDto.getImagesNamesFromZip().add(filename);
         }
     }
 
@@ -147,17 +161,6 @@ public class MultipartFileService {
             //Create a new .kmz file (where we have to write downloaded Google icons if any)
             createNewZip(zos, processedXml, multipartDto);
         }
-/*
-        //Write downloaded icons if there are
-        String imagesFolderName = DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
-        for (Map.Entry<String, byte[]> iconEntry : multipartDto.getGoogleIconsToBeZipped().entrySet()) {
-            ZipEntry zipEntry = new ZipEntry(imagesFolderName + iconEntry.getKey());
-            zos.putNextEntry(zipEntry);
-            zos.write(iconEntry.getValue());
-            zos.closeEntry();
-        }
-        log.info("{} downloaded icons have been added to the resulting zip", multipartDto.getGoogleIconsToBeZipped().size());
-*/
         writeDownloadedGoogleIcons(zos, multipartDto);
         writeLocusPictogram(zos, multipartDto);
         zos.close();

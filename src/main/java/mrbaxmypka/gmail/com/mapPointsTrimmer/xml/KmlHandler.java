@@ -136,4 +136,19 @@ public class KmlHandler extends XmlHandler {
 		log.trace("CDATA from the <description> will be return as the prettyPrinted one");
 		return processedHtmlCdata;
 	}
+
+	/**
+	 * By just looking through the .xml(.kml) as a {@link String} adds files from the {@link MultipartDto#getImagesNamesFromZip()}
+	 *  into the {@link MultipartDto#getFilesToBeExcluded()} if a given String doesn't contain it.
+	 * Removes
+	 * @param kml
+	 * @param multipartDto
+	 */
+	private void removeUnusedFiles(String kml, MultipartDto multipartDto) {
+		multipartDto.getImagesNamesFromZip().forEach(imageName -> {
+			if (!kml.contains(imageName)) {
+				multipartDto.getFilesToBeExcluded().add(imageName);
+			}
+		});
+	}
 }

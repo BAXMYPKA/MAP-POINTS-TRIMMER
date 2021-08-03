@@ -90,7 +90,27 @@ public abstract class XmlHandler {
 		log.info("Xml Document has been extracted and normalized.");
 		return document;
 	}
-	
+
+	/**
+	 * Quick and simple transformation of a given {@link Document} to a {@link String} without any setting, as it.
+	 * @param document
+	 * @return A raw {@link String} without any optimizations, settings, crearFixing etc.
+	 * @throws TransformerException
+	 */
+	protected String getAsString(Document document) throws TransformerException {
+		log.info("Getting the quick document to be transformed and written as String...");
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		DOMSource domSource = new DOMSource(document);
+		Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		StringWriter stringWriter = new StringWriter();
+		Result result = new StreamResult(stringWriter);
+		transformer.transform(domSource, result);
+		String xmlResult = stringWriter.toString();
+		log.info("The resulting XML String has been written into memory.");
+		return xmlResult;
+	}
+
 	/**
 	 * @param document    {@link Document} to be transformed into String.
 	 * @param prettyPrint To format the resulting xml String with indents.

@@ -8,6 +8,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -29,8 +32,15 @@ public class ShutdownController extends AbstractController{
 	private MultipartFileService multipartFileService;
 	@Autowired
 	private FileService fileService;
-	
-	@GetMapping(path = "/shutdown")
+
+	/**
+	 * {@link RequestMethod#GET} receives a request from the Shutdown button.
+	 * {@link RequestMethod#POST} receives a Beacon POST request in 'beforeunload' from a browser.
+	 * @param redirectAttributes
+	 * @param locale
+	 */
+	@RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, path = "/shutdown")
+//	@GetMapping(path = "/shutdown")
 	public String shutdownApp(RedirectAttributes redirectAttributes, Locale locale) {
 		//To defer the shitting down a bit to be able to return the main page
 		Thread thread = new Thread(() -> {
