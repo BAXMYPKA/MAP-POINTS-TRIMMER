@@ -1,8 +1,10 @@
 (function () {
 
+/*
 		window.addEventListener("beforeunload", function (event) {
 			navigator.sendBeacon(serverAddress.concat("/shutdown"));
 		});
+*/
 
 		document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
 			ev.preventDefault();

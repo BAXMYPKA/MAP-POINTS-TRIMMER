@@ -36,7 +36,7 @@
         setInterval(function () {
             document.getElementById("pictogramValueTrace").value =
                 document.querySelector("input[name='pictogram']:checked").value;
-        }, 2000);
+        }, 1500);
 
         /**
          *
@@ -59,9 +59,12 @@
 
         window.onload = setLoggingLevel("WARN");
 
-        window.addEventListener("beforeunload", function (event) {
-            navigator.sendBeacon(serverAddress.concat("/shutdown"));
+/*
+        window.addEventListener('beforeunload', function (event) {
+            //May not work
+            navigator.sendBeacon(serverAddress.concat('/shutdown'));
         });
+*/
 
         document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
             ev.preventDefault();

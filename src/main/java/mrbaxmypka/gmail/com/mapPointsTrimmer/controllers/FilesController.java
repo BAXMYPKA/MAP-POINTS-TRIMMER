@@ -46,12 +46,15 @@ public class FilesController extends AbstractController {
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
 		
 		log.info( "{} file has been received as: {}.", MultipartDto.class.getSimpleName(), file);
-		
+
+		setIsFileInProcess(true);
+
 		Path tempFile = multipartFileService.processMultipartDto(file, locale);
 		log.info("Temp file={}", tempFile);
 		FileSystemResource resource = new FileSystemResource(tempFile);
-//		return ResponseEntity.ok()
-//			.header("Content-Disposition", "attachment; filename=\"" + tempFile.getFileName().toString() +"\"").body(resource);
+
+		setIsFileInProcess(false);
+
 		return ResponseEntity.ok()
 			  .header("Content-Disposition", "attachment; filename=\"" + getAsciiEncodedFilename(tempFile) + "\"; filename*=UTF-8''" + getAsciiEncodedFilename(tempFile))
 			  .body(resource);

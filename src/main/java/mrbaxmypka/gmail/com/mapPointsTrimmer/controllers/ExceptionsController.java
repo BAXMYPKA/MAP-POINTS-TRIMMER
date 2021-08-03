@@ -32,7 +32,9 @@ public class ExceptionsController extends AbstractController {
 	private MultipartFileService multipartFileService;
 	@Autowired
 	private FileService fileService;
-	
+
+	//TODO: ALL the following methods HAVE TO set "isFileInProcess" to FALSE
+
 	/**
 	 * @param npe {@link NullPointerException} from Service level
 	 * @return HttpStatus 428
@@ -113,6 +115,7 @@ public class ExceptionsController extends AbstractController {
 	}
 	
 	/**
+	 * 0) Sets the {@link #setIsFileInProcess(boolean)} to 'false' for continue counting of keep-alive beacons.
 	 * 1) Deletes the temporary file if it is exists in the temp directory
 	 * 1.1) If {@link MapPointsTrimmerApplication#debugModeIsOn()} = true
 	 * returns {@link ModelAndView} with forwarding to "/error" page with the localized message for a User
@@ -127,6 +130,7 @@ public class ExceptionsController extends AbstractController {
 	 * @param locale To send a possible localized message to the end User from this method.
 	 */
 	ModelAndView returnPageWithError(HttpStatus httpStatus, String localizedErrorMessage, Throwable throwable, Locale locale) {
+		setIsFileInProcess(false);
 		log.error(localizedErrorMessage, throwable);
 		multipartFileService.deleteTempFile();
 		ModelAndView mav = new ModelAndView();

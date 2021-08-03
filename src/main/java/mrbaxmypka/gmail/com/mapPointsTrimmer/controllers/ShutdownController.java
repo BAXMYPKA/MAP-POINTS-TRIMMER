@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class ShutdownController extends AbstractController{
 	private MultipartFileService multipartFileService;
 	@Autowired
 	private FileService fileService;
+	@Autowired
+	private MapPointsTrimmerApplication mapPointsTrimmerApplication;
 
 	/**
 	 * {@link RequestMethod#GET} receives a request from the Shutdown button.
@@ -42,6 +45,7 @@ public class ShutdownController extends AbstractController{
 	@RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, path = "/shutdown")
 //	@GetMapping(path = "/shutdown")
 	public String shutdownApp(RedirectAttributes redirectAttributes, Locale locale) {
+/*
 		//To defer the shitting down a bit to be able to return the main page
 		Thread thread = new Thread(() -> {
 			try {
@@ -55,7 +59,9 @@ public class ShutdownController extends AbstractController{
 			}
 		});
 		thread.start();
-		
+*/
+		mapPointsTrimmerApplication.shutDownApp();
+
 		String shutdownMessage = messageSource.getMessage("userMessage.shutdownSuccess", null, locale);
 		redirectAttributes.addFlashAttribute("userMessage", shutdownMessage);
 		redirectAttributes.addFlashAttribute("shutdownBtnClass", SHUTDOWN_BTN_CLASS);
