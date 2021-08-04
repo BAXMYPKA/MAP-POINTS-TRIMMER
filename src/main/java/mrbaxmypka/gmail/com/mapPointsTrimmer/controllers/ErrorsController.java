@@ -11,7 +11,6 @@ public class ErrorsController extends AbstractController {
 	
 	@GetMapping(path = "/error")
 	public String getErrorPage(Model model, Locale locale) {
-		setIsFileInProcess(false);
 		return "error";
 	}
 }

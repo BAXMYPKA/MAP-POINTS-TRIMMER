@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +18,12 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.Locale;
 
 @Slf4j
 @RestController
 public class FilesController extends AbstractController {
-	
-	@Autowired
-	private MessageSource messageSource;
 	
 	@Autowired
 	private MultipartFileService multipartFileService;
@@ -44,17 +39,10 @@ public class FilesController extends AbstractController {
 	public ResponseEntity<FileSystemResource> postKml(
 		@Valid @ModelAttribute MultipartDto file, Locale locale)
 		throws IOException, SAXException, ParserConfigurationException, TransformerException {
-		
 		log.info( "{} file has been received as: {}.", MultipartDto.class.getSimpleName(), file);
-
-		setIsFileInProcess(true);
-
 		Path tempFile = multipartFileService.processMultipartDto(file, locale);
 		log.info("Temp file={}", tempFile);
 		FileSystemResource resource = new FileSystemResource(tempFile);
-
-		setIsFileInProcess(false);
-
 		return ResponseEntity.ok()
 			  .header("Content-Disposition", "attachment; filename=\"" + getAsciiEncodedFilename(tempFile) + "\"; filename*=UTF-8''" + getAsciiEncodedFilename(tempFile))
 			  .body(resource);

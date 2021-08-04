@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
 import org.slf4j.LoggerFactory;
@@ -12,14 +13,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootApplication
+@Slf4j
 public class MapPointsTrimmerApplication {
 
 	@Autowired
 	private MultipartFileService multipartFileService;
-
 	@Autowired
 	private FileService fileService;
-
 	@Autowired
 	private WebApplicationContext applicationContext;
 
@@ -41,13 +41,16 @@ public class MapPointsTrimmerApplication {
 		}
 	}
 
+	/**
+	 * Waits for 3sec then shutting down the full application.
+	 */
 	public void shutDownApp() {
 		//To defer the shitting down a bit to be able to return the main page
 		Thread thread = new Thread(() -> {
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
-				System.out.println(e.getMessage());
+				log.error(e.getMessage(), e);
 			} finally {
 				multipartFileService.deleteTempFile();
 				fileService.deleteLogFile();
@@ -55,6 +58,5 @@ public class MapPointsTrimmerApplication {
 			}
 		});
 		thread.start();
-
 	}
 }
