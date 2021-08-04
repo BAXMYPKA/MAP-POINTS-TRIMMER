@@ -38,33 +38,37 @@
                 document.querySelector("input[name='pictogram']:checked").value;
         }, 1500);
 
+        setInterval(function () {
+            navigator.sendBeacon(serverAddress.concat("/beacon"), null);
+        }, 5000);
+
         /**
          *
          * @param level TRACE, DEBUG, INFO, ERROR, WARN
          */
         let setLoggingLevel = function (level) {
-                let logLevel = {
-                    "configuredLevel": level
-                }
-                if (typeof serverAddress !== 'undefined' && serverAddress) {
-                    fetch(serverAddress.concat("/actuator/loggers/mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication"), {
-                        method: "POST",
-                        body: JSON.stringify(logLevel),
-                        headers: {
-                            "Content-Type": "application/json;charset=utf-8"
-                        }
-                    });
-                }
-            };
+            let logLevel = {
+                "configuredLevel": level
+            }
+            if (typeof serverAddress !== 'undefined' && serverAddress) {
+                fetch(serverAddress.concat("/actuator/loggers/mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication"), {
+                    method: "POST",
+                    body: JSON.stringify(logLevel),
+                    headers: {
+                        "Content-Type": "application/json;charset=utf-8"
+                    }
+                });
+            }
+        };
 
         window.onload = setLoggingLevel("WARN");
 
-/*
-        window.addEventListener('beforeunload', function (event) {
-            //May not work
-            navigator.sendBeacon(serverAddress.concat('/shutdown'));
-        });
-*/
+        /*
+                window.addEventListener('beforeunload', function (event) {
+                    //May not work
+                    navigator.sendBeacon(serverAddress.concat('/shutdown'));
+                });
+        */
 
         document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
             ev.preventDefault();
