@@ -130,7 +130,7 @@ public class ExceptionsController extends AbstractController {
      */
     ModelAndView returnPageWithError(HttpStatus httpStatus, String localizedErrorMessage, Throwable throwable, Locale locale) {
         log.error(localizedErrorMessage, throwable);
-        multipartFileService.deleteTempFile();
+        multipartFileService.deleteTempFiles();
         ModelAndView mav = new ModelAndView();
         mav.setStatus(httpStatus);
         mav.addObject("userMessage", localizedErrorMessage);

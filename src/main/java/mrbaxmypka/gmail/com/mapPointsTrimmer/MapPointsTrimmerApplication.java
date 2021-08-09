@@ -52,7 +52,7 @@ public class MapPointsTrimmerApplication {
 			} catch (InterruptedException e) {
 				log.error(e.getMessage(), e);
 			} finally {
-				multipartFileService.deleteTempFile();
+				multipartFileService.deleteTempFiles();
 				fileService.deleteLogFile();
 				SpringApplication.exit(applicationContext, () -> 666);
 			}

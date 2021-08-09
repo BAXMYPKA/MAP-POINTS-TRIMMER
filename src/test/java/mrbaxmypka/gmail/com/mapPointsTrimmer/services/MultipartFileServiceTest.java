@@ -122,7 +122,7 @@ class MultipartFileServiceTest {
 	/**
 	 * In reality a temporary file has to be deleted by
 	 * {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.ShutdownController#shutdownApp(RedirectAttributes, Locale)}
-	 * when called. That controller obtains the {@link Path} by {@link MultipartFileService#getTempFile()} and deletes it
+	 * when called. That controller obtains the {@link Path} by {@link MultipartFileService#getTempFiles()} ()} and deletes it
 	 * in same manner.
 	 */
 	@Test
@@ -134,7 +134,7 @@ class MultipartFileServiceTest {
 		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
 		
 		//THEN
-		assertEquals(tmpFile, multipartFileService.getTempFile());
+		assertEquals(tmpFile, multipartFileService.getTempFiles().entrySet().iterator().next().getValue().getTempFile());
 		assertTrue(Files.isReadable(tmpFile));
 		
 		Files.deleteIfExists(tmpFile);
