@@ -15,10 +15,7 @@ public class BeaconController extends AbstractController {
 	@PostMapping(path = "/beacon")
 	@ResponseBody
 	public void postBeacon() {
-//		log.info("A keep-alive beacon from a User's browser has been received.");
-		System.out.println("A keep-alive beacon from a User's browser has been received.");
-		
-		setBeaconsCount(1);
+		log.trace("A keep-alive beacon from a User's browser has been received.");
+		setBeaconsCount(0);
 	}
-	
 }

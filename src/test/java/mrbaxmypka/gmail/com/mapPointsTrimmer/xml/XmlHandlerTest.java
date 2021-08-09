@@ -53,7 +53,7 @@ class XmlHandlerTest {
 	
 	@Test
 	public void kml_header_Should_Be_Added_With_Lc_Locusmap_Namespace_Prefix_If_Contain_Lc_Attachments_Without_Namespace_In_ExtendedData_And_Attachment()
-			throws IOException, ParserConfigurationException, SAXException, TransformerException {
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
 		//GIVEN kml with <ExtendedData> without namespace BUT with <lc:attachment>
 		String locusKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 				"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +

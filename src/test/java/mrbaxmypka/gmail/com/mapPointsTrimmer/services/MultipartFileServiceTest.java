@@ -63,7 +63,7 @@ class MultipartFileServiceTest {
 	
 	@BeforeEach
 	public void beforeEach() throws ParserConfigurationException, TransformerException, SAXException,
-		  IOException {
+			IOException, InterruptedException {
 		mockMessageSource = Mockito.mock(MessageSource.class);
 		Mockito.when(mockMessageSource.getMessage("exception.nullFilename", null, null))
 			  .thenReturn("Filename cannot be null!");
@@ -127,7 +127,7 @@ class MultipartFileServiceTest {
 	 */
 	@Test
 	public void kml_File_Should_Be_Saved_Temporarily_then_Deleted()
-		  throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException, InterruptedException {
 		// GIVEN
 		
 		//WHEN
@@ -145,7 +145,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kml_File_Should_Be_Returned_Same()
-		  throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException, ClassNotFoundException, InterruptedException {
 		// GIVEN
 		
 		//WHEN
@@ -160,7 +160,7 @@ class MultipartFileServiceTest {
 	 */
 	@Test
 	public void downloadAsKml_From_Kmz_File_Should_Be_Extracted_And_Saved_as_Kml()
-		  throws IOException, ParserConfigurationException, TransformerException, SAXException {
+			throws IOException, ParserConfigurationException, TransformerException, SAXException, InterruptedException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
 			  "TestKmz.kmz",
@@ -189,7 +189,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void downloadAsKmz_From_Kml_File_Should_Be_Saved_as_Kmz_With_Original_Filename()
-		  throws IOException, ParserConfigurationException, TransformerException, SAXException {
+			throws IOException, ParserConfigurationException, TransformerException, SAXException, InterruptedException {
 		//GIVEN If while uploading KML set "downloadAs KMZ"
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
 		
@@ -211,7 +211,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kmz_File_Should_Be_Saved_Temporarily_With_The_Filename_From_Multipart_Then_Deleted()
-		  throws IOException, ParserConfigurationException, TransformerException, SAXException {
+			throws IOException, ParserConfigurationException, TransformerException, SAXException, InterruptedException {
 		//GIVEN
 		String initialMultipartFileName = "TestKmz.kmz";
 		multipartFile = new MockMultipartFile(
@@ -236,7 +236,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kml_In_Kmz_MultipartFile_Should_Be_Returned_Same()
-		  throws IOException, TransformerException, ParserConfigurationException, SAXException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException, InterruptedException {
 		//GIVEN download as "KMZ"
 		multipartFile = new MockMultipartFile(
 			  "MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(testKmz));
@@ -263,7 +263,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kmz_MultipartFile_Should_Contain_All_The_Initial_Files()
-		  throws IOException, TransformerException, ParserConfigurationException, SAXException {
+			throws IOException, TransformerException, ParserConfigurationException, SAXException, InterruptedException {
 		//GIVEN when "download as KMZ" is selected all the initial files (images) from "LocusTestKmz.kmz"
 		// should be preserved
 		multipartFile = new MockMultipartFile(
@@ -312,7 +312,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void new_Kmz_With_Icons_Should_Be_Created_For_Downloaded_Icons_From_Kml()
-		  throws IOException, TransformerException, SAXException, ParserConfigurationException {
+			throws IOException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
 		//GIVEN
 		multipartDto = new MultipartDto(new MockMultipartFile(
 			  "Test.kml", "Test.kml", null, testKml.getBytes(StandardCharsets.UTF_8)));
@@ -351,7 +351,7 @@ class MultipartFileServiceTest {
 	 */
 	@Test
 	public void kml_With_Additional_GoogleMaps_Icons_Should_Be_Downloaded_And_Added_Into_Kmz()
-		  throws ParserConfigurationException, TransformerException, SAXException, IOException {
+			throws ParserConfigurationException, TransformerException, SAXException, IOException, InterruptedException {
 		//GIVEN .kml with Google Maps icons hrefs
 		String kmlWithIcons = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -415,7 +415,7 @@ class MultipartFileServiceTest {
 	 */
 	@Test
 	public void kmz_With_Additional_GoogleMaps_Icons_Should_Be_Downloaded_And_Added_Into_Kmz()
-		  throws ParserConfigurationException, TransformerException, SAXException, IOException {
+			throws ParserConfigurationException, TransformerException, SAXException, IOException, InterruptedException {
 		//GIVEN .kml with Google Maps icons hrefs
 		multipartDto = new MultipartDto(new MockMultipartFile(
 			  "Test.kmz", "Test.kmz", null, Files.newInputStream(testKmz)));
@@ -451,7 +451,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kmz_With_Locus_Photo_Icons_Should_Exclude_Them_From_Kmz_When_Replace_Locus_Photo_Icons()
-		  throws ParserConfigurationException, TransformerException, SAXException, IOException {
+			throws ParserConfigurationException, TransformerException, SAXException, IOException, InterruptedException {
 		multipartDto = new MultipartDto(new MockMultipartFile(
 			  "TestKmzLocusPhotoIcons.kmz", "TestKmzLocusPhotoIcons.kmz", null, Files.newInputStream(testKmzLocusPhotoIcons)));
 		multipartDto.setDownloadAs(DownloadAs.KMZ);
@@ -497,7 +497,7 @@ class MultipartFileServiceTest {
 	
 	@Test
 	public void kmz_With_Replaced_Locus_Icons_Should_Include_New_Desired_Pictogram_Into_Kmz_From_Server_Pictograms_Directory()
-		  throws ParserConfigurationException, TransformerException, SAXException, IOException {
+			throws ParserConfigurationException, TransformerException, SAXException, IOException, InterruptedException {
 		//GIVEN A .kmz without the 'Pictogram2.png' file
 		multipartDto = new MultipartDto(new MockMultipartFile(
 			  "TestKmzLocusPhotoIcons.kmz", "TestKmzLocusPhotoIcons.kmz", null, Files.newInputStream(testKmzLocusPhotoIcons)));

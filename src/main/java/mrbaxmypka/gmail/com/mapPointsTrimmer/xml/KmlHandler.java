@@ -36,7 +36,7 @@ public class KmlHandler extends XmlHandler {
 	 * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
 	 */
 	public String processXml(InputStream kmlInputStream, MultipartDto multipartDto)
-			throws IOException, ParserConfigurationException, SAXException, TransformerException {
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
 		log.info("The given KML is being processed...");
 
 		document = getDocument(kmlInputStream);

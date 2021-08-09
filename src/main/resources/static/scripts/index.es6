@@ -12,35 +12,21 @@
             });
         }
 
-        let verifyAdminCredentials = function (login, password) {
-            if ((!login || login.length === 0) || (!login || login.length === 0)) return;
-            let adminCredentials = {
-                "login": login,
-                "password": password
-            }
-            fetch(serverAddress.concat("/admin"), {
-                method: "POST",
-                body: JSON.stringify(adminCredentials),
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8"
-                }
-            }).then(function (response) {
-                if (!response.ok) {
-                    userMessage.textContent = "Bad admin credentials";
-                } else {
-                    document.getElemenById("fieldSetLocusAdmin").style.display = 'block';
-                }
-            });
-        };
-
         setInterval(function () {
             document.getElementById("pictogramValueTrace").value =
                 document.querySelector("input[name='pictogram']:checked").value;
         }, 1500);
 
         setInterval(function () {
+            console.log("beacon");
             navigator.sendBeacon(serverAddress.concat("/beacon"), null);
         }, 5000);
+
+        //This will fire even on refreshing, closing a tab or a browser
+        window.onbeforeunload = function () {
+            navigator.sendBeacon(serverAddress.concat("/stop"), null);
+            return null;
+        };
 
         /**
          *
@@ -69,6 +55,27 @@
                     navigator.sendBeacon(serverAddress.concat('/shutdown'));
                 });
         */
+
+        let verifyAdminCredentials = function (login, password) {
+            if ((!login || login.length === 0) || (!login || login.length === 0)) return;
+            let adminCredentials = {
+                "login": login,
+                "password": password
+            }
+            fetch(serverAddress.concat("/admin"), {
+                method: "POST",
+                body: JSON.stringify(adminCredentials),
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8"
+                }
+            }).then(function (response) {
+                if (!response.ok) {
+                    userMessage.textContent = "Bad admin credentials";
+                } else {
+                    document.getElemenById("fieldSetLocusAdmin").style.display = 'block';
+                }
+            });
+        };
 
         document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
             ev.preventDefault();

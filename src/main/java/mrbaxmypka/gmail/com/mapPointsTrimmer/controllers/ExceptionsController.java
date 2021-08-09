@@ -75,7 +75,7 @@ public class ExceptionsController extends AbstractController {
 	 */
 	@ExceptionHandler(InterruptedException.class)
 	public ModelAndView interruptedException(InterruptedException ie, Locale locale) {
-		String shutdownFailureMessage = messageSource.getMessage("exception.shutdownFailure", null, locale);
+		String shutdownFailureMessage = messageSource.getMessage("exception.interruptedException", null, locale);
 		return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, shutdownFailureMessage, ie, locale);
 	}
 	

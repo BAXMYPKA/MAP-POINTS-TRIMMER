@@ -142,7 +142,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body()
-		throws IOException, XMLStreamException, ParserConfigurationException, SAXException, TransformerException, ClassNotFoundException {
+			throws IOException, XMLStreamException, ParserConfigurationException, SAXException, TransformerException, ClassNotFoundException, InterruptedException {
 		//GIVEN
 		String newPath = "C:\\MyPoi\\MyPoiImages";
 		multipartFile = new MockMultipartFile(
@@ -172,7 +172,7 @@ class KmlHandlerTest {
 	@Disabled
 	@Test
 	public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body_Except_Special_GoogleEarth_Web_Links()
-		throws IOException, TransformerException, SAXException, ParserConfigurationException {
+			throws IOException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
 			"TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
@@ -190,7 +190,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded()
-		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, ClassNotFoundException {
+			throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, ClassNotFoundException, InterruptedException {
 		//GIVEN
 		String pathWithWhitespaces = "D:\\My Folder\\My POI";
 		multipartFile = new MockMultipartFile(
@@ -220,7 +220,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void trimXml_Only_Should_Return_Only_Xml_Without_LineBreaks()
-		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
+			throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
 		//GIVEN
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -284,7 +284,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Create_ExtendedData_For_Attachments_With_Src_From_Description()
-		throws IOException, ParserConfigurationException, SAXException, TransformerException {
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
 		//GIVEN kml without <ExtendedData>
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -338,7 +338,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Just_Replace_Existing_Src_From_Description()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+			throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException, InterruptedException {
 		//GIVEN with existing <ExtendedData>
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -390,7 +390,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Add_More_Attachments_Src_From_Description()
-		throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException {
+			throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException, InterruptedException {
 		//GIVEN with existing <ExtendedData> and additional images in description
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -457,7 +457,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_With_2_Placemarks_Should_Add_More_Attachments_Src_From_Description_To_Each_Without_Dublicates()
-		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
+			throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
 		//GIVEN For 2 Placemarks in a row with existing <ExtendedData> and additional images in description
 		String locus = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -527,7 +527,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Contain_Only_Relative_And_Absolute_Type_Of_Href_When_PathTypes_Undefined()
-		throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException {
+			throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
 		//GIVEN with existing <ExtendedData> and additional images in description with various types of path
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +

@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SessionAttributes(names = {"maxFileSizeMb", "serverAddress"})
 public abstract class AbstractController {
 	
-	private final AtomicInteger beaconsCount = new AtomicInteger(0);
+	private final static AtomicInteger beaconsCount = new AtomicInteger(0);
 	@Value("${trimmer.maxFileSizeMb}")
 	private Integer maxFileSizeMb;
 	@Value("${trimmer.serverAddress}")
@@ -56,32 +56,23 @@ public abstract class AbstractController {
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
-				log.trace("Timer count...");
-				if (getBeaconsCount() <= 4) {
-					log.trace("Timer count = {}", getBeaconsCount());
-					System.out.println("Timer count = " + getBeaconsCount());
+				if (getBeaconsCount() <= 3) {
 					setBeaconsCount(getBeaconsCount() + 1);
-//					setBeaconsCount(getBeaconsCount() + 1);
-//                    beaconsCount.set(beaconsCount.incrementAndGet());
 				} else {
 					log.trace("Timer count = {} so the App is being shut down...", getBeaconsCount());
 					mapPointsTrimmerApplication.shutDownApp();
 				}
 			}
 		};
-		new Timer().scheduleAtFixedRate(timerTask, 1000, 15000);
+		new Timer().scheduleAtFixedRate(timerTask, 1000, 10000);
 	}
 	
 	protected int getBeaconsCount() {
-		return this.beaconsCount.get();
+		return beaconsCount.get();
 	}
 	
-//	protected void inc() {
-//		beaconsCount.incrementAndGet();
-//	}
-	
-	protected void setBeaconsCount(int beaconsCount) {
-		System.out.println("BeaconsCount will be set to " + beaconsCount);
-		this.beaconsCount.getAndSet(beaconsCount);
+	protected void setBeaconsCount(int newBeaconCountVal) {
+		log.trace("BeaconsCount will be set to {}", newBeaconCountVal);
+		beaconsCount.set(newBeaconCountVal);
 	}
 }

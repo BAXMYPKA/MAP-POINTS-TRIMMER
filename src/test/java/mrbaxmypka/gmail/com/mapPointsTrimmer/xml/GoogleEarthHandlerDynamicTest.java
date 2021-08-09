@@ -137,7 +137,7 @@ public class GoogleEarthHandlerDynamicTest {
 	
 	@Test
 	public void with_Dynamic_Parameters_Should_Create_StyleMaps_And_Replace_StyleUrls_In_Placemarks()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN The googleKml with only 2 <Style>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -197,7 +197,7 @@ public class GoogleEarthHandlerDynamicTest {
 	
 	@Test
 	public void with_Dynamic_Parameters_Should_Replace_Styles_With_StyleMaps_In_StyleUrls_In_Placemarks()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN The googleKml with <Placemark>'s
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -259,7 +259,7 @@ public class GoogleEarthHandlerDynamicTest {
 	
 	@Test
 	public void pointIconSizeDynamic_Should_Update_Only_Highlighted_Styles()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN <Style id="style2"> is the only "highligh" style
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -312,7 +312,7 @@ public class GoogleEarthHandlerDynamicTest {
 	
 	@Test
 	public void pointTextSizeDynamic_Should_Update_Only_Highlighted_Styles()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN <Style id="style2"> is the only "highligh" style
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -373,7 +373,7 @@ public class GoogleEarthHandlerDynamicTest {
 	
 	@Test
 	public void pointTextColorDynamic_Should_Update_Only_Highlighted_Styles()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN <Style id="style2"> is the only "highligh" style
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -434,7 +434,7 @@ public class GoogleEarthHandlerDynamicTest {
 	
 	@Test
 	public void pointTextOpacityDynamic_Should_Update_Only_Highlighted_Styles()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN <Style id="style2"> is the only "highligh" style
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -497,7 +497,7 @@ public class GoogleEarthHandlerDynamicTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 100})
 	public void pointIconOpacityDynamic_Should_Update_Only_Highlighted_Styles(Integer opacity)
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN Only highlighted Style id=style2 contains IconStyle
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -559,7 +559,7 @@ public class GoogleEarthHandlerDynamicTest {
 	
 	@Test
 	public void reference_To_Same_Style_From_Two_Placemarks_Should_Update_Only_Highlighted_Styles()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN <Style id="style1"> is referenced from two <Placemakr/>'s
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\">\n" +
 			"<Document>\n" +
@@ -605,7 +605,7 @@ public class GoogleEarthHandlerDynamicTest {
 	
 	@Test
 	public void reference_To_Same_Style_From_Two_Placemarks_Should_Create_Single_StyleMap()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN <Style id="style1"> is referenced from two <Placemakr/>'s
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\">\n" +
 			"<Document>\n" +
@@ -656,7 +656,7 @@ public class GoogleEarthHandlerDynamicTest {
 	@Disabled
 	@Test
 	public void with_Dynamic_Parameters_Complicated_Test()
-		throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN The googleKml with 2 <StyleMap>'s and 4 <Style>'s
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +

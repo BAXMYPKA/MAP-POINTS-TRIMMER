@@ -54,7 +54,7 @@ public abstract class XmlHandler {
 	 * @return A fully processed xml string.
 	 */
 	public abstract String processXml(InputStream inputStream, MultipartDto multipartDto)
-			throws IOException, ParserConfigurationException, SAXException, TransformerException;
+            throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException;
 	
 	protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
 		log.info("Getting 'document' from InputStream from a MultipartFile...");

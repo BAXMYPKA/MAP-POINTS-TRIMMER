@@ -23,7 +23,7 @@ public class GoogleEarthHandler {
 		this.kmlUtils = kmlUtils;
 	}
 
-	Document processKml(Document document, MultipartDto multipartDto) {
+	Document processKml(Document document, MultipartDto multipartDto) throws InterruptedException {
 		this.document = document;
 		xmlDomUtils = new XmlDomUtils(document);
 		log.info("Document and {} are received", multipartDto);
@@ -31,14 +31,30 @@ public class GoogleEarthHandler {
 		if (multipartDto.getPointIconSize() != null) {
 			setPointsIconsSize(multipartDto);
 		}
+		//TODO: TEST FEATURE
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("The thread has been interrupted here!");
+		}
 		if (multipartDto.getPointIconOpacity() != null) {
 			setPointsIconsOpacity(multipartDto);
+		}
+		//TODO: TEST FEATURE
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("The thread has been interrupted here!");
 		}
 		if (multipartDto.getPointTextSize() != null) {
 			setPointsTextSize(multipartDto);
 		}
+		//TODO: TEST FEATURE
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("The thread has been interrupted here!");
+		}
 		if (multipartDto.getPointTextHexColor() != null) {
 			setPointsTextColor(multipartDto);
+		}
+		//TODO: TEST FEATURE
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("The thread has been interrupted here!");
 		}
 		//If something dynamic is set we create and assign <StyleMap>'s if absent
 		if (multipartDto.getPointIconSizeDynamic() != null ||
@@ -46,17 +62,37 @@ public class GoogleEarthHandler {
 				multipartDto.getPointTextHexColorDynamic() != null) {
 			createStyleMaps();
 		}
+		//TODO: TEST FEATURE
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("The thread has been interrupted here!");
+		}
 		if (multipartDto.getPointIconSizeDynamic() != null) {
 			setPointsIconsSizeDynamic(multipartDto);
+		}
+		//TODO: TEST FEATURE
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("The thread has been interrupted here!");
 		}
 		if (multipartDto.getPointIconOpacityDynamic() != null) {
 			setPointsIconsOpacityDynamic(multipartDto);
 		}
+		//TODO: TEST FEATURE
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("The thread has been interrupted here!");
+		}
 		if (multipartDto.getPointTextSizeDynamic() != null) {
 			setPointsTextSizeDynamic(multipartDto);
 		}
+		//TODO: TEST FEATURE
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("The thread has been interrupted here!");
+		}
 		if (multipartDto.getPointTextHexColorDynamic() != null) {
 			setPointsTextColorDynamic(multipartDto);
+		}
+		//TODO: TEST FEATURE
+		if (Thread.currentThread().isInterrupted()) {
+			throw new InterruptedException("The thread has been interrupted here!");
 		}
 		return this.document;
 	}

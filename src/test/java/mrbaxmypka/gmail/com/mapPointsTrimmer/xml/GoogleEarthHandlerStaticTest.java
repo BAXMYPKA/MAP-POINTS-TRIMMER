@@ -79,7 +79,7 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {12, 57, 111})
 	public void percentage_PointIconSize_Should_Update_Existing_Scales_Into_Existing_IconStyles(int percentageSize)
-		  throws IOException, ParserConfigurationException, SAXException, TransformerException {
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
 		//GIVEN kml with existing <IconStyle><scale/></IconStyle>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
@@ -143,7 +143,7 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {7, 21, 199})
 	public void percentage_PointIconSize_Should_Create_Scales_Into_Existing_IconStyles(int percentageSize)
-		  throws IOException, ParserConfigurationException, SAXException {
+			throws IOException, ParserConfigurationException, SAXException, InterruptedException {
 		//GIVEN with existing <IconStyle>s but without <scale>s into them
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
@@ -199,7 +199,7 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 100})
 	public void pointIconOpacity_Should_Update_Only_Normal_Styles(Integer opacity)
-		  throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN Only Normal Style id=style1 contains IconStyle
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -259,7 +259,7 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {12, 57, 111})
 	public void percentage_PointTextSize_Should_Insert_New_Scales_Into_Existing_LabelStyles(int percentageSize)
-		  throws IOException, ParserConfigurationException, SAXException {
+			throws IOException, ParserConfigurationException, SAXException, InterruptedException {
 		//GIVEN kml with existing <LabelStyle/>s but without <scale>s inside
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
@@ -315,7 +315,7 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 20, 300})
 	public void percentage_PointTextSize_Should_Update_Existing_Scales_Into_Existing_LabelStyles(int percentageSize)
-		  throws IOException, ParserConfigurationException, SAXException {
+			throws IOException, ParserConfigurationException, SAXException, InterruptedException {
 		//GIVEN kml with existing <LabelStyle><scale/></LabelStyle>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
@@ -381,7 +381,7 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 20, 300})
 	public void percentage_PointTextSize_Should_Create_LabelStyles_With_Scales(int percentageSize)
-		  throws IOException, ParserConfigurationException, SAXException {
+			throws IOException, ParserConfigurationException, SAXException, InterruptedException {
 		//GIVEN kml without <LabelStyle>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
@@ -460,7 +460,7 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"#000000", "#ff0000", "#ffffff", "#374b5c"})
 	public void pointTextColors_Should_Create_LabelStyles_With_Colors(String hexColor)
-		  throws IOException, ParserConfigurationException, SAXException {
+			throws IOException, ParserConfigurationException, SAXException, InterruptedException {
 		//GIVEN kml without <LabelStyle/>s and <color/>s in them
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\"><Document>\n" +
@@ -541,7 +541,7 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"#000088", "#ff0000", "#ffffff", "#374b5c"})
 	public void pointTextColors_Should_Update_LabelStyles_With_Colors(String hexColor)
-		  throws IOException, ParserConfigurationException, SAXException {
+			throws IOException, ParserConfigurationException, SAXException, InterruptedException {
 		//GIVEN kml with <LabelStyle/>s with AND without <color/>s in them
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\"><Document>\n" +
 			  "\t<name>FullTestKmzExport01</name>\n" +
@@ -754,7 +754,7 @@ class GoogleEarthHandlerStaticTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"iconSize", "textSize", "textColor"})
 	public void static_Sets_Should_Update_Only_Normal_Style_From_Style_Map(String staticType)
-		  throws IOException, ParserConfigurationException, SAXException, TransformerException {
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
 		//GIVEN <StyleMap>'s and <Style>'s with all the <scale>0.8</scale>
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -884,7 +884,7 @@ class GoogleEarthHandlerStaticTest {
 	
 	@Test
 	public void with_Static_Parameters_Placemarks_StyleUrls_To_Styles_Should_Not_Be_Changed()
-		  throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN just a static multipartDto.setPointTextSize(50);
 		String googleKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -977,7 +977,7 @@ class GoogleEarthHandlerStaticTest {
 	@Disabled
 	@Test
 	public void complicated_Test()
-		  throws IOException, SAXException, ParserConfigurationException, TransformerException {
+			throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
 		//GIVEN just a static multipartDto.setPointTextSize(50);
 		String googleEarthKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			  "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
