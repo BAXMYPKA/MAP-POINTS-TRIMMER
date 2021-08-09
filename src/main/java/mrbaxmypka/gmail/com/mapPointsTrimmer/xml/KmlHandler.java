@@ -23,7 +23,6 @@ public class KmlHandler extends XmlHandler {
 	
 	private XmlDomUtils xmlDomUtils;
 	private KmlUtils kmlUtils;
-	private Document document;
 	private LocusMapHandler locusMapHandler;
 
 	public KmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService) {
@@ -39,8 +38,8 @@ public class KmlHandler extends XmlHandler {
 			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
 		log.info("The given KML is being processed...");
 
-		document = getDocument(kmlInputStream);
-		Element documentRoot = document.getDocumentElement();
+		Document document = getDocument(kmlInputStream);
+//		Element documentRoot = document.getDocumentElement();
 		xmlDomUtils = new XmlDomUtils(document);
 		kmlUtils = new KmlUtils(document, xmlDomUtils);
 		locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
@@ -52,15 +51,16 @@ public class KmlHandler extends XmlHandler {
 		locusMapHandler.processKml(document, multipartDto);
 
 		log.info("Setting the new path to images...");
-		processHref(documentRoot, multipartDto);
+		processHref(document, multipartDto);
 
 		log.info("Descriptions from KML are being processed...");
 		//Processing the further text options regarding to inner CDATA or plain text from <description>s
-		processDescriptionsTexts(documentRoot, multipartDto);
+		processDescriptionsTexts(document, multipartDto);
 		
 		if (multipartDto.isTrimXml()) {
 			log.info("KML is being trimmed...");
-			trimWhitespaces(documentRoot);
+//			trimWhitespaces(documentRoot);
+			trimWhitespaces(document);
 		}
 		log.info("The KML has been processed");
 		return writeTransformedDocument(document, !multipartDto.isTrimXml());
@@ -70,10 +70,11 @@ public class KmlHandler extends XmlHandler {
 	 * Every old href tag contains path to file and a filename. So here we derive an existing filename
 	 * and append it to the new path.
 	 *
-	 * @param documentRoot RootElement with all the child Nodes from Document
+	 * @param document {@link Document} with all the child Nodes
 	 */
-	private void processHref(Element documentRoot, MultipartDto multipartDto) {
-		NodeList hrefs = documentRoot.getElementsByTagName("href");
+	private void processHref(Document document, MultipartDto multipartDto) {
+//		NodeList hrefs = documentRoot.getElementsByTagName("href");
+		NodeList hrefs = document.getElementsByTagName("href");
 		for (int i = 0; i < hrefs.getLength(); i++) {
 			Node node = hrefs.item(i);
 			String currentIconHrefWithFilename = node.getTextContent();
@@ -101,8 +102,9 @@ public class KmlHandler extends XmlHandler {
 	 * The first temporary condition checks {@code '\\s*>\\s*'} regexp as Locus may spread those signs occasionally
 	 * (especially after {@code <ExtendedData> tag}). So
 	 */
-	private void processDescriptionsTexts(Element documentRoot, MultipartDto multipartDto) {
-		NodeList descriptions = documentRoot.getElementsByTagName("description");
+	private void processDescriptionsTexts(Document document, MultipartDto multipartDto) {
+//		NodeList descriptions = documentRoot.getElementsByTagName("description");
+		NodeList descriptions = document.getElementsByTagName("description");
 		for (int i = 0; i < descriptions.getLength(); i++) {
 			
 			Node descriptionNode = descriptions.item(i);

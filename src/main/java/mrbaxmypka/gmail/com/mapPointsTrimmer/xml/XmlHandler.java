@@ -208,9 +208,21 @@ public abstract class XmlHandler {
 			}
 			trimWhitespaces(childNode);
 		}
+//		log.trace("Whitespaces have been trimmed from KML");
+	}
+
+	void trimWhitespaces(Document document) {
+//		NodeList childNodes = document.getChildNodes();
+//		for (int i = 0; i < childNodes.getLength(); i++) {
+//			Node childNode = childNodes.item(i);
+//			if (childNode.getNodeType() == Node.TEXT_NODE) {
+//				childNode.setTextContent(childNode.getTextContent().trim());
+//			}
+			trimWhitespaces(document.getDocumentElement());
+//		}
 		log.trace("Whitespaces have been trimmed from KML");
 	}
-	
+
 	/**
 	 * First checks Locus artifacts as the "&gt;\t" regexp (or {@code '\\s*>\\s*'} within original kml)
 	 * as Locus may spread those signs ">" occasionally (especially after {@code <ExtendedData> tag}).

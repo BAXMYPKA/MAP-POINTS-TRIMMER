@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Locale;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
@@ -29,9 +29,6 @@ public class FilesController extends AbstractController {
 
     @Autowired
     private MultipartFileService multipartFileService;
-
-    private ExecutorService executorService;
-
     private Path tempFile;
 
     /**
@@ -46,7 +43,8 @@ public class FilesController extends AbstractController {
             @Valid @ModelAttribute MultipartDto file, Locale locale)
             throws IOException, SAXException, ParserConfigurationException, TransformerException, ExecutionException, InterruptedException {
         log.info("{} file has been received as: {}.", MultipartDto.class.getSimpleName(), file);
-        tempFile = getPathFromNewThread(file, locale);
+        System.out.println("CONTROLLER THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
+        tempFile = multipartFileService.processMultipartDto(file, locale);
         log.info("Temp file={}", tempFile);
         FileSystemResource resource = new FileSystemResource(tempFile);
         return ResponseEntity.ok()
@@ -62,44 +60,6 @@ public class FilesController extends AbstractController {
     @ResponseBody
     public void postStopBeacon() {
         log.info("A refresh or close tab event has been received to stop the processing!");
-
-        //TODO: to delete the following string
-        System.out.println("\"A refresh or close tab event has been received to stop the processing!\"");
-
-        if (executorService != null) {
-
-            System.out.println("SHUTTING DOWN THE PROCESS");
-
-            executorService.shutdown();
-            multipartFileService.deleteTempFile();
-            log.info("The file processing has being shutting down!");
-            try {
-                if (!executorService.awaitTermination(1000, TimeUnit.MILLISECONDS)) {
-                    log.info("The file processing has shut down!");
-                    executorService.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                log.info("The file processing has been completely shut down!");
-                executorService.shutdownNow();
-            }
-        }
-    }
-
-    private Path getPathFromNewThread(MultipartDto file, Locale locale) throws ExecutionException {
-        int processors = Runtime.getRuntime().availableProcessors();
-        if (processors > 2) {
-            processors = processors - 1;
-        }
-        System.out.println("PROCESSORS = " + processors);
-        Callable<Path> tempCallablePath = () -> multipartFileService.processMultipartDto(file, locale);
-        executorService = Executors.newFixedThreadPool(processors);
-        Future<Path> futureSubmit = executorService.submit(tempCallablePath);
-        try {
-            tempFile = futureSubmit.get();
-        } catch (CancellationException | InterruptedException ce) {
-            log.info("The file processing has been cancelled!", ce);
-        }
-        return tempFile;
     }
 
     private String getAsciiEncodedFilename(Path pathToFile) {

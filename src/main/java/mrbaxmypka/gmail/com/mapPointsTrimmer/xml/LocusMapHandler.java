@@ -35,14 +35,9 @@ public class LocusMapHandler {
         this.htmlHandler = htmlHandler;
     }
 
-    Document processKml(Document document, MultipartDto multipartDto) throws InterruptedException {
+    Document processKml(Document document, MultipartDto multipartDto) {
         this.document = document;
         this.xmlDomUtils = new XmlDomUtils(document);
-
-        //TODO: TEST FEATURE
-        if (Thread.currentThread().isInterrupted()) {
-            throw new InterruptedException("INTERRUPTED");
-        }
 
         Element documentRoot = document.getDocumentElement();
         if (multipartDto.isAsAttachmentInLocus()) {
