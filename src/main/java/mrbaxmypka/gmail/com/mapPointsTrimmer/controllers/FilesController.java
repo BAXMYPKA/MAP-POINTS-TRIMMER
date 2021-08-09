@@ -29,7 +29,6 @@ public class FilesController extends AbstractController {
 
     @Autowired
     private MultipartFileService multipartFileService;
-    private Path tempFile;
 
     /**
      * @param file   Can receive .kml or .kmz files only
@@ -44,7 +43,7 @@ public class FilesController extends AbstractController {
             throws IOException, SAXException, ParserConfigurationException, TransformerException, ExecutionException, InterruptedException {
         log.info("{} file has been received as: {}.", MultipartDto.class.getSimpleName(), file);
         System.out.println("CONTROLLER THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
-        tempFile = multipartFileService.processMultipartDto(file, locale);
+        Path tempFile = multipartFileService.processMultipartDto(file, locale);
         log.info("Temp file={}", tempFile);
         FileSystemResource resource = new FileSystemResource(tempFile);
         return ResponseEntity.ok()
