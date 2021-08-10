@@ -17,10 +17,20 @@
                 document.querySelector("input[name='pictogram']:checked").value;
         }, 1500);
 
-        setInterval(function () {
-            console.log("beacon");
+        let intervalCounter = 0;
+
+        let beaconIntervalId = setInterval(function () {
             navigator.sendBeacon(serverAddress.concat("/beacon"), null);
+            intervalCounter++;
+            checkInterval(beaconIntervalId);
         }, 5000);
+
+        //After 2 hours it will stop sending beacons
+        function checkInterval(beaconInterval) {
+            if (intervalCounter > 2160) {
+                clearInterval(beaconInterval);
+            }
+        }
 
         //This will fire even on refreshing, closing a tab or a browser
         window.onbeforeunload = function () {

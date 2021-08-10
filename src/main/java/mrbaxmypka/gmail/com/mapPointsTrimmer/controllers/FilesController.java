@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.xml.sax.SAXException;
 
 import javax.validation.Valid;
@@ -21,7 +22,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
@@ -40,9 +40,13 @@ public class FilesController extends AbstractController {
             produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<FileSystemResource> postKml(
             @Valid @ModelAttribute MultipartDto file, Locale locale)
-            throws IOException, SAXException, ParserConfigurationException, TransformerException, ExecutionException, InterruptedException {
+            throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
         log.info("{} file has been received as: {}.", MultipartDto.class.getSimpleName(), file);
-        System.out.println("CONTROLLER THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
+
+        //TODO: to delete
+        log.warn("FILES CONTROLLER THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
+        log.warn("FILES SESSIONID = "+ RequestContextHolder.currentRequestAttributes().getSessionId());
+
         Path tempFile = multipartFileService.processMultipartDto(file, locale);
         log.info("Temp file={}", tempFile);
         FileSystemResource resource = new FileSystemResource(tempFile);
@@ -59,6 +63,9 @@ public class FilesController extends AbstractController {
     @ResponseBody
     public void postStopBeacon() {
         log.info("A refresh or close tab event has been received to stop the processing!");
+
+        log.warn("STOP CONTROLLER THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
+
     }
 
     private String getAsciiEncodedFilename(Path pathToFile) {

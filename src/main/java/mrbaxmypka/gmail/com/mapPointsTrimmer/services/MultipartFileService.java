@@ -57,7 +57,8 @@ public class MultipartFileService {
             throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
         log.info("{} has been received. Locale = {}", multipartDto, locale);
 
-        System.out.println("MULTIPARTFILESERVICE THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
+        //TODO: TO DELETE
+        log.warn("MULTIPARTFILESERVICE THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
 
         locale = locale == null ? this.defaultLocale : locale;
         String processedXml;

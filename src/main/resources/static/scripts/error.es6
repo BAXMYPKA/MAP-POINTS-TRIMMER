@@ -1,10 +1,25 @@
 (function () {
 
-/*
-		window.addEventListener("beforeunload", function (event) {
-			navigator.sendBeacon(serverAddress.concat("/shutdown"));
-		});
-*/
+		let intervalCounter = 0;
+
+		let beaconIntervalId = setInterval(function () {
+			navigator.sendBeacon(serverAddress.concat("/beacon"), null);
+			intervalCounter++;
+			checkInterval(beaconIntervalId);
+		}, 5000);
+
+		//After 2 hours it will stop sending beacons
+		function checkInterval(beaconInterval) {
+			if (intervalCounter > 2160) {
+				clearInterval(beaconInterval);
+			}
+		}
+
+		//This will fire even on refreshing, closing a tab or a browser
+		window.onbeforeunload = function () {
+			navigator.sendBeacon(serverAddress.concat("/stop"), null);
+			return null;
+		};
 
 		document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
 			ev.preventDefault();

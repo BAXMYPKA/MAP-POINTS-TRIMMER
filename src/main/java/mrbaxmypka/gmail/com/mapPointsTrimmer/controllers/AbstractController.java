@@ -24,6 +24,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SessionAttributes(names = {"maxFileSizeMb", "serverAddress"})
 public abstract class AbstractController {
 
+    /**
+     * This 'final static' implementation is ONLY for localhost using!
+     * The real server implementation has to have a local thread variable distiguished by SESSIONID.
+     */
     private final static AtomicInteger beaconsCount = new AtomicInteger(0);
     @Value("${trimmer.maxFileSizeMb}")
     private Integer maxFileSizeMb;
