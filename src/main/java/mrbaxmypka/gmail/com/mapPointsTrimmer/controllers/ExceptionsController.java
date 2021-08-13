@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xml.sax.SAXException;
 
+import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
@@ -38,9 +39,9 @@ public class ExceptionsController extends AbstractController {
      * @return HttpStatus 428
      */
     @ExceptionHandler({NullPointerException.class})
-    public ModelAndView nullPinterHandler(NullPointerException npe, Locale locale) {
+    public ModelAndView nullPinterHandler(NullPointerException npe, Locale locale, HttpSession httpSession) {
         //code 428
-        return returnPageWithError(HttpStatus.PRECONDITION_REQUIRED, npe.getMessage(), npe, locale);
+        return returnPageWithError(HttpStatus.PRECONDITION_REQUIRED, npe.getMessage(), npe, locale, httpSession);
     }
 
     /**
@@ -48,9 +49,9 @@ public class ExceptionsController extends AbstractController {
      * @return {@link HttpStatus#NOT_ACCEPTABLE} 406
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ModelAndView illegalArgException(IllegalArgumentException iae, Locale locale) {
+    public ModelAndView illegalArgException(IllegalArgumentException iae, Locale locale, HttpSession httpSession) {
         //code 406
-        return returnPageWithError(HttpStatus.NOT_ACCEPTABLE, iae.getMessage(), iae, locale);
+        return returnPageWithError(HttpStatus.NOT_ACCEPTABLE, iae.getMessage(), iae, locale, httpSession);
     }
 
     /**
@@ -58,11 +59,11 @@ public class ExceptionsController extends AbstractController {
      * @return {@link HttpStatus#UNPROCESSABLE_ENTITY} 422
      */
     @ExceptionHandler(value = {SAXException.class, ParserConfigurationException.class, TransformerException.class})
-    public ModelAndView xmlParsingException(Exception xmlError, Locale locale) {
+    public ModelAndView xmlParsingException(Exception xmlError, Locale locale, HttpSession httpSession) {
         //code 422
         String xmlErrorPrefix = messageSource.getMessage("exception.xmlParseError", null, locale);
         return returnPageWithError(
-                HttpStatus.UNPROCESSABLE_ENTITY, xmlErrorPrefix + xmlError.getMessage(), xmlError, locale);
+                HttpStatus.UNPROCESSABLE_ENTITY, xmlErrorPrefix + xmlError.getMessage(), xmlError, locale, httpSession);
     }
 
     /**
@@ -72,16 +73,16 @@ public class ExceptionsController extends AbstractController {
      * manually.
      */
     @ExceptionHandler(InterruptedException.class)
-    public ModelAndView interruptedException(InterruptedException ie, Locale locale) {
+    public ModelAndView interruptedException(InterruptedException ie, Locale locale, HttpSession httpSession) {
         String shutdownFailureMessage = messageSource.getMessage("exception.interruptedException", null, locale);
-        return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, shutdownFailureMessage, ie, locale);
+        return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, shutdownFailureMessage, ie, locale, httpSession);
     }
 
     @ExceptionHandler(IOException.class)
-    public ModelAndView ioException(IOException io, Locale locale) {
+    public ModelAndView ioException(IOException io, Locale locale, HttpSession httpSession) {
         String fileSavingFailure = messageSource.getMessage(
                 "exception.fileException(1)", new Object[]{io.getMessage()}, locale);
-        return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, fileSavingFailure, io, locale);
+        return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, fileSavingFailure, io, locale, httpSession);
     }
 
     /**
@@ -90,7 +91,7 @@ public class ExceptionsController extends AbstractController {
      * @return {@link HttpStatus#BAD_REQUEST} 400
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ModelAndView validationException(MethodArgumentNotValidException ve, Locale locale) {
+    public ModelAndView validationException(MethodArgumentNotValidException ve, Locale locale, HttpSession httpSession) {
         Map<String, String> errors = ve.getBindingResult().getAllErrors().stream()
                 .collect(Collectors.toMap(objectError ->
                                 objectError.getObjectName(),
@@ -99,7 +100,7 @@ public class ExceptionsController extends AbstractController {
                 .map(e ->
                         messageSource.getMessage("exception.fieldError(2)", new Object[]{e.getKey(), e.getValue()}, locale))
                 .collect(Collectors.joining());
-        return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, ve, locale);
+        return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, ve, locale, httpSession);
     }
 
     /**
@@ -107,9 +108,9 @@ public class ExceptionsController extends AbstractController {
      * @return HttpStatus 500
      */
     @ExceptionHandler(value = Exception.class)
-    public ModelAndView internalExceptions(Exception exception, Locale locale) {
+    public ModelAndView internalExceptions(Exception exception, Locale locale, HttpSession httpSession) {
         //code 500
-        return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception, locale);
+        return returnPageWithError(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), exception, locale, httpSession);
     }
 
     /**
@@ -126,10 +127,14 @@ public class ExceptionsController extends AbstractController {
      * @param throwable             To be logged here
      * @param locale                To send a possible localized message to the end User from this method.
      */
-    ModelAndView returnPageWithError(HttpStatus httpStatus, String localizedErrorMessage, Throwable throwable, Locale locale) {
+    ModelAndView returnPageWithError(
+            HttpStatus httpStatus, String localizedErrorMessage, Throwable throwable, Locale locale, HttpSession httpSession) {
         log.error(localizedErrorMessage, throwable);
-        //TODO: to get the HttpSession object to determine what exactly tmp file has to be deleted
+        multipartFileService.deleteTempFile(httpSession.getId());
+
+        //TODO: to remove the following string in the real serverside
         multipartFileService.deleteTempFiles();
+
         ModelAndView mav = new ModelAndView();
         mav.setStatus(httpStatus);
         mav.addObject("userMessage", localizedErrorMessage);

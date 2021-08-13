@@ -14,10 +14,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -408,6 +405,13 @@ public class MultipartDto implements Serializable {
 	
 	@NotNull
 	private DownloadAs downloadAs;
+
+	/**
+	 * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartDto, Locale)}
+	 *  to associate a process (thread) and a temp file with the current User session.
+	 */
+	@Nullable
+	private String sessionId;
 	
 	/**
 	 * The instant cache for a currently processing .zip file from {@link #multipartFile} (if it is) with images names

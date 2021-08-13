@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -316,5 +315,21 @@ public class MultipartFileService {
             deleteTempFiles();
         }
         log.info("All temp files have been deleted!");
+    }
+
+    public void deleteTempFile(String sessionId) {
+        if (sessionId == null || sessionId.isBlank()) return;
+        try {
+            for (Map.Entry<MultipartDto, MultipartFileDto> multipartFileDtoEntry : tempFiles.entrySet()) {
+                MultipartDto multipartDto = multipartFileDtoEntry.getKey();
+                if (multipartDto.getSessionId() != null && multipartDto.getSessionId().equals(sessionId)) {
+                    MultipartFileDto removedMultipartFileDto = tempFiles.remove(multipartDto);
+                    Files.deleteIfExists(removedMultipartFileDto.getTempFile());
+                    log.info("Temp file={} has been deleted", removedMultipartFileDto.getTempFile().toString());
+                }
+            }
+        } catch (IOException e) {
+            log.info("Deleting temp file has caused an exception:\n", e);
+        }
     }
 }

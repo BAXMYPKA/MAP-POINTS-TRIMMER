@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.xml.sax.SAXException;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -39,13 +40,15 @@ public class FilesController extends AbstractController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<FileSystemResource> postKml(
-            @Valid @ModelAttribute MultipartDto file, Locale locale)
+            @Valid @ModelAttribute MultipartDto file, Locale locale, HttpSession httpSession)
             throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
         log.info("{} file has been received as: {}.", MultipartDto.class.getSimpleName(), file);
 
         //TODO: to delete
         log.warn("FILES CONTROLLER THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
         log.warn("FILES SESSIONID = " + RequestContextHolder.currentRequestAttributes().getSessionId());
+
+        file.setSessionId(httpSession.getId());
 
         Path tempFile = multipartFileService.processMultipartDto(file, locale);
         log.info("Temp file={}", tempFile);
@@ -61,8 +64,9 @@ public class FilesController extends AbstractController {
      */
     @PostMapping(path = "/stop")
     @ResponseBody
-    public void postStopBeacon() {
-        log.info("A refresh or close tab event has been received to stop the processing!");
+    public void postStopBeacon(HttpSession httpSession) {
+        log.info("A refresh or close tab event has been received to stop the processing for the session={}",
+                httpSession.getId());
 
     }
 

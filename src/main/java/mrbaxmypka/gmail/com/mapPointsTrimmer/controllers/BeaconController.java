@@ -21,6 +21,7 @@ public class BeaconController extends AbstractController {
     @ResponseBody
     public void postBeacon(HttpSession httpSession) {
         log.trace("A keep-alive beacon from a User's browser has been received. The counter will be set to 0");
-        setBeaconsCount(0);
+        setBeaconsCount(0); //For Localhost use
+        getSessionBeaconsCount().put(httpSession.getId(), 0); //For serverside use
     }
 }
