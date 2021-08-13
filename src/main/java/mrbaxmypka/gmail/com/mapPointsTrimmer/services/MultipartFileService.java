@@ -21,7 +21,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -36,10 +39,11 @@ public class MultipartFileService {
     private final KmlHandler kmlHandler;
     private final FileService fileService;
     /**
-     * The temp file which is stores a system temp directory, a xml filename and a zip filename.
+     * The temp file which is stores a {@link MultipartDto} as a key for an according {@link MultipartFileDto}
+     * with the appropriate system temp directory, a xml filename and a zip filename.
      */
     @Getter(AccessLevel.PACKAGE)
-    private Map<MultipartDto, MultipartFileDto> tempFiles = new HashMap<>(2);
+    private final Map<MultipartDto, MultipartFileDto> tempFiles = new HashMap<>(2);
 
     @Autowired
     public MultipartFileService(KmlHandler kmlHandler, FileService fileService, MessageSource messageSource) {
@@ -188,11 +192,11 @@ public class MultipartFileService {
         String imagesFolderName = DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
         String pictogramFullPath = fileService.getPictogramsNamesPaths().get(multipartDto.getPictogramName());
         byte[] pictogram = Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(pictogramFullPath))
-              .readAllBytes();
+                .readAllBytes();
         ZipEntry zipEntry = new ZipEntry(imagesFolderName + multipartDto.getPictogramName());
-            zos.putNextEntry(zipEntry);
-            zos.write(pictogram);
-            zos.closeEntry();
+        zos.putNextEntry(zipEntry);
+        zos.write(pictogram);
+        zos.closeEntry();
         log.info("{} pictogram icon have been added to the resulting zip", multipartDto.getPictogramName());
     }
 
@@ -276,13 +280,18 @@ public class MultipartFileService {
     }
 
     public void deleteTempFiles() {
+        if (tempFiles.isEmpty()) return;
         try {
-            for (MultipartFileDto multipartFileDtoEntry : tempFiles.values()) {
-                Files.deleteIfExists(multipartFileDtoEntry.getTempFile());
-                log.info("Temp file={} has been deleted", multipartFileDtoEntry.getTempFile().toString());
+            for (Map.Entry<MultipartDto, MultipartFileDto> multipartFileDtoEntry : tempFiles.entrySet()) {
+                MultipartFileDto removedMultipartFileDto = tempFiles.remove(multipartFileDtoEntry.getKey());
+                if (removedMultipartFileDto != null && removedMultipartFileDto.getTempFile() != null) {
+                    Files.deleteIfExists(removedMultipartFileDto.getTempFile());
+                }
+                log.info("Temp file={} has been deleted", multipartFileDtoEntry.getValue().toString());
             }
         } catch (IOException e) {
             log.info("Deleting temp file has caused an exception:\n", e);
+            deleteTempFiles();
         }
     }
 }

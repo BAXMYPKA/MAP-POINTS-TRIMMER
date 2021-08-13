@@ -64,8 +64,6 @@ public class FilesController extends AbstractController {
     public void postStopBeacon() {
         log.info("A refresh or close tab event has been received to stop the processing!");
 
-        log.warn("STOP CONTROLLER THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
-
     }
 
     private String getAsciiEncodedFilename(Path pathToFile) {

@@ -130,6 +130,7 @@ public class ExceptionsController extends AbstractController {
      */
     ModelAndView returnPageWithError(HttpStatus httpStatus, String localizedErrorMessage, Throwable throwable, Locale locale) {
         log.error(localizedErrorMessage, throwable);
+        //TODO: to get the HttpSession object to determine what exactly tmp file has to be deleted
         multipartFileService.deleteTempFiles();
         ModelAndView mav = new ModelAndView();
         mav.setStatus(httpStatus);

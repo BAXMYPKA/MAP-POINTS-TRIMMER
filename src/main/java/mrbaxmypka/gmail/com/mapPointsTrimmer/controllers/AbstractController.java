@@ -50,6 +50,8 @@ public abstract class AbstractController {
                 serverAddress, maxFileSizeMb, fileService.getPictogramsNamesPaths().size());
     }
 
+    //TODO: TO REMAKE IT AS THE SESSION-ORIENTED
+
     /**
      * Checks every 15sec if a User's browser has sent the beacon keep-alive signal onto {@link BeaconController#postBeacon()}
      * and increment the {@link #beaconsCount} counter by 1. When {@link BeaconController#postBeacon()} resets it to 0 when the

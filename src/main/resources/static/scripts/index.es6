@@ -23,7 +23,7 @@
             navigator.sendBeacon(serverAddress.concat("/beacon"), null);
             intervalCounter++;
             checkInterval(beaconIntervalId);
-        }, 5000);
+        }, 8000);
 
         //After 2 hours it will stop sending beacons
         function checkInterval(beaconInterval) {
@@ -164,7 +164,24 @@
             }
         });
 
+/*
+// Doesn't work in Microsoft EdgeHTML v17
         document.getElementsByName("pathType").forEach(pathType => {
+            pathType.addEventListener('change', ev => {
+                const asAttachmentInLocus = document.getElementById("asAttachmentInLocus");
+                if (ev.target.getAttribute("id") === "webPath") {
+                    asAttachmentInLocus.disabled = true;
+                } else {
+                    asAttachmentInLocus.disabled = false;
+                }
+
+            });
+        });
+*/
+
+        const elementsByName = document.getElementsByName("pathType");
+        const pathTypes = Array.from(elementsByName);
+            pathTypes.forEach(pathType => {
             pathType.addEventListener('change', ev => {
                 const asAttachmentInLocus = document.getElementById("asAttachmentInLocus");
                 if (ev.target.getAttribute("id") === "webPath") {

@@ -23,6 +23,7 @@ public class LocusMapHandler {
     private XmlDomUtils xmlDomUtils;
     private KmlUtils kmlUtils;
     private HtmlHandler htmlHandler;
+    //TODO: to eliminate this???
     private Document document;
 
     public LocusMapHandler(FileService fileService,

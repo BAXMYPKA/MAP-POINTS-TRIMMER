@@ -20,10 +20,6 @@ import java.io.InputStream;
 @Slf4j
 @Component
 public class KmlHandler extends XmlHandler {
-	
-	private XmlDomUtils xmlDomUtils;
-	private KmlUtils kmlUtils;
-	private LocusMapHandler locusMapHandler;
 
 	public KmlHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService) {
 		super(htmlHandler, googleIconsService, fileService);
@@ -39,10 +35,9 @@ public class KmlHandler extends XmlHandler {
 		log.info("The given KML is being processed...");
 
 		Document document = getDocument(kmlInputStream);
-//		Element documentRoot = document.getDocumentElement();
-		xmlDomUtils = new XmlDomUtils(document);
-		kmlUtils = new KmlUtils(document, xmlDomUtils);
-		locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
+		XmlDomUtils xmlDomUtils = new XmlDomUtils(document);
+		KmlUtils kmlUtils = new KmlUtils(document, xmlDomUtils);
+		LocusMapHandler locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
 
 		//Processing Google Earth specific options
 		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
@@ -59,7 +54,6 @@ public class KmlHandler extends XmlHandler {
 		
 		if (multipartDto.isTrimXml()) {
 			log.info("KML is being trimmed...");
-//			trimWhitespaces(documentRoot);
 			trimWhitespaces(document);
 		}
 		log.info("The KML has been processed");
@@ -73,7 +67,6 @@ public class KmlHandler extends XmlHandler {
 	 * @param document {@link Document} with all the child Nodes
 	 */
 	private void processHref(Document document, MultipartDto multipartDto) {
-//		NodeList hrefs = documentRoot.getElementsByTagName("href");
 		NodeList hrefs = document.getElementsByTagName("href");
 		for (int i = 0; i < hrefs.getLength(); i++) {
 			Node node = hrefs.item(i);
