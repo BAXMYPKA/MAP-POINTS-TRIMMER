@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -53,10 +54,10 @@ public abstract class AbstractController {
     //TODO: TO REMAKE IT AS THE SESSION-ORIENTED
 
     /**
-     * Checks every 15sec if a User's browser has sent the beacon keep-alive signal onto {@link BeaconController#postBeacon()}
-     * and increment the {@link #beaconsCount} counter by 1. When {@link BeaconController#postBeacon()} resets it to 0 when the
+     * Checks every 15sec if a User's browser has sent the beacon keep-alive signal onto {@link BeaconController#postBeacon(HttpSession)}
+     * and increment the {@link #beaconsCount} counter by 1. When {@link BeaconController#postBeacon(HttpSession)} resets it to 0 when the
      * 'navigator.sendBeacon()' is sent.
-     * When {@link #beaconsCount} > 4 the full application will be shut down by {@link MapPointsTrimmerApplication#shutDownApp()}.
+     * When {@link #getBeaconsCount()} > 4 the full application will be shut down by {@link MapPointsTrimmerApplication#shutDownApp()}.
      */
     protected void startBeaconTimer() {
         TimerTask timerTask = new TimerTask() {

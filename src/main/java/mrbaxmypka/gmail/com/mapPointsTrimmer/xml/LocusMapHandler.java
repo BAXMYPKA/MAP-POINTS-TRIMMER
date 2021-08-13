@@ -46,7 +46,7 @@ public class LocusMapHandler {
             processLocusAttachments(documentRoot, multipartDto);
         }
         if (multipartDto.isReplaceLocusIcons()) {
-            log.info("Photo icons are being replace in Locus...");
+            log.info("Photo icons are being replaced in Locus...");
             LocusIconsHandler locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
             locusIconsHandler.replaceLocusIcons(multipartDto);
         }

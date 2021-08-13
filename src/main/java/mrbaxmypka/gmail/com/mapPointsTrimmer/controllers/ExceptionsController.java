@@ -33,8 +33,6 @@ public class ExceptionsController extends AbstractController {
     @Autowired
     private FileService fileService;
 
-    //TODO: ALL the following methods HAVE TO set "isFileInProcess" to FALSE
-
     /**
      * @param npe {@link NullPointerException} from Service level
      * @return HttpStatus 428
