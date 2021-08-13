@@ -23,8 +23,6 @@ public class LocusMapHandler {
     private XmlDomUtils xmlDomUtils;
     private KmlUtils kmlUtils;
     private HtmlHandler htmlHandler;
-    //TODO: to eliminate this???
-    private Document document;
 
     public LocusMapHandler(FileService fileService,
                            XmlDomUtils xmlDomUtils,
@@ -37,13 +35,10 @@ public class LocusMapHandler {
     }
 
     Document processKml(Document document, MultipartDto multipartDto) {
-        this.document = document;
         this.xmlDomUtils = new XmlDomUtils(document);
-
-        Element documentRoot = document.getDocumentElement();
         if (multipartDto.isAsAttachmentInLocus()) {
             log.info("Images are being attached for Locus...");
-            processLocusAttachments(documentRoot, multipartDto);
+            processLocusAttachments(document, multipartDto);
         }
         if (multipartDto.isReplaceLocusIcons()) {
             log.info("Photo icons are being replaced in Locus...");
@@ -51,7 +46,7 @@ public class LocusMapHandler {
             locusIconsHandler.replaceLocusIcons(multipartDto);
         }
 
-        return this.document;
+        return document;
     }
 
     /**
@@ -64,8 +59,8 @@ public class LocusMapHandler {
      * @return A new {@link LinkedList < XMLEvent >} with modified or new <lc:attachments></lc:attachments>.
      * Or the old unmodified List if no changes were done.</ExtendedData>
      */
-    private void processLocusAttachments(Element documentRoot, MultipartDto multipartDto) {
-        NodeList placemarks = documentRoot.getElementsByTagName("Placemark");
+    private void processLocusAttachments(Document document, MultipartDto multipartDto) {
+        NodeList placemarks = document.getElementsByTagName("Placemark");
         //Iterate though every <Placemark>
         for (int i = 0; i < placemarks.getLength(); i++) {
             Node placemark = placemarks.item(i);
@@ -97,7 +92,7 @@ public class LocusMapHandler {
                     }
                 }
             }
-            processImagesFromDescription(imgSrcFromDescription, attachments, placemark, multipartDto);
+            processImagesFromDescription(document, imgSrcFromDescription, attachments, placemark, multipartDto);
         }
         log.info("All <attachment>'s for Locus has been processed and added.");
     }
@@ -129,7 +124,7 @@ public class LocusMapHandler {
      *                              presented.
      */
     private void processImagesFromDescription(
-            List<String> imgSrcFromDescription, List<Node> attachmentNodes, Node placemark, MultipartDto multipartDto) {
+            Document document, List<String> imgSrcFromDescription, List<Node> attachmentNodes, Node placemark, MultipartDto multipartDto) {
         log.trace("'{}' images for '{}' attachments are being processed", imgSrcFromDescription.size(), attachmentNodes.size());
         //No images from description to insert as attachments
         if (imgSrcFromDescription.isEmpty()) {
@@ -167,7 +162,7 @@ public class LocusMapHandler {
                     .collect(Collectors.toList());
             //If not all the images from Description are attached we create and add new <lc:attachment>'s
             if (!locusAttachmentsHref.isEmpty()) {
-                List<Element> newAttachments = getImagesSrcAsLcAttachments(locusAttachmentsHref);
+                List<Element> newAttachments = getImagesSrcAsLcAttachments(document, locusAttachmentsHref);
                 Node parentExtendedData = attachmentNodes.get(0).getParentNode();
                 newAttachments.forEach(parentExtendedData::appendChild);
                 log.trace("A new <attachment>'s have been added for the images from the <description>");
@@ -175,8 +170,8 @@ public class LocusMapHandler {
             //<ExtendedData> isn't presented within the <Placemark>
         } else {
             //Create a new <ExtendedData> parent with new <lc:attachment> children from images src from description
-            List<Element> imagesSrcAsLcAttachments = getImagesSrcAsLcAttachments(locusAttachmentsHref);
-            Node newExtendedData = getNewExtendedData(imagesSrcAsLcAttachments);
+            List<Element> imagesSrcAsLcAttachments = getImagesSrcAsLcAttachments(document, locusAttachmentsHref);
+            Node newExtendedData = getNewExtendedData(document, imagesSrcAsLcAttachments);
             placemark.appendChild(newExtendedData);
             log.trace("A new <ExtendedData> with <attachment>'s has been added for the images from the <description>");
         }
@@ -200,7 +195,7 @@ public class LocusMapHandler {
      * @return {@link XMLEvent#CHARACTERS} as <lc:attachment>src/to/image.img</lc:attachment>
      * to be added to <ExtendedData></ExtendedData> to Locus Map xml.
      */
-    private List<Element> getImagesSrcAsLcAttachments(List<String> imagesToAttach) {
+    private List<Element> getImagesSrcAsLcAttachments(Document document, List<String> imagesToAttach) {
         List<Element> lcAttachments = new ArrayList<>();
         imagesToAttach.forEach(img -> {
             Element attachment = document.createElementNS("http://www.locusmap.eu", "lc:attachment");
@@ -217,7 +212,7 @@ public class LocusMapHandler {
      * @return {@link LinkedList<XMLEvent>} with XMLEvents inside to be written into existing document as:
      * <ExtendedData xmlns:lc="http://www.locusmap.eu">... xmlEventsToBeInside ...</ExtendedData>
      */
-    private Node getNewExtendedData(List<Element> elementsToBeInside) {
+    private Node getNewExtendedData(Document document, List<Element> elementsToBeInside) {
         Element extendedData = document.createElement("ExtendedData");
 //		Element extendedData = document.createElementNS("http://www.locusmap.eu", "ExtendedData");
         elementsToBeInside.forEach(extendedData::appendChild);

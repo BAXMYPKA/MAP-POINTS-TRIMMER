@@ -39,11 +39,11 @@ public class KmlHandler extends XmlHandler {
 		KmlUtils kmlUtils = new KmlUtils(document, xmlDomUtils);
 		LocusMapHandler locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
 
+		locusMapHandler.processKml(document, multipartDto);
+
 		//Processing Google Earth specific options
 		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
 		googleEarthHandler.processKml(document, multipartDto);
-		//TODO: to treat BEFORE GoogleEarth options???
-		locusMapHandler.processKml(document, multipartDto);
 
 		log.info("Setting the new path to images...");
 		processHref(document, multipartDto);

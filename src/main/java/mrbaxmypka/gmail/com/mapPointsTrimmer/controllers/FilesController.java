@@ -45,7 +45,7 @@ public class FilesController extends AbstractController {
 
         //TODO: to delete
         log.warn("FILES CONTROLLER THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
-        log.warn("FILES SESSIONID = "+ RequestContextHolder.currentRequestAttributes().getSessionId());
+        log.warn("FILES SESSIONID = " + RequestContextHolder.currentRequestAttributes().getSessionId());
 
         Path tempFile = multipartFileService.processMultipartDto(file, locale);
         log.info("Temp file={}", tempFile);

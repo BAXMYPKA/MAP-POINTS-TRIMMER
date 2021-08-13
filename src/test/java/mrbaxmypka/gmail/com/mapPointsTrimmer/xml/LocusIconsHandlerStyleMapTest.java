@@ -38,8 +38,6 @@ class LocusIconsHandlerStyleMapTest {
     private static final String PICTOGRAM2_KML_PATH = KML_DEFAULT_PATH + PICTOGRAM2_PNG;
     private static final ArrayList<String> PICTOGRAM_NAMES = new ArrayList<>(Arrays.asList(PICTOGRAM1_PNG, PICTOGRAM2_PNG));
 
-    //TODO: сделать тест с полнотекстовыми точками в конце
-
     @BeforeAll
     public static void beforeAll() {
         fileService = Mockito.mock(FileService.class);
