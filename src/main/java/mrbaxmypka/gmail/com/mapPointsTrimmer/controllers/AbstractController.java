@@ -2,7 +2,6 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
@@ -94,7 +93,7 @@ public abstract class AbstractController {
      */
     protected void startSessionBeaconTimer(String sessionId) {
         sessionBeaconsCount.put(sessionId, 0);
-
+        Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             private final String sessId = sessionId;
 
@@ -103,14 +102,17 @@ public abstract class AbstractController {
                 Integer count = sessionBeaconsCount.get(sessionId);
                 if (count <= 3) {
                     sessionBeaconsCount.put(sessId, count + 1);
+                    log.trace("Timer count has been increased by 1 up to {} for the session id={}...",
+                            sessionBeaconsCount.get(sessId), sessId);
                 } else {
                     log.warn("Timer count = {} for the session id={} so the appropriate process and the temp file is being closed...",
                             sessionBeaconsCount.get(sessId), sessId);
                     multipartFileService.deleteTempFile(sessId);
+                    timer.cancel();
                 }
             }
         };
-        new Timer().scheduleAtFixedRate(timerTask, 1000, 10000);
+        timer.scheduleAtFixedRate(timerTask, 1000, 10000);
     }
 
     protected int getBeaconsCount() {
