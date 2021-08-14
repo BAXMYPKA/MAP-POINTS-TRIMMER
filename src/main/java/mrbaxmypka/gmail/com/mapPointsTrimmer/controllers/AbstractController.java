@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -38,7 +38,7 @@ public abstract class AbstractController {
 	@Getter(AccessLevel.PROTECTED)
 	private final static Map<String, SessionTimerTask> sessionBeaconsCount = new ConcurrentHashMap<>(2);
 	@Getter(AccessLevel.PROTECTED)
-	private final static Timer timer = new Timer("GlobalTimer");
+	private final static ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(10);
 	@Value("${trimmer.maxFileSizeMb}")
 	private Integer maxFileSizeMb;
 	@Value("${trimmer.serverAddress}")
@@ -108,7 +108,7 @@ public abstract class AbstractController {
             timerTask.setCount(0);
             return;
         }
-		timer.scheduleAtFixedRate(timerTask, 1000, 10000);
+		ScheduledFuture<?> scheduledFuture = timer.scheduleAtFixedRate(timerTask, 1, 10, TimeUnit.SECONDS);
 	}
 	
 	protected int getBeaconsCount() {

@@ -1,24 +1,22 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.utils;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
 
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 @Slf4j
-public class SessionTimerTask extends TimerTask {
+public class SessionTimerTask implements Runnable {
 	
 	private final Timer timer;
 	@Getter
 	private final String sessionId;
 	private final Map<String, SessionTimerTask> sessionBeaconsCount;
-	
-    private volatile int count = 0;
-	@Getter
+	private volatile int count = 0;
 	private volatile boolean isCancelled = false;
 	
 	public SessionTimerTask(String sessionId, Timer timer, Map<String, SessionTimerTask> sessionBeaconsCount) {
@@ -39,7 +37,7 @@ public class SessionTimerTask extends TimerTask {
 			//TODO: to remake as trace()
 			log.warn("Timer count = {} for the session id={} so the appropriate process and the temp file is being closed...",
 				  count, sessionId);
-			isCancelled = cancel();
+			setCancelled();
 			MultipartFileService.deleteTempFile(sessionId);
 			sessionBeaconsCount.remove(this);
 			timer.purge();
@@ -47,12 +45,20 @@ public class SessionTimerTask extends TimerTask {
 			log.warn("Timer count for the session id={} isCancelled={}", sessionId, isCancelled);
 		}
 	}
-    
-    public synchronized int getCount() {
-        return count;
-    }
-    
-    public synchronized void setCount(int count) {
-        this.count = count;
-    }
+	
+	public synchronized int getCount() {
+		return count;
+	}
+	
+	public synchronized void setCount(int count) {
+		if (!isCancelled()) this.count = count;
+	}
+	
+	public synchronized boolean isCancelled() {
+		return isCancelled;
+	}
+	
+	public synchronized void setCancelled(boolean cancelled) {
+		isCancelled = cancelled;
+	}
 }
