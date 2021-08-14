@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.SessionTimerTask;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,8 +23,9 @@ public class BeaconController extends AbstractController {
     public void postBeacon(HttpSession httpSession) {
         log.trace("A keep-alive beacon from a User's browser has been received. The counter will be set to 0");
 //        setBeaconsCount(0); //For Localhost use
-        getSessionBeaconsCount().put(httpSession.getId(), 0); //For serverside use
-        //TODO: to delete
+        SessionTimerTask timerTask = getSessionBeaconsCount().get(httpSession.getId());//For serverside use
+        if (timerTask != null) timerTask.setCount(0);
+//TODO: to delete
         log.warn("Beacon sessionId={}", httpSession.getId());
 
     }
