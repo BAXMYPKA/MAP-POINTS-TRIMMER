@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.SessionTimerTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -35,7 +36,8 @@ public abstract class AbstractController {
      */
     private final static AtomicInteger beaconsCount = new AtomicInteger(0);
     @Getter(AccessLevel.PROTECTED)
-    private final static Map<String, Integer> sessionBeaconsCount = new ConcurrentHashMap<>(2);
+    private final static Map<String, SessionTimerTask> sessionBeaconsCount = new ConcurrentHashMap<>(2);
+    private final static Timer timer = new Timer("GlobalTimer");
     @Value("${trimmer.maxFileSizeMb}")
     private Integer maxFileSizeMb;
     @Value("${trimmer.serverAddress}")
@@ -92,26 +94,13 @@ public abstract class AbstractController {
      * {@link MultipartFileService#deleteTempFile(String)}.
      */
     protected void startSessionBeaconTimer(String sessionId) {
-        sessionBeaconsCount.put(sessionId, 0);
-        Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            private final String sessId = sessionId;
+        //TODO: to delete
+        log.warn("Abstract start timer for sessionId={}", sessionId);
 
-            @Override
-            public void run() {
-                Integer count = sessionBeaconsCount.get(sessionId);
-                if (count <= 3) {
-                    sessionBeaconsCount.put(sessId, count + 1);
-                    log.trace("Timer count has been increased by 1 up to {} for the session id={}...",
-                            sessionBeaconsCount.get(sessId), sessId);
-                } else {
-                    log.warn("Timer count = {} for the session id={} so the appropriate process and the temp file is being closed...",
-                            sessionBeaconsCount.get(sessId), sessId);
-                    multipartFileService.deleteTempFile(sessId);
-                    timer.cancel();
-                }
-            }
-        };
+        SessionTimerTask timerTask = sessionBeaconsCount.computeIfAbsent(
+                sessionId, s -> new SessionTimerTask(sessionId, timer, sessionBeaconsCount));
+        timerTask.setCount(0);
+        //TODO: not to start if presented!!
         timer.scheduleAtFixedRate(timerTask, 1000, 10000);
     }
 

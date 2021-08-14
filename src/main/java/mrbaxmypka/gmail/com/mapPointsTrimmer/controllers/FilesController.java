@@ -46,7 +46,7 @@ public class FilesController extends AbstractController {
 
         //TODO: to delete
         log.warn("FILES CONTROLLER THREAD = " + Thread.currentThread().getName() + " ID = " + Thread.currentThread().getId());
-        log.warn("FILES SESSIONID = " + RequestContextHolder.currentRequestAttributes().getSessionId());
+        log.warn("Files sessionId = " + httpSession.getId());
 
         file.setSessionId(httpSession.getId());
 

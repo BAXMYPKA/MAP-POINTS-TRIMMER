@@ -17,7 +17,10 @@ public class IndexController extends AbstractController {
 		model.addAttribute("poiFile", new MultipartDto());
 		log.debug("Attribute 'poiFile' as the new '{}' has been added and the 'index' page is being returned.",
 			MultipartDto.class.getSimpleName());
+//		startGlobalBeaconTimer(); //To shutdown the localhost application
 		startSessionBeaconTimer(httpSession.getId()); //To start counting received keep-alive POST signals
+		//TODO: to delete
+		log.warn("Index sessionId={}", httpSession.getId());
 		return "index";
 	}
 	
