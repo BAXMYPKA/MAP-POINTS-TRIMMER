@@ -17,6 +17,8 @@
         /*<![CDATA[*/
         const maxFileSizeMb = [[${maxFileSizeMb}]] !== null ? [[${maxFileSizeMb}]] : 4096;
         const serverAddress = [[${serverAddress}]] !== null ? [[${serverAddress}]] : "localhost://";
+        const singleUserMode = [[${singleUserMode}]] !== null ? [[${singleUserMode}]] : true;
+        const isShutDown = [[${isShutDown}]] !== null ? [[${isShutDown}]] : false;
         /*]]>*/
     </script>
     <title>Map Points Trimmer</title>
@@ -52,7 +54,8 @@
                 <option th:value="@{/(lang=ru)}">RU</option>
             </select>
             <img src="../static/img/turnOffBtn.png" alt="SHUTDOWN" class="rightHeaderGroup__shutdownButtonOn_img"
-                 th:alt="#{html.text.shutdown}" th:title="#{html.text.shutdown}"
+                 th:alt="#{html.text.shutdown}"
+                 th:title="#{html.text.shutdown}"
                  th:src="@{/img/turnOffBtn.png}"
                  th:class="${#request.getAttribute('shutdownBtnClass')} != null ?
 				  ${#request.getAttribute('shutdownBtnClass')} : 'rightHeaderGroup__shutdownButtonOn_img'">

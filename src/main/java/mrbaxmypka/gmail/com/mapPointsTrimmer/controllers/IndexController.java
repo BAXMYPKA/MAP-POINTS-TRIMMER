@@ -11,17 +11,18 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 @Controller
 public class IndexController extends AbstractController {
-	
-	@GetMapping(path = {"/", "index", "/trimmer"})
-	public String getIndex(Model model, HttpSession httpSession) {
-		model.addAttribute("poiFile", new MultipartDto());
-		log.debug("Attribute 'poiFile' as the new '{}' has been added and the 'index' page is being returned.",
-			MultipartDto.class.getSimpleName());
-//		startGlobalBeaconTimer(); //To shutdown the localhost application
-		startSessionBeaconTimer(httpSession.getId()); //To start counting received keep-alive POST signals
-		//TODO: to delete
-		log.warn("Index sessionId={}", httpSession.getId());
-		return "index";
-	}
-	
+
+    @GetMapping(path = {"/", "index", "/trimmer"})
+    public String getIndex(Model model, HttpSession httpSession) {
+        model.addAttribute("poiFile", new MultipartDto());
+        log.debug("Attribute 'poiFile' as the new '{}' has been added and the 'index' page is being returned.",
+                MultipartDto.class.getSimpleName());
+
+        //TODO: to make as trace
+        log.warn("Single-user-mode={}, sessionId={}", isSingleUserMode(), httpSession.getId());
+
+        getWebSessionService().startSessionBeaconTimer(httpSession.getId()); //To start counting received keep-alive POST signals
+        return "index";
+    }
+
 }

@@ -1,9 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,10 +16,6 @@ public class ShutdownController extends AbstractController{
 	 * Attribute for index.html to apply this css className to make the 'Shutdown' button grey.
 	 */
 	private final String SHUTDOWN_BTN_CLASS = "rightHeaderGroup__shutdownButtonOn_img_shutDown";
-	@Autowired
-	private MessageSource messageSource;
-	@Autowired
-	private MapPointsTrimmerApplication mapPointsTrimmerApplication;
 
 	/**
 	 * {@link RequestMethod#GET} receives a request from the Shutdown button.
@@ -32,11 +25,12 @@ public class ShutdownController extends AbstractController{
 	 */
 	@RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, path = "/shutdown")
 	public String shutdownApp(RedirectAttributes redirectAttributes, Locale locale) {
-		mapPointsTrimmerApplication.shutDownApp();
-		String shutdownMessage = messageSource.getMessage("userMessage.shutdownSuccess", null, locale);
+		getWebSessionService().shutdownApplication();
+		String shutdownMessage = getMessageSource().getMessage("userMessage.shutdownSuccess", null, locale);
 		redirectAttributes.addFlashAttribute("userMessage", shutdownMessage);
 		redirectAttributes.addFlashAttribute("shutdownBtnClass", SHUTDOWN_BTN_CLASS);
-		log.info("While the Application is shutting down it's redirecting request to the main page...");
+		redirectAttributes.addFlashAttribute("isShutDown", true);
+		log.warn("While the Application is shutting down it's redirecting request to the main page...");
 		return "redirect:/";
 	}
 }

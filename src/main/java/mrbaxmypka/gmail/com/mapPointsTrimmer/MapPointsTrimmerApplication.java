@@ -48,7 +48,7 @@ public class MapPointsTrimmerApplication {
 		//To defer the shitting down a bit to be able to return the main page
 		Thread thread = new Thread(() -> {
 			try {
-				Thread.sleep(3000);
+				Thread.sleep(4000);
 			} catch (InterruptedException e) {
 				log.error(e.getMessage(), e);
 			} finally {

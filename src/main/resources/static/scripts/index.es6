@@ -2,6 +2,8 @@
 
         const userMessage = document.querySelector("#userMessage");
         const previewSize = document.getElementById("previewSize");
+        //2160 = 2 hours, 1620 = 1.5 hours, 1080 = 1 hour of session idle for single- or multi-user server mode
+        const sessionInterval = singleUserMode ? 1620 : 1080;
 
         let userMessageClose = document.querySelector(".specialButtons_close");
         if (userMessageClose !== null) {
@@ -17,18 +19,22 @@
                 document.querySelector("input[name='pictogram']:checked").value;
         }, 1500);
 
-        let intervalCounter = 0;
 
-        let beaconIntervalId = setInterval(function () {
-            navigator.sendBeacon(serverAddress.concat("/beacon"), null);
-            intervalCounter++;
-            checkInterval(beaconIntervalId);
-        }, 8000);
+        if (!isShutDown) {
 
-        //After 2 hours it will stop sending beacons
-        function checkInterval(beaconInterval) {
-            if (intervalCounter > 2160) {
-                clearInterval(beaconInterval);
+            let intervalCounter = 0;
+
+            let beaconIntervalId = setInterval(function () {
+                navigator.sendBeacon(serverAddress.concat("/beacon"), null);
+                intervalCounter++;
+                checkInterval(beaconIntervalId);
+            }, 8000);
+
+            //After 2 hours it will stop sending beacons
+            function checkInterval(beaconIntervalId) {
+                if (intervalCounter > sessionInterval) {
+                    clearInterval(beaconIntervalId);
+                }
             }
         }
 
@@ -88,8 +94,10 @@
         };
 
         document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
-            ev.preventDefault();
-            window.location.href = serverAddress.concat('/shutdown');
+            if (singleUserMode) {
+                ev.preventDefault();
+                window.location.href = serverAddress.concat('/shutdown');
+            }
         });
 
         document.querySelector(".mainHeader__logoImg").addEventListener('click', ev => {
