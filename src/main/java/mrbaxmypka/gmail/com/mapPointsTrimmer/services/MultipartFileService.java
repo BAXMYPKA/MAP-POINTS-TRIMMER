@@ -317,7 +317,7 @@ public class MultipartFileService {
         log.info("All temp files have been deleted!");
     }
 
-    public static void deleteTempFile(String sessionId) {
+    public void deleteTempFile(String sessionId) {
         if (sessionId == null || sessionId.isBlank()) return;
         try {
             for (Map.Entry<MultipartDto, MultipartFileDto> multipartFileDtoEntry : tempFiles.entrySet()) {

@@ -3,7 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.SessionTimerTask;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.SessionTimer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
@@ -57,23 +57,6 @@ public class FilesController extends AbstractController {
 			  .header("Content-Disposition", "attachment; filename=\"" + getAsciiEncodedFilename(tempFile) + "\"; filename*=UTF-8''" + getAsciiEncodedFilename(tempFile))
 			  .body(resource);
 	}
-	
-	/**
-	 * When close tab, close browser or refresh the page the browser sends a 'navigator.sendBeacon('/stop')' POST signal
-	 * to stop the processing.
-	 */
-	@PostMapping(path = "/stop")
-	@ResponseBody
-	public void postStopBeacon(HttpSession httpSession) {
-		//TODO: to remove SesstionTimerTask from Map and kill the process if any
-		log.info("A refresh or close tab event has been received to stop the processing for the session={}",
-			  httpSession.getId());
-
-        SessionTimerTask removedTask = getSessionBeaconsCount().remove(httpSession.getId());
-        if (removedTask != null) removedTask.cancel();
-        getTimer().purge();
-        
-    }
 	
 	private String getAsciiEncodedFilename(Path pathToFile) {
 		try {
