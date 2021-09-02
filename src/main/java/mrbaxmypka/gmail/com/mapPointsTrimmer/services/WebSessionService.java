@@ -53,12 +53,10 @@ public class WebSessionService {
 
             if (sessionBeacons.isEmpty()) {
                 log.warn("SessionBeacons isEmpty={}, Application is shutting down...", sessionBeacons.isEmpty());
-                scheduledTimers.shutdownNow();
                 shutdownApplication();
             }
         };
-        //TODO: to set delay to 60
-        scheduledTimers.scheduleAtFixedRate(checkUserSession, 8, 25, TimeUnit.SECONDS);
+        scheduledTimers.scheduleAtFixedRate(checkUserSession, 60, 25, TimeUnit.SECONDS);
     }
 
     /**
@@ -90,12 +88,15 @@ public class WebSessionService {
         if (sessionTimer != null) {
             sessionTimer.setCancelled(false);
 
-            //TODO: to delete
+            //TODO: to make as trace
             log.warn("Beacon for sessionId={} has been zeroed", sessionId);
-            return;
+        } else if (singleUserMode) {
+            log.info("Restart singleUser sessionId={}", sessionId);
+            startSessionBeaconTimer(sessionId);
+        } else {
+            //TODO: make as trace
+            log.warn("Beacon for an absent sessionId={}", sessionId);
         }
-        //TODO: to delete
-        log.warn("Beacon for an absent sessionId={}", sessionId);
     }
 
     public void postStopBeacon(String sessionId) {
@@ -111,6 +112,7 @@ public class WebSessionService {
 
     public void shutdownApplication() {
         log.warn("The Application will be shut down!");
+        scheduledTimers.shutdownNow();
         mapPointsTrimmerApplication.shutDownApp();
     }
 }
