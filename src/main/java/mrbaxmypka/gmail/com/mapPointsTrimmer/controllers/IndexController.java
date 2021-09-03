@@ -15,12 +15,7 @@ public class IndexController extends AbstractController {
     @GetMapping(path = {"/", "index", "/trimmer"})
     public String getIndex(Model model, HttpSession httpSession) {
         model.addAttribute("poiFile", new MultipartDto());
-        log.debug("Attribute 'poiFile' as the new '{}' has been added and the 'index' page is being returned.",
-                MultipartDto.class.getSimpleName());
-
-        //TODO: to make as trace
-        log.warn("Single-user-mode={}, sessionId={}", isSingleUserMode(), httpSession.getId());
-
+        log.debug("Index page is being returned for sessionId={}.", httpSession.getId());
         getWebSessionService().startSessionBeaconTimer(httpSession.getId()); //To start counting received keep-alive POST signals
         return "index";
     }

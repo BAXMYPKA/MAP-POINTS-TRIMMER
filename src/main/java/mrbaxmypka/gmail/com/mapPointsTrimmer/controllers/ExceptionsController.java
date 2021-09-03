@@ -130,11 +130,12 @@ public class ExceptionsController extends AbstractController {
     ModelAndView returnPageWithError(
             HttpStatus httpStatus, String localizedErrorMessage, Throwable throwable, Locale locale, HttpSession httpSession) {
         log.error(localizedErrorMessage, throwable);
-        multipartFileService.deleteTempFile(httpSession.getId());
 
-        //TODO: to remove the following string in the real serverside
-        multipartFileService.deleteTempFiles();
-
+        if (isSingleUserMode()) {
+            multipartFileService.deleteTempFiles();
+        } else {
+            multipartFileService.deleteTempFile(httpSession.getId());
+        }
         ModelAndView mav = new ModelAndView();
         mav.setStatus(httpStatus);
         mav.addObject("userMessage", localizedErrorMessage);

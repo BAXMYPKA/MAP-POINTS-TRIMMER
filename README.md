@@ -30,7 +30,8 @@ Unpack from the archive and start MAP-POINTS-TRIMMER.jar.
 
 When the application start use your browser to visit: [Map-Points-Trimmer](http://localhost:8088/trimmer/) (http://localhost:8088/trimmer/)
 
-**After you finish don't forget to shut down the application with a special button!** (Otherwise the local server will hang in your RAM.)
+**The Application will shut down automatically if you don't connect within 2 minutes or after closing a browser's tab with it.
+Also you can turn it off by the big green button.**
 
 For the moment the utility supports only .kml and .kmz formats as the most powerful for keep and transfer points with photos.
 

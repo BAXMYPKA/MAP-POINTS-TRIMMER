@@ -29,19 +29,14 @@ public class SessionTimer implements Runnable {
     @Override
     public synchronized void run() {
         if (Thread.currentThread().isInterrupted() || count > 3 || isCancelled) {
-            //TODO: to remake as trace()
-            log.warn("Timer count = {} for the session id={} so the appropriate process and the temp file is being closed...",
+            log.trace("Timer count = {} for the session id={} so the appropriate process and the temp file is being closed...",
                     count, sessionId);
             multipartFileService.deleteTempFile(sessionId);
             sessionBeacons.remove(this.sessionId);
-            //TODO: to remove
-            log.warn("Timer count for the session id={} isCancelled={}", sessionId, isCancelled);
             throw new RuntimeException("The SessionTimeTask for id=" + sessionId + " to be stopped!");
         } else {
             count++;
-
-            //TODO: to remake as log.trace()
-            log.warn("Timer count has been increased by 1 up to {} for the session id={}", count, sessionId);
+            log.trace("Timer count has been increased by 1 up to {} for the session id={}", count, sessionId);
 
         }
     }

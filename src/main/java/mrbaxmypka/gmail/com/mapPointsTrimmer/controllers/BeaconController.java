@@ -20,8 +20,7 @@ public class BeaconController extends AbstractController {
     @PostMapping(path = "/beacon")
     @ResponseBody
     public void postBeacon(HttpSession httpSession) {
-        //TODO: to make the trace
-        log.warn("A keep-alive beacon from a User's browser has been received. The counter will be set to 0");
+        log.trace("A keep-alive beacon from a User's browser has been received. The counter will be set to 0");
         getWebSessionService().postBeacon(httpSession.getId());
     }
 
@@ -32,9 +31,7 @@ public class BeaconController extends AbstractController {
     @PostMapping(path = "/stop")
     @ResponseBody
     public void postStopBeacon(HttpSession httpSession) {
-
-        //TODO: to remake as an trace
-        log.warn("A refresh or close tab browser event has been received to stop the file processing for the session={}",
+        log.trace("A refresh or close tab browser event has been received to stop the file processing for the session={}",
                 httpSession.getId());
         getWebSessionService().postStopBeacon(httpSession.getId());
     }
