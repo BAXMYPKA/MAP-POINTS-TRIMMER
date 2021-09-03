@@ -2,6 +2,9 @@
 
         const userMessage = document.querySelector("#userMessage");
         const previewSize = document.getElementById("previewSize");
+        if (typeof singleUserMode === 'undefined' || singleUserMode == null) {
+            singleUserMode = true;
+        }
         //2160 = 2 hours, 1620 = 1.5 hours, 1080 = 1 hour of session idle for single- or multi-user server mode
         const sessionInterval = singleUserMode ? 1620 : 1080;
 
@@ -19,8 +22,7 @@
                 document.querySelector("input[name='pictogram']:checked").value;
         }, 1500);
 
-
-        if (!isShutDown) {
+        if (typeof isShutDown !== 'undefined' && !isShutDown) {
 
             let intervalCounter = 0;
 
@@ -39,10 +41,13 @@
         }
 
         //This will fire even on refreshing, closing a tab or a browser
-        window.onbeforeunload = function () {
-            navigator.sendBeacon(serverAddress.concat("/stop"), null);
-            return null;
-        };
+        if (typeof serverAddress !== 'undefined' && serverAddress) {
+            window.onbeforeunload = function () {
+                navigator.sendBeacon(serverAddress.concat("/stop"), null);
+                return null;
+
+            }
+        }
 
         /**
          *
@@ -172,24 +177,24 @@
             }
         });
 
-/*
-// Doesn't work in Microsoft EdgeHTML v17
-        document.getElementsByName("pathType").forEach(pathType => {
-            pathType.addEventListener('change', ev => {
-                const asAttachmentInLocus = document.getElementById("asAttachmentInLocus");
-                if (ev.target.getAttribute("id") === "webPath") {
-                    asAttachmentInLocus.disabled = true;
-                } else {
-                    asAttachmentInLocus.disabled = false;
-                }
+        /*
+        // Doesn't work in Microsoft EdgeHTML v17
+                document.getElementsByName("pathType").forEach(pathType => {
+                    pathType.addEventListener('change', ev => {
+                        const asAttachmentInLocus = document.getElementById("asAttachmentInLocus");
+                        if (ev.target.getAttribute("id") === "webPath") {
+                            asAttachmentInLocus.disabled = true;
+                        } else {
+                            asAttachmentInLocus.disabled = false;
+                        }
 
-            });
-        });
-*/
+                    });
+                });
+        */
 
         const elementsByName = document.getElementsByName("pathType");
         const pathTypes = Array.from(elementsByName);
-            pathTypes.forEach(pathType => {
+        pathTypes.forEach(pathType => {
             pathType.addEventListener('change', ev => {
                 const asAttachmentInLocus = document.getElementById("asAttachmentInLocus");
                 if (ev.target.getAttribute("id") === "webPath") {

@@ -6,19 +6,15 @@
           th:href="@{/img/favicon32x32.png}">
     <link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
           th:href="@{/img/favicon32x32.png}">
-    <link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
-<!--    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}" defer></script>-->
-    <script src="../static/scripts/browserVersionCheck.es6" th:src="@{scripts/browserVersionCheck.es6}" defer></script>
-    <!--    <script src="../static/scripts/index.js" th:src="@{scripts/index.js}" defer></script>-->
-        <script src="../static/scripts/index.es6" th:src="@{scripts/index.es6}" type="application/javascript" defer></script>
-<!--    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.js}" defer></script>-->
-    <script src="../static/scripts/presets.es6" th:src="@{scripts/presets.es6}" defer></script>
+    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}" defer></script>
+    <script src="../static/scripts/index.js" th:src="@{scripts/index.js}" defer></script>
+    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.js}" defer></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         const maxFileSizeMb = [[${maxFileSizeMb}]] !== null ? [[${maxFileSizeMb}]] : 4096;
         const serverAddress = [[${serverAddress}]] !== null ? [[${serverAddress}]] : "localhost://";
-        const singleUserMode = [[${singleUserMode}]] !== null ? [[${singleUserMode}]] : true;
-        const isShutDown = [[${isShutDown}]] !== null ? [[${isShutDown}]] : false;
+        let singleUserMode = [[${singleUserMode}]] !== null ? [[${singleUserMode}]] : true;
+        let isShutDown = [[${isShutDown}]] !== null ? [[${isShutDown}]] : false;
         /*]]>*/
     </script>
     <title>Map Points Trimmer</title>
@@ -294,10 +290,10 @@
                     <br>
                     <div id="pictogram-dropdown">
 
-<!--
-                        <input checked type="radio" id="pictogram0" name="pictogram" value=""/>
-                        <label for="pictogram0"></label>
--->
+                        <!--
+                                                <input checked type="radio" id="pictogram0" name="pictogram" value=""/>
+                                                <label for="pictogram0"></label>
+                        -->
 
                         <th:block th:each="pic:${pictogramsMap}">
 
@@ -308,14 +304,14 @@
                                    style="background:url('../static/pictograms/sport-cyclingsport.png') no-repeat"
                                    th:for="${pic.key}" th:style="'background:url(' + @{${pic.value}} + ')'"></label>
 
-<!--
-                            <input type="radio" id="pictogram2" th:id="${pic.key}" name="pictogram" checked
-                                   value="sport.png"
-                                   th:value="${pic.key}"/>
-                            <label for="pictogram2"
-                                   style="background:url('../static/pictograms/tourism-forest.png') no-repeat"
-                                   th:for="${pic.key}" th:style="'background:url(' + @{${pic.value}} + ')'"></label>
--->
+                            <!--
+                                                        <input type="radio" id="pictogram2" th:id="${pic.key}" name="pictogram" checked
+                                                               value="sport.png"
+                                                               th:value="${pic.key}"/>
+                                                        <label for="pictogram2"
+                                                               style="background:url('../static/pictograms/tourism-forest.png') no-repeat"
+                                                               th:for="${pic.key}" th:style="'background:url(' + @{${pic.value}} + ')'"></label>
+                            -->
 
                         </th:block>
 
@@ -325,18 +321,18 @@
 
                     </div>
 
-<!--
-                                        <div id="image-dropdown">
-                                            <input checked="checked" type="radio" id="line1" name="line-style" value="1"/>
-                                            <label for="line1"></label>
-                                            <input type="radio" id="line2" name="line-style" value="2"/> <label for="line2"></label>
-                                            <input type="radio" id="line3" name="line-style" value="3"/> <label for="line3"></label>
-                                            <input type="radio" id="line4" name="line-style" value="4"/> <label for="line4"></label>
-                                            <input type="radio" id="line5" name="line-style" value="5"/> <label for="line5"></label>
-                                            <input type="radio" id="line6" name="line-style" value="6"/> <label for="line6"></label>
-                                            <input type="radio" id="line7" name="line-style" value="7"/> <label for="line7"></label>
-                                        </div>
--->
+                    <!--
+                                                            <div id="image-dropdown">
+                                                                <input checked="checked" type="radio" id="line1" name="line-style" value="1"/>
+                                                                <label for="line1"></label>
+                                                                <input type="radio" id="line2" name="line-style" value="2"/> <label for="line2"></label>
+                                                                <input type="radio" id="line3" name="line-style" value="3"/> <label for="line3"></label>
+                                                                <input type="radio" id="line4" name="line-style" value="4"/> <label for="line4"></label>
+                                                                <input type="radio" id="line5" name="line-style" value="5"/> <label for="line5"></label>
+                                                                <input type="radio" id="line6" name="line-style" value="6"/> <label for="line6"></label>
+                                                                <input type="radio" id="line7" name="line-style" value="7"/> <label for="line7"></label>
+                                                            </div>
+                    -->
                 </details>
 
             </fieldset>

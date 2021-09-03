@@ -55,3 +55,5 @@ if (browser.agent === "MSIE" && browser.version <= 11) {
 	newDiv.setAttribute("style", "background-color:yellow;padding:18px;");
 	document.body.insertBefore(newDiv, document.body.firstChild);
 }
+console.log(browser.agent);
+console.log(browser.version);
