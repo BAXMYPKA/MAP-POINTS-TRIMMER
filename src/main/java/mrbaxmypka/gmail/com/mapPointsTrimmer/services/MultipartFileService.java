@@ -56,7 +56,8 @@ public class MultipartFileService {
 
     /**
      * @param multipartDto
-     * @param locale
+     * @param locale To localize possible messages for User. If null, English will be userd.
+     * @return The resulting {@link Path} in a temp directory with the processed file for a User.
      * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
      */
     public Path processMultipartDto(@NonNull MultipartDto multipartDto, @Nullable Locale locale)
@@ -191,7 +192,6 @@ public class MultipartFileService {
         String imagesFolderName = DownloadAs.KMZ.equals(multipartDto.getDownloadAs()) ? "files/" : "files/";
         String pictogramFullPath = PICTOGRAMS_FULL_PATH_PREFIX +
                 fileService.getPictogramsNamesPaths().get(multipartDto.getPictogramName());
-
         byte[] pictogram = Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(pictogramFullPath))
                 .readAllBytes();
         ZipEntry zipEntry = new ZipEntry(imagesFolderName + multipartDto.getPictogramName());

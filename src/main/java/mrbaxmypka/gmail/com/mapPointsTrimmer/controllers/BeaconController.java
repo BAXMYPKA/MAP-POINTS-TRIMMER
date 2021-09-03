@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 public class BeaconController extends AbstractController {
 
     /**
-     * Warning! Now it works only for the localhost single-user assignment for shutting down the main Application when idle.
+     * For the localhost single-user assignment for shutting down the main Application when idle.
      * In the real serverside implementation it has to be intended for interrupting the processing.
      * <p>
      * When receiving a keep-alive 'navigator.sendBeacon()' POST signal resets the {@link #getWebSessionService()} counter.

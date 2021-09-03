@@ -36,6 +36,8 @@ public class WebSessionService {
     private final boolean singleUserMode;
     private final MapPointsTrimmerApplication mapPointsTrimmerApplication;
     private final MultipartFileService multipartFileService;
+    protected final int INITIAL_DELAY = 60;
+    protected final int PERIOD = 25;
 
     @Autowired
     public WebSessionService(MapPointsTrimmerApplication mapPointsTrimmerApplication,
@@ -57,7 +59,7 @@ public class WebSessionService {
                 shutdownApplication();
             }
         };
-        scheduledTimers.scheduleAtFixedRate(checkUserSession, 60, 25, TimeUnit.SECONDS);
+        scheduledTimers.scheduleAtFixedRate(checkUserSession, INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
     }
 
     /**
