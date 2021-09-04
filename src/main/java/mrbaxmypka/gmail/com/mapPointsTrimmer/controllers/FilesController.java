@@ -32,7 +32,7 @@ public class FilesController extends AbstractController {
     /**
      * @param file   Can receive .kml or .kmz files only
      * @param locale For defining a User language
-     * @return
+     * @return The resulting processed file as the binary body into the response.
      */
     @PostMapping(path = "/poi",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,

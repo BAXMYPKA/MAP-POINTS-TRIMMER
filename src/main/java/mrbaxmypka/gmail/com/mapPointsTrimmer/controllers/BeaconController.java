@@ -12,8 +12,10 @@ import javax.servlet.http.HttpSession;
 public class BeaconController extends AbstractController {
 
     /**
-     * For the localhost single-user assignment for shutting down the main Application when idle.
-     * In the real serverside implementation it has to be intended for interrupting the processing.
+     * Periodic signal that an end user is still keep in touch with the server.
+     * When idle for a long time it is the localhost single-user assignment for shutting down the main Application.
+     * In the real serverside implementation it has to be intended for interrupting the processing and deleting the
+     *  resulting temp file as the end user won't be able to obtain it.
      * <p>
      * When receiving a keep-alive 'navigator.sendBeacon()' POST signal resets the {@link #getWebSessionService()} counter.
      */
@@ -25,8 +27,9 @@ public class BeaconController extends AbstractController {
     }
 
     /**
-     * When close tab, close browser or refresh the page the browser sends a 'navigator.sendBeacon('/stop')' POST signal
-     * to stop the processing.
+     * When closing a browser, closing a tab with the Application or refresh a page
+     * the browser sends a 'navigator.sendBeacon('/stop')' POST signal for the server to stop the processing
+     * and delete the resulting temp file as the end User won't be able to obtain it.
      */
     @PostMapping(path = "/stop")
     @ResponseBody
