@@ -1,7 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
@@ -40,11 +40,11 @@ public class HtmlHandler {
     /**
      * @param description  Receives inner text from {@literal <description>...</description>} which in fact is the
      *                     HTML markup
-     * @param multipartDto To determine all other conditions to be processed on CDATA HTML
+     * @param multipartMainDto To determine all other conditions to be processed on CDATA HTML
      * @return Fully processed HTML markup to be included in CDATA block.
      */
-    public String processDescriptionText(String description, MultipartDto multipartDto) {
-        log.debug("Description and '{}' are received", multipartDto);
+    public String processDescriptionText(String description, MultipartMainDto multipartMainDto) {
+        log.debug("Description and '{}' are received", multipartMainDto);
         Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
 
         if (parsedHtmlFragment == null) {
@@ -59,21 +59,21 @@ public class HtmlHandler {
         //A possible plain text outside html markup
         String plainTextDescription = extractPlainTextDescriptions(parsedHtmlFragment).trim();
         //MUST be the first treatment
-        if (multipartDto.isClearOutdatedDescriptions()) { //Locus Map specific
+        if (multipartMainDto.isClearOutdatedDescriptions()) { //Locus Map specific
             log.debug("Outdated descriptions will be cleared...");
-            clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
+            clearOutdatedDescriptions(parsedHtmlFragment, multipartMainDto);
         }
-        if (multipartDto.getPath() != null) {
+        if (multipartMainDto.getPath() != null) {
             log.debug("The new path for the images will be set...");
-            setPath(parsedHtmlFragment, multipartDto.getPathType(), multipartDto.getPath());
+            setPath(parsedHtmlFragment, multipartMainDto.getPathType(), multipartMainDto.getPath());
         }
-        if (multipartDto.getPreviewSize() != null) {
+        if (multipartMainDto.getPreviewSize() != null) {
             log.debug("The new preview size for the images will be set...");
-            setPreviewSize(parsedHtmlFragment, multipartDto);
+            setPreviewSize(parsedHtmlFragment, multipartMainDto);
         }
         addStartEndComments(parsedHtmlFragment);
         // MUST be the last treatment in all the conditions chain
-        if (multipartDto.isTrimDescriptions()) {
+        if (multipartMainDto.isTrimDescriptions()) {
             log.debug("The description will be cleared...");
             return trimDescriptions(parsedHtmlFragment);
         }
@@ -174,14 +174,14 @@ public class HtmlHandler {
      * 2) Relative type of path (starting with '../', '/' or folder name like 'Locus/photos/'
      * 3) Empty String if the given href starting with 'www.' or 'http://'
      */
-    String getLocusAttachmentAbsoluteHref(String oldHrefAbsoluteTypeWithFilename, MultipartDto multipartDto) {
+    String getLocusAttachmentAbsoluteHref(String oldHrefAbsoluteTypeWithFilename, MultipartMainDto multipartMainDto) {
         if (oldHrefAbsoluteTypeWithFilename.startsWith("http") || oldHrefAbsoluteTypeWithFilename.startsWith("www")) {
             log.debug("Locus doesn't accept web types of href for <attachment>, blank string will be returned");
             return "";
         }
         String locusHref = oldHrefAbsoluteTypeWithFilename.trim().replace("file:///", "");
 
-        if (PathTypes.ABSOLUTE.equals(multipartDto.getPathType()) && !locusHref.startsWith("/")) {
+        if (PathTypes.ABSOLUTE.equals(multipartMainDto.getPathType()) && !locusHref.startsWith("/")) {
             locusHref = "/" + locusHref;
         }//Relative type of path can start from "/" or "..." so we ignore that type
         locusHref = locusHref.replaceAll("\\\\", "/").replaceAll("//", "/");
@@ -229,12 +229,12 @@ public class HtmlHandler {
      * with User's text and images.
      * For Locus Pro {@code <!-- desc_user:start -->} and {@code <!-- desc_user:end -->} are the markers
      * for displaying all inner data and text on POI screen (description text, photo, photo data etc).
-     * So when {@link MultipartDto#getPreviewSize()} != null to display it on the screen these comments
+     * So when {@link MultipartMainDto#getPreviewSize()} != null to display it on the screen these comments
      * have to embrace all the description.
      */
-    private void setPreviewSize(Element parsedHtmlFragment, MultipartDto multipartDto) {
+    private void setPreviewSize(Element parsedHtmlFragment, MultipartMainDto multipartMainDto) {
 
-        String previewValue = multipartDto.getPreviewSize() + multipartDto.getPreviewSizeUnit().getUnit();
+        String previewValue = multipartMainDto.getPreviewSize() + multipartMainDto.getPreviewSizeUnit().getUnit();
 
         Elements imgElements = parsedHtmlFragment.select("img");
 //		Elements imgElements = parsedHtmlFragment.select("img[src]");
@@ -252,7 +252,7 @@ public class HtmlHandler {
             //GoogleEarth add "max-width" attribute in style
             if (img.hasAttr("style")) {
                 log.trace("Width '{}' will be reset within existing 'style' attribute", previewValue);
-                setPreviewSizeInStyles(img, multipartDto.getPreviewSize(), multipartDto.getPreviewSizeUnit());
+                setPreviewSizeInStyles(img, multipartMainDto.getPreviewSize(), multipartMainDto.getPreviewSizeUnit());
             } else {
                 log.trace("New attribute 'width={}' will be set into 'img'", previewValue);
                 setStyleToElement(img, "width", previewValue);
@@ -267,10 +267,10 @@ public class HtmlHandler {
                 .forEach(element -> element.replaceWith(getAElementWithInnerImgElement(element)));
         //Finally creates a new User description within <!-- desc_user:start --> ... <!-- desc_user:end -->
         // with User's text and images inside it.
-        if (!multipartDto.isClearOutdatedDescriptions()) { //Locus Map specific
+        if (!multipartMainDto.isClearOutdatedDescriptions()) { //Locus Map specific
             log.trace("Clearing outdated description as this option isn't presented in MultipartDto...");
             //All is not clear and need to be placed within UserDescStartEnd comments
-            clearOutdatedDescriptions(parsedHtmlFragment, multipartDto);
+            clearOutdatedDescriptions(parsedHtmlFragment, multipartMainDto);
         }
     }
 
@@ -348,13 +348,13 @@ public class HtmlHandler {
      * Removes all the unnecessary HTML nodes and data duplicates.
      * MUST be the last method in a chain.
      */
-    private void clearOutdatedDescriptions(Element parsedHtmlFragment, MultipartDto multipartDto) {
+    private void clearOutdatedDescriptions(Element parsedHtmlFragment, MultipartMainDto multipartMainDto) {
         log.debug("The description is being cleared...");
         deleteImagesDuplicates(parsedHtmlFragment);
 
         Elements imgElements = parsedHtmlFragment.select("img[src]");
         String userDescriptionText = getUserDescriptionText(parsedHtmlFragment).trim();
-        Element newHtmlDescription = createNewHtmlDescription(userDescriptionText, multipartDto);
+        Element newHtmlDescription = createNewHtmlDescription(userDescriptionText, multipartMainDto);
 
         if (!imgElements.isEmpty()) {
 
@@ -413,19 +413,19 @@ public class HtmlHandler {
     /**
      * For Locus Pro {@code <!-- desc_user:start -->} and {@code <!-- desc_user:end -->} are the markers
      * for displaying all inner data and text on POI screen (description text, photo, photo data etc).
-     * So when {@link MultipartDto#getPreviewSize()}  != null} to display it on the screen these comments
+     * So when {@link MultipartMainDto#getPreviewSize()}  != null} to display it on the screen these comments
      * have to embrace all the description.
      * Otherwise only description text will be visible.
      *
      * @return A {@code <div></div>} Element with a new table with tbody embraced with "desc_user" comments
-     * or just a new table with tbody for a data if {@link MultipartDto#getPreviewSize()} not set.
+     * or just a new table with tbody for a data if {@link MultipartMainDto#getPreviewSize()} not set.
      */
-    private Element createNewHtmlDescription(String userDescription, MultipartDto multipartDto) {
+    private Element createNewHtmlDescription(String userDescription, MultipartMainDto multipartMainDto) {
         Element table = new Element("table")
                 .attr("width", "100%").attr("style", "color:black");
         table.appendChild(new Element("tbody"));
         //'setPath' option for photos and any user description texts in Locus have to be within special comments
-        if (multipartDto.getPreviewSize() != null || !userDescription.isBlank()) {
+        if (multipartMainDto.getPreviewSize() != null || !userDescription.isBlank()) {
             String descUserStart = " desc_user:start ";
             String descUserEnd = " desc_user:end ";
             Element divElement = new Element("div").appendChild(new Comment(descUserStart));

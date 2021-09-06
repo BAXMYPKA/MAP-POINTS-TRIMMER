@@ -1,6 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import org.springframework.lang.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -13,7 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -58,12 +57,12 @@ public class XmlTestUtils {
             "</kml>";
 
 
-    public static Document getDocument(MultipartDto multipartDto) throws ParserConfigurationException, IOException,
+    public static Document getDocument(MultipartMainDto multipartMainDto) throws ParserConfigurationException, IOException,
             SAXException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse(multipartDto.getMultipartFile().getInputStream());
+        Document document = documentBuilder.parse(multipartMainDto.getMultipartFile().getInputStream());
         document.normalizeDocument();
         return document;
     }

@@ -263,7 +263,7 @@ extends java.lang.Object</pre>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>abstract java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processXml(java.io.InputStream,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processXml</a></span>&#8203;(java.io.InputStream&nbsp;inputStream,
-          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block"><code>DocumentBuilderFactory.setNamespaceAware(boolean)</code> true is crucial for getting
  <code>Node.getLocalName()</code>!</div>
@@ -383,7 +383,7 @@ public&nbsp;XmlHandler&#8203;(<a href="HtmlHandler.html" title="class in mrbaxmy
 <li class="blockList">
 <h4>processXml</h4>
 <pre class="methodSignature">public abstract&nbsp;java.lang.String&nbsp;processXml&#8203;(java.io.InputStream&nbsp;inputStream,
-                                            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)
+                                            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)
                                      throws java.io.IOException,
                                             javax.xml.parsers.ParserConfigurationException,
                                             org.xml.sax.SAXException,
@@ -394,7 +394,7 @@ public&nbsp;XmlHandler&#8203;(<a href="HtmlHandler.html" title="class in mrbaxmy
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>inputStream</code> - An xml file (kml, gpx etc) as the <code>InputStream</code> from a given <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto"><code>MultipartDto</code></a></dd>
-<dd><code>multipartDto</code> - The main object to get data from.</dd>
+<dd><code>multipartMainDto</code> - The main object to get data from.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A fully processed xml string.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>

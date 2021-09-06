@@ -237,14 +237,14 @@ extends java.lang.Object</pre>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addImageNameFromZip(java.util.zip.ZipEntry,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">addImageNameFromZip</a></span>&#8203;(java.util.zip.ZipEntry&nbsp;zipEntry,
-                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createNewZip(java.util.zip.ZipOutputStream,java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto,java.nio.file.Path)">createNewZip</a></span>&#8203;(java.util.zip.ZipOutputStream&nbsp;zos,
             java.lang.String&nbsp;processedXml,
-            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
+            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
             java.nio.file.Path&nbsp;tempFile)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -260,8 +260,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>private java.io.InputStream</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getXmlFromZip(mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFileDto,mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs,java.util.Locale)">getXmlFromZip</a></span>&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
-             <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartFileDto,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getXmlFromZip(mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFileDto,mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs,java.util.Locale)">getXmlFromZip</a></span>&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
+             <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartMainFileDto,
              <a href="../utils/DownloadAs.html" title="enum in mrbaxmypka.gmail.com.mapPointsTrimmer.utils">DownloadAs</a>&nbsp;xmlFileExtension,
              java.util.Locale&nbsp;locale)</code></th>
 <td class="colLast">
@@ -272,7 +272,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>private java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getZipFilename(mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">getZipFilename</a></span>&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getZipFilename(mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">getZipFilename</a></span>&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">As some old versions of Edge browser (at least Microsoft EdgeHTML 17 +) attach <code>MultipartFile.getOriginalFilename()</code>
  as the full path to the file (e.g.</div>
@@ -282,21 +282,21 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processExistingZip(java.util.zip.ZipOutputStream,java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto,java.nio.file.Path)">processExistingZip</a></span>&#8203;(java.util.zip.ZipOutputStream&nbsp;zos,
                   java.lang.String&nbsp;processedXml,
-                  <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
+                  <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
                   java.nio.file.Path&nbsp;tempFile)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.nio.file.Path</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processMultipartDto(mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto,java.util.Locale)">processMultipartDto</a></span>&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processMultipartDto(mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto,java.util.Locale)">processMultipartDto</a></span>&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
                    java.util.Locale&nbsp;locale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processTempZip(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFileDto,java.util.Locale)">processTempZip</a></span>&#8203;(java.lang.String&nbsp;processedXml,
-              <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
-              <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartFileDto,
+              <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
+              <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartMainFileDto,
               java.util.Locale&nbsp;locale)</code></th>
 <td class="colLast">
 <div class="block">https://stackoverflow.com/a/43836969/11592202
@@ -307,20 +307,20 @@ extends java.lang.Object</pre>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#writeDownloadedGoogleIcons(java.util.zip.ZipOutputStream,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">writeDownloadedGoogleIcons</a></span>&#8203;(java.util.zip.ZipOutputStream&nbsp;zos,
-                          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#writeLocusPictogram(java.util.zip.ZipOutputStream,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">writeLocusPictogram</a></span>&#8203;(java.util.zip.ZipOutputStream&nbsp;zos,
-                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>private java.nio.file.Path</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#writeTempFile(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFileDto,java.util.Locale)">writeTempFile</a></span>&#8203;(java.lang.String&nbsp;processedXml,
-             <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
-             <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartFileDto,
+             <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
+             <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartMainFileDto,
              java.util.Locale&nbsp;locale)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -456,7 +456,7 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <li class="blockList">
 <h4>processMultipartDto</h4>
 <pre class="methodSignature">public&nbsp;java.nio.file.Path&nbsp;processMultipartDto&#8203;(@NonNull
-                                              <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
+                                              <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
                                               @Nullable
                                               java.util.Locale&nbsp;locale)
                                        throws java.io.IOException,
@@ -466,7 +466,7 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
                                               java.lang.InterruptedException</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>multipartDto</code> - </dd>
+<dd><code>multipartMainDto</code> - </dd>
 <dd><code>locale</code> - To localize possible messages for User. If null, English will be userd.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The resulting <code>Path</code> in a temp directory with the processed file for a User.</dd>
@@ -485,8 +485,8 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <ul class="blockList">
 <li class="blockList">
 <h4>getXmlFromZip</h4>
-<pre class="methodSignature">private&nbsp;java.io.InputStream&nbsp;getXmlFromZip&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
-                                          <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartFileDto,
+<pre class="methodSignature">private&nbsp;java.io.InputStream&nbsp;getXmlFromZip&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
+                                          <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartMainFileDto,
                                           <a href="../utils/DownloadAs.html" title="enum in mrbaxmypka.gmail.com.mapPointsTrimmer.utils">DownloadAs</a>&nbsp;xmlFileExtension,
                                           java.util.Locale&nbsp;locale)
                                    throws java.io.IOException</pre>
@@ -495,7 +495,7 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
  3) Adds all found images files to the instant cache in <code>MultipartDto#getImagesNamesFromZip()</code></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>multipartDto</code> - Which contains .gpz, .kmz or any other ZIP archives</dd>
+<dd><code>multipartMainDto</code> - Which contains .gpz, .kmz or any other ZIP archives</dd>
 <dd><code>xmlFileExtension</code> - .kml, .gpx or any possible extension of the file to be extracted from the given ZIP
                          archive as it must be a single one inside.</dd>
 <dd><code>locale</code> - To send a localized error messages.</dd>
@@ -513,7 +513,7 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <li class="blockList">
 <h4>addImageNameFromZip</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;addImageNameFromZip&#8203;(java.util.zip.ZipEntry&nbsp;zipEntry,
-                                 <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                 <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 </li>
 </ul>
 <a id="processTempZip(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFileDto,java.util.Locale)">
@@ -523,8 +523,8 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <li class="blockList">
 <h4>processTempZip</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;processTempZip&#8203;(java.lang.String&nbsp;processedXml,
-                            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
-                            <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartFileDto,
+                            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
+                            <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartMainFileDto,
                             java.util.Locale&nbsp;locale)
                      throws java.io.IOException</pre>
 <div class="block">https://stackoverflow.com/a/43836969/11592202
@@ -533,7 +533,7 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>processedXml</code> - A processed xml String to be written to the resulting file.</dd>
-<dd><code>multipartDto</code> - </dd>
+<dd><code>multipartMainDto</code> - </dd>
 <dd><code>locale</code> - To return a locale-oriented messages</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - With the localized message to be returned to a User if the temp file writing is failed.</dd>
@@ -547,7 +547,7 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <li class="blockList">
 <h4>writeDownloadedGoogleIcons</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;writeDownloadedGoogleIcons&#8203;(java.util.zip.ZipOutputStream&nbsp;zos,
-                                        <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)
+                                        <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)
                                  throws java.io.IOException</pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -562,7 +562,7 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <li class="blockList">
 <h4>writeLocusPictogram</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;writeLocusPictogram&#8203;(java.util.zip.ZipOutputStream&nbsp;zos,
-                                 <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)
+                                 <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)
                           throws java.io.IOException</pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -578,7 +578,7 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <h4>processExistingZip</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;processExistingZip&#8203;(java.util.zip.ZipOutputStream&nbsp;zos,
                                 java.lang.String&nbsp;processedXml,
-                                <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
+                                <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
                                 java.nio.file.Path&nbsp;tempFile)
                          throws java.io.IOException</pre>
 <dl>
@@ -595,7 +595,7 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <h4>createNewZip</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;createNewZip&#8203;(java.util.zip.ZipOutputStream&nbsp;zos,
                           java.lang.String&nbsp;processedXml,
-                          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
+                          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
                           java.nio.file.Path&nbsp;tempFile)
                    throws java.io.IOException</pre>
 <dl>
@@ -610,13 +610,13 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <ul class="blockList">
 <li class="blockList">
 <h4>getZipFilename</h4>
-<pre class="methodSignature">private&nbsp;java.lang.String&nbsp;getZipFilename&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+<pre class="methodSignature">private&nbsp;java.lang.String&nbsp;getZipFilename&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">As some old versions of Edge browser (at least Microsoft EdgeHTML 17 +) attach <code>MultipartFile.getOriginalFilename()</code>
  as the full path to the file (e.g. "C:\temp\Points.kmz" instead of just "Points.kmz"), getting just the filename
  is a bit more complicated.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>multipartDto</code> - A filename to be extracted from.</dd>
+<dd><code>multipartMainDto</code> - A filename to be extracted from.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The filename of a .zip(.kmz) archive from a given <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto"><code>MultipartDto</code></a></dd>
 </dl>
@@ -629,8 +629,8 @@ public&nbsp;MultipartFileService&#8203;(<a href="../xml/KmlHandler.html" title="
 <li class="blockList">
 <h4>writeTempFile</h4>
 <pre class="methodSignature">private&nbsp;java.nio.file.Path&nbsp;writeTempFile&#8203;(java.lang.String&nbsp;processedXml,
-                                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto,
-                                         <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartFileDto,
+                                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto,
+                                         <a href="../entitiesDto/MultipartFileDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartFileDto</a>&nbsp;multipartMainFileDto,
                                          java.util.Locale&nbsp;locale)
                                   throws java.io.IOException</pre>
 <dl>

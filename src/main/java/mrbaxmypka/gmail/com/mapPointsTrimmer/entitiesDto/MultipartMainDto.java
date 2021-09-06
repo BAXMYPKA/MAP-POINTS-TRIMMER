@@ -23,7 +23,7 @@ import java.util.*;
 @ToString
 @Getter
 @Setter
-public class MultipartDto implements Serializable {
+public class MultipartMainDto implements Serializable {
 
     static final long serialVersionUID = 3L;
 
@@ -407,7 +407,7 @@ public class MultipartDto implements Serializable {
     private DownloadAs downloadAs;
 
     /**
-     * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartDto, Locale)}
+     * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartMainDto, Locale)}
      * to associate a process (thread) and a temp file with the current User session.
      */
     @Nullable
@@ -420,7 +420,7 @@ public class MultipartDto implements Serializable {
      */
     private final Set<String> imagesNamesFromZip = new HashSet<>();
     /**
-     * Google Map icons added by {@link GoogleIconsService#processIconHref(String, MultipartDto)}  )}
+     * Google Map icons added by {@link GoogleIconsService#processIconHref(String, MultipartMainDto)}  )}
      * to be added into the resulting zip archive.
      * If a byte array value is null it means the icon with the key name is presented within a given archive from
      * {@link #getMultipartFile()}

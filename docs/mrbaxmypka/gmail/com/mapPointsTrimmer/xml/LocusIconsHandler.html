@@ -220,7 +220,7 @@ extends java.lang.Object</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#excludeFilesFromZip(java.util.Map,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">excludeFilesFromZip</a></span>&#8203;(java.util.Map&lt;java.lang.String,&#8203;org.w3c.dom.Node&gt;&nbsp;replacedStyleObjects,
-                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">Adds .png photo icons names into the <code>MultipartDto#getFilesToBeExcluded()</code>.</div>
 </td>
@@ -253,7 +253,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>(package private) void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#replaceLocusIcons(mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">replaceLocusIcons</a></span>&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#replaceLocusIcons(mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">replaceLocusIcons</a></span>&#8203;(<a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">1.</div>
 </td>
@@ -427,7 +427,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>replaceLocusIcons</h4>
 <pre class="methodSignature">void&nbsp;replaceLocusIcons&#8203;(@NonNull
-                       <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                       <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">1. Finds all the &lt;StyleMap&gt;s with "id" references to photo thumbnails
  2. If a &lt;StyleMap&gt; with a previously created "id" to the current  <code>MultipartDto#getPictogramName()</code> exists it:
  2.1 Replaces all the &lt;Placemark&gt;s &lt;styleUrl&gt;s with that existing &lt;StyleMap&gt;
@@ -449,7 +449,7 @@ extends java.lang.Object</pre>
  10. If <code>MultipartDto#getDownloadAs()</code> == <a href="../utils/DownloadAs.html#KMZ"><code>DownloadAs.KMZ</code></a> all the previously deleted photo icons should be excluded from the resultant .zip(.kmz) file.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>multipartDto</code> - </dd>
+<dd><code>multipartMainDto</code> - </dd>
 </dl>
 </li>
 </ul>
@@ -690,7 +690,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>excludeFilesFromZip</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;excludeFilesFromZip&#8203;(java.util.Map&lt;java.lang.String,&#8203;org.w3c.dom.Node&gt;&nbsp;replacedStyleObjects,
-                                 <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                 <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">Adds .png photo icons names into the <code>MultipartDto#getFilesToBeExcluded()</code>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

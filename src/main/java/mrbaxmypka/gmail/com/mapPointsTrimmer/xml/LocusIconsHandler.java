@@ -1,7 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import org.springframework.lang.NonNull;
@@ -27,29 +27,29 @@ class LocusIconsHandler {
 
     /**
      * 1. {@literal Finds all the <StyleMap>s with "id" references to photo thumbnails}
-     * 2. {@literal If a <StyleMap> with a previously created "id" to the current } {@link MultipartDto#getPictogramName()} exists it:
+     * 2. {@literal If a <StyleMap> with a previously created "id" to the current } {@link MultipartMainDto#getPictogramName()} exists it:
      * 2.1 {@literal Replaces all the <Placemark>s <styleUrl>s with that existing <StyleMap>}
-     * 3. {@literal If no <StyleMap> for that} {@link MultipartDto#getPictogramName()} exists it:
+     * 3. {@literal If no <StyleMap> for that} {@link MultipartMainDto#getPictogramName()} exists it:
      * 3.1 {@literal It gets a first <StyleMap> as an example, clones it and its 'normal' and 'highlight' <Style>s}
      * 3.2 {@literal Creates a new <StyleMap> and its 'normal' and 'highlight' inner <Style>s based on the clone.}
      * 3.3 {@literal Replaces all the <Placemark>s <styleUrl>s with that new cloned <StyleMap>}
      * 4. {@literal Deletes all the <StyleMap>s from the Document with "id" to photo thumbnails.
      * As well as their included "Normal" and "Highlighted" <Style>s}
      * 5. {@literal Finds all the <Style>s with "id" references to photo thumbnails}
-     * 6. {@literal If <Style> with 'id' as a such a pictogram name as:} {@link MultipartDto#getPictogramName()} exists it:
+     * 6. {@literal If <Style> with 'id' as a such a pictogram name as:} {@link MultipartMainDto#getPictogramName()} exists it:
      * 6.1 {@literal Replaces all the <Placemark>s <styleUrl>s to thumbnail with that existing <Style>}
      * 7. {@literal Deletes all the <Style>s with thumbnail 'id' attributes}
-     * 8. {@literal If no <Style> for that} {@link MultipartDto#getPictogramName()} exists it:
+     * 8. {@literal If no <Style> for that} {@link MultipartMainDto#getPictogramName()} exists it:
      * 8.1 {@literal It gets a first <Style> as an example and clones it}
      * 8.2 {@literal Creates a new <Style> and new href to icon based on the clone.}
      * 8.3 {@literal Replaces all the <Placemark>s <styleUrl>s with that new cloned <StyleMap>}
      * 9. {@literal Deletes all the <Style>s with thumbnail 'id' attributes}
-     * 10. If {@link MultipartDto#getDownloadAs()} == {@link DownloadAs#KMZ} all the previously deleted photo icons should be excluded from the resultant .zip(.kmz) file.
+     * 10. If {@link MultipartMainDto#getDownloadAs()} == {@link DownloadAs#KMZ} all the previously deleted photo icons should be excluded from the resultant .zip(.kmz) file.
      *
-     * @param multipartDto
+     * @param multipartMainDto
      */
-    void replaceLocusIcons(@NonNull MultipartDto multipartDto) {
-        String pictogramName = multipartDto.getPictogramName();
+    void replaceLocusIcons(@NonNull MultipartMainDto multipartMainDto) {
+        String pictogramName = multipartMainDto.getPictogramName();
         if (pictogramName == null || pictogramName.isBlank()) {
             log.warn("Pictogram name is null or empty!");
             return;
@@ -60,7 +60,7 @@ class LocusIconsHandler {
         }
         Map<String, Node> replacedStyleMaps = replaceStyleMapsInStyleUrls(pictogramName);
         //After deleting from the Document photo icons should not be included into the resultant .zip(.kmz)
-        excludeFilesFromZip(replacedStyleMaps, multipartDto);
+        excludeFilesFromZip(replacedStyleMaps, multipartMainDto);
         deleteStyleObjectsFromDocument(replacedStyleMaps);
         //Refresh the current Nodes from Document
         kmlUtils.refreshStyleObjectsMap();
@@ -68,7 +68,7 @@ class LocusIconsHandler {
 
         Map<String, Node> replacedStyles = replaceStylesInStyleUrls(pictogramName);
         //After deleting from the Document photo icons should not be included into the resultant .zip(.kmz)
-        excludeFilesFromZip(replacedStyles, multipartDto);
+        excludeFilesFromZip(replacedStyles, multipartMainDto);
         deleteStyleObjectsFromDocument(replacedStyles);
         //Refresh the current Nodes from Document
         kmlUtils.refreshStyleObjectsMap();
@@ -77,7 +77,7 @@ class LocusIconsHandler {
 
     /**
      * {@literal All the <styleUrl>s pointers in <Placemark>s with the <Style>
-     * (with existing or newly created one) where the 'id' attribute is corresponding to }{@link MultipartDto#getPictogramName()}
+     * (with existing or newly created one) where the 'id' attribute is corresponding to }{@link MultipartMainDto#getPictogramName()}
      * {@literal  and <IconHref> is updated as well.}
      * Its better to execute this method after replacing StyleMaps in {@link #replaceStyleMapsInStyleUrls(String)}.
      *
@@ -99,7 +99,7 @@ class LocusIconsHandler {
     }
 
     /**
-     * @param pictogramName        {@link MultipartDto#getPictogramName()}.
+     * @param pictogramName        {@link MultipartMainDto#getPictogramName()}.
      *                             Also it is a standard styleUrl to an existing pictogram as just a full pictogram name
      * @param stylesWithThumbnails {@literal Filtered <StyleMap>s whith 'id's indicating the photo thumbnail}.
      *                             key=Style id
@@ -163,7 +163,7 @@ class LocusIconsHandler {
 
     /**
      * {@literal All the <styleUrl>s pointers in <Placemark>s with the <StyleMaps>
-     * (with existing or newly created one) where the 'id' attribute is corresponding to }{@link MultipartDto#getPictogramName()}
+     * (with existing or newly created one) where the 'id' attribute is corresponding to }{@link MultipartMainDto#getPictogramName()}
      * {@literal  and <IconHref>s in 'normal' and 'highlight' inner <Style>s are updated as well.}
      * Its better to execute this method before replacing Styles.
      *
@@ -185,7 +185,7 @@ class LocusIconsHandler {
     }
 
     /**
-     * @param pictogramName           {@link MultipartDto#getPictogramName()}
+     * @param pictogramName           {@link MultipartMainDto#getPictogramName()}
      * @param styleMapsWithThumbnails {@literal Filtered <StyleMap>s whith 'id's indicating the photo thumbnail}
      * @return True if the current {@link Document} contains {@literal a previously created <StyleMap> with such a pictogram name
      * and all the <Placemark>s <styleUrl>s have been replaced with it.
@@ -344,25 +344,25 @@ class LocusIconsHandler {
     }
 
     /**
-     * Adds .png photo icons names into the {@link MultipartDto#getFilesToBeExcluded()}.
+     * Adds .png photo icons names into the {@link MultipartMainDto#getFilesToBeExcluded()}.
      *
      * @param replacedStyleObjects {@literal <Style>s or <StyleMap>'s "normal" <Style>s which <href>s to photo icons are already deleted from the Document.
      *                             So the .png themselves should be deleted from a resultant .zip (.kmz) file.}
      */
-    private void excludeFilesFromZip(Map<String, Node> replacedStyleObjects, MultipartDto multipartDto) {
-        if (!DownloadAs.KMZ.equals(multipartDto.getDownloadAs())) return;
+    private void excludeFilesFromZip(Map<String, Node> replacedStyleObjects, MultipartMainDto multipartMainDto) {
+        if (!DownloadAs.KMZ.equals(multipartMainDto.getDownloadAs())) return;
         replacedStyleObjects.values()
                 .forEach(styleObject -> {
                     if (styleObject.getNodeName().equals("Style")) { //It's the <Style> Node
                         String href = kmlUtils.getIconHrefNodeFromStyle(styleObject).getTextContent();
                         String fileName = fileService.getFileName(href);
-                        multipartDto.getFilesToBeExcluded().add(fileName);
+                        multipartMainDto.getFilesToBeExcluded().add(fileName);
                     } else { //It's the <StyleMap> Node
                         Node normalStyle = kmlUtils.getNormalStyleNodeFromStyleMap(styleObject).orElseThrow(
                                 () -> new IllegalArgumentException("StyleMap object has to contain normal Style!"));
                         String href = kmlUtils.getIconHrefNodeFromStyle(normalStyle).getTextContent();
                         String fileName = fileService.getFileName(href);
-                        multipartDto.getFilesToBeExcluded().add(fileName);
+                        multipartMainDto.getFilesToBeExcluded().add(fileName);
                     }
                 });
     }

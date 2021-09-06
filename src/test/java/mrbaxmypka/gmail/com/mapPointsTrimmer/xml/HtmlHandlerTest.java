@@ -1,6 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,12 +56,12 @@ class HtmlHandlerTest {
 		"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:31</td></tr>\n" +
 		"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 		"<!-- desc_gen:end -->";
-	private MultipartDto multipartDto;
+	private MultipartMainDto multipartMainDto;
 	
 	@BeforeEach
 	public void beforeEach() throws IOException {
 		MultipartFile multipartFile = new MockMultipartFile("html", html.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
+		multipartMainDto = new MultipartMainDto(multipartFile);
 		messageSource = Mockito.mock(MessageSource.class);
 		resourceLoader = Mockito.mock(ResourceLoader.class);
 		resource = Mockito.mock(Resource.class);
@@ -90,11 +90,11 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -115,11 +115,11 @@ class HtmlHandlerTest {
 			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -142,11 +142,11 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile(
 			"html", withoutDescUserComments.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(400);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(withoutDescUserComments, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(withoutDescUserComments, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -170,11 +170,11 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile(
 			"html", withDescUserCommentsAndText.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(400);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(withDescUserCommentsAndText, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(withDescUserCommentsAndText, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -211,11 +211,11 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", oldStyleCdata.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(400);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(oldStyleCdata, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(oldStyleCdata, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -229,12 +229,12 @@ class HtmlHandlerTest {
 	@Test
 	public void setPath_and_ClearDescription_for_Old_Style_Placemarks_Should_Embrace_Images_And_Data_Within_DescUserStart_And_DescUserEnd_Comments_With_them_Initially() {
 		//GIVEN CDATA with image and user descriptions within <!-- desc_user:start --> and <!-- desc_user:end -->
-		multipartDto.setPathType("relative");
-		multipartDto.setPath("../myFiles");
+		multipartMainDto.setPathType("relative");
+		multipartMainDto.setPath("../myFiles");
 		
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -269,11 +269,11 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -292,10 +292,10 @@ class HtmlHandlerTest {
 	@Test
 	public void setPreviewSize_With_Null_Integer_Should_Left_All_Img_Widths_Attributes_As_They_Were_Before() {
 		//GIVEN
-		multipartDto.setPreviewSize(null);
+		multipartMainDto.setPreviewSize(null);
 		
 		//WHEN
-		String processedKml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedKml = htmlHandler.processDescriptionText(html, multipartMainDto);
 
 		//THEN
 		
@@ -339,11 +339,11 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", outdatedDescription.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(outdatedDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(outdatedDescription, multipartMainDto);
 		
 		//THEN contains only the earliest date of creation
 		assertAll(
@@ -386,12 +386,12 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(90);
-		multipartDto.setPreviewUnit("%");
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(90);
+		multipartMainDto.setPreviewUnit("%");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -449,15 +449,15 @@ class HtmlHandlerTest {
 			" </table><!-- desc_user:end --> \n" +
 			"</div><!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(100);
-		multipartDto.setPreviewUnit("%");
-		multipartDto.setPath("/storage/");
-		multipartDto.setAsAttachmentInLocus(true);
-		multipartDto.setClearOutdatedDescriptions(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(100);
+		multipartMainDto.setPreviewUnit("%");
+		multipartMainDto.setPath("/storage/");
+		multipartMainDto.setAsAttachmentInLocus(true);
+		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto);
 		
 		//THEN
 		assertFalse(processedHtml.contains("<a href=\"/storage/p__20200511_130333.jpg\" target=\"_blank\"></a>"));
@@ -466,11 +466,11 @@ class HtmlHandlerTest {
 	@Test
 	public void set_Relative_Path_Should_Set_Relative_Path_Type() {
 		//GIVEN
-		multipartDto.setPathType("relative");
-		multipartDto.setPath("../myFiles");
+		multipartMainDto.setPathType("relative");
+		multipartMainDto.setPath("../myFiles");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -490,11 +490,11 @@ class HtmlHandlerTest {
 	@ValueSource(strings = {"D:\\MyFolder\\MyPOI", "\\D:\\MyFolder\\MyPOI", "\\D:\\MyFolder\\MyPOI\\"})
 	public void set_Absolute_Windows_Path_Without_Whitespaces_Should_Set_Correct_Absolute_Path_Type(String absolutePath) {
 		//GIVEN
-		multipartDto.setPathType("Absolute");
-		multipartDto.setPath(absolutePath);
+		multipartMainDto.setPathType("Absolute");
+		multipartMainDto.setPath(absolutePath);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
 //		System.out.println(processedHtml);
 		
 		//THEN
@@ -515,11 +515,11 @@ class HtmlHandlerTest {
 	public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded() {
 		//GIVEN
 		String pathWithWhitespaces = "D:\\My Folder\\My POI";
-		multipartDto.setPathType("Absolute");
-		multipartDto.setPath(pathWithWhitespaces);
+		multipartMainDto.setPathType("Absolute");
+		multipartMainDto.setPath(pathWithWhitespaces);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
 		
 		//THEN All whitespaces should be replaced with URL '%20' sign
 		assertAll(
@@ -538,11 +538,11 @@ class HtmlHandlerTest {
 	@Test
 	public void set_Web_Path_Should_Set_Correct_HTTP_Path_Type() {
 		//GIVEN
-		multipartDto.setPathType("wEb");
-		multipartDto.setPath("http://www.mysite.com/my images");
+		multipartMainDto.setPathType("wEb");
+		multipartMainDto.setPath("http://www.mysite.com/my images");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -573,14 +573,14 @@ class HtmlHandlerTest {
 			"</font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", descriptionCdata.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(400);
-		multipartDto.setPathType("relAtive");
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(400);
+		multipartMainDto.setPathType("relAtive");
 		//Wrong backslash
-		multipartDto.setPath("..My maps\\my folder");
+		multipartMainDto.setPath("..My maps\\my folder");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(descriptionCdata, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(descriptionCdata, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -599,10 +599,10 @@ class HtmlHandlerTest {
 	@Test
 	public void setTrimDescriptions_Should_Trim_All_Whitespaces_And_Write_Only_Descriptions_Inline() {
 		//GIVEN
-		multipartDto.setTrimDescriptions(true);
+		multipartMainDto.setTrimDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
 		
 		//THEN
 		//Doesn't contain new strings
@@ -614,10 +614,10 @@ class HtmlHandlerTest {
 	@Test
 	public void clearDescriptions_Should_Return_Single_Table_With_Earliest_DateTimes_And_Full_Descriptions() {
 		//GIVEN
-		multipartDto.setClearOutdatedDescriptions(true);
+		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
 		
 		//THEN contains only the earliest date of creation
 		assertAll(
@@ -648,13 +648,13 @@ class HtmlHandlerTest {
 			"</div>" +
 			"Plain text description";
 		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPath("files");
-		multipartDto.setPreviewSize(300);
-		multipartDto.setClearOutdatedDescriptions(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath("files");
+		multipartMainDto.setPreviewSize(300);
+		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -715,14 +715,14 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(800);
-		multipartDto.setPreviewUnit("px");
-		multipartDto.setPath("/storage/");
-		multipartDto.setClearOutdatedDescriptions(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(800);
+		multipartMainDto.setPreviewUnit("px");
+		multipartMainDto.setPath("/storage/");
+		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto);
 		
 		//THEN
 		Pattern image = Pattern.compile("src=\"/storage/p__20200511_130333.jpg\"", Pattern.MULTILINE);
@@ -748,11 +748,11 @@ class HtmlHandlerTest {
 		//GIVEN Plain text from <description>...</description>
 		String plainTextDescription = "Plain text description";
 		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto);
 		
 		//THEN
 		assertTrue(processedHtml.contentEquals("Plain text description"));
@@ -772,11 +772,11 @@ class HtmlHandlerTest {
 			"</td></tr></table>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoPureImgs.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoPureImgs, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoPureImgs, multipartMainDto);
 		
 		//THEN
 		assertAll(
@@ -791,12 +791,12 @@ class HtmlHandlerTest {
 		//GIVEN Plain text prepended before HTML markup
 		String plainTextDescription = "Plain text description";
 		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPath("file");
-		multipartDto.setPreviewSize(300);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath("file");
+		multipartMainDto.setPreviewSize(300);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto);
 
 		//THEN
 		assertEquals("Plain text description", processedHtml);

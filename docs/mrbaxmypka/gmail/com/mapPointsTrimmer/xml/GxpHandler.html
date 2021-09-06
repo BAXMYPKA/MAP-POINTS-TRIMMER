@@ -186,7 +186,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processXml(java.io.InputStream,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processXml</a></span>&#8203;(java.io.InputStream&nbsp;inputStream,
-          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block"><code>DocumentBuilderFactory.setNamespaceAware(boolean)</code> true is crucial for getting
  <code>Node.getLocalName()</code>!</div>
@@ -251,7 +251,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <li class="blockList">
 <h4>processXml</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;processXml&#8203;(java.io.InputStream&nbsp;inputStream,
-                                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)
+                                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)
                             throws java.io.IOException,
                                    javax.xml.parsers.ParserConfigurationException,
                                    org.xml.sax.SAXException,
@@ -264,7 +264,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <dd><code><a href="XmlHandler.html#processXml(java.io.InputStream,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processXml</a></code>&nbsp;in class&nbsp;<code><a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.xml">XmlHandler</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>inputStream</code> - An xml file (kml, gpx etc) as the <code>InputStream</code> from a given <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto"><code>MultipartDto</code></a></dd>
-<dd><code>multipartDto</code> - The main object to get data from.</dd>
+<dd><code>multipartMainDto</code> - The main object to get data from.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A fully processed xml string.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>

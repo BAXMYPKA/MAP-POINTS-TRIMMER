@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.utils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.WebSessionService;
@@ -30,6 +31,9 @@ public class SessionTimer implements Runnable {
     private volatile int count = -1;
     private final int MAX_COUNT = 3;
     private volatile boolean isCancelled = false;
+    @Getter
+    @Setter
+    private boolean isAdmin = false;
 
     public SessionTimer(
             String sessionId, Map<String, SessionTimer> sessionBeacons, MultipartFileService multipartFileService) {

@@ -1,7 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,21 +33,21 @@ public class GoogleIconsService {
 
     /**
      * Google Earth has special href to icons it internally redirects to it local image store.
-     * If the given {@link MultipartDto#getDownloadAs()} == {@link DownloadAs#KMZ}
+     * If the given {@link MultipartMainDto#getDownloadAs()} == {@link DownloadAs#KMZ}
      * and the given href starts with {@link #MAPS_GOOGLE_URL} this method will try do download the icon.
      *
      * @param href         Href or src to an icon to be evaluated
-     * @param multipartDto To examine its current icons and images cache {@link MultipartDto#getImagesNamesFromZip()} (if any)
+     * @param multipartMainDto To examine its current icons and images cache {@link MultipartMainDto#getImagesNamesFromZip()} (if any)
      *                     whether such an icon is already present among archive.
      * @return If the given href don't start with {@link #MAPS_GOOGLE_URL} the initial href will be returned.
      * If the given user zip archive contains the icon name from the given href, the icon name without url will be returned.
      * Otherwise this method will try to download the icon and return the downloaded icon filename of the initial url if failed.
      */
-    public String processIconHref(String href, MultipartDto multipartDto) {
+    public String processIconHref(String href, MultipartMainDto multipartMainDto) {
         log.trace("Href to evaluate as GoogleMap special = '{}'", href == null ? "null" : href);
         if (href == null) return "";
         if (href.startsWith(MAPS_GOOGLE_URL)) {
-            String downloadedHref = getResolvedHref(href, multipartDto);
+            String downloadedHref = getResolvedHref(href, multipartMainDto);
             if (downloadedHref.startsWith(MAPS_GOOGLE_URL)) {
                 //Failed to download the icon, return the initial filename
                 return href;
@@ -56,7 +56,7 @@ public class GoogleIconsService {
                 return downloadedHref;
             } else {
                 //Icon hasn't been presented in a current zip and has been downloaded to GoogleIconsCache as a new one
-                multipartDto.getGoogleIconsToBeZipped().put(downloadedHref, googleIconsCache.getIcon(downloadedHref));
+                multipartMainDto.getGoogleIconsToBeZipped().put(downloadedHref, googleIconsCache.getIcon(downloadedHref));
                 return downloadedHref;
             }
         } else {
@@ -70,12 +70,12 @@ public class GoogleIconsService {
      * Otherwise it will try to download the icon. If success, the filename of the downloaded icon will be returned,
      * if isn't (e.g. no internet connection) it return the initial Google URL.
      */
-    private String getResolvedHref(String googleUrl, MultipartDto multipartDto) {
-        return multipartDto.getImagesNamesFromZip().stream()
+    private String getResolvedHref(String googleUrl, MultipartMainDto multipartMainDto) {
+        return multipartMainDto.getImagesNamesFromZip().stream()
                 .filter(imageFromZip -> imageFromZip.equals(getIconFilename(googleUrl)))
                 .findFirst() //Returns a previously downloaded filename presented in the given .kmz
                 .orElseGet(() -> {
-                    if (DownloadAs.KML.equals(multipartDto.getDownloadAs())) {
+                    if (DownloadAs.KML.equals(multipartMainDto.getDownloadAs())) {
                         return googleUrl; //No need to download
                     } else {
                         return downloadIcon(googleUrl); //To be included into the resultant .kmz

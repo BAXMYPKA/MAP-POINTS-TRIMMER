@@ -3,7 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +49,11 @@ public abstract class XmlHandler {
      * {@link DocumentBuilderFactory#setNamespaceAware(boolean)} true is crucial for getting
      * {@link Node#getLocalName()}!
      *
-     * @param inputStream  An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartDto}
-     * @param multipartDto The main object to get data from.
+     * @param inputStream  An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartMainDto}
+     * @param multipartMainDto The main object to get data from.
      * @return A fully processed xml string.
      */
-    public abstract String processXml(InputStream inputStream, MultipartDto multipartDto)
+    public abstract String processXml(InputStream inputStream, MultipartMainDto multipartMainDto)
             throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException;
 
     protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {

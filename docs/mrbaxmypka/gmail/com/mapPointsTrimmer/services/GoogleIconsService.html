@@ -224,13 +224,13 @@ extends java.lang.Object</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>private java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResolvedHref(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">getResolvedHref</a></span>&#8203;(java.lang.String&nbsp;googleUrl,
-               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processIconHref(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processIconHref</a></span>&#8203;(java.lang.String&nbsp;href,
-               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">Google Earth has special href to icons it internally redirects to it local image store.</div>
 </td>
@@ -318,14 +318,14 @@ public&nbsp;GoogleIconsService&#8203;(<a href="../utils/GoogleIconsCache.html" t
 <li class="blockList">
 <h4>processIconHref</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;processIconHref&#8203;(java.lang.String&nbsp;href,
-                                        <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                        <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">Google Earth has special href to icons it internally redirects to it local image store.
  If the given <code>MultipartDto#getDownloadAs()</code> == <a href="../utils/DownloadAs.html#KMZ"><code>DownloadAs.KMZ</code></a>
  and the given href starts with <a href="#MAPS_GOOGLE_URL"><code>MAPS_GOOGLE_URL</code></a> this method will try do download the icon.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>href</code> - Href or src to an icon to be evaluated</dd>
-<dd><code>multipartDto</code> - To examine its current icons and images cache <code>MultipartDto#getImagesNamesFromZip()</code> (if any)
+<dd><code>multipartMainDto</code> - To examine its current icons and images cache <code>MultipartDto#getImagesNamesFromZip()</code> (if any)
                      whether such an icon is already present among archive.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>If the given href don't start with <a href="#MAPS_GOOGLE_URL"><code>MAPS_GOOGLE_URL</code></a> the initial href will be returned.
@@ -341,7 +341,7 @@ public&nbsp;GoogleIconsService&#8203;(<a href="../utils/GoogleIconsCache.html" t
 <li class="blockList">
 <h4>getResolvedHref</h4>
 <pre class="methodSignature">private&nbsp;java.lang.String&nbsp;getResolvedHref&#8203;(java.lang.String&nbsp;googleUrl,
-                                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>googleUrl</code> - An <code>URL</code> which starts with <a href="#MAPS_GOOGLE_URL"><code>MAPS_GOOGLE_URL</code></a></dd>

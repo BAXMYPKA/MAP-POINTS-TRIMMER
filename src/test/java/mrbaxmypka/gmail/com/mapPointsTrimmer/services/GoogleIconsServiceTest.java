@@ -1,6 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GoogleIconsServiceTest {
 	
-	private MultipartDto multipartDto;
+	private MultipartMainDto multipartMainDto;
 	private GoogleIconsService googleIconsService;
 	private GoogleIconsCache googleIconsCache;
 	private MessageSource messageSource;
@@ -43,8 +43,8 @@ class GoogleIconsServiceTest {
 		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
 		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
 		fileService = new FileService(messageSource, resourceLoader);
-		multipartDto = new MultipartDto(new MockMultipartFile("Test.kml", "Test.kml", null, new byte[]{}));
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto = new MultipartMainDto(new MockMultipartFile("Test.kml", "Test.kml", null, new byte[]{}));
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 		
 		googleIconsCache = new GoogleIconsCache();
 		googleIconsService = new GoogleIconsService(googleIconsCache);
@@ -56,7 +56,7 @@ class GoogleIconsServiceTest {
 		//GIVEN
 		
 		//WHEN
-		String iconHref = googleIconsService.processIconHref(notMapsGoogleUrl, multipartDto);
+		String iconHref = googleIconsService.processIconHref(notMapsGoogleUrl, multipartMainDto);
 		
 		//THEN
 		assertEquals(iconHref, notMapsGoogleUrl);
@@ -71,23 +71,23 @@ class GoogleIconsServiceTest {
 	@Test
 	public void existing_Maps_Google_Icon_In_Kmz_Should_Not_Be_Downloaded() {
 		//GIVEN
-		multipartDto = Mockito.spy(
-				new MultipartDto(
+		multipartMainDto = Mockito.spy(
+				new MultipartMainDto(
 						new MockMultipartFile("Test.kml", "Test.kml", null, new byte[]{})));
 		// "cabs.png" as the existing in the user .kmz archive
 		Set<String> imagesNamesFromZip = new HashSet<>();
 		imagesNamesFromZip.add("cabs.png");
-		multipartDto.getImagesNamesFromZip().addAll(imagesNamesFromZip);
+		multipartMainDto.getImagesNamesFromZip().addAll(imagesNamesFromZip);
 		googleIconsService = Mockito.spy(new GoogleIconsService(googleIconsCache));
 		
 		//WHEN
-		String cabsIconHref = googleIconsService.processIconHref(EXISTING_GOOGLE_ICON, this.multipartDto);
+		String cabsIconHref = googleIconsService.processIconHref(EXISTING_GOOGLE_ICON, this.multipartMainDto);
 		
 		//THEN
 		//The existing icon filename should be returned
 		assertEquals("cabs.png", cabsIconHref);
 		//ImagesNamesFromZip should be involved to retrieve the existing icon name
-		Mockito.verify(multipartDto, Mockito.atLeastOnce()).getImagesNamesFromZip();
+		Mockito.verify(multipartMainDto, Mockito.atLeastOnce()).getImagesNamesFromZip();
 		//The icon should not be downloaded and put into the google icons cache
 		assertFalse(googleIconsCache.containsIconName("cabs.png"));
 	}
@@ -97,7 +97,7 @@ class GoogleIconsServiceTest {
 		//GIVEN
 		
 		//WHEN
-		String iconHref = googleIconsService.processIconHref(NOT_EXISTING_GOOGLE_ICON, multipartDto);
+		String iconHref = googleIconsService.processIconHref(NOT_EXISTING_GOOGLE_ICON, multipartMainDto);
 		
 		//THEN
 		assertEquals("parks.png", iconHref);
@@ -105,22 +105,22 @@ class GoogleIconsServiceTest {
 		assertTrue(googleIconsCache.containsIconName("parks.png"));
 		assertNotNull(googleIconsCache.getIcon("parks.png"));
 		assertTrue(googleIconsCache.getIcon("parks.png").length > 1024);
-		assertEquals(1, multipartDto.getGoogleIconsToBeZipped().size());
+		assertEquals(1, multipartMainDto.getGoogleIconsToBeZipped().size());
 	}
 
 	@Test
 	public void not_Existing_Maps_Google_Icon_In_Kmz_Should_Not_Be_Downloaded_And_Cached_When_DowloadAsKml() {
 		//GIVEN
-		multipartDto.setDownloadAs(DownloadAs.KML);
+		multipartMainDto.setDownloadAs(DownloadAs.KML);
 
 		//WHEN
-		String iconHref = googleIconsService.processIconHref(NOT_EXISTING_GOOGLE_ICON, multipartDto);
+		String iconHref = googleIconsService.processIconHref(NOT_EXISTING_GOOGLE_ICON, multipartMainDto);
 
 		//THEN
 		assertEquals(NOT_EXISTING_GOOGLE_ICON, iconHref);
 		//Google icons should not be downloaded and cached
 		assertFalse(googleIconsCache.containsIconName("parks.png"));
-		assertEquals(0, multipartDto.getGoogleIconsToBeZipped().size());
+		assertEquals(0, multipartMainDto.getGoogleIconsToBeZipped().size());
 	}
 
 }

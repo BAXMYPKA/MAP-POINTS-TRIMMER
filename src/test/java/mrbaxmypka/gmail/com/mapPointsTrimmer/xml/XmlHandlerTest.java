@@ -1,6 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
@@ -103,11 +103,11 @@ class XmlHandlerTest {
 				"</Document>\n" +
 				"</kml>";
 		MultipartFile multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
-		MultipartDto multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setAsAttachmentInLocus(true);
+		MultipartMainDto multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = xmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedKml = xmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 //		System.out.println(processedKml);
 		
 		//THEN <kml (...) xmlns:lc="http://www.locusmap.eu"> namespace in the header has to be created
@@ -148,9 +148,9 @@ class XmlHandlerTest {
 				"\t</Document>\n" +
 				"</kml>\n";
 		MultipartFile multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, googleKmlForTwoExceptions.getBytes(StandardCharsets.UTF_8));
-		MultipartDto multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setAsAttachmentInLocus(true);
-		multipartDto.setPointIconSize(300);
+		MultipartMainDto multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
+		multipartMainDto.setPointIconSize(300);
 		
 		//WHEN
 		

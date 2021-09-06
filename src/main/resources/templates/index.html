@@ -7,9 +7,9 @@
     <link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
           th:href="@{/img/favicon32x32.png}">
     <link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
-    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}" defer></script>
-    <script src="../static/scripts/index.js" th:src="@{scripts/index.js}" type="application/javascript" defer></script>
-    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.js}" defer></script>
+    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.es6}" defer></script>
+    <script src="../static/scripts/index.js" th:src="@{scripts/index.es6}" type="application/javascript" defer></script>
+    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.es6}" defer></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         const maxFileSizeMb = [[${maxFileSizeMb}]] !== null ? [[${maxFileSizeMb}]] : 4096;
@@ -27,7 +27,7 @@
     <header class="mainHeader">
 
         <img src="../static/img/MapPointsTrimmerLogo.png" th:src="@{/img/MapPointsTrimmerLogo.png}" alt="logo"
-             class="mainHeader__logoImg">
+             id="mainHeader__logoImg" class="mainHeader__logoImg">
 
         <div class="nameHeaderGroup">
 
@@ -570,20 +570,24 @@
                     <datalist id="presetsDatalist">
                     </datalist>
 
+                    <div class="loadForm__fieldSet__presetsButtons">
+
                     <span id="presetClear" class="specialButtons specialButtons_clear" title="Clear..."
                           th:title="#{html.title.clearTextArea}">
 						&#9851;
 					</span>
 
-                    <span id="presetSave" class="specialButtons specialButtons_accept" title="Save or Update preset"
-                          th:title="#{html.title.saveUpdatePreset}">
+                        <span id="presetSave" class="specialButtons specialButtons_accept" title="Save or Update preset"
+                              th:title="#{html.title.saveUpdatePreset}">
 						&#10004;
 					</span>
 
-                    <span id="presetDelete" class="specialButtons specialButtons_close" title="Delete preset"
-                          th:title="#{html.title.deletePreset}">
+                        <span id="presetDelete" class="specialButtons specialButtons_close" title="Delete preset"
+                              th:title="#{html.title.deletePreset}">
 						x
 					</span>
+
+                    </div>
 
                     <div class="interrogation" title="Description" style="margin-left: 0.7em"
                          th:title="#{commonMessages.interrogationAsDescription.presets}">
@@ -609,7 +613,7 @@
 
         </fieldset>
 
-        <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_adminFieldset" hidden>
+        <fieldset id="adminFieldset" class="loadForm loadForm__fieldSet loadForm__fieldSet_adminFieldset">
 
             <details class="details">
                 <summary class="summaryOption" th:utext="#{html.text.adminLogin}"><small>Admin login...</small>
@@ -620,7 +624,7 @@
                 <br>
                 <input type="password" id="adminPassword" class="textInput" placeholder="Password...">
                 <br>
-                <input type="button" id="adminVerifyButton" class="inputButton" value="Verify">
+                <input type="button" id="adminVerifyButton" class="inputButton adminVerifyButton" value="Verify">
                 <span> </span>
                 <div id="adminInterrogation" class="interrogation" title="Description"
                      th:title="#{commonMessages.interrogationAsDescription.adminLoginDescription}">

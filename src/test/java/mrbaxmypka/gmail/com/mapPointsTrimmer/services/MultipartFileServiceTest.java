@@ -1,6 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
@@ -48,7 +48,7 @@ class MultipartFileServiceTest {
 	private MultipartFileService multipartFileService;
 	private KmlUtils kmlUtils;
 	private MessageSource mockMessageSource;
-	private MultipartDto multipartDto;
+	private MultipartMainDto multipartMainDto;
 	private Path tmpFile;
 	private String originalKmlFilename = "MockKml.kml";
 	private String testKml = "<kml>test</kml>";
@@ -72,7 +72,7 @@ class MultipartFileServiceTest {
 				.thenReturn("Filename cannot be null!");
 		
 		mockKmlHandler = Mockito.mock(KmlHandler.class);
-		Mockito.when(mockKmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartDto.class))).thenReturn(testKml);
+		Mockito.when(mockKmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartMainDto.class))).thenReturn(testKml);
 		
 		resource = Mockito.mock(Resource.class);
 		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
@@ -101,8 +101,8 @@ class MultipartFileServiceTest {
 		
 		multipartFile = new MockMultipartFile(originalKmlFilename, originalKmlFilename, null, testKml.getBytes());
 		
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setDownloadAs(DownloadAs.KML);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setDownloadAs(DownloadAs.KML);
 		
 		PICTOGRAMS_NAMES_PATHS.put(PICTOGRAM1_PNG, "pictograms/" + PICTOGRAM1_PNG);
 		PICTOGRAMS_NAMES_PATHS.put(PICTOGRAM2_PNG, "pictograms/" + PICTOGRAM2_PNG);
@@ -134,7 +134,7 @@ class MultipartFileServiceTest {
 		// GIVEN
 		
 		//WHEN
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN
 		assertEquals(tmpFile, multipartFileService.getTempFiles().entrySet().iterator().next().getValue().getTempFile());
@@ -152,7 +152,7 @@ class MultipartFileServiceTest {
 		// GIVEN
 		
 		//WHEN
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN
 		assertEquals(testKml, Files.readString(tmpFile, StandardCharsets.UTF_8));
@@ -170,15 +170,15 @@ class MultipartFileServiceTest {
 				"TestKmz.kmz",
 				null,
 				new FileInputStream(new File("src/test/java/resources/TestKmz.kmz")));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setDownloadAs(DownloadAs.KML);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setDownloadAs(DownloadAs.KML);
 		
 		KmlHandler kmlHandler = new KmlHandler(
 				new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService);
 		multipartFileService = new MultipartFileService(kmlHandler, fileService, mockMessageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		String kmlResult = Files.readString(tmpFile, StandardCharsets.UTF_8);
 //		System.out.println(kmlResult);
 		
@@ -194,13 +194,13 @@ class MultipartFileServiceTest {
 	public void downloadAsKmz_From_Kml_File_Should_Be_Saved_as_Kmz_With_Original_Filename()
 			throws IOException, ParserConfigurationException, TransformerException, SAXException, InterruptedException {
 		//GIVEN If while uploading KML set "downloadAs KMZ"
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 		
 		KmlHandler kmlHandler = new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService);
 		multipartFileService = new MultipartFileService(kmlHandler, fileService, mockMessageSource);
 		
 		//WHEN .kmz is fully processed without Mocks and additional conditions
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN .kmz should be a zip file with the single entity as 'doc.kml'
 		assertTrue(tmpFile.getFileName().toString().endsWith(".kmz"));
@@ -222,11 +222,11 @@ class MultipartFileServiceTest {
 				initialMultipartFileName,
 				null,
 				new FileInputStream(new File("src/test/java/resources/TestKmz.kmz")));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 		
 		//WHEN
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN
 		assertEquals(initialMultipartFileName, tmpFile.getFileName().toString());
@@ -250,11 +250,11 @@ class MultipartFileServiceTest {
 				originalFilename,
 				null,
 				new FileInputStream(new File("src/test/java/resources/TestKmz.kmz")));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 		
 		//WHEN
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN
 		assertEquals(expectedFilename, tmpFile.getFileName().toString());
@@ -273,17 +273,17 @@ class MultipartFileServiceTest {
 				wrongFilename,
 				null,
 				new FileInputStream(new File("src/test/java/resources/TestKmz.kmz")));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 		String wrongFilenameMessage = "File extension not supported!";
 		Mockito.when(mockMessageSource.getMessage(
 				"exception.fileExtensionNotSupported",
-				new Object[]{multipartDto.getMultipartFile().getOriginalFilename()}, Locale.ENGLISH))
+				new Object[]{multipartMainDto.getMultipartFile().getOriginalFilename()}, Locale.ENGLISH))
 				.thenReturn(wrongFilenameMessage);
 		
 		//WHEN
 		IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-				() -> tmpFile = multipartFileService.processMultipartDto(multipartDto, null));
+				() -> tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null));
 		
 		//THEN
 		assertEquals(wrongFilenameMessage, illegalArgumentException.getMessage());
@@ -295,11 +295,11 @@ class MultipartFileServiceTest {
 		//GIVEN download as "KMZ"
 		multipartFile = new MockMultipartFile(
 				"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(testKmz));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 		
 		//WHEN kmz is returned we extract the processed kml from it
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		String processedKml = null;
 		FileSystem zip = FileSystems.newFileSystem(tmpFile, this.getClass().getClassLoader());
 		rootDir:
@@ -323,8 +323,8 @@ class MultipartFileServiceTest {
 		// should be preserved
 		multipartFile = new MockMultipartFile(
 				"MockKml.kmz", "MockKml.kmz", null, Files.readAllBytes(testKmz));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 		
 		List<Path> initialFiles = new ArrayList<>();
 		
@@ -344,7 +344,7 @@ class MultipartFileServiceTest {
 		//WHEN look through the resulting kmz we filter out only files with the same name and parent
 		//hen delete them from initial files collection to see that all the initial files were included into the
 		//resulting kmz
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		FileSystem resultingZip = FileSystems.newFileSystem(tmpFile, this.getClass().getClassLoader());
 		
 		for (Path rootPath : resultingZip.getRootDirectories()) {
@@ -369,16 +369,16 @@ class MultipartFileServiceTest {
 	public void new_Kmz_With_Icons_Should_Be_Created_For_Downloaded_Icons_From_Kml()
 			throws IOException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
 		//GIVEN
-		multipartDto = new MultipartDto(new MockMultipartFile(
+		multipartMainDto = new MultipartMainDto(new MockMultipartFile(
 				"Test.kml", "Test.kml", null, testKml.getBytes(StandardCharsets.UTF_8)));
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 		//This should be done by GoogleIconsService
-		multipartDto.getGoogleIconsToBeZipped().put("parks.png", new byte[]{12, 12, 123});
+		multipartMainDto.getGoogleIconsToBeZipped().put("parks.png", new byte[]{12, 12, 123});
 		
-		Mockito.when(mockKmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartDto.class))).thenReturn(testKml);
+		Mockito.when(mockKmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartMainDto.class))).thenReturn(testKml);
 		
 		//WHEN
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN
 		assertAll(
@@ -434,9 +434,9 @@ class MultipartFileServiceTest {
 				"</Placemark>\n" +
 				"</Document>\n" +
 				"</kml>";
-		multipartDto = new MultipartDto(new MockMultipartFile(
+		multipartMainDto = new MultipartMainDto(new MockMultipartFile(
 				"Test.kml", "Test.kml", null, kmlWithIcons.getBytes(StandardCharsets.UTF_8)));
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 		
 		multipartFileService = new MultipartFileService(
 				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
@@ -444,7 +444,7 @@ class MultipartFileServiceTest {
 				null);
 		
 		//WHEN
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN
 		assertEquals("Test.kmz", tmpFile.getFileName().toString());
@@ -472,11 +472,11 @@ class MultipartFileServiceTest {
 	public void kmz_With_Additional_GoogleMaps_Icons_Should_Be_Downloaded_And_Added_Into_Kmz()
 			throws ParserConfigurationException, TransformerException, SAXException, IOException, InterruptedException {
 		//GIVEN .kml with Google Maps icons hrefs
-		multipartDto = new MultipartDto(new MockMultipartFile(
+		multipartMainDto = new MultipartMainDto(new MockMultipartFile(
 				"Test.kmz", "Test.kmz", null, Files.newInputStream(testKmz)));
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
-		multipartDto.setPath("C:\\images\\");
-		multipartDto.setPathType(PathTypes.ABSOLUTE.getType());
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto.setPath("C:\\images\\");
+		multipartMainDto.setPathType(PathTypes.ABSOLUTE.getType());
 		
 		multipartFileService = new MultipartFileService(
 				new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),
@@ -484,7 +484,7 @@ class MultipartFileServiceTest {
 				null);
 		
 		//WHEN
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN
 		assertEquals("Test.kmz", tmpFile.getFileName().toString());
@@ -507,13 +507,13 @@ class MultipartFileServiceTest {
 	@Test
 	public void kmz_With_Locus_Photo_Icons_Should_Exclude_Them_From_Kmz_When_Replace_Locus_Photo_Icons()
 			throws ParserConfigurationException, TransformerException, SAXException, IOException, InterruptedException {
-		multipartDto = new MultipartDto(new MockMultipartFile(
+		multipartMainDto = new MultipartMainDto(new MockMultipartFile(
 				"TestKmzLocusPhotoIcons.kmz", "TestKmzLocusPhotoIcons.kmz", null, Files.newInputStream(testKmzLocusPhotoIcons)));
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
-		multipartDto.setReplaceLocusIcons(true);
-		multipartDto.setPictogramName("Pictogram1.png");
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto.setReplaceLocusIcons(true);
+		multipartMainDto.setPictogramName("Pictogram1.png");
 		Set<String> locusPhotoIconsInKmz = new HashSet<>(Arrays.asList(LOCUS_PHOTO_ICON1, LOCUS_PHOTO_ICON2));
-		multipartDto.setFilesToBeExcluded(locusPhotoIconsInKmz);
+		multipartMainDto.setFilesToBeExcluded(locusPhotoIconsInKmz);
 		
 		fileService = Mockito.mock(FileService.class);
 		Mockito.when(fileService.getPictogramsNames()).thenReturn(PICTOGRAM_NAMES);
@@ -529,7 +529,7 @@ class MultipartFileServiceTest {
 				null);
 		
 		//WHEN
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN
 		assertEquals("TestKmzLocusPhotoIcons.kmz", tmpFile.getFileName().toString());
@@ -554,13 +554,13 @@ class MultipartFileServiceTest {
 	public void kmz_With_Replaced_Locus_Icons_Should_Include_New_Desired_Pictogram_Into_Kmz_From_Server_Pictograms_Directory()
 			throws ParserConfigurationException, TransformerException, SAXException, IOException, InterruptedException {
 		//GIVEN A .kmz without the 'Pictogram2.png' file
-		multipartDto = new MultipartDto(new MockMultipartFile(
+		multipartMainDto = new MultipartMainDto(new MockMultipartFile(
 				"TestKmzLocusPhotoIcons.kmz", "TestKmzLocusPhotoIcons.kmz", null, Files.newInputStream(testKmzLocusPhotoIcons)));
-		multipartDto.setDownloadAs(DownloadAs.KMZ);
-		multipartDto.setReplaceLocusIcons(true);
-		multipartDto.setPictogramName("Pictogram2.png");
+		multipartMainDto.setDownloadAs(DownloadAs.KMZ);
+		multipartMainDto.setReplaceLocusIcons(true);
+		multipartMainDto.setPictogramName("Pictogram2.png");
 		Set<String> locusPhotoIconsInKmz = new HashSet<>(Arrays.asList(LOCUS_PHOTO_ICON1, LOCUS_PHOTO_ICON2));
-		multipartDto.setFilesToBeExcluded(locusPhotoIconsInKmz);
+		multipartMainDto.setFilesToBeExcluded(locusPhotoIconsInKmz);
 		
 		fileService = Mockito.mock(FileService.class);
 		Mockito.when(fileService.getPictogramsNames()).thenReturn(PICTOGRAM_NAMES);
@@ -574,7 +574,7 @@ class MultipartFileServiceTest {
 				null);
 		
 		//WHEN
-		tmpFile = multipartFileService.processMultipartDto(multipartDto, null);
+		tmpFile = multipartFileService.processMultipartDto(multipartMainDto, null);
 		
 		//THEN
 		assertEquals("TestKmzLocusPhotoIcons.kmz", tmpFile.getFileName().toString());

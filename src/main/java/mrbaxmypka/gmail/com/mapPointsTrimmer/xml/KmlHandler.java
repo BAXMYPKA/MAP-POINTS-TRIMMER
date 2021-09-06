@@ -1,7 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
@@ -33,7 +33,7 @@ public class KmlHandler extends XmlHandler {
      * CDATA[[]] as an HTML markup.
      * So the main goal for this method is the extracting CDATA and pass it to the HTML parser.
      */
-    public String processXml(InputStream kmlInputStream, MultipartDto multipartDto)
+    public String processXml(InputStream kmlInputStream, MultipartMainDto multipartMainDto)
             throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
         log.info("The given KML is being processed...");
 
@@ -42,25 +42,25 @@ public class KmlHandler extends XmlHandler {
         KmlUtils kmlUtils = new KmlUtils(document, xmlDomUtils);
         LocusMapHandler locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
 
-        locusMapHandler.processKml(document, multipartDto);
+        locusMapHandler.processKml(document, multipartMainDto);
 
         //Processing Google Earth specific options
         GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
-        googleEarthHandler.processKml(document, multipartDto);
+        googleEarthHandler.processKml(document, multipartMainDto);
 
         log.info("Setting the new path to images...");
-        processHref(document, multipartDto);
+        processHref(document, multipartMainDto);
 
         log.info("Descriptions from KML are being processed...");
         //Processing the further text options regarding to inner CDATA or plain text from <description>s
-        processDescriptionsTexts(document, multipartDto);
+        processDescriptionsTexts(document, multipartMainDto);
 
-        if (multipartDto.isTrimXml()) {
+        if (multipartMainDto.isTrimXml()) {
             log.info("KML is being trimmed...");
             trimWhitespaces(document);
         }
         log.info("The KML has been processed");
-        return writeTransformedDocument(document, !multipartDto.isTrimXml());
+        return writeTransformedDocument(document, !multipartMainDto.isTrimXml());
     }
 
     /**
@@ -69,16 +69,16 @@ public class KmlHandler extends XmlHandler {
      *
      * @param document {@link Document} with all the child Nodes
      */
-    private void processHref(Document document, MultipartDto multipartDto) {
+    private void processHref(Document document, MultipartMainDto multipartMainDto) {
         NodeList hrefs = document.getElementsByTagName("href");
         for (int i = 0; i < hrefs.getLength(); i++) {
             Node node = hrefs.item(i);
             String currentIconHrefWithFilename = node.getTextContent();
-            String processedIconHrefWithFilename = getGoogleIconsService().processIconHref(currentIconHrefWithFilename, multipartDto);
-            if (multipartDto.getPath() != null) {
+            String processedIconHrefWithFilename = getGoogleIconsService().processIconHref(currentIconHrefWithFilename, multipartMainDto);
+            if (multipartMainDto.getPath() != null) {
                 //Full processing with a new href to image
                 String newHrefWithOldFilename = getHtmlHandler().getNewHrefWithOldFilename(
-                        processedIconHrefWithFilename, multipartDto.getPathType(), multipartDto.getPath());
+                        processedIconHrefWithFilename, multipartMainDto.getPathType(), multipartMainDto.getPath());
                 node.setTextContent(newHrefWithOldFilename);
                 log.trace("<href> text has been replaced with '{}'", newHrefWithOldFilename);
             } else if (!currentIconHrefWithFilename.equals(processedIconHrefWithFilename)) {
@@ -98,7 +98,7 @@ public class KmlHandler extends XmlHandler {
      * The first temporary condition checks {@code '\\s*>\\s*'} regexp as Locus may spread those signs occasionally
      * (especially after {@code <ExtendedData> tag}). So
      */
-    private void processDescriptionsTexts(Document document, MultipartDto multipartDto) {
+    private void processDescriptionsTexts(Document document, MultipartMainDto multipartMainDto) {
 //		NodeList descriptions = documentRoot.getElementsByTagName("description");
         NodeList descriptions = document.getElementsByTagName("description");
         for (int i = 0; i < descriptions.getLength(); i++) {
@@ -111,8 +111,8 @@ public class KmlHandler extends XmlHandler {
                 log.trace("Description has been set as blank string");
             } else {
                 //Obtain an inner CDATA text to treat as HTML elements or plain text
-                String processedHtmlCdata = getHtmlHandler().processDescriptionText(textContent, multipartDto);
-                processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartDto);
+                String processedHtmlCdata = getHtmlHandler().processDescriptionText(textContent, multipartMainDto);
+                processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartMainDto);
                 CDATASection cdataSection = document.createCDATASection(processedHtmlCdata);
                 descriptionNode.setTextContent("");
                 descriptionNode.appendChild(cdataSection);
@@ -127,8 +127,8 @@ public class KmlHandler extends XmlHandler {
      * If the whole XML document is inline except CDATA so as to emphasize that CDATA among XML this method add start
      * and end lineBreaks.
      */
-    private String prettyPrintCdataXml(String processedHtmlCdata, MultipartDto multipartDto) {
-        if (multipartDto.isTrimXml() && !multipartDto.isTrimDescriptions()) {
+    private String prettyPrintCdataXml(String processedHtmlCdata, MultipartMainDto multipartMainDto) {
+        if (multipartMainDto.isTrimXml() && !multipartMainDto.isTrimDescriptions()) {
             processedHtmlCdata = "\n" + processedHtmlCdata.concat("\n");
         }
         log.trace("CDATA from the <description> will be return as the prettyPrinted one");
@@ -136,17 +136,17 @@ public class KmlHandler extends XmlHandler {
     }
 
     /**
-     * By just looking through the .xml(.kml) as a {@link String} adds files from the {@link MultipartDto#getImagesNamesFromZip()}
-     * into the {@link MultipartDto#getFilesToBeExcluded()} if a given String doesn't contain it.
+     * By just looking through the .xml(.kml) as a {@link String} adds files from the {@link MultipartMainDto#getImagesNamesFromZip()}
+     * into the {@link MultipartMainDto#getFilesToBeExcluded()} if a given String doesn't contain it.
      * Removes
      *
      * @param kml
-     * @param multipartDto
+     * @param multipartMainDto
      */
-    private void removeUnusedFiles(String kml, MultipartDto multipartDto) {
-        multipartDto.getImagesNamesFromZip().forEach(imageName -> {
+    private void removeUnusedFiles(String kml, MultipartMainDto multipartMainDto) {
+        multipartMainDto.getImagesNamesFromZip().forEach(imageName -> {
             if (!kml.contains(imageName)) {
-                multipartDto.getFilesToBeExcluded().add(imageName);
+                multipartMainDto.getFilesToBeExcluded().add(imageName);
             }
         });
     }
