@@ -56,7 +56,7 @@ public class MultipartFileService {
 
     /**
      * @param multipartDto
-     * @param locale To localize possible messages for User. If null, English will be userd.
+     * @param locale       To localize possible messages for User. If null, English will be userd.
      * @return The resulting {@link Path} in a temp directory with the processed file for a User.
      * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
      */

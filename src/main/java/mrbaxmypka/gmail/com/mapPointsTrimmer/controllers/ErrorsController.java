@@ -8,9 +8,9 @@ import java.util.Locale;
 
 @Controller
 public class ErrorsController extends AbstractController {
-	
-	@GetMapping(path = "/error")
-	public String getErrorPage(Model model, Locale locale) {
-		return "error";
-	}
+
+    @GetMapping(path = "/error")
+    public String getErrorPage(Model model, Locale locale) {
+        return "error";
+    }
 }

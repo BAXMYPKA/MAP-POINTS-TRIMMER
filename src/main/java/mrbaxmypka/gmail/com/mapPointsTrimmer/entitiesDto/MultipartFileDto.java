@@ -1,6 +1,9 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.nio.file.Path;
 

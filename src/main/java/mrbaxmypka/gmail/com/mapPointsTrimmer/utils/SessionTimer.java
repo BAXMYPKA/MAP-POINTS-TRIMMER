@@ -14,9 +14,9 @@ import java.util.concurrent.ScheduledExecutorService;
  * Every object of this class has to be run in a separate thread every {@link WebSessionService#getPERIOD()}
  * to check the {@link #count} if it is less than {@link #MAX_COUNT} or if this session set as {@link #isCancelled} = true.
  * If {@link #MAX_COUNT} has been reached or this session set as cancelled, it interrupts the associated processing by its ThreadId,
- *  deletes the appropriate resulting temp file, deletes its sessionId and itself from the common {@link #sessionBeacons} HashMap
- *  and throws the {@link RuntimeException} to inform the {@link ScheduledExecutorService} that this task should be removed
- *   from its execution queue.
+ * deletes the appropriate resulting temp file, deletes its sessionId and itself from the common {@link #sessionBeacons} HashMap
+ * and throws the {@link RuntimeException} to inform the {@link ScheduledExecutorService} that this task should be removed
+ * from its execution queue.
  */
 @Slf4j
 public class SessionTimer implements Runnable {

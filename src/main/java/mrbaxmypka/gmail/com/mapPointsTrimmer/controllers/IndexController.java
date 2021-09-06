@@ -19,5 +19,4 @@ public class IndexController extends AbstractController {
         getWebSessionService().startSessionBeaconTimer(httpSession.getId()); //To start counting received keep-alive POST signals
         return "index";
     }
-
 }

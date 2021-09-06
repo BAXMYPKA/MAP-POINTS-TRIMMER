@@ -15,7 +15,7 @@ public class BeaconController extends AbstractController {
      * Periodic signal that an end user is still keep in touch with the server.
      * When idle for a long time it is the localhost single-user assignment for shutting down the main Application.
      * In the real serverside implementation it has to be intended for interrupting the processing and deleting the
-     *  resulting temp file as the end user won't be able to obtain it.
+     * resulting temp file as the end user won't be able to obtain it.
      * <p>
      * When receiving a keep-alive 'navigator.sendBeacon()' POST signal resets the {@link #getWebSessionService()} counter.
      */

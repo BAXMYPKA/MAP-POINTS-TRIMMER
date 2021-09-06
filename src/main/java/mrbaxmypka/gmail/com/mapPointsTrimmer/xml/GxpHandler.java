@@ -13,15 +13,15 @@ import java.io.InputStream;
 
 @Component
 public class GxpHandler extends XmlHandler {
-	
-	public GxpHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService) {
-		super(htmlHandler, googleIconsService, fileService);
-	}
-	
-	@Override
-	public String processXml(InputStream inputStream, MultipartDto multipartDto) throws IOException,
-		ParserConfigurationException,
-		SAXException, TransformerException {
-		return null;
-	}
+
+    public GxpHandler(HtmlHandler htmlHandler, GoogleIconsService googleIconsService, FileService fileService) {
+        super(htmlHandler, googleIconsService, fileService);
+    }
+
+    @Override
+    public String processXml(InputStream inputStream, MultipartDto multipartDto) throws IOException,
+            ParserConfigurationException,
+            SAXException, TransformerException {
+        return null;
+    }
 }

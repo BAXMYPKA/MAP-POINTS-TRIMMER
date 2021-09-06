@@ -14,7 +14,7 @@
         /*<![CDATA[*/
         const maxFileSizeMb = [[${maxFileSizeMb}]] !== null ? [[${maxFileSizeMb}]] : 4096;
         const serverAddress = [[${serverAddress}]] !== null ? [[${serverAddress}]] : "localhost://";
-        const singleUserMode = [[${singleUserMode}]] !== null ? [[${singleUserMode}]] : true;
+        let singleUserMode = [[${singleUserMode}]] !== null ? [[${singleUserMode}]] : true;
         const isShutDown = [[${isShutDown}]] !== null ? [[${isShutDown}]] : false;
         /*]]>*/
     </script>
@@ -142,7 +142,7 @@
 
             <label for="fieldSetMain" class="loadForm__label loadForm__label_LoadFieldSet"
                    th:text="#{html.label.additionalParams}">
-                Set additional parameters
+                Set parameters
             </label>
 
             <fieldset id="fieldSetMain" class="loadForm loadForm__fieldSet">
@@ -158,7 +158,7 @@
                 <br>
                 <input id="previewSize" name="previewSize" type="number" placeholder="600" value="600"
                        min="0" max="2440" step="20" class="loadForm_previewSizeInput" disabled>
-                <select id="previewSizeUnits" name="previewSizeUnit">
+                <select id="previewSizeUnits" name="previewSizeUnit" disabled>
                     <option value="pixels" selected th:title="#{html.span.px}">px</option>
                     <option value="percentage">%</option>
                 </select>
@@ -305,15 +305,6 @@
                                    style="background:url('../static/pictograms/sport-cyclingsport.png') no-repeat"
                                    th:for="${pic.key}" th:style="'background:url(' + @{${pic.value}} + ')'"></label>
 
-                            <!--
-                                                        <input type="radio" id="pictogram2" th:id="${pic.key}" name="pictogram" checked
-                                                               value="sport.png"
-                                                               th:value="${pic.key}"/>
-                                                        <label for="pictogram2"
-                                                               style="background:url('../static/pictograms/tourism-forest.png') no-repeat"
-                                                               th:for="${pic.key}" th:style="'background:url(' + @{${pic.value}} + ')'"></label>
-                            -->
-
                         </th:block>
 
                         <input type="text" value="" id="pictogramValueTrace" name="pictogramName" hidden disabled/>
@@ -322,18 +313,6 @@
 
                     </div>
 
-                    <!--
-                                                            <div id="image-dropdown">
-                                                                <input checked="checked" type="radio" id="line1" name="line-style" value="1"/>
-                                                                <label for="line1"></label>
-                                                                <input type="radio" id="line2" name="line-style" value="2"/> <label for="line2"></label>
-                                                                <input type="radio" id="line3" name="line-style" value="3"/> <label for="line3"></label>
-                                                                <input type="radio" id="line4" name="line-style" value="4"/> <label for="line4"></label>
-                                                                <input type="radio" id="line5" name="line-style" value="5"/> <label for="line5"></label>
-                                                                <input type="radio" id="line6" name="line-style" value="6"/> <label for="line6"></label>
-                                                                <input type="radio" id="line7" name="line-style" value="7"/> <label for="line7"></label>
-                                                            </div>
-                    -->
                 </details>
 
             </fieldset>

@@ -22,9 +22,9 @@ import java.util.concurrent.TimeUnit;
  * Keeps track users sessions. Associates a user-session with the {@link SessionTimer} and periodically checks if the
  * session alive or being renewed. If so (by the lost connection, closed or renewed browser tab etc)
  * the tracking allows to kill the appropriate process and delete the temp file for it as User won't be able to receive
- *  it with the server respond.
- *  If {@link #singleUserMode} = false it just stops and deletes processes and temp files associated with session ids.
- *  In the SingleUserMode it also shut the Application down after idle.
+ * it with the server respond.
+ * If {@link #singleUserMode} = false it just stops and deletes processes and temp files associated with session ids.
+ * In the SingleUserMode it also shut the Application down after idle.
  */
 @Slf4j
 @Getter
@@ -55,7 +55,7 @@ public class WebSessionService {
     private void checkSingleUserSessions() {
         Runnable checkUserSession = () -> {
             if (sessionBeacons.isEmpty()) {
-                log.warn("SessionBeacons in the SingleUserMode isEmpty={}, Application is shutting down...", sessionBeacons.isEmpty());
+                log.warn("SessionBeacons in the SingleUserMode is Empty, Application is shutting down...");
                 shutdownApplication();
             }
         };
@@ -109,7 +109,7 @@ public class WebSessionService {
      * @param sessionId Gets it from the {@link BeaconController#postStopBeacon(HttpSession)} when a User's browser
      *                  Application tab has been closed or renewed. Because after this any files sent before
      *                  cannot be returned to User, so an appropriate processing associated with this sessionId has to be
-     *                   killed and temp file has to be deleted.
+     *                  killed and temp file has to be deleted.
      */
     public void postStopBeacon(String sessionId) {
         SessionTimer sessionTimer = sessionBeacons.get(sessionId);

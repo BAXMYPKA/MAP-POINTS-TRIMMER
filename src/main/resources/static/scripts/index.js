@@ -2,6 +2,7 @@
 
         const userMessage = document.querySelector("#userMessage");
         const previewSize = document.getElementById("previewSize");
+        const previesSizeUnits = document.getElementById("previewSizeUnits");
         if (typeof singleUserMode === 'undefined' || singleUserMode == null) {
             singleUserMode = true;
         }
@@ -112,8 +113,10 @@
         document.getElementById('setPreviewSize').addEventListener('change', ev => {
                 if (ev.target.checked) {
                     previewSize.disabled = false;
+                    previesSizeUnits.disabled = false;
                 } else {
                     previewSize.disabled = true;
+                    previesSizeUnits.disabled = true;
                 }
             }
         );
