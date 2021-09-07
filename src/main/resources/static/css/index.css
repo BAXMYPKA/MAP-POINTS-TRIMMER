@@ -274,14 +274,6 @@ input[type=radio] {
 	visibility: hidden;
 }
 
-.loadForm {
-	position: relative;
-	padding: 0.5em;
-	border: rgba(218, 165, 32, 0.67) 0.05em solid;
-	box-shadow: rgba(211, 205, 148, 0.49) inset 0 0 0.7em 0.2em;
-	border-radius: 0.2em;
-}
-
 #poiFile::after {
 	content: "";
 	display: block;
@@ -294,6 +286,18 @@ input[type=radio] {
 	opacity: 0.5;
 	background: url("../img/earth-hemisphere.jpg");
 	background-size: cover;
+}
+
+.loadForm {
+	position: relative;
+	padding: 0.5em;
+	border: rgba(218, 165, 32, 0.67) 0.05em solid;
+	box-shadow: rgba(211, 205, 148, 0.49) inset 0 0 0.7em 0.2em;
+	border-radius: 0.2em;
+}
+
+.loadForm filterLoadForm {
+	margin-top: 0.3em;
 }
 
 .loadForm__fieldSet {
