@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
@@ -8,6 +9,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -407,7 +409,7 @@ public class MultipartDto implements Serializable {
     private DownloadAs downloadAs;
 
     /**
-     * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartDto, Locale)}
+     * To be filled by {@link FilesController#postKml(MultipartDto, Locale, HttpSession)}
      * to associate a process (thread) and a temp file with the current User session.
      */
     @Nullable
@@ -418,6 +420,7 @@ public class MultipartDto implements Serializable {
      * from it.
      * Can be used to determine the existent icons names.
      */
+    @ToString.Exclude
     private final Set<String> imagesNamesFromZip = new HashSet<>();
     /**
      * Google Map icons added by {@link GoogleIconsService#processIconHref(String, MultipartDto)}  )}
