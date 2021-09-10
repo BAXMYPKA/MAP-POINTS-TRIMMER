@@ -59,8 +59,15 @@ h3 {
 	font-weight: bold;
 }
 
-.details:hover {
+.summaryOption:hover {
 	cursor: pointer;
+	color: #6a440b;
+}
+
+.details {
+}
+
+.details:hover {
 }
 
 .specialButtons {
@@ -290,6 +297,7 @@ input[type=radio] {
 
 .loadForm {
 	position: relative;
+	margin-bottom: 0.3em;
 	padding: 0.5em;
 	border: rgba(218, 165, 32, 0.67) 0.05em solid;
 	box-shadow: rgba(211, 205, 148, 0.49) inset 0 0 0.7em 0.2em;
@@ -347,8 +355,9 @@ input[type=radio] {
 	margin-top: 0.5em;
 }
 
-.loadForm__fieldSet__debugFieldset {
+.loadForm__fieldSet__presetsFieldset {
 	margin-top: 0.5em;
+	margin-bottom: 0.8em;
 }
 
 .loadForm__fieldSet__settingsContainer {
@@ -389,7 +398,7 @@ input[type=radio] {
 }
 
 .loadForm__fieldSet_adminFieldset {
-	margin-top: 0.5em;
+	/*margin-top: 0.5em;*/
 }
 
 .loadForm__fieldSet__presetsButtons {

@@ -330,6 +330,17 @@
             }
         });
 
+        document.getElementById("filterOut").addEventListener('click', ev => {
+            //Checks all the filter inputs within the fieldset for HTML5 inner validation
+            for (const child of document.getElementById('fieldSetFilter').children) {
+                if (child.tagName === "INPUT" && !child.checkValidity()) {
+                    return;
+                }
+            }
+            document.querySelector('.filterLoadForm').submit();
+            document.querySelector(".downloadMessage").hidden = false;
+        });
+
         //TODO: to set the "fieldset id="adminFieldset" as hiden
 
         document.getElementById("mainHeader__logoImg").addEventListener('click', ev => {

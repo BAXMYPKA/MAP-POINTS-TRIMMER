@@ -553,70 +553,8 @@
 
         </form>
 
-        <form class="loadForm filterLoadForm">
-            <label for="fieldSetLocus" class="loadForm__label loadForm__label_LoadFieldSet"
-                   th:utext="#{html.label.locusParams}">
-                Set Locus Map&copy; specific parameters
-            </label>
 
-            <fieldset id="fieldSetLocus" class="loadForm loadForm__fieldSet">
-                <input id="asAttachmentInLocus" name="asAttachmentInLocus" type="checkbox">
-                <label for="asAttachmentInLocus" class="loadForm__label"
-                       th:text="#{html.label.locusAsAttachments}">
-                    Add as attachments in Locus Map Pro
-                </label>
-                <div class="interrogation" title="Description"
-                     th:title="#{commonMessages.interrogationAsDescription.asAttachmentInLocus}">
-                    ?
-                </div>
-                <br>
-                <input id="clearDescriptions" name="clearOutdatedDescriptions" type="checkbox">
-                <label for="clearDescriptions" class="loadForm__label"
-                       th:text="#{html.label.clearDescriptions}">
-                    Clear outdated POIs descriptions
-                </label>
-                <div class="interrogation" title="Description"
-                     th:title="#{commonMessages.interrogationAsDescription.clearOutdatedPoiDesc}">?
-                </div>
-
-                <br>
-                <br>
-
-            </fieldset>
-
-            <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
-
-                <input type="submit" id="trim" value="PROCESS"
-                       class="inputButton loadForm__inputButton_processSpecialButton"
-                       th:value="#{html.input.value.convert}">
-
-                <select id="downloadAs" name="downloadAs" class="loadForm__selectDownloadAs"
-                        th:title="#{html.title.select.downloadAs}"
-                        title="Download as... (.kml by default)">
-                    <option value="kml" selected title="A processed file with the points and tracks inside."
-                            th:title="#{html.title.select.downloadAsKml}">
-                        .kml
-                    </option>
-                    <option value="kmz" title="A full archive with photos and the processed .kml file inside."
-                            th:title="#{html.title.select.downloadAsKmz}">
-                        .kmz
-                    </option>
-                </select>
-                <div class="interrogation" title="Description"
-                     th:title="#{commonMessages.interrogationAsDescription.downloadAs}">
-                    ?
-                </div>
-
-
-                <span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
-					The long download message with the explicit instructions.<br>This is an example.
-				</span>
-
-            </fieldset>
-
-        </form>
-
-        <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet__debugFieldset">
+        <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet__presetsFieldset">
 
             <div class="loadForm__fieldSet__settingsContainer">
 
@@ -671,29 +609,86 @@
 
         </fieldset>
 
-        <fieldset id="adminFieldset" class="loadForm loadForm__fieldSet loadForm__fieldSet_adminFieldset">
+        <form id="filterFiles" class="loadForm filterLoadForm" action="/filter" method="post" enctype="multipart/form-data"
+        th:action="@{/filter}">
 
             <details class="details">
-                <summary class="summaryOption" th:utext="#{html.text.adminLogin}"><small>Admin login...</small>
-                </summary>
+                <summary class="summaryOption" th:text="#{html.text.imageFilter}">Image filter</summary>
 
                 <br>
-                <input type="text" id="adminLogin" class="textInput" placeholder="Login...">
-                <br>
-                <input type="password" id="adminPassword" class="textInput" placeholder="Password...">
-                <br>
-                <input type="button" id="adminVerifyButton" class="inputButton adminVerifyButton" value="Verify">
-                <span> </span>
-                <div id="adminInterrogation" class="interrogation" title="Description"
-                     th:title="#{commonMessages.interrogationAsDescription.adminLoginDescription}">
-                    ?
-                </div>
 
-                <br>
+                <fieldset id="fieldSetFilter" class="loadForm loadForm__fieldSet">
+
+                    <label for="xmlFile" th:text="#{html.label.loadXml}" class="loadForm__label">
+                        Load custom .kml file
+                    </label>
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.xmlFile}">?
+                    </div>
+                    <br>
+                    <input id="xmlFile" type="file" accept=".kmz, .kml, .xml" class="inputButton" name="multipartXmlFile"
+                           required autofocus>
+                    <br>
+                    <br>
+
+                    <label for="zipFile" th:text="#{html.label.loadZip}" class="loadForm__label">
+                        Load your zip file with images
+                    </label>
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.zipFile}">?
+                    </div>
+                    <br>
+                    <input id="zipFile" type="file" accept=".zip, .7zip" class="inputButton" name="multipartZipFile"
+                           required autofocus>
+                    <br>
+
+                </fieldset>
+
+                <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
+
+                    <input type="submit" id="filterOut" value="FILTER OUT"
+                           class="inputButton loadForm__inputButton_processSpecialButton"
+                           th:value="#{html.input.value.filterOut}">
+
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.filterOut}">
+                        ?
+                    </div>
+
+                    <span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
+					The long download message with the explicit instructions.<br>This is an example.
+				</span>
+
+                </fieldset>
 
             </details>
 
-        </fieldset>
+        </form>
+
+        <form class="loadForm">
+
+            <details class="details">
+                <summary class="summaryOption" th:utext="#{html.text.adminLogin}">Admin login...</summary>
+
+                <fieldset id="adminFieldset" class="loadForm loadForm__fieldSet loadForm__fieldSet_adminFieldset">
+
+                    <input type="text" id="adminLogin" class="textInput" placeholder="Login...">
+                    <br>
+                    <input type="password" id="adminPassword" class="textInput" placeholder="Password...">
+                    <br>
+                    <input type="button" id="adminVerifyButton" class="inputButton adminVerifyButton" value="Verify">
+                    <span> </span>
+                    <div id="adminInterrogation" class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.adminLoginDescription}">
+                        ?
+                    </div>
+
+                    <br>
+                </fieldset>
+
+            </details>
+
+        </form>
 
     </main>
 

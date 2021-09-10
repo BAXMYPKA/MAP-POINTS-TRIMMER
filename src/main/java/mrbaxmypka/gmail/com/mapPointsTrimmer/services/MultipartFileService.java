@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFilterDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainFileDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
@@ -83,6 +84,13 @@ public class MultipartFileService {
         }
         log.info("Xml file has been successfully processed.");
         return writeTempFile(processedXml, multipartMainDto, multipartMainFileDto, locale);
+    }
+
+    public Path processMultipartFilterDto(@NonNull MultipartFilterDto multipartFilterDto, @Nullable Locale locale) {
+        log.info("{} has been received. Locale = {}", multipartFilterDto, locale);
+        locale = locale == null ? this.DEFAULT_LOCALE : locale;
+
+        return null;
     }
 
     /**

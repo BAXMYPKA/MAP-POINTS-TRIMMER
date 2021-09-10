@@ -414,7 +414,7 @@ public class MultipartMainDto implements Serializable {
     private String sessionId;
 
     /**
-     * The instant cache for a currently processing .zip file from {@link #multipartFile} (if it is) with images names
+     * The instant cache for a currently processing .zip file from {@link #getMultipartFile()} (if it is) with images names
      * from it.
      * Can be used to determine the existent icons names.
      */

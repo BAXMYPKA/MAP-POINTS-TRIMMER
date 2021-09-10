@@ -14,7 +14,7 @@ import java.util.*;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = {"multipartXmlFile"})
-@ToString
+@ToString(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
 public class MultipartFilterDto implements Serializable {
@@ -34,6 +34,7 @@ public class MultipartFilterDto implements Serializable {
      * to associate a process (thread) and a temp file with the current User session.
      */
     @Nullable
+    @ToString.Include
     private String sessionId;
 
     /**
@@ -42,14 +43,6 @@ public class MultipartFilterDto implements Serializable {
      * Can be used to determine the existent icons names.
      */
     private final Set<String> imagesNamesFromZip = new HashSet<>();
-
-    /**
-     * Google Map icons added by {@link GoogleIconsService#processIconHref(String, MultipartMainDto)}  )}
-     * to be added into the resulting zip archive.
-     * If a byte array value is null it means the icon with the key name is presented within a given archive from
-     * {@link #getMultipartXmlFile()}
-     */
-    private Map<String, byte[]> googleIconsToBeZipped = new HashMap<>();
 
     /**
      * Filenames which have to be excluded from the resultant .zip (.kmz)

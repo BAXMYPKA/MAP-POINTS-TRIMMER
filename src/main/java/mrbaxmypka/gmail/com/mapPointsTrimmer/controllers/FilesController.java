@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFilterDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +55,11 @@ public class FilesController extends AbstractController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<FileSystemResource> postZip(
-            @Valid @ModelAttribute MultipartMainDto file, Locale locale, HttpSession httpSession)
+            @Valid @ModelAttribute MultipartFilterDto file, Locale locale, HttpSession httpSession)
             throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
         log.info("{} file has been received as: {}.", MultipartMainDto.class.getSimpleName(), file);
         file.setSessionId(httpSession.getId());
-        Path tempFile = multipartFileService.processMultipartDto(file, locale);
+        Path tempFile = multipartFileService.processMultipartFilterDto(file, locale);
         log.info("Temp file={}", tempFile);
         FileSystemResource resource = new FileSystemResource(tempFile);
         return ResponseEntity.ok()
