@@ -14,13 +14,14 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -44,19 +45,42 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         String xmlFilename = getFileService().getFileName(multipartFilterDto.getMultipartXmlFile().getOriginalFilename());
         checkCorrectZipFilename(zipFilename, locale);
         checkCorrectXmlFilename(xmlFilename, locale);
-        if (getFileService().getExtension(xmlFilename).equals("kmz")) {
-            //TODO: to treat
-            return null;
-        } else if (getFileService().getExtension(xmlFilename).equals("txt")) {
-            //
-        } else if (getFileService().getExtension(xmlFilename).equals("kml") ||
+        if (getFileService().getExtension(xmlFilename).equals("kml") ||
                 getFileService().getExtension(xmlFilename).equals("xml")) {
-            Document document = xmlHandler.getDocument(multipartFilterDto.getMultipartFile().getInputStream());
-            String documentAsString = xmlHandler.getAsString(document);
-            setImagesNamesFromZip(multipartFilterDto);
-            return processTempZip(documentAsString, multipartFilterDto, locale);
+            return processXml(multipartFilterDto, locale);
+        } else if (getFileService().getExtension(xmlFilename).equals("txt")) {
+            return processTxt(multipartFilterDto, locale);
+        } else if (getFileService().getExtension(xmlFilename).equals("kmz")) {
+
+            //TODO: to do
+
+            return null;
+        } else {
+            throw new FileNotFoundException(getMessageSource().getMessage(
+                    "exception.filenameNotSupported", null, locale));
         }
-        return null;
+    }
+
+    private Path processXml(MultipartFilterDto multipartFilterDto, Locale locale)
+            throws IOException, ParserConfigurationException, SAXException, TransformerException {
+        Document document = xmlHandler.getDocument(multipartFilterDto.getMultipartFile().getInputStream());
+        String documentAsString = xmlHandler.getAsString(document);
+        setImagesNamesFromZip(multipartFilterDto);
+        return processTempZip(documentAsString, multipartFilterDto, locale);
+    }
+
+    private Path processTxt(MultipartFilterDto multipartFilterDto, Locale locale) throws IOException {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        multipartFilterDto.getMultipartXmlFile().getInputStream(), StandardCharsets.UTF_8))) {
+            String txt = br.lines().collect(Collectors.joining("\n"));
+            return processTempZip(txt, multipartFilterDto, locale);
+        } catch (IOException e) {
+            throw new IOException(getMessageSource().getMessage(
+                    "exception.fileException(1)",
+                    new Object[]{multipartFilterDto.getMultipartXmlFile().getOriginalFilename()},
+                    locale));
+        }
     }
 
     private void checkCorrectZipFilename(String zipFilename, Locale locale) throws IllegalArgumentException {
@@ -125,13 +149,13 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
 
         //Copy original images from the MultipartFile .zip to the new temp .zip
-        processExistingZip(zos, processedXml, multipartFilterDto, tempFile);
+        filterExistingZip(zos, processedXml, multipartFilterDto, tempFile);
         zos.close();
         log.info("Temp zip file {} has been written to the temp dir", tempFile);
         return multipartFilterDto.getTempFile();
     }
 
-    private void processExistingZip(
+    private void filterExistingZip(
             ZipOutputStream zos, String processedXml, MultipartFilterDto multipartFilterDto, Path tempFile)
             throws IOException {
         //Copy original images from the MultipartFile to the temp zip
@@ -161,23 +185,6 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         }
         log.info("Images from the User's zip have been added to the {}", tempFile);
     }
-
-/*
-    private void createNewZip(ZipOutputStream zos, String processedXml, MultipartMainDto multipartMainDto, Path tempFile) throws IOException {
-        log.info("To be downloaded as the {} file {} is being prepared to be written to the temp dir",
-                multipartMainDto.getDownloadAs().getExtension(), tempFile);
-        DownloadAs zipFileExtension = multipartMainDto.getDownloadAs();
-        if (DownloadAs.KMZ.equals(zipFileExtension)) {
-            //Create a new zip
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            zos.putNextEntry(new ZipEntry("doc.kml"));
-            buffer.writeBytes(processedXml.getBytes(StandardCharsets.UTF_8));
-            zos.write(buffer.toByteArray());
-            zos.closeEntry();
-        }
-        log.info("The new zip has been created as {} with the added xml root file", tempFile);
-    }
-*/
 
     /**
      * As some old versions of Edge browser (at least Microsoft EdgeHTML 17 +) attach {@link MultipartFile#getOriginalFilename()}

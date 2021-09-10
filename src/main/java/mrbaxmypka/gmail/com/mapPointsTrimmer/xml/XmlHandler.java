@@ -72,7 +72,6 @@ public abstract class XmlHandler {
                         " 'lc:' namespace will be added into xml header...");
                 xmlInputStream.reset();
                 xmlInputStream = fixNamespaceForLcPrefixMethod(xmlInputStream);
-//				document = documentBuilder.parse(xmlInputStream);
                 return getDocument(xmlInputStream);
             } else if (e.getMessage().contains("The prefix \"xsi\" for attribute \"xsi:schemaLocation\" associated with an element type \"Document\" is not bound")) {
                 //KML exception
@@ -80,7 +79,6 @@ public abstract class XmlHandler {
                         "The attribute \"xsi:schemaLocation\" will be added into xml header...");
                 xmlInputStream.reset();
                 xmlInputStream = fixXsiSchemaLocationAttributeMethod(xmlInputStream);
-//				document = documentBuilder.parse(xmlInputStream);
                 return getDocument(xmlInputStream);
             } else {
                 throw e;
