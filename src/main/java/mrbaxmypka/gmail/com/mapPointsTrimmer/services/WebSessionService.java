@@ -36,16 +36,16 @@ public class WebSessionService {
     private final static ScheduledExecutorService scheduledTimers = Executors.newScheduledThreadPool(10);
     private final boolean singleUserMode;
     private final MapPointsTrimmerApplication mapPointsTrimmerApplication;
-    private final MultipartFileService multipartFileService;
+    private final MultipartMainFileService multipartMainFileService;
     protected final int INITIAL_DELAY = 60;
     protected final int PERIOD = 25;
 
     @Autowired
     public WebSessionService(MapPointsTrimmerApplication mapPointsTrimmerApplication,
-                             MultipartFileService multipartFileService,
+                             MultipartMainFileService multipartMainFileService,
                              @Value("${trimmer.single-user-mode:true}") boolean singleUserMode) {
         this.mapPointsTrimmerApplication = mapPointsTrimmerApplication;
-        this.multipartFileService = multipartFileService;
+        this.multipartMainFileService = multipartMainFileService;
         this.singleUserMode = singleUserMode;
         log.warn("SingleUserMode={}", singleUserMode);
         if (singleUserMode) {
@@ -76,7 +76,7 @@ public class WebSessionService {
     public void startSessionBeaconTimer(String sessionId) {
         log.trace("Session timer has been started for sessionId={}", sessionId);
         if (!sessionBeacons.containsKey(sessionId)) {
-            SessionTimer timerTask = new SessionTimer(sessionId, sessionBeacons, multipartFileService);
+            SessionTimer timerTask = new SessionTimer(sessionId, sessionBeacons, multipartMainFileService);
             sessionBeacons.put(sessionId, timerTask);
             scheduledTimers.scheduleAtFixedRate(timerTask, 1, 10, TimeUnit.SECONDS);
         } else {
@@ -89,7 +89,7 @@ public class WebSessionService {
      * Treats the 'sessionId' when {@link BeaconController#postBeacon(HttpSession)}.
      * {@link BeaconController#postBeacon(HttpSession)} resets it to 0 when the 'navigator.sendBeacon()' is sent.
      * When {@link SessionTimer#getCount()} > 3 the appropriate process and the temp file for this session will be killed by
-     * {@link MultipartFileService#deleteTempFile(String)}. If {@link #isSingleUserMode()} = true, the full Application
+     * {@link MultipartMainFileService#deleteTempFile(String)}. If {@link #isSingleUserMode()} = true, the full Application
      * will be shut down.
      *
      * @param sessionId A beacon from the {@link BeaconController#postBeacon(HttpSession)}.

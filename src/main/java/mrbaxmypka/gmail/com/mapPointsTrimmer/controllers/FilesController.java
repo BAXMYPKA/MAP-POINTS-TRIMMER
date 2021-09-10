@@ -3,7 +3,8 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFilterDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartMainFileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFilterFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
@@ -28,7 +29,9 @@ import java.util.Locale;
 public class FilesController extends AbstractController {
 
     @Autowired
-    private MultipartFileService multipartFileService;
+    private MultipartMainFileService multipartMainFileService;
+    @Autowired
+    private MultipartFilterFileService multipartFilterFileService;
 
     /**
      * @param file   Can receive .kml or .kmz files only
@@ -43,7 +46,7 @@ public class FilesController extends AbstractController {
             throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
         log.info("{} file has been received as: {}.", MultipartMainDto.class.getSimpleName(), file);
         file.setSessionId(httpSession.getId());
-        Path tempFile = multipartFileService.processMultipartDto(file, locale);
+        Path tempFile = multipartMainFileService.processMultipartMainDto(file, locale);
         log.info("Temp file={}", tempFile);
         FileSystemResource resource = new FileSystemResource(tempFile);
         return ResponseEntity.ok()
@@ -57,9 +60,9 @@ public class FilesController extends AbstractController {
     public ResponseEntity<FileSystemResource> postZip(
             @Valid @ModelAttribute MultipartFilterDto file, Locale locale, HttpSession httpSession)
             throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
-        log.info("{} file has been received as: {}.", MultipartMainDto.class.getSimpleName(), file);
+        log.info("{} file has been received as: {}.", MultipartFilterDto.class.getSimpleName(), file);
         file.setSessionId(httpSession.getId());
-        Path tempFile = multipartFileService.processMultipartFilterDto(file, locale);
+        Path tempFile = multipartFilterFileService.processMultipartFilterDto(file, locale);
         log.info("Temp file={}", tempFile);
         FileSystemResource resource = new FileSystemResource(tempFile);
         return ResponseEntity.ok()

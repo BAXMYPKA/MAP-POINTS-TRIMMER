@@ -160,10 +160,12 @@ h3 {
 }
 
 .mainHeader__logoImg:hover {
+	transition-duration: 0.3s;
 	border-color: greenyellow;
 }
 
 .mainHeader__logoImg:active {
+	transition-duration: 0.100ms;
 	border-color: green;
 }
 

@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartMainFileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.WebSessionService;
 
 import java.util.Map;
@@ -27,7 +27,7 @@ public class SessionTimer implements Runnable {
     @Getter(AccessLevel.PROTECTED)
     private final Map<String, SessionTimer> sessionBeacons;
     @Getter(AccessLevel.PROTECTED)
-    private final MultipartFileService multipartFileService;
+    private final MultipartMainFileService multipartMainFileService;
     private volatile int count = -1;
     private final int MAX_COUNT = 3;
     private volatile boolean isCancelled = false;
@@ -36,10 +36,10 @@ public class SessionTimer implements Runnable {
     private boolean isAdmin = false;
 
     public SessionTimer(
-            String sessionId, Map<String, SessionTimer> sessionBeacons, MultipartFileService multipartFileService) {
+            String sessionId, Map<String, SessionTimer> sessionBeacons, MultipartMainFileService multipartMainFileService) {
         this.sessionId = sessionId;
         this.sessionBeacons = sessionBeacons;
-        this.multipartFileService = multipartFileService;
+        this.multipartMainFileService = multipartMainFileService;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SessionTimer implements Runnable {
         if (Thread.currentThread().isInterrupted() || count > MAX_COUNT || isCancelled) {
             log.trace("Timer count = {} for the session id={} so the appropriate process and the temp file is being closed...",
                     count, sessionId);
-            multipartFileService.deleteTempFile(sessionId);
+            multipartMainFileService.deleteTempFile(sessionId);
             sessionBeacons.remove(this.sessionId);
             throw new RuntimeException("The SessionTimeTask for id=" + sessionId + " to be stopped!");
         } else {

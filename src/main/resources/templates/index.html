@@ -609,11 +609,23 @@
 
         </fieldset>
 
-        <form id="filterFiles" class="loadForm filterLoadForm" action="/filter" method="post" enctype="multipart/form-data"
-        th:action="@{/filter}">
+        <form id="filterFiles" class="loadForm filterLoadForm" action="/filter" method="post"
+              enctype="multipart/form-data"
+              th:action="@{/filter}">
 
             <details class="details">
                 <summary class="summaryOption" th:text="#{html.text.imageFilter}">Image filter</summary>
+
+                <br>
+
+                <details class="details">
+                    <summary class="summaryOption"><small>How it works...</small></summary>
+
+                    <div th:text="#{commonMessages.filterDescription}">
+                        The description of this filtering option.
+                    </div>
+
+                </details>
 
                 <br>
 
@@ -626,7 +638,8 @@
                          th:title="#{commonMessages.interrogationAsDescription.xmlFile}">?
                     </div>
                     <br>
-                    <input id="xmlFile" type="file" accept=".kmz, .kml, .xml" class="inputButton" name="multipartXmlFile"
+                    <input id="xmlFile" type="file" accept=".kmz, .kml, .xml, .txt" class="inputButton"
+                           name="multipartXmlFile"
                            required autofocus>
                     <br>
                     <br>
@@ -638,7 +651,7 @@
                          th:title="#{commonMessages.interrogationAsDescription.zipFile}">?
                     </div>
                     <br>
-                    <input id="zipFile" type="file" accept=".zip, .7zip" class="inputButton" name="multipartZipFile"
+                    <input id="zipFile" type="file" accept=".zip, .jar, .gz" class="inputButton" name="multipartZipFile"
                            required autofocus>
                     <br>
 

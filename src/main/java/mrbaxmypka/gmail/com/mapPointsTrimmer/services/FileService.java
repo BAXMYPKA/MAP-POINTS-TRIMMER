@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -37,7 +38,20 @@ public class FileService {
      * All possible images files extensions in lower case.
      */
     @Getter(AccessLevel.PUBLIC)
-    private List<String> imagesExtensions;
+    private final List<String> imagesExtensions;
+
+    /**
+     * All possible images files extensions in lower case.
+     */
+    @Getter(AccessLevel.PUBLIC)
+    private final List<String> zipExtensions;
+
+    /**
+     * Allowed file extensions to be loaded as xml files from index.html 'xmlFile' form.
+     * .kmz files also allowed as inner .kml file will be extracted and processed.
+     */
+    @Getter(AccessLevel.PUBLIC)
+    private final List<String> allowedXmlExtensions;
 
     /**
      * Collects a list of pictograms names ONLY as '.png' OR '.PNG' files from the 'resources/static/pictograms' directory.
@@ -53,7 +67,7 @@ public class FileService {
      * from the 'resources/static/pictograms' directory.
      * Important!
      * For Thymeleaf view by default the path = "pictograms/image.png" because Thymeleaf gets them from its own relative path.
-     * But further in the {@link MultipartFileService} we have to add the "static/" prefix (e.g. "static/pictograms/image.png")
+     * But further in the {@link MultipartMainFileService} we have to add the "static/" prefix (e.g. "static/pictograms/image.png")
      * as the serverside searches for resources by its Classloader from the root of the "resources" directory.
      * <p>
      * <p>
@@ -82,6 +96,10 @@ public class FileService {
         imagesExtensions = new ArrayList<>(5);
         imagesExtensions.addAll(Arrays.asList(
                 ".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".gif", ".raw", ".psd", ".xcf", "cdr"));
+        zipExtensions = new ArrayList<>(2);
+        zipExtensions.addAll(Arrays.asList("zip", "kmz", "jar", "gz"));
+        allowedXmlExtensions = new ArrayList<>(5);
+        allowedXmlExtensions.addAll(Arrays.asList("kmz", "kml", "xml", "txt"));
     }
 
 
@@ -192,5 +210,26 @@ public class FileService {
         String path = pathWithFilename.substring(0, lastIndexOFSlash + 1);
         log.trace("Path as '{}' will be returned", path);
         return path.isBlank() ? "" : path;
+    }
+
+    //TODO: to test the work with the last dot 'word.'
+
+    /**
+     * @param filename The file extension to be derived from.
+     * @return The filename extension in lowercase without a dot (e.g. "image.img" will be returned as "img")
+     * OR an empty String if no extension found.
+     */
+    public String getExtension(@NonNull String filename) {
+        if (!filename.contains(".")) {
+            //The filename doesn't contain an extension
+            log.debug("The given filename = {} doesn't contain the extension!", filename);
+            return "";
+        }
+        String extension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
+        if (extension.isBlank()) {
+            return "";
+        } else {
+            return extension;
+        }
     }
 }

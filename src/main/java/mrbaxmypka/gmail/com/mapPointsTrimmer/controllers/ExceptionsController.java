@@ -3,7 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartMainFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ public class ExceptionsController extends AbstractController {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    private MultipartFileService multipartFileService;
+    private MultipartMainFileService multipartMainFileService;
     @Autowired
     private FileService fileService;
 
@@ -132,9 +132,9 @@ public class ExceptionsController extends AbstractController {
         log.error(localizedErrorMessage, throwable);
 
         if (isSingleUserMode()) {
-            multipartFileService.deleteTempFiles();
+            multipartMainFileService.deleteTempFiles();
         } else {
-            multipartFileService.deleteTempFile(httpSession.getId());
+            multipartMainFileService.deleteTempFile(httpSession.getId());
         }
         ModelAndView mav = new ModelAndView();
         mav.setStatus(httpStatus);

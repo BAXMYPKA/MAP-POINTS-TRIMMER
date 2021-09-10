@@ -1,25 +1,25 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(of = {"multipartXmlFile"})
+@EqualsAndHashCode(callSuper = true, of = {"multipartZipFile"})
 @ToString(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
-public class MultipartFilterDto implements Serializable {
+public class MultipartFilterDto extends MultipartDto {
 
-    static final long serialVersionUID = 3L;
+    static final long serialVersionUID = 4L;
 
     @NonNull //Lombok required arg for the constructor
     @NotNull(message = "{validation.notNull}")
@@ -36,13 +36,6 @@ public class MultipartFilterDto implements Serializable {
     @Nullable
     @ToString.Include
     private String sessionId;
-
-    /**
-     * The instant cache for a currently processing .zip file from {@link #multipartXmlFile} (if it is) with images names
-     * from it.
-     * Can be used to determine the existent icons names.
-     */
-    private final Set<String> imagesNamesFromZip = new HashSet<>();
 
     /**
      * Filenames which have to be excluded from the resultant .zip (.kmz)

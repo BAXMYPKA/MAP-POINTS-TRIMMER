@@ -35,7 +35,6 @@ public enum DownloadAs {
             return ".".concat(this.name()).toLowerCase().equals(originalExtension);
         } catch (Exception e) {
             log.info("Filename {} is incorrect!", filename == null ? "null" : filename);
-//			e.printStackTrace();
             return false;
         }
     }

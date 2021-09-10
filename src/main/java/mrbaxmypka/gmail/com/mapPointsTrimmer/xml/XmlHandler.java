@@ -56,7 +56,7 @@ public abstract class XmlHandler {
     public abstract String processXml(InputStream inputStream, MultipartMainDto multipartMainDto)
             throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException;
 
-    protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
+    public Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
         log.info("Getting 'document' from InputStream from a MultipartFile...");
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         //IMPORTANT! This is essential part of getting localNames of xml tags.
@@ -98,7 +98,7 @@ public abstract class XmlHandler {
      * @return A raw {@link String} without any optimizations, settings, crearFixing etc.
      * @throws TransformerException
      */
-    protected String getAsString(Document document) throws TransformerException {
+    public String getAsString(Document document) throws TransformerException {
         log.info("Getting the quick document to be transformed and written as String...");
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         DOMSource domSource = new DOMSource(document);
@@ -209,18 +209,10 @@ public abstract class XmlHandler {
             }
             trimWhitespaces(childNode);
         }
-//		log.trace("Whitespaces have been trimmed from KML");
     }
 
     void trimWhitespaces(Document document) {
-//		NodeList childNodes = document.getChildNodes();
-//		for (int i = 0; i < childNodes.getLength(); i++) {
-//			Node childNode = childNodes.item(i);
-//			if (childNode.getNodeType() == Node.TEXT_NODE) {
-//				childNode.setTextContent(childNode.getTextContent().trim());
-//			}
         trimWhitespaces(document.getDocumentElement());
-//		}
         log.trace("Whitespaces have been trimmed from KML");
     }
 
