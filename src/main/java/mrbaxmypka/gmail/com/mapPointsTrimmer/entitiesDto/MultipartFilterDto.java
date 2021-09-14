@@ -1,6 +1,8 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFilterFileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartMainFileService;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +30,12 @@ public class MultipartFilterDto extends MultipartDto {
     @NonNull //Lombok required arg for the constructor
     @NotNull(message = "{validation.notNull}")
     private MultipartFile multipartZipFile;
+
+    /**
+     *  The field is only for using within {@link MultipartFilterFileService}
+     * A filename of a standalone .xml(.kml) file or a .kml file inside a given .kmz
+     */
+    private String xmlFilename = "";
 
     /**
      * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartMainDto, Locale, HttpSession)}

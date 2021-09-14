@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ToString
 public enum DownloadAs {
-    KML, KMZ;
+    KML, KMZ, ZIP;
 
     /**
      * Case insensitive method.

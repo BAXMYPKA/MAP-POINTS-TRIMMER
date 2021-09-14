@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartMainFileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,9 @@ public abstract class MultipartDto implements Serializable {
     @NonNull //Lombok required arg for the constructor
     @NotNull(message = "{validation.notNull}")
     private MultipartFile multipartFile;
+
+    @NotNull
+    private DownloadAs downloadAs;
 
     /**
      * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartMainDto, Locale, HttpSession)}

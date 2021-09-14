@@ -9,6 +9,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -108,7 +109,6 @@ public class MultipartMainFileService {
                     log.info("File '{}' has been extracted from zip and will be returned as InputStream", multipartMainDto.getXmlFilename());
                 } else {
                     addImageNameFromZip(zipEntry, multipartMainDto);
-//                    multipartDto.getImagesNamesFromZip().add(fileService.getFileName(zipEntry.getName()));
                 }
             }
         }

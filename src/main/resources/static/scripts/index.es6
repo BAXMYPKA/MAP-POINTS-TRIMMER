@@ -331,14 +331,17 @@
         });
 
         document.getElementById("filterOut").addEventListener('click', ev => {
+            let downloadMessage;
             //Checks all the filter inputs within the fieldset for HTML5 inner validation
             for (const child of document.getElementById('fieldSetFilter').children) {
                 if (child.tagName === "INPUT" && !child.checkValidity()) {
                     return;
+                } else if (child.className === "downloadMessage") {
+                    downloadMessage = child;
                 }
             }
             document.querySelector('.filterLoadForm').submit();
-            document.querySelector(".downloadMessage").hidden = false;
+            downloadMessage.hidden = false;
         });
 
         //TODO: to set the "fieldset id="adminFieldset" as hiden
@@ -347,6 +350,8 @@
             adminLoginCounter++;
             if (adminLoginCounter === 3) {
                 document.getElementById("adminFieldset").hidden = false;
+                //TODO: to check
+                ev.currentTarget.title = "Admin opened";
             }
         });
 

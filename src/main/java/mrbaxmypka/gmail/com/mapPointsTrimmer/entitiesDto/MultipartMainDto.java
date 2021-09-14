@@ -404,9 +404,6 @@ public class MultipartMainDto extends MultipartDto {
     @Nullable
     private String pictogramName;
 
-    @NotNull
-    private DownloadAs downloadAs;
-
     /**
      * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartMainDto, Locale, HttpSession)}
      * to associate a process (thread) and a temp file with the current User session.

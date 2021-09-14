@@ -225,7 +225,7 @@ public class FileService {
             log.debug("The given filename = {} doesn't contain the extension!", filename);
             return "";
         }
-        String extension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
+        String extension = filename.substring(filename.lastIndexOf("." ) + 1).toLowerCase();
         if (extension.isBlank()) {
             return "";
         } else {

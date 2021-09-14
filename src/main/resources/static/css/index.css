@@ -376,6 +376,7 @@ input[type=radio] {
 }
 
 .loadForm__inputButton_processSpecialButton {
+	background-color: lightgoldenrodyellow;
 	display: inline-block;
 	height: 1.5em;
 	transition: all;

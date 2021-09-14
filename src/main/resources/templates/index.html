@@ -657,16 +657,30 @@
 
                 </fieldset>
 
-                <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
+                <fieldset id="filterFieldset" class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
 
                     <input type="submit" id="filterOut" value="FILTER OUT"
                            class="inputButton loadForm__inputButton_processSpecialButton"
                            th:value="#{html.input.value.filterOut}">
 
+                    <select id="downloadAsFilter" name="downloadAsFilter" class="loadForm__selectDownloadAs"
+                            th:title="#{html.title.select.downloadAs}"
+                            title="Download as... (.zip archive by default)">
+                        <option value="zip" selected title="A processed zip archive with the filtered out photos."
+                                th:title="#{html.title.select.downloadAsZip}">
+                            .zip
+                        </option>
+                        <option value="kmz" title="A full archive with photos and the processed .kml file inside."
+                                th:title="#{html.title.select.downloadAsKmz}" disabled>
+                            .kmz
+                        </option>
+                    </select>
+
                     <div class="interrogation" title="Description"
                          th:title="#{commonMessages.interrogationAsDescription.filterOut}">
                         ?
                     </div>
+
 
                     <span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					The long download message with the explicit instructions.<br>This is an example.
