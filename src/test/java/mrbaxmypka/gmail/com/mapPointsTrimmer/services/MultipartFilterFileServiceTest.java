@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -106,6 +105,7 @@ class MultipartFilterFileServiceTest {
         try {
             Files.deleteIfExists(tmpFile);
         } catch (IOException | NullPointerException e) {
+            System.out.println("");
         }
     }
 
@@ -122,7 +122,7 @@ class MultipartFilterFileServiceTest {
                 "exception.fileExtensionNotSupported", new Object[]{textFilename}, Locale.ENGLISH))
                 .thenReturn(notSupportedFilename);
         //WHEN
-        assertDoesNotThrow(
+        tmpFile = assertDoesNotThrow(
                 () -> multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH),
                 notSupportedFilename
         );
@@ -144,10 +144,9 @@ class MultipartFilterFileServiceTest {
 
         //WHEN
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-                () -> multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH));
+                () -> tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH));
 
         //THEN
-        System.out.println(illegalArgumentException.getMessage());
         assertEquals(notSupportedFilename, illegalArgumentException.getMessage());
     }
 
@@ -155,18 +154,21 @@ class MultipartFilterFileServiceTest {
     @ValueSource(strings = {"test.zp", "test.rar", "test.7zip"})
     public void filter_Should_Not_Receive_Not_Supported_Archive_Files_Extensions(String zipFilename) {
         //GIVEN
+        multipartXmlFile = new MockMultipartFile(originalKmlFilename, originalKmlFilename, null, originalKmlFilename.getBytes());
         multipartZipFile = new MockMultipartFile(zipFilename, zipFilename, null, (byte[]) null);
+
         multipartFilterDto.setMultipartZipFile(multipartZipFile);
-        OngoingStubbing<String> stringOngoingStubbing = Mockito.when(
-                mockMessageSource.getMessage(
-                        "exception.fileExtensionNotSupported", new Object[]{zipFilename}, Locale.ENGLISH))
-                .thenReturn("Such a filename (test) is not supported!");
-        String notSupportedFilename = stringOngoingStubbing.toString();
+        multipartFilterDto.setMultipartXmlFile(multipartXmlFile);
+
+        final String message = "Such a filename (test) is not supported!";
+        Mockito.when(mockMessageSource.getMessage(
+                "exception.fileExtensionNotSupported", new Object[]{zipFilename}, Locale.ENGLISH))
+                .thenReturn(message);
 
         //WHEN
         assertThrows(IllegalArgumentException.class,
-                () -> multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH),
-                notSupportedFilename);
+                () -> tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH),
+                message);
 
         //THEN
     }
@@ -260,13 +262,13 @@ class MultipartFilterFileServiceTest {
         Mockito.when(mockKmlHandler.getAsString(Mockito.any(Document.class))).thenCallRealMethod();
 
         //WHEN
-        Path path = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
+        tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
 
         //THEN
         List<String> zipEntriesNames = new ArrayList<>(5);
 
         assertDoesNotThrow(() -> {
-            ZipInputStream zis = new ZipInputStream(Files.newInputStream(path));
+            ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
             ZipEntry zipEntry;
             while ((zipEntry = zis.getNextEntry()) != null) {
                 //Skip a folder name (which is also a zipEntry
@@ -374,13 +376,13 @@ class MultipartFilterFileServiceTest {
         Mockito.when(mockKmlHandler.getAsString(Mockito.any(Document.class))).thenCallRealMethod();
 
         //WHEN
-        Path path = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
+        tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
 
         //THEN
         List<String> zipEntriesNames = new ArrayList<>(3);
 
         assertDoesNotThrow(() -> {
-            ZipInputStream zis = new ZipInputStream(Files.newInputStream(path));
+            ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
             ZipEntry zipEntry;
             while ((zipEntry = zis.getNextEntry()) != null) {
                 //Skip a folder name (which is also a zipEntry
@@ -485,13 +487,13 @@ class MultipartFilterFileServiceTest {
         multipartFilterDto.setMultipartXmlFile(multipartXmlFile);
 
         //WHEN
-        Path path = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
+        tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
 
         //THEN
         List<String> zipEntriesNames = new ArrayList<>(5);
 
         assertDoesNotThrow(() -> {
-            ZipInputStream zis = new ZipInputStream(Files.newInputStream(path));
+            ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
             ZipEntry zipEntry;
             while ((zipEntry = zis.getNextEntry()) != null) {
                 //Skip a folder name (which is also a zipEntry
@@ -591,13 +593,13 @@ class MultipartFilterFileServiceTest {
         multipartFilterDto.setMultipartXmlFile(multipartXmlFile);
 
         //WHEN
-        Path path = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
+        tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
 
         //THEN
         List<String> zipEntriesNames = new ArrayList<>(3);
 
         assertDoesNotThrow(() -> {
-            ZipInputStream zis = new ZipInputStream(Files.newInputStream(path));
+            ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
             ZipEntry zipEntry;
             while ((zipEntry = zis.getNextEntry()) != null) {
                 //Skip a folder name (which is also a zipEntry
@@ -631,13 +633,13 @@ class MultipartFilterFileServiceTest {
         Mockito.when(mockKmlHandler.getAsString(Mockito.any(Document.class))).thenCallRealMethod();
 
         //WHEN
-        Path path = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
+        tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
 
         //THEN
         List<String> zipEntriesNames = new ArrayList<>(5);
 
         assertDoesNotThrow(() -> {
-            ZipInputStream zis = new ZipInputStream(Files.newInputStream(path));
+            ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
             ZipEntry zipEntry;
             while ((zipEntry = zis.getNextEntry()) != null) {
                 //Skip a folder name (which is also a zipEntry
@@ -656,11 +658,11 @@ class MultipartFilterFileServiceTest {
     }
 
     @Test
-    public void when_Kmz_Contains_Additional_Photos_Zip_Should_Contain_All_Of_Them()
+    public void when_Kmz_Contains_Additional_Photos_Zip_Should_Not_Contain_All_Of_Them()
             throws ParserConfigurationException, TransformerException, SAXException, IOException {
         //GIVEN
-       final String KMZ_ADDITIONAL_PHOTO_NAME1 = "_2016-08-01#68664196896.jpg";
-       final String KMZ_ADDITIONAL_PHOTO_NAME2 = "_1468672663037.jpg";
+        final String KMZ_ADDITIONAL_PHOTO_NAME1 = "_2016-08-01#68664196896.jpg";
+        final String KMZ_ADDITIONAL_PHOTO_NAME2 = "_1468672663037.jpg";
 
         multipartXmlFile = new MockMultipartFile(
                 "additionalPhotosInKmz.kmz", "additionalPhotosInKmz.kmz", null, Files.readAllBytes(KMZ_WITH_ADDITIONAL_PHOTOS_IN_KMZ));
@@ -673,13 +675,13 @@ class MultipartFilterFileServiceTest {
         Mockito.when(mockKmlHandler.getAsString(Mockito.any(Document.class))).thenCallRealMethod();
 
         //WHEN
-        Path path = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
+        tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
 
         //THEN
-        List<String> zipEntriesNames = new ArrayList<>(7);
+        List<String> zipEntriesNames = new ArrayList<>(5);
 
         assertDoesNotThrow(() -> {
-            ZipInputStream zis = new ZipInputStream(Files.newInputStream(path));
+            ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
             ZipEntry zipEntry;
             while ((zipEntry = zis.getNextEntry()) != null) {
                 //Skip a folder name (which is also a zipEntry
@@ -689,7 +691,7 @@ class MultipartFilterFileServiceTest {
                 }
             }
         });
-        assertEquals(7, zipEntriesNames.size());
+        assertEquals(5, zipEntriesNames.size());
 
         assertTrue((zipEntriesNames.contains(ZIPPED_PHOTOS_FOLDER_NAME + ZIPPED_PHOTO_NAME1)));
         assertTrue((zipEntriesNames.contains(ZIPPED_PHOTOS_FOLDER_NAME + ZIPPED_PHOTO_NAME2)));
@@ -697,8 +699,8 @@ class MultipartFilterFileServiceTest {
         assertTrue((zipEntriesNames.contains(ZIPPED_PHOTOS_FOLDER_NAME + ZIPPED_PHOTO_NAME4)));
         assertTrue((zipEntriesNames.contains(ZIPPED_PHOTOS_FOLDER_NAME + ZIPPED_PHOTO_NAME5)));
 
-        assertTrue((zipEntriesNames.contains(ZIPPED_PHOTOS_FOLDER_NAME + KMZ_ADDITIONAL_PHOTO_NAME1)));
-        assertTrue((zipEntriesNames.contains(ZIPPED_PHOTOS_FOLDER_NAME + KMZ_ADDITIONAL_PHOTO_NAME2)));
+        assertFalse((zipEntriesNames.contains(ZIPPED_PHOTOS_FOLDER_NAME + KMZ_ADDITIONAL_PHOTO_NAME1)));
+        assertFalse((zipEntriesNames.contains(ZIPPED_PHOTOS_FOLDER_NAME + KMZ_ADDITIONAL_PHOTO_NAME2)));
     }
 
 }

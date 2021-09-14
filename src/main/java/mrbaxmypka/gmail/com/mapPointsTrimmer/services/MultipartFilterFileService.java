@@ -1,7 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFilterDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
@@ -66,16 +65,16 @@ public class MultipartFilterFileService extends MultipartMainFileService {
             throws IOException, ParserConfigurationException, SAXException, TransformerException {
         Document document = kmlHandler.getDocument(multipartFilterDto.getMultipartXmlFile().getInputStream());
         String documentAsString = kmlHandler.getAsString(document);
-        setImagesNamesFromZip(multipartFilterDto);
+//        setImagesNamesFromZip(multipartFilterDto);
         return processTempZip(documentAsString, multipartFilterDto, locale);
     }
 
     private Path processKmz(MultipartFilterDto multipartFilterDto, Locale locale)
             throws IOException, ParserConfigurationException, SAXException, TransformerException {
-        InputStream inputXmlStream = getXmlFromZip(multipartFilterDto, locale);
+        InputStream inputXmlStream = getXmlFromKmz(multipartFilterDto, locale);
         Document document = kmlHandler.getDocument(inputXmlStream);
         String documentAsString = kmlHandler.getAsString(document);
-        setImagesNamesFromZip(multipartFilterDto);
+//        setImagesNamesFromZip(multipartFilterDto);
         return processTempZip(documentAsString, multipartFilterDto, locale);
     }
 
@@ -120,11 +119,12 @@ public class MultipartFilterFileService extends MultipartMainFileService {
     }
 
     /**
-     * Looks through all the given .zip(.kmz) file for images and adds them into the instant cache in {@link MultipartFilterDto#getImagesNamesFromZip()}
+     * Looks through all the given .zip file for images and adds them into the instant cache in {@link MultipartFilterDto#getImagesNamesFromZip()}
      *
      * @param multipartFilterDto Which contains .gpz, .kmz or any other ZIP archives
      * @throws IOException If something wrong with the given .zip file
      */
+/*
     private void setImagesNamesFromZip(MultipartFilterDto multipartFilterDto)
             throws IOException {
         try (ZipInputStream zis = new ZipInputStream(multipartFilterDto.getMultipartZipFile().getInputStream())) {
@@ -135,6 +135,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         }
         log.info("All images files are being processed from the given MultipartFilterDto");
     }
+*/
 
     /**
      * https://stackoverflow.com/a/43836969/11592202
@@ -160,7 +161,8 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
 
 
-        if (getFileService().getExtension(multipartFilterDto.getXmlFilename()).equals("kmz")) {
+        if (multipartFilterDto.getDownloadAs().equals(DownloadAs.KMZ)) {
+            //TODO: to finish or reject
             //Also process and copy images from the given .kmz file
             ZipInputStream kmzZis = new ZipInputStream(multipartFilterDto.getMultipartXmlFile().getInputStream());
             filterExistingZip(zos, kmzZis, processedXml, multipartFilterDto, tempFile);
@@ -174,7 +176,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         return multipartFilterDto.getTempFile();
     }
 
-    private ZipOutputStream filterExistingZip(
+    private void filterExistingZip(
             ZipOutputStream zos, ZipInputStream zis, String processedXml, MultipartFilterDto multipartFilterDto, Path tempFile)
             throws IOException {
         //Copy original images from the MultipartFile to the temp zip
@@ -202,7 +204,6 @@ public class MultipartFilterFileService extends MultipartMainFileService {
             zos.closeEntry();
         }
         log.info("Images from the User's zip have been added to the {}", tempFile);
-        return zos;
     }
 
     /**
@@ -236,16 +237,16 @@ public class MultipartFilterFileService extends MultipartMainFileService {
     }
 
     /**
-     * 1) Looks through all the .zip(.kmz)
+     * 1) Looks through all the .kmz
      * 2) Searches for .xml (.kml) file inside the given .zip (.kml) to return it in the end
      * 3) Adds all found images files to the instant cache in {@link MultipartMainDto#getImagesNamesFromZip()}
      *
-     * @param multipartFilterDto     Which contains .gpz, .kmz or any other ZIP archives
-     * @param locale           To send a localized error messages.
+     * @param multipartFilterDto Which contains .gpz, .kmz or any other ZIP archives
+     * @param locale             To send a localized error messages.
      * @return {@link InputStream} from the file with the given file extension (.kml as usual).
      * @throws IOException If something wrong with the given .zip file
      */
-    private InputStream getXmlFromZip(MultipartFilterDto multipartFilterDto, Locale locale)
+    private InputStream getXmlFromKmz(MultipartFilterDto multipartFilterDto, Locale locale)
             throws IOException {
         log.info("'{}' file is being extracted from the given MultipartDto", multipartFilterDto);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -259,7 +260,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
 // 					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
                     buffer.writeBytes(zis.readAllBytes());
                     log.info("File '{}' has been extracted from zip and will be returned as InputStream", multipartFilterDto.getXmlFilename());
-                } else {
+                } else if (multipartFilterDto.getDownloadAs().equals(DownloadAs.KMZ)) {
                     addImageNameFromZip(zipEntry, multipartFilterDto);
                 }
             }
