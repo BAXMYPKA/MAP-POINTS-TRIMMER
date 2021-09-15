@@ -2,11 +2,9 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFilterDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -40,9 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MultipartFilterFileServiceTest {
 
     private MultipartFilterFileService multipartFilterFileService;
-    private MultipartMainFileService multipartMainFileService;
     private Path tmpFile;
-    private KmlUtils kmlUtils;
     private XmlHandler mockXmlHandler;
     private KmlHandler mockKmlHandler;
     private MessageSource mockMessageSource;
@@ -82,16 +78,15 @@ class MultipartFilterFileServiceTest {
         mockXmlHandler = Mockito.mock(XmlHandler.class);
         mockKmlHandler = Mockito.mock(KmlHandler.class);
 
-        multipartMainFileService = new MultipartMainFileService(mockKmlHandler, mockFileService, mockMessageSource);
+        MultipartMainFileService multipartMainFileService = new MultipartMainFileService(mockKmlHandler, mockFileService, mockMessageSource);
         multipartFilterFileService = new MultipartFilterFileService(mockFileService, mockMessageSource, mockKmlHandler);
 
-        GoogleIconsCache googleIconsCache = new GoogleIconsCache();
-        GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
-        FileService fileService = new FileService(mockMessageSource, resourceLoader);
-        HtmlHandler htmlHandler = new HtmlHandler(fileService);
-        Document mockDocument = XmlTestUtils.getMockDocument();
-        XmlDomUtils xmlDomUtils = new XmlDomUtils(mockDocument);
-        kmlUtils = new KmlUtils(mockDocument, xmlDomUtils);
+        //The following will be use if DownloadAs.KMZ will be tested
+//        FileService fileService = new FileService(mockMessageSource, resourceLoader);
+//        HtmlHandler htmlHandler = new HtmlHandler(fileService);
+//        Document mockDocument = XmlTestUtils.getMockDocument();
+//        XmlDomUtils xmlDomUtils = new XmlDomUtils(mockDocument);
+//        KmlUtils kmlUtils = new KmlUtils(mockDocument, xmlDomUtils);
 
         multipartZipFile = new MockMultipartFile(originalZipFilename, originalZipFilename, null, Files.readAllBytes(ZIPPED_PHOTOS_ZIP));
 
@@ -110,9 +105,8 @@ class MultipartFilterFileServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"test.kml", "test.kmz", "test.txt", "test.xml", "test.gz", "test.jar"})
-    @Disabled
-    public void filter_Should_Receive_Only_Supported_Files_Extensions(String textFilename) {
+    @ValueSource(strings = {"test.kml", "test.kmz", "test.txt", "test.xml"})
+    public void filter_Should_Receive_Only_Supported_Text_Files_Extensions(String textFilename) {
         //GIVEN
         multipartXmlFile = new MockMultipartFile(textFilename, textFilename, null, (byte[]) null);
         multipartFilterDto.setMultipartXmlFile(multipartXmlFile);
@@ -121,13 +115,16 @@ class MultipartFilterFileServiceTest {
         Mockito.when(mockMessageSource.getMessage(
                 "exception.fileExtensionNotSupported", new Object[]{textFilename}, Locale.ENGLISH))
                 .thenReturn(notSupportedFilename);
-        //WHEN
-        tmpFile = assertDoesNotThrow(
-                () -> multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH),
-                notSupportedFilename
-        );
 
+        //WHEN
         //THEN
+        try {
+            tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
+        } catch (IOException | ParserConfigurationException | SAXException | TransformerException | NullPointerException e) {
+            //Do nothing
+        } catch (IllegalArgumentException e) {
+            assertNotEquals(notSupportedFilename, e.getMessage());
+        }
     }
 
     @ParameterizedTest
