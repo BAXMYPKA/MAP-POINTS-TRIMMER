@@ -51,7 +51,7 @@ class FileServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"files/pic", "./myFiles/pic.j", "files/pic.", "files pic.jpg", "pic.jp", "pic.jpegui"})
+    @ValueSource(strings = {"files/pic", "./myFiles/pic.j", "files/pic.", "files pic.jpg", "pic.", "pic.jpegui"})
     public void empty_String_Should_Be_Returned_When_Filename_Not_Valid(String pathWithNotValidFilename) {
         //GIVEN
 

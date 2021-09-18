@@ -4,12 +4,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartFilterDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -52,7 +50,7 @@ public class MultipartMainFileService {
 
     /**
      * @param multipartMainDto
-     * @param locale       To localize possible messages for User. If null, English will be userd.
+     * @param locale           To localize possible messages for User. If null, English will be userd.
      * @return The resulting {@link Path} in a temp directory with the processed file for a User.
      * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
      */
@@ -85,7 +83,7 @@ public class MultipartMainFileService {
      * 2) Searches for .xml (.kml) file inside the given .zip (.kml) to return it in the end
      * 3) Adds all found images files to the instant cache in {@link MultipartMainDto#getImagesNamesFromZip()}
      *
-     * @param multipartMainDto     Which contains .gpz, .kmz or any other ZIP archives
+     * @param multipartMainDto Which contains .gpz, .kmz or any other ZIP archives
      * @param xmlFileExtension .kml, .gpx or any possible extension of the file to be extracted from the given ZIP
      *                         archive as it must be a single one inside.
      * @param locale           To send a localized error messages.
@@ -124,7 +122,7 @@ public class MultipartMainFileService {
         String filename = fileService.getFileName(zipEntry.getName());
         if (!filename.contains(".")) return; //The filename doesn't contain an extension
         String extension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
-        if (fileService.getImagesExtensions().contains(extension)) {
+        if (fileService.getAllowedImagesExtensions().contains(extension)) {
             multipartDto.getImagesNamesFromZip().add(filename);
         }
     }
@@ -134,9 +132,9 @@ public class MultipartMainFileService {
      * Relocates all the internal files from a given .kmz or .gpz from a User to the temp directory as a new kmz
      * with replacing an old inner .kml or .gpx with the new one.
      *
-     * @param processedXml A processed xml String to be written to the resulting file.
+     * @param processedXml     A processed xml String to be written to the resulting file.
      * @param multipartMainDto
-     * @param locale       To return a locale-oriented messages
+     * @param locale           To return a locale-oriented messages
      * @return {@link Path} to a temp file to be returned to a User.
      * @throws IOException With the localized message to be returned to a User if the temp file writing is failed.
      */

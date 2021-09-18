@@ -99,9 +99,9 @@
             }
         });
 
-        document.querySelector(".mainHeader__logoImg").addEventListener('click', ev => {
-            window.location.href = serverAddress;
-        });
+        // document.querySelector(".mainHeader__logoImg").addEventListener('click', ev => {
+        //     window.location.href = serverAddress;
+        // });
 
         document.getElementById('setPreviewSize').addEventListener('change', ev => {
                 if (ev.target.checked) {
@@ -193,7 +193,7 @@
                 }
             }
             document.querySelector('.loadForm').submit();
-            document.querySelector(".downloadMessage").hidden = false;
+            document.getElementById('downloadMessageMain').hidden = false;
         });
 
         document.getElementById("replaceLocusIcons").addEventListener('change', ev => {
@@ -331,20 +331,15 @@
         });
 
         document.getElementById("filterOut").addEventListener('click', ev => {
-            let downloadMessage;
             //Checks all the filter inputs within the fieldset for HTML5 inner validation
             for (const child of document.getElementById('fieldSetFilter').children) {
                 if (child.tagName === "INPUT" && !child.checkValidity()) {
                     return;
-                } else if (child.className === "downloadMessage") {
-                    downloadMessage = child;
                 }
             }
             document.querySelector('.filterLoadForm').submit();
-            downloadMessage.hidden = false;
+            getElementById("downloadMessageFilter").hidden = false;
         });
-
-        //TODO: to set the "fieldset id="adminFieldset" as hiden
 
         document.getElementById("mainHeader__logoImg").addEventListener('click', ev => {
             adminLoginCounter++;

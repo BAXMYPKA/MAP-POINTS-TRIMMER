@@ -37,16 +37,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class MultipartMainFileServiceTest {
 
     private KmlHandler mockKmlHandler;
-    private Resource resource;
-    private ResourceLoader resourceLoader;
-    private FileService mockFileService;
-    private GoogleIconsService googleIconsService;
     private GoogleIconsCache googleIconsCache;
     private FileService fileService;
-    private HtmlHandler htmlHandler;
-    private XmlDomUtils xmlDomUtils;
     private MultipartMainFileService multipartMainFileService;
-    private KmlUtils kmlUtils;
     private MessageSource mockMessageSource;
     private MultipartMainDto multipartMainDto;
     private Path tmpFile;
@@ -74,30 +67,30 @@ class MultipartMainFileServiceTest {
         mockKmlHandler = Mockito.mock(KmlHandler.class);
         Mockito.when(mockKmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartMainDto.class))).thenReturn(testKml);
 
-        resource = Mockito.mock(Resource.class);
+        Resource resource = Mockito.mock(Resource.class);
         Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
 
-        resourceLoader = Mockito.mock(ResourceLoader.class);
+        ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
         Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
 
-        mockFileService = Mockito.mock(FileService.class);
+        FileService mockFileService = Mockito.mock(FileService.class);
         Mockito.when(mockFileService.getFileName(Mockito.anyString())).thenCallRealMethod();
 
         multipartMainFileService = new MultipartMainFileService(mockKmlHandler, mockFileService, mockMessageSource);
 
         googleIconsCache = new GoogleIconsCache();
 
-        googleIconsService = new GoogleIconsService(googleIconsCache);
+        GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
 
         fileService = new FileService(mockMessageSource, resourceLoader);
 
-        htmlHandler = new HtmlHandler(fileService);
+        HtmlHandler htmlHandler = new HtmlHandler(fileService);
 
         Document mockDocument = XmlTestUtils.getMockDocument();
 
-        xmlDomUtils = new XmlDomUtils(mockDocument);
+        XmlDomUtils xmlDomUtils = new XmlDomUtils(mockDocument);
 
-        kmlUtils = new KmlUtils(mockDocument, xmlDomUtils);
+        KmlUtils kmlUtils = new KmlUtils(mockDocument, xmlDomUtils);
 
         multipartFile = new MockMultipartFile(originalKmlFilename, originalKmlFilename, null, testKml.getBytes());
 
@@ -520,7 +513,7 @@ class MultipartMainFileServiceTest {
         Mockito.when(fileService.getPictogramsNamesPaths()).thenReturn(PICTOGRAMS_NAMES_PATHS);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenCallRealMethod();
         Mockito.when(fileService.getFileName(Mockito.anyString())).thenCallRealMethod();
-        Mockito.when(fileService.getImagesExtensions()).thenReturn(Arrays.asList(
+        Mockito.when(fileService.getAllowedImagesExtensions()).thenReturn(Arrays.asList(
                 ".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".gif", ".raw", ".psd", ".xcf", "cdr"));
 
         multipartMainFileService = new MultipartMainFileService(

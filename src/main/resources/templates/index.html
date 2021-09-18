@@ -545,7 +545,7 @@
                 </div>
 
 
-                <span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
+                <span id="downloadMessageMain" class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					The long download message with the explicit instructions.<br>This is an example.
 				</span>
 
@@ -614,14 +614,15 @@
               th:action="@{/filter}">
 
             <details class="details">
-                <summary class="summaryOption" th:text="#{html.text.imageFilter}">Image filter</summary>
+                <summary class="summaryOption" th:text="#{html.text.imageFilter}">Images filter</summary>
 
                 <br>
 
                 <details class="details">
-                    <summary class="summaryOption"><small>How it works...</small></summary>
+                    <summary class="summaryOption summaryOption_small" th:text="#{html.text.howFilterWorks}">How it works...
+                    </summary>
 
-                    <div th:text="#{commonMessages.filterDescription}">
+                    <div th:utext="#{commonMessages.filterDescription}">
                         The description of this filtering option.
                     </div>
 
@@ -682,7 +683,7 @@
                     </div>
 
 
-                    <span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
+                    <span id="downloadMessageFilter" class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					The long download message with the explicit instructions.<br>This is an example.
 				</span>
 
@@ -692,7 +693,7 @@
 
         </form>
 
-        <form class="loadForm">
+        <form class="loadForm" hidden>
 
             <details class="details">
                 <summary class="summaryOption" th:utext="#{html.text.adminLogin}">Admin login...</summary>

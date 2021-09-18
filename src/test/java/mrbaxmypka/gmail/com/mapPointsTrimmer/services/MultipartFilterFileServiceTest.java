@@ -72,7 +72,7 @@ class MultipartFilterFileServiceTest {
         FileService mockFileService = Mockito.mock(FileService.class);
         Mockito.when(mockFileService.getFileName(Mockito.anyString())).thenCallRealMethod();
         Mockito.when(mockFileService.getExtension(Mockito.anyString())).thenCallRealMethod();
-        Mockito.when(mockFileService.getZipExtensions()).thenReturn(Arrays.asList("zip", "kmz", "jar", "gz"));
+        Mockito.when(mockFileService.getAllowedZipExtensions()).thenReturn(Arrays.asList("zip", "kmz", "jar", "gz"));
         Mockito.when(mockFileService.getAllowedXmlExtensions()).thenReturn(Arrays.asList("kmz", "kml", "xml", "txt"));
 
         mockXmlHandler = Mockito.mock(XmlHandler.class);

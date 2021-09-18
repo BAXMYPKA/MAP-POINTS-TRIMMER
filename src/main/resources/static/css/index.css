@@ -64,6 +64,11 @@ h3 {
 	color: #6a440b;
 }
 
+.summaryOption_small {
+	font-size: small;
+	font-style: italic;
+}
+
 .details {
 }
 
@@ -376,6 +381,7 @@ input[type=radio] {
 }
 
 .loadForm__inputButton_processSpecialButton {
+	text-transform: uppercase;
 	background-color: lightgoldenrodyellow;
 	display: inline-block;
 	height: 1.5em;
@@ -384,6 +390,7 @@ input[type=radio] {
 }
 
 .loadForm__inputButton_processSpecialButton:hover {
+	font-weight: bolder;
 	background-color: lightgreen;
 }
 

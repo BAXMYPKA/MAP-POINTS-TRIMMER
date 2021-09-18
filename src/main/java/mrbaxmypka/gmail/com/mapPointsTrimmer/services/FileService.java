@@ -38,13 +38,13 @@ public class FileService {
      * All possible images files extensions in lower case.
      */
     @Getter(AccessLevel.PUBLIC)
-    private final List<String> imagesExtensions;
+    private final List<String> allowedImagesExtensions;
 
     /**
      * All possible images files extensions in lower case.
      */
     @Getter(AccessLevel.PUBLIC)
-    private final List<String> zipExtensions;
+    private final List<String> allowedZipExtensions;
 
     /**
      * Allowed file extensions to be loaded as xml files from index.html 'xmlFile' form.
@@ -93,11 +93,11 @@ public class FileService {
         pictogramsResource = resourceLoader.getResource("classpath:static/pictograms");
         setPictogramNames();
         setPictogramsNamesPaths();
-        imagesExtensions = new ArrayList<>(5);
-        imagesExtensions.addAll(Arrays.asList(
+        allowedImagesExtensions = new ArrayList<>(5);
+        allowedImagesExtensions.addAll(Arrays.asList(
                 ".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".gif", ".raw", ".psd", ".xcf", "cdr"));
-        zipExtensions = new ArrayList<>(2);
-        zipExtensions.addAll(Arrays.asList("zip", "kmz", "jar", "gz"));
+        allowedZipExtensions = new ArrayList<>(2);
+        allowedZipExtensions.addAll(Arrays.asList("zip", "kmz", "jar", "gz"));
         allowedXmlExtensions = new ArrayList<>(5);
         allowedXmlExtensions.addAll(Arrays.asList("kmz", "kml", "xml", "txt"));
     }

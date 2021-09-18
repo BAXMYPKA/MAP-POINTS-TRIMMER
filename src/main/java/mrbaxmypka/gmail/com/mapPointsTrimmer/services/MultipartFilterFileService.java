@@ -57,7 +57,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
             return processKmz(multipartFilterDto, locale);
         } else {
             throw new FileNotFoundException(getMessageSource().getMessage(
-                    "exception.filenameNotSupported", null, locale));
+                    "exception.filenameNotSupported(1)", new Object[]{xmlFilename}, locale));
         }
     }
 
@@ -94,7 +94,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
 
     private void checkCorrectZipFilename(String zipFilename, Locale locale) throws IllegalArgumentException {
         checkNullEmptyFilename(zipFilename, locale);
-        if (!getFileService().getZipExtensions().contains(getFileService().getExtension(zipFilename))) {
+        if (!getFileService().getAllowedZipExtensions().contains(getFileService().getExtension(zipFilename))) {
             throw new IllegalArgumentException(getMessageSource().getMessage(
                     "exception.fileExtensionNotSupported", new Object[]{zipFilename}, locale));
         }
@@ -161,22 +161,24 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
 
 
+/*
         if (multipartFilterDto.getDownloadAs().equals(DownloadAs.KMZ)) {
             //TODO: to finish or reject
             //Also process and copy images from the given .kmz file
             ZipInputStream kmzZis = new ZipInputStream(multipartFilterDto.getMultipartXmlFile().getInputStream());
             filterExistingZip(zos, kmzZis, processedXml, multipartFilterDto, tempFile);
         }
+*/
 
         //Copy original images from the MultipartFile .zip to the new temp .zip
-        filterExistingZip(zos, zis, processedXml, multipartFilterDto, tempFile);
+        filterToZip(zos, zis, processedXml, multipartFilterDto, tempFile);
 
         zos.close();
         log.info("Temp zip file {} has been written to the temp dir", tempFile);
         return multipartFilterDto.getTempFile();
     }
 
-    private void filterExistingZip(
+    private void filterToZip(
             ZipOutputStream zos, ZipInputStream zis, String processedXml, MultipartFilterDto multipartFilterDto, Path tempFile)
             throws IOException {
         //Copy original images from the MultipartFile to the temp zip
@@ -193,6 +195,10 @@ public class MultipartFilterFileService extends MultipartMainFileService {
             if (multipartFilterDto.getFilesToBeExcluded().contains(imageFileName)) {
                 //If a file has not to be included in the resultant .zip just skip it
                 continue;
+            } else if (getFileService().getExtension(imageFileName).equals("kml")) {
+                //It is an inner doc.kml into the given .kmz archive and has to be included
+                zos.putNextEntry(zipOutEntry);
+                buffer.writeBytes(zis.readAllBytes());
             } else if (!processedXml.contains(imageFileName)) {
                 //This image is redundant as the user's xml doesn't contain it, just skip this image from .zip
                 continue;

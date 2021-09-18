@@ -1,6 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartMainFileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import org.springframework.lang.Nullable;
@@ -33,7 +34,7 @@ public abstract class MultipartDto implements Serializable {
     private DownloadAs downloadAs;
 
     /**
-     * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartMainDto, Locale, HttpSession)}
+     * To be filled by {@link FilesController#postKml(MultipartMainDto, Locale, HttpSession)}
      * to associate a process (thread) and a temp file with the current User session.
      */
     @Nullable
