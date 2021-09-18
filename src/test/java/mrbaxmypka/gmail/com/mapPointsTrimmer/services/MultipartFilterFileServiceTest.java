@@ -821,6 +821,19 @@ class MultipartFilterFileServiceTest {
         assertFalse(zipEntriesNames.contains(KMZ_ADDITIONAL_PHOTO_NAME2));
     }
 
+    /**
+     * If ZIP or KMZ file are created with non-UTF8 filenames inside {@link ZipInputStream} throws malformed exception.
+     * This test is against the following:
+     * java.lang.IllegalArgumentException: malformed input off : 6, length : 1
+     * 	at java.base/java.lang.StringCoding.throwMalformed(StringCoding.java:698) ~[na:na]
+     * 	at java.base/java.lang.StringCoding.decodeUTF8_0(StringCoding.java:885) ~[na:na]
+     * 	at java.base/java.lang.StringCoding.newStringUTF8NoRepl(StringCoding.java:978) ~[na:na]
+     * 	at java.base/java.lang.System$2.newStringUTF8NoRepl(System.java:2270) ~[na:na]
+     * 	at java.base/java.util.zip.ZipCoder$UTF8.toString(ZipCoder.java:60) ~[na:na]
+     * 	at java.base/java.util.zip.ZipCoder.toString(ZipCoder.java:87) ~[na:na]
+     * 	at java.base/java.util.zip.ZipInputStream.readLOC(ZipInputStream.java:302) ~[na:na]
+     * 	at java.base/java.util.zip.ZipInputStream.getNextEntry(ZipInputStream.java:124) ~[na:na]
+     */
     @Test
     public void when_Kml_Contains_All_Photos_With_Non_UTF8_Names_Zip_Should_Contain_Initial_Names()
             throws ParserConfigurationException, TransformerException, SAXException, IOException {

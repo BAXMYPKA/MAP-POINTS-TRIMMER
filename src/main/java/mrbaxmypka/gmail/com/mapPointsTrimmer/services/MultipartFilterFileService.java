@@ -158,7 +158,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         Path tempFile = Paths.get(getTEMP_DIR().concat(zipFilename));
         multipartFilterDto.setTempFile(tempFile);
 
-        ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
+        ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile), StandardCharsets.UTF_8);
 /*
         if (multipartFilterDto.getDownloadAs().equals(DownloadAs.KMZ)) {
             //TODO: to finish or reject
@@ -178,7 +178,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
     private void filterToZip(
             ZipOutputStream zos, String processedXml, MultipartFilterDto multipartFilterDto, Path tempFile)
             throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(multipartFilterDto.getMultipartZipFile().getInputStream())) {
+        try (ZipInputStream zis = new ZipInputStream(multipartFilterDto.getMultipartZipFile().getInputStream(), Charset.forName("windows-1252"))) {
             //Copy original images from the MultipartFile to the temp zip
             ZipEntry zipInEntry;
             while ((zipInEntry = zis.getNextEntry()) != null) {
