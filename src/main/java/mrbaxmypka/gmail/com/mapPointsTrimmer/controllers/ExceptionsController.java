@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -101,6 +103,18 @@ public class ExceptionsController extends AbstractController {
                         messageSource.getMessage("exception.fieldError(2)", new Object[]{e.getKey(), e.getValue()}, locale))
                 .collect(Collectors.joining());
         return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, ve, locale, httpSession);
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ModelAndView validationBindingException(BindException be, Locale locale, HttpSession httpSession) {
+        Map<String, String> errors = be.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        fieldError -> fieldError.getField(), fieldError -> fieldError.getDefaultMessage()));
+        String errorMessages = errors.entrySet().stream()
+                .map(e ->
+                        messageSource.getMessage("exception.fieldError(2)", new Object[]{e.getKey(), e.getValue()}, locale))
+                .collect(Collectors.joining());
+        return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, be, locale, httpSession);
     }
 
     /**

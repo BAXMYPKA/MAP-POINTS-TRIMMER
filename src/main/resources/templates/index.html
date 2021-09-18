@@ -127,7 +127,7 @@
 
         </div>
 
-        <form id="poiFile" class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
+        <form id="poiFileLoadForm" class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
               th:action="@{/poi}" name="poiFile">
             <label for="locusFile" th:text="#{html.label.loadPoi}" class="loadForm__label">
                 Load custom points file
@@ -664,7 +664,7 @@
                            class="inputButton loadForm__inputButton_processSpecialButton"
                            th:value="#{html.input.value.filterOut}">
 
-                    <select id="downloadAsFilter" name="downloadAsFilter" class="loadForm__selectDownloadAs"
+                    <select id="downloadAsFilter" name="downloadAs" class="loadForm__selectDownloadAs"
                             th:title="#{html.title.select.downloadAs}"
                             title="Download as... (.zip archive by default)">
                         <option value="zip" selected title="A processed zip archive with the filtered out photos."
@@ -693,7 +693,7 @@
 
         </form>
 
-        <form class="loadForm" hidden>
+        <form id="adminLoadForm" class="loadForm" hidden>
 
             <details class="details">
                 <summary class="summaryOption" th:utext="#{html.text.adminLogin}">Admin login...</summary>

@@ -18,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(of = {"multipartFile"})
+@EqualsAndHashCode
 @ToString(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
@@ -27,7 +27,7 @@ public abstract class MultipartDto implements Serializable {
     static final long serialVersionUID = 4L;
 
     @NonNull //Lombok required arg for the constructor
-    @NotNull(message = "{validation.notNull}")
+//    @NotNull(message = "{validation.notNull}")
     private MultipartFile multipartFile;
 
     @NotNull

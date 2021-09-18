@@ -338,15 +338,15 @@
                 }
             }
             document.querySelector('.filterLoadForm').submit();
-            getElementById("downloadMessageFilter").hidden = false;
+            document.getElementById("downloadMessageFilter").hidden = false;
         });
 
         document.getElementById("mainHeader__logoImg").addEventListener('click', ev => {
             adminLoginCounter++;
             if (adminLoginCounter === 3) {
-                document.getElementById("adminFieldset").hidden = false;
-                //TODO: to check
+                document.getElementById("adminLoadForm").hidden = false;
                 ev.currentTarget.title = "Admin opened";
+                ev.currentTarget.className = "mainHeader__logoImg_opened";
             }
         });
 

@@ -19,7 +19,7 @@ import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @Getter
@@ -32,7 +32,7 @@ public class MultipartMainDto extends MultipartDto {
     private final Integer MAX_TEXT_SIZE_PERCENTS = 300;
     private final Double MAX_SCALE = 3.0;
 
-    @NonNull //Lombok required arg for the constructor
+//    @NonNull //Lombok required arg for the constructor
     @NotNull(message = "{validation.notNull}")
     private MultipartFile multipartFile;
 
@@ -425,6 +425,10 @@ public class MultipartMainDto extends MultipartDto {
      */
     @ToString.Exclude
     private Set<String> filesToBeExcluded = new HashSet<>(10);
+
+    public MultipartMainDto(MultipartFile multipartFile) {
+        super(multipartFile);
+    }
 
     /**
      * Scale has to be presented as digits divided by a dot and not exceeding the {@link #MAX_SCALE}

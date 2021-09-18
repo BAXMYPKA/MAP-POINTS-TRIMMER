@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -157,10 +158,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         Path tempFile = Paths.get(getTEMP_DIR().concat(zipFilename));
         multipartFilterDto.setTempFile(tempFile);
 
-        ZipInputStream zis = new ZipInputStream(multipartFilterDto.getMultipartZipFile().getInputStream());
         ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
-
-
 /*
         if (multipartFilterDto.getDownloadAs().equals(DownloadAs.KMZ)) {
             //TODO: to finish or reject
@@ -169,9 +167,8 @@ public class MultipartFilterFileService extends MultipartMainFileService {
             filterExistingZip(zos, kmzZis, processedXml, multipartFilterDto, tempFile);
         }
 */
-
         //Copy original images from the MultipartFile .zip to the new temp .zip
-        filterToZip(zos, zis, processedXml, multipartFilterDto, tempFile);
+        filterToZip(zos, processedXml, multipartFilterDto, tempFile);
 
         zos.close();
         log.info("Temp zip file {} has been written to the temp dir", tempFile);
@@ -179,35 +176,37 @@ public class MultipartFilterFileService extends MultipartMainFileService {
     }
 
     private void filterToZip(
-            ZipOutputStream zos, ZipInputStream zis, String processedXml, MultipartFilterDto multipartFilterDto, Path tempFile)
+            ZipOutputStream zos, String processedXml, MultipartFilterDto multipartFilterDto, Path tempFile)
             throws IOException {
-        //Copy original images from the MultipartFile to the temp zip
-        ZipEntry zipInEntry;
-        while ((zipInEntry = zis.getNextEntry()) != null) {
-            ZipEntry zipOutEntry = new ZipEntry(zipInEntry.getName());
-            zipOutEntry.setComment(zipInEntry.getComment());
-            zipOutEntry.setExtra(zipInEntry.getExtra());
+        try (ZipInputStream zis = new ZipInputStream(multipartFilterDto.getMultipartZipFile().getInputStream())) {
+            //Copy original images from the MultipartFile to the temp zip
+            ZipEntry zipInEntry;
+            while ((zipInEntry = zis.getNextEntry()) != null) {
+                ZipEntry zipOutEntry = new ZipEntry(zipInEntry.getName());
+                zipOutEntry.setComment(zipInEntry.getComment());
+                zipOutEntry.setExtra(zipInEntry.getExtra());
 
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-            String imageFileName = getFileService().getFileName(zipOutEntry.getName());
+                String imageFileName = getFileService().getFileName(zipOutEntry.getName());
 
-            if (multipartFilterDto.getFilesToBeExcluded().contains(imageFileName)) {
-                //If a file has not to be included in the resultant .zip just skip it
-                continue;
-            } else if (getFileService().getExtension(imageFileName).equals("kml")) {
-                //It is an inner doc.kml into the given .kmz archive and has to be included
-                zos.putNextEntry(zipOutEntry);
-                buffer.writeBytes(zis.readAllBytes());
-            } else if (!processedXml.contains(imageFileName)) {
-                //This image is redundant as the user's xml doesn't contain it, just skip this image from .zip
-                continue;
-            } else {
-                zos.putNextEntry(zipOutEntry);
-                buffer.writeBytes(zis.readAllBytes());
+                if (multipartFilterDto.getFilesToBeExcluded().contains(imageFileName)) {
+                    //If a file has not to be included in the resultant .zip just skip it
+                    continue;
+                } else if (getFileService().getExtension(imageFileName).equals("kml")) {
+                    //It is an inner doc.kml into the given .kmz archive and has to be included
+                    zos.putNextEntry(zipOutEntry);
+                    buffer.writeBytes(zis.readAllBytes());
+                } else if (!processedXml.contains(imageFileName)) {
+                    //This image is redundant as the user's xml doesn't contain it, just skip this image from .zip
+                    continue;
+                } else {
+                    zos.putNextEntry(zipOutEntry);
+                    buffer.writeBytes(zis.readAllBytes());
+                }
+                zos.write(buffer.toByteArray());
+                zos.closeEntry();
             }
-            zos.write(buffer.toByteArray());
-            zos.closeEntry();
         }
         log.info("Images from the User's zip have been added to the {}", tempFile);
     }
@@ -225,11 +224,11 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         if (multipartFilterDto.getDownloadAs().equals(DownloadAs.KMZ)) {
             zipFilename = Objects.requireNonNullElse(
                     multipartFilterDto.getMultipartZipFile().getOriginalFilename(), "default.kmz");
-            zipFilename = zipFilename.substring(zipFilename.lastIndexOf(".")).concat("kmz");
+            zipFilename = zipFilename.substring(0, zipFilename.lastIndexOf(".") + 1).concat("kmz");
         } else {
             zipFilename = Objects.requireNonNullElse(
                     multipartFilterDto.getMultipartZipFile().getOriginalFilename(), "default.zip");
-            zipFilename = zipFilename.substring(zipFilename.lastIndexOf(".")).concat("zip");
+            zipFilename = zipFilename.substring(0, zipFilename.lastIndexOf(".") + 1).concat("zip");
         }
 
         if (zipFilename.contains("/") || zipFilename.contains("\\")) {

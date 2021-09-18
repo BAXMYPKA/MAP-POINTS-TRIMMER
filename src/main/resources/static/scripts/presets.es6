@@ -12,7 +12,7 @@
 		}
 		
 		function getInputs() {
-			let formElements = document.getElementById("poiFile").elements;
+			let formElements = document.getElementById("poiFileLoadForm").elements;
 			let inputs = [];
 			for (let element of formElements) {
 				if (element.tagName.match(new RegExp("input", "i")) || element.tagName.match(new RegExp("select", "i"))) {
@@ -52,7 +52,7 @@
 		}
 		
 		function clearInputs() {
-			let formElements = document.getElementById("poiFile").elements;
+			let formElements = document.getElementById("poiFileLoadForm").elements;
 			for (let input of formElements) {
 				if (input.tagName.match(new RegExp("input", "i")) || input.tagName.match(new RegExp("select", "i"))) {
 					if (input.type === "file" || input.type === "submit") continue;
