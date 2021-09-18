@@ -23,6 +23,7 @@ import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -838,6 +839,9 @@ class MultipartFilterFileServiceTest {
     public void when_Kml_Contains_All_Photos_With_Non_UTF8_Names_Zip_Should_Contain_Initial_Names()
             throws ParserConfigurationException, TransformerException, SAXException, IOException {
         //GIVEN
+
+//        System.out.println(Charset.defaultCharset().displayName());
+
         final Path ZIPPED_NON_UTF8_PHOTOS_ZIP = Paths.get("src/test/java/resources/№ фото для фильтрации №.zip");
         final String NON_UTF8_FOLDERNAME = "№ фото для фильтрации №";
         final String NON_UTF8_FILENAME1 = "@# $%  тест.jpg";

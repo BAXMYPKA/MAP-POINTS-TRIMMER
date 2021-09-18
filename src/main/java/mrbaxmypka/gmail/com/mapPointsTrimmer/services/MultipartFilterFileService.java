@@ -18,6 +18,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
@@ -158,7 +159,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         Path tempFile = Paths.get(getTEMP_DIR().concat(zipFilename));
         multipartFilterDto.setTempFile(tempFile);
 
-        ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile), StandardCharsets.UTF_8);
+        ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
 /*
         if (multipartFilterDto.getDownloadAs().equals(DownloadAs.KMZ)) {
             //TODO: to finish or reject
@@ -178,7 +179,27 @@ public class MultipartFilterFileService extends MultipartMainFileService {
     private void filterToZip(
             ZipOutputStream zos, String processedXml, MultipartFilterDto multipartFilterDto, Path tempFile)
             throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(multipartFilterDto.getMultipartZipFile().getInputStream(), Charset.forName("windows-1252"))) {
+
+        InputStream inputStream = multipartFilterDto.getMultipartZipFile().getInputStream();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        zos = new ZipOutputStream(bos);
+        ZipEntry zipEntry = new ZipEntry(multipartFilterDto.getMultipartZipFile().getOriginalFilename());
+        zos.putNextEntry(zipEntry);
+
+        byte[] bytes = new byte[1024];
+        int length;
+        while((length = inputStream.read(bytes)) >= 0) {
+            zos.write(bytes, 0, length);
+        }
+        zos.close();
+
+        Files.newOutputStream(multipartFilterDto.getTempFile()).write(bos.toByteArray());
+
+        Path tempFile1 = multipartFilterDto.getTempFile();
+
+
+
+        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(tempFile1.toFile())))) {
             //Copy original images from the MultipartFile to the temp zip
             ZipEntry zipInEntry;
             while ((zipInEntry = zis.getNextEntry()) != null) {
