@@ -840,7 +840,7 @@ class MultipartFilterFileServiceTest {
             throws ParserConfigurationException, TransformerException, SAXException, IOException {
         //GIVEN
 
-//        System.out.println(Charset.defaultCharset().displayName());
+//        System.out.println(System.get);
 
         final Path ZIPPED_NON_UTF8_PHOTOS_ZIP = Paths.get("src/test/java/resources/№ фото для фильтрации №.zip");
         final String NON_UTF8_FOLDERNAME = "№ фото для фильтрации №";

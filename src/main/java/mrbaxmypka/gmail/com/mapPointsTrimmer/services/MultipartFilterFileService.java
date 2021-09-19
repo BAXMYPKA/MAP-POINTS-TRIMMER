@@ -180,26 +180,27 @@ public class MultipartFilterFileService extends MultipartMainFileService {
             ZipOutputStream zos, String processedXml, MultipartFilterDto multipartFilterDto, Path tempFile)
             throws IOException {
 
+        Path target = Paths.get("/resources/");
+
         InputStream inputStream = multipartFilterDto.getMultipartZipFile().getInputStream();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         zos = new ZipOutputStream(bos);
         ZipEntry zipEntry = new ZipEntry(multipartFilterDto.getMultipartZipFile().getOriginalFilename());
         zos.putNextEntry(zipEntry);
 
-        byte[] bytes = new byte[1024];
+        byte[] bytes = new byte[4096];
         int length;
         while((length = inputStream.read(bytes)) >= 0) {
             zos.write(bytes, 0, length);
         }
         zos.close();
 
-        Files.newOutputStream(multipartFilterDto.getTempFile()).write(bos.toByteArray());
-
-        Path tempFile1 = multipartFilterDto.getTempFile();
+        Files.newOutputStream(target);
 
 
 
-        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(tempFile1.toFile())))) {
+
+        try (ZipInputStream zis = new ZipInputStream(multipartFilterDto.getMultipartZipFile().getInputStream())) {
             //Copy original images from the MultipartFile to the temp zip
             ZipEntry zipInEntry;
             while ((zipInEntry = zis.getNextEntry()) != null) {
