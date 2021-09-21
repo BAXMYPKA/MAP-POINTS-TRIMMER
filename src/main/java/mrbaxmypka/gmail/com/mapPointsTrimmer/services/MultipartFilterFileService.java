@@ -7,6 +7,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -159,33 +160,23 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         //It is important to save tempFile as the field to get an opportunity to delete it case of app crashing
         Path tempFile = Paths.get(getTEMP_DIR().concat(zipFilename));
         multipartFilterDto.setTempFile(tempFile);
-    
-        ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile));
+        //Copy the whole archive to the local temp dir
+        Files.copy(multipartFilterDto.getMultipartZipFile().getInputStream(), multipartFilterDto.getTempFile(), StandardCopyOption.REPLACE_EXISTING);
+        multipartFilterDto.getMultipartZipFile().getInputStream().close();
 
-        //Copy original images from the MultipartFile .zip to the new temp .zip
-        filterToZip(zos, processedXml, multipartFilterDto, tempFile);
+        //Copy original images from the temp .zip to the new temp .zip
+        filterToZip(processedXml, multipartFilterDto);
 
-//        zos.close();
         log.info("Temp zip file {} has been written to the temp dir", tempFile);
         return multipartFilterDto.getTempFile();
     }
 
-    private void filterToZip(
-            ZipOutputStream zos, String processedXml, MultipartFilterDto multipartFilterDto, Path tempFile)
+    private void filterToZip(String processedXml, MultipartFilterDto multipartFilterDto)
             throws IOException {
-
-//        Path target = Paths.get("/resources/");
-    
-    //////////////////////////////////////////////////////////////////////////////////////////
-    
-    
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-    
-        Locale aDefault = Locale.getDefault();
-    
-        try (ZipInputStream zis = new ZipInputStream(multipartFilterDto.getMultipartZipFile().getInputStream(), Charset.defaultCharset())) {
+        //Temporary archive in memory
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(multipartFilterDto.getTempFile(), StandardOpenOption.DELETE_ON_CLOSE));
+        ZipOutputStream zos = new ZipOutputStream(baos)) {
             //Copy original images from the MultipartFile to the temp zip
             ZipEntry zipInEntry;
             while ((zipInEntry = zis.getNextEntry()) != null) {

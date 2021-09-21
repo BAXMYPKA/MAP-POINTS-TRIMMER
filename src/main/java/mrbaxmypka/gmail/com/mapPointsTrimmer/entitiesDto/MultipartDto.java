@@ -40,6 +40,10 @@ public abstract class MultipartDto implements Serializable {
     @Nullable
     @ToString.Include
     private String sessionId;
+    
+    @NotNull(message = "{validation.notNull}")
+    @ToString.Include
+    private Locale locale;
 
     /**
      * The field is only for using within {@link MultipartMainFileService}
