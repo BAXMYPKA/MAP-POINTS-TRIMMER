@@ -839,10 +839,7 @@ class MultipartFilterFileServiceTest {
     public void when_Kml_Contains_All_Photos_With_Non_UTF8_Names_Zip_Should_Contain_Initial_Names()
             throws ParserConfigurationException, TransformerException, SAXException, IOException {
         //GIVEN
-
-//        System.out.println(System.get);
-
-        final Path ZIPPED_NON_UTF8_PHOTOS_ZIP = Paths.get("src/test/java/resources/№ фото для фильтрации №.zip");
+        final Path ZIPPED_NON_UTF8_PHOTOS_ZIP = Paths.get("src/test/java/resources/№ фото для фильтрации №_7zip_default.zip");
         final String NON_UTF8_FOLDERNAME = "№ фото для фильтрации №";
         final String NON_UTF8_FILENAME1 = "@# $%  тест.jpg";
         final String NON_UTF8_FILENAME2 = "_надо отфильтровать.jpg";
@@ -879,6 +876,8 @@ class MultipartFilterFileServiceTest {
 
         multipartFilterDto.setMultipartXmlFile(multipartXmlFile);
         multipartFilterDto.setMultipartZipFile(multipartZipFile);
+
+        multipartFilterDto.setLocale(Locale.forLanguageTag("ru"));
 
         Mockito.when(mockKmlHandler.getDocument(Mockito.any(InputStream.class))).thenCallRealMethod();
         Mockito.when(mockKmlHandler.getAsString(Mockito.any(Document.class))).thenCallRealMethod();

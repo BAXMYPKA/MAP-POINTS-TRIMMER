@@ -41,7 +41,7 @@ public abstract class MultipartDto implements Serializable {
     @ToString.Include
     private String sessionId;
     
-    @NotNull(message = "{validation.notNull}")
+//    @NotNull(message = "{validation.notNull}")
     @ToString.Include
     private Locale locale;
 

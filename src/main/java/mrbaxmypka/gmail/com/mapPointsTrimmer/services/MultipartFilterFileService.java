@@ -7,7 +7,6 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -16,17 +15,17 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
-import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.HashMap;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -70,7 +69,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         Document document = kmlHandler.getDocument(multipartFilterDto.getMultipartXmlFile().getInputStream());
         String documentAsString = kmlHandler.getAsString(document);
 //        setImagesNamesFromZip(multipartFilterDto);
-        return processTempZip(documentAsString, multipartFilterDto, locale);
+        return createTempZip(documentAsString, multipartFilterDto, locale);
     }
 
     private Path processKmz(MultipartFilterDto multipartFilterDto, Locale locale)
@@ -79,7 +78,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         Document document = kmlHandler.getDocument(inputXmlStream);
         String documentAsString = kmlHandler.getAsString(document);
 //        setImagesNamesFromZip(multipartFilterDto);
-        return processTempZip(documentAsString, multipartFilterDto, locale);
+        return createTempZip(documentAsString, multipartFilterDto, locale);
     }
 
     private Path processTxt(MultipartFilterDto multipartFilterDto, Locale locale) throws IOException {
@@ -87,7 +86,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
                 new InputStreamReader(
                         multipartFilterDto.getMultipartXmlFile().getInputStream(), StandardCharsets.UTF_8))) {
             String txt = br.lines().collect(Collectors.joining("\n"));
-            return processTempZip(txt, multipartFilterDto, locale);
+            return createTempZip(txt, multipartFilterDto, locale);
         } catch (IOException e) {
             throw new IOException(getMessageSource().getMessage(
                     "exception.fileException(1)",
@@ -152,7 +151,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
      * @return {@link Path} to a temp archive file with photos to be returned to a User.
      * @throws IOException With the localized message to be returned to a User if the temp file writing is failed.
      */
-    private Path processTempZip(String processedXml, MultipartFilterDto multipartFilterDto, Locale locale)
+    private Path createTempZip(String processedXml, MultipartFilterDto multipartFilterDto, Locale locale)
             throws IOException {
         //The name of the zip file
         String zipFilename = getZipFilename(multipartFilterDto);
@@ -160,53 +159,80 @@ public class MultipartFilterFileService extends MultipartMainFileService {
         //It is important to save tempFile as the field to get an opportunity to delete it case of app crashing
         Path tempFile = Paths.get(getTEMP_DIR().concat(zipFilename));
         multipartFilterDto.setTempFile(tempFile);
-        //Copy the whole archive to the local temp dir
-        Files.copy(multipartFilterDto.getMultipartZipFile().getInputStream(), multipartFilterDto.getTempFile(), StandardCopyOption.REPLACE_EXISTING);
-        multipartFilterDto.getMultipartZipFile().getInputStream().close();
 
         //Copy original images from the temp .zip to the new temp .zip
-        filterToZip(processedXml, multipartFilterDto);
+        filterTempZip(processedXml, multipartFilterDto);
 
         log.info("Temp zip file {} has been written to the temp dir", tempFile);
         return multipartFilterDto.getTempFile();
     }
 
-    private void filterToZip(String processedXml, MultipartFilterDto multipartFilterDto)
-            throws IOException {
-        //Temporary archive in memory
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(multipartFilterDto.getTempFile(), StandardOpenOption.DELETE_ON_CLOSE));
-        ZipOutputStream zos = new ZipOutputStream(baos)) {
+    private void filterTempZip(String processedXml, MultipartFilterDto multipartFilterDto) throws IOException {
+        //Charset for file names into a given zip
+        if (multipartFilterDto.getCharset() == null) {
+            multipartFilterDto.setCharset(StandardCharsets.UTF_8);
+        }
+        ZipInputStream zis = new ZipInputStream(
+                multipartFilterDto.getMultipartZipFile().getInputStream(),
+                multipartFilterDto.getCharset());
+        //TODO: to test if zippers can regognize UTF8
+        ZipOutputStream zos = new ZipOutputStream(
+                Files.newOutputStream(multipartFilterDto.getTempFile(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.DELETE_ON_CLOSE),
+                StandardCharsets.UTF_8);
+        try {
             //Copy original images from the MultipartFile to the temp zip
             ZipEntry zipInEntry;
             while ((zipInEntry = zis.getNextEntry()) != null) {
-                ZipEntry zipOutEntry = new ZipEntry(zipInEntry.getName());
-                zipOutEntry.setComment(zipInEntry.getComment());
-                zipOutEntry.setExtra(zipInEntry.getExtra());
-
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                String imageFileName = getFileService().getFileName(zipInEntry.getName());
 
-                String imageFileName = getFileService().getFileName(zipOutEntry.getName());
+                System.out.println(imageFileName);
 
                 if (multipartFilterDto.getFilesToBeExcluded().contains(imageFileName)) {
                     //If a file has not to be included in the resultant .zip just skip it
                     continue;
                 } else if (getFileService().getExtension(imageFileName).equals("kml")) {
                     //It is an inner doc.kml into the given .kmz archive and has to be included
-                    zos.putNextEntry(zipOutEntry);
+                    zos.putNextEntry(zipInEntry);
                     buffer.writeBytes(zis.readAllBytes());
                 } else if (!processedXml.contains(imageFileName)) {
                     //This image is redundant as the user's xml doesn't contain it, just skip this image from .zip
                     continue;
                 } else {
-                    zos.putNextEntry(zipOutEntry);
+                    zos.putNextEntry(zipInEntry);
                     buffer.writeBytes(zis.readAllBytes());
                 }
                 zos.write(buffer.toByteArray());
                 zos.closeEntry();
             }
+        } catch (MalformedInputException mie) {
+            //TODO: Set a message for end user about encoding problem
+        } catch (IllegalArgumentException iae) {
+            if (iae.getMessage().contains("malformed input off")) {
+                    zis.close();
+                    zos.close();
+                    changeCharset(multipartFilterDto);
+                    filterTempZip(processedXml, multipartFilterDto);
+            }
         }
-        log.info("Images from the User's zip have been added to the {}", tempFile);
+        log.info("Images from the User's zip have been added to the {}", multipartFilterDto.getTempFile());
+    }
+
+    private void changeCharset(MultipartFilterDto multipartFilterDto) {
+        boolean isIbm866Charset = multipartFilterDto.getCharset().equals(Charset.forName("IBM866"));
+        boolean isEuropeanCharset = multipartFilterDto.getCharset().equals(StandardCharsets.ISO_8859_1);
+        boolean isRuLocale = multipartFilterDto.getLocale().getISO3Language().contains("ru");
+        boolean isEnglishLocale = multipartFilterDto.getLocale().equals(Locale.ENGLISH);
+        if ((isIbm866Charset && isRuLocale) || (isEnglishLocale && isEuropeanCharset)) {
+            //Those combinations have already been processed without success
+            //TODO: throw exception with an explanation
+        } else if (isRuLocale){
+            multipartFilterDto.setCharset(Charset.forName("IBM866"));
+        } else if (isEnglishLocale) {
+            multipartFilterDto.setCharset(StandardCharsets.ISO_8859_1);
+        } else {
+            //TODO: throw exception with an explanation
+        }
     }
 
     /**

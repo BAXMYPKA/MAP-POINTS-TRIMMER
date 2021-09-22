@@ -93,7 +93,7 @@ public class MultipartMainFileService {
     private InputStream getXmlFromZip(MultipartMainDto multipartMainDto, DownloadAs xmlFileExtension, Locale locale)
             throws IOException {
         log.info("'{}' file is being extracted from the given MultipartDto", xmlFileExtension);
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ByteArrayOutputStream xmlBuffer = new ByteArrayOutputStream();
 
         try (ZipInputStream zis = new ZipInputStream(multipartMainDto.getMultipartFile().getInputStream())) {
             ZipEntry zipEntry;
@@ -103,15 +103,15 @@ public class MultipartMainFileService {
 //					byte[] buffer = new byte[(int) zipEntry.getSize()];
 // 					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
                     multipartMainDto.setXmlFilename(zipEntry.getName()); //To store it if .kml has to be returned
-                    buffer.writeBytes(zis.readAllBytes());
+                    xmlBuffer.writeBytes(zis.readAllBytes());
                     log.info("File '{}' has been extracted from zip and will be returned as InputStream", multipartMainDto.getXmlFilename());
                 } else {
                     addImageNameFromZip(zipEntry, multipartMainDto);
                 }
             }
         }
-        if (buffer.size() > 0) {
-            return new ByteArrayInputStream(buffer.toByteArray());
+        if (xmlBuffer.size() > 0) {
+            return new ByteArrayInputStream(xmlBuffer.toByteArray());
         } else {
             throw new IllegalArgumentException(messageSource.getMessage("exception.noXmlInZipFound",
                     new Object[]{multipartMainDto.getMultipartFile().getOriginalFilename()}, locale));

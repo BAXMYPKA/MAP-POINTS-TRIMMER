@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -50,8 +51,18 @@ public class MultipartFilterDto extends MultipartDto {
     @ToString.Include
     private String sessionId;
 
+    @Nullable
+    private Charset charset;
+
     /**
      * Filenames which have to be excluded from the resultant .zip (.kmz)
      */
     private Set<String> filesToBeExcluded = new HashSet<>(10);
+
+    public void setCharset(String zipNamesCharset) {
+        charset = Charset.forName(zipNamesCharset);
+    }
+    public void setCharset(Charset zipNamesCharset) {
+        charset = zipNamesCharset;
+    }
 }
