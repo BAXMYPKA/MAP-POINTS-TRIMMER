@@ -839,7 +839,7 @@ class MultipartFilterFileServiceTest {
     public void when_Kml_Contains_All_Photos_With_Non_UTF8_Names_Zip_Should_Contain_Initial_Names()
             throws ParserConfigurationException, TransformerException, SAXException, IOException {
         //GIVEN
-        final Path ZIPPED_NON_UTF8_PHOTOS_ZIP = Paths.get("src/test/java/resources/№ фото для фильтрации №_7zip_default.zip");
+        final Path ZIPPED_NON_UTF8_PHOTOS_ZIP = Paths.get("src/test/java/resources/№ фото для фильтрации №_winrar_utf8.zip");
         final String NON_UTF8_FOLDERNAME = "№ фото для фильтрации №";
         final String NON_UTF8_FILENAME1 = "@# $%  тест.jpg";
         final String NON_UTF8_FILENAME2 = "_надо отфильтровать.jpg";
