@@ -909,4 +909,92 @@ class MultipartFilterFileServiceTest {
 		assertTrue((zipEntriesNames.contains(NON_UTF8_FOLDERNAME + NON_UTF8_FILENAME2)));
 	}
 	
+	/**
+	 * If ZIP or KMZ file are created with non-UTF8 filenames inside {@link ZipInputStream} throws malformed exception.
+	 * This test is against the following:
+	 * java.lang.IllegalArgumentException: malformed input off : 6, length : 1
+	 * at java.base/java.lang.StringCoding.throwMalformed(StringCoding.java:698) ~[na:na]
+	 * at java.base/java.lang.StringCoding.decodeUTF8_0(StringCoding.java:885) ~[na:na]
+	 * at java.base/java.lang.StringCoding.newStringUTF8NoRepl(StringCoding.java:978) ~[na:na]
+	 * at java.base/java.lang.System$2.newStringUTF8NoRepl(System.java:2270) ~[na:na]
+	 * at java.base/java.util.zip.ZipCoder$UTF8.toString(ZipCoder.java:60) ~[na:na]
+	 * at java.base/java.util.zip.ZipCoder.toString(ZipCoder.java:87) ~[na:na]
+	 * at java.base/java.util.zip.ZipInputStream.readLOC(ZipInputStream.java:302) ~[na:na]
+	 * at java.base/java.util.zip.ZipInputStream.getNextEntry(ZipInputStream.java:124) ~[na:na]
+	 */
+	@ParameterizedTest
+	@ValueSource(strings = {
+			"Encoding test hällö ёклмн№_winrar_IBM866.zip",
+			"Encoding test hällö ёклмн№_winrar_UTF8(65001).zip",
+			"Encoding test hällö ёклмн№_winrar_windows-1251.zip",
+			"Encoding test hällö ёклмн№_winrar_windows-1252(iso-8859-1).zip"})
+	public void when_Kml_Contains_Photos_With_Non_UTF8_Names_With_Locale_EN_Zip_Should_Contain_Initial_Names(String zipFilename)
+			throws ParserConfigurationException, TransformerException, SAXException, IOException {
+		//GIVEN
+		final Path ZIPPED_NON_UTF8_PHOTOS_ZIP = Paths.get("src/test/java/resources/" + zipFilename);
+		final String NON_UTF8_FOLDERNAME = "Photo hällö ёклмн№/";
+		final String NON_UTF8_FILENAME1 = "$Фильтрация%.jpg";
+		final String NON_UTF8_FILENAME2 = "@Tёст#.jpg";
+		String kmlWithNonUTF8NamesPhotos = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+				"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+				"<Document>\n" +
+				"\t<name>Test doc</name>\n" +
+				"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+				"\t\t<Style id=\"" +
+				NON_UTF8_FILENAME1 +
+				"\">\n" +
+				"\t\t<IconStyle>\n" +
+				"\t\t\t<Icon><href>" +
+				NON_UTF8_FOLDERNAME + NON_UTF8_FILENAME1 +
+				"</href></Icon>\n" +
+				"\t\t</IconStyle>\n" +
+				"\t</Style>\n" +
+				"\t\t<Style id=\"" +
+				NON_UTF8_FILENAME2 +
+				"\">\n" +
+				"\t\t<IconStyle>\n" +
+				"\t\t\t<Icon><href>" +
+				NON_UTF8_FOLDERNAME + NON_UTF8_FILENAME2 +
+				"</href></Icon>\n" +
+				"\t\t</IconStyle>\n" +
+				"\t</Style>\n" +
+				"</Document>\n" +
+				"</kml>\n";
+		
+		multipartXmlFile = new MockMultipartFile(
+				originalKmlFilename, originalKmlFilename, null, kmlWithNonUTF8NamesPhotos.getBytes(StandardCharsets.UTF_8));
+		multipartZipFile = new MockMultipartFile(
+				ZIPPED_NON_UTF8_PHOTOS_ZIP.getFileName().toString(), ZIPPED_NON_UTF8_PHOTOS_ZIP.getFileName().toString(), null, Files.readAllBytes(ZIPPED_NON_UTF8_PHOTOS_ZIP));
+		
+		multipartFilterDto.setMultipartXmlFile(multipartXmlFile);
+		multipartFilterDto.setMultipartZipFile(multipartZipFile);
+		
+		multipartFilterDto.setLocale(Locale.ENGLISH);
+		
+		Mockito.when(mockKmlHandler.getDocument(Mockito.any(InputStream.class))).thenCallRealMethod();
+		Mockito.when(mockKmlHandler.getAsString(Mockito.any(Document.class))).thenCallRealMethod();
+		
+		//WHEN
+		tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto, Locale.ENGLISH);
+		
+		//THEN
+		List<String> zipEntriesNames = new ArrayList<>(5);
+		
+		assertDoesNotThrow(() -> {
+			ZipInputStream zis = new ZipInputStream(Files.newInputStream(tmpFile));
+			ZipEntry zipEntry;
+			while ((zipEntry = zis.getNextEntry()) != null) {
+				//Skip a folder name (which is also a zipEntry
+				if (!zipEntry.getName().equals(ZIPPED_PHOTOS_FOLDER_NAME)) {
+					zipEntriesNames.add(zipEntry.getName());
+				}
+			}
+		});
+		assertEquals(3, zipEntriesNames.size());
+		
+		assertTrue((zipEntriesNames.contains(NON_UTF8_FOLDERNAME)));
+		assertTrue((zipEntriesNames.contains(NON_UTF8_FOLDERNAME + NON_UTF8_FILENAME1)));
+		assertTrue((zipEntriesNames.contains(NON_UTF8_FOLDERNAME + NON_UTF8_FILENAME2)));
+	}
+	
 }
