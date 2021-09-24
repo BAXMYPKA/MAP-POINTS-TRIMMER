@@ -545,7 +545,8 @@
                 </div>
 
 
-                <span id="downloadMessageMain" class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
+                <span id="downloadMessageMain" class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}"
+                      hidden>
 					The long download message with the explicit instructions.<br>This is an example.
 				</span>
 
@@ -619,7 +620,8 @@
                 <br>
 
                 <details class="details">
-                    <summary class="summaryOption summaryOption_small" th:text="#{html.text.howFilterWorks}">How it works...
+                    <summary class="summaryOption summaryOption_small" th:text="#{html.text.howFilterWorks}">How it
+                        works...
                     </summary>
 
                     <div th:utext="#{commonMessages.filterDescription}">
@@ -654,6 +656,27 @@
                     <br>
                     <input id="zipFile" type="file" accept=".zip, .jar, .gz" class="inputButton" name="multipartZipFile"
                            required autofocus>
+
+                    <select id="zipEncoding" name="zipEncoding" class="loadForm__selectDownloadAs"
+                            th:title="#{html.title.select.zipEncoding}"
+                            title="Zipped filenames encoding...">
+                        <option value="UTF8" selected title="Default filenames encoding for a given language."
+                                th:title="#{html.title.select.defaultEncoding}">
+                            Default (UTF-8)
+                        </option>
+
+                        <th:block th:each="zipEncoding:${zipEncodings}">
+                            <option value="IBM866"
+                                    title="IBM866"
+                                    th:value="${zipEncoding}"
+                                    th:title="${zipEncoding}"
+                                    th:text="${zipEncoding}">
+                                IBM866
+                            </option>
+                        </th:block>
+
+                    </select>
+
                     <br>
 
                 </fieldset>
@@ -683,7 +706,8 @@
                     </div>
 
 
-                    <span id="downloadMessageFilter" class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
+                    <span id="downloadMessageFilter" class="downloadMessage"
+                          th:utext="#{userMessage.downloadMessageAwait}" hidden>
 					The long download message with the explicit instructions.<br>This is an example.
 				</span>
 
