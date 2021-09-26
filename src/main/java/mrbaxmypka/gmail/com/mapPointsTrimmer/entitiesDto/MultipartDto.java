@@ -43,7 +43,7 @@ public abstract class MultipartDto implements Serializable {
     
 //    @NotNull(message = "{validation.notNull}")
     @ToString.Include
-    private Locale locale;
+    private Locale locale = Locale.ENGLISH;
 
     /**
      * The field is only for using within {@link MultipartMainFileService}

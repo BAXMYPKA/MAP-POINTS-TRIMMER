@@ -35,7 +35,7 @@ public class FilesController extends AbstractController {
     private MultipartFilterFileService multipartFilterFileService;
 
     /**
-     * @param file   Can receive .kml or .kmz files only
+     * @param multipartFileDto   Can receive .kml or .kmz files only
      * @param locale For defining a User language
      * @return The resulting processed file as the binary body into the response.
      */
@@ -43,12 +43,12 @@ public class FilesController extends AbstractController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<FileSystemResource> postKml(
-            @Valid @ModelAttribute MultipartMainDto file, Locale locale, HttpSession httpSession)
+            @Valid @ModelAttribute MultipartMainDto multipartFileDto, Locale locale, HttpSession httpSession)
             throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
-        log.info("{} file has been received as: {}.", MultipartMainDto.class.getSimpleName(), file);
-        file.setSessionId(httpSession.getId());
-        file.setLocale(locale);
-        Path tempFile = multipartMainFileService.processMultipartMainDto(file, locale);
+        log.info("{} file has been received as: {}.", MultipartMainDto.class.getSimpleName(), multipartFileDto);
+        multipartFileDto.setSessionId(httpSession.getId());
+        multipartFileDto.setLocale(locale);
+        Path tempFile = multipartMainFileService.processMultipartMainDto(multipartFileDto);
         log.info("Temp file={}", tempFile);
         FileSystemResource resource = new FileSystemResource(tempFile);
         return ResponseEntity.ok()
@@ -60,21 +60,24 @@ public class FilesController extends AbstractController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<FileSystemResource> postZip(
-            @Valid @ModelAttribute MultipartFilterDto file, Locale locale, HttpSession httpSession, Model model)
+            @Valid @ModelAttribute MultipartFilterDto multipartFileDto, Locale locale, HttpSession httpSession, Model model)
             throws IOException, SAXException, ParserConfigurationException, TransformerException {
-        log.info("{} file has been received as: {}.", MultipartFilterDto.class.getSimpleName(), file);
-        file.setSessionId(httpSession.getId());
-        file.setLocale(locale);
-        Path tempFile = multipartFilterFileService.processMultipartFilterDto(file, locale);
+        log.info("{} file has been received as: {}.", MultipartFilterDto.class.getSimpleName(), multipartFileDto);
+        multipartFileDto.setSessionId(httpSession.getId());
+        multipartFileDto.setLocale(locale);
+        Path tempFile = multipartFilterFileService.processMultipartFilterDto(multipartFileDto);
 
         //TODO: to test out in real
         model.addAttribute("userMessage", "This is the test user message about encoding problems.");
 
         log.info("Temp file={}", tempFile);
         FileSystemResource resource = new FileSystemResource(tempFile);
-        return ResponseEntity.ok()
+        ResponseEntity<FileSystemResource> body = ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=\"" + getAsciiEncodedFilename(tempFile) + "\"; filename*=UTF-8''" + getAsciiEncodedFilename(tempFile))
                 .body(resource);
+        //TODO: how to delete temp file after the successful transmission
+//        multipartFilterFileService.deleteTempFile(httpSession.getId());
+        return body;
     }
 
     private String getAsciiEncodedFilename(Path pathToFile) {

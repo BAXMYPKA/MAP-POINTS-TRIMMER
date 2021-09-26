@@ -96,6 +96,7 @@ class MultipartMainFileServiceTest {
 
         multipartMainDto = new MultipartMainDto(multipartFile);
         multipartMainDto.setDownloadAs(DownloadAs.KML);
+        multipartMainDto.setLocale(Locale.ENGLISH);
 
         PICTOGRAMS_NAMES_PATHS.put(PICTOGRAM1_PNG, "pictograms/" + PICTOGRAM1_PNG);
         PICTOGRAMS_NAMES_PATHS.put(PICTOGRAM2_PNG, "pictograms/" + PICTOGRAM2_PNG);
@@ -127,7 +128,7 @@ class MultipartMainFileServiceTest {
         // GIVEN
 
         //WHEN
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN
         assertEquals(tmpFile, multipartMainFileService.getTempFiles().iterator().next().getTempFile());
@@ -145,7 +146,7 @@ class MultipartMainFileServiceTest {
         // GIVEN
 
         //WHEN
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN
         assertEquals(testKml, Files.readString(tmpFile, StandardCharsets.UTF_8));
@@ -171,7 +172,7 @@ class MultipartMainFileServiceTest {
         multipartMainFileService = new MultipartMainFileService(kmlHandler, fileService, mockMessageSource);
 
         //WHEN .kmz is fully processed without Mocks and additional conditions
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
         String kmlResult = Files.readString(tmpFile, StandardCharsets.UTF_8);
 //		System.out.println(kmlResult);
 
@@ -193,7 +194,7 @@ class MultipartMainFileServiceTest {
         multipartMainFileService = new MultipartMainFileService(kmlHandler, fileService, mockMessageSource);
 
         //WHEN .kmz is fully processed without Mocks and additional conditions
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN .kmz should be a zip file with the single entity as 'doc.kml'
         assertTrue(tmpFile.getFileName().toString().endsWith(".kmz"));
@@ -219,7 +220,7 @@ class MultipartMainFileServiceTest {
         multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 
         //WHEN
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN
         assertEquals(initialMultipartFileName, tmpFile.getFileName().toString());
@@ -247,7 +248,7 @@ class MultipartMainFileServiceTest {
         multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 
         //WHEN
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN
         assertEquals(expectedFilename, tmpFile.getFileName().toString());
@@ -276,7 +277,7 @@ class MultipartMainFileServiceTest {
 
         //WHEN
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
-                () -> tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null));
+                () -> tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto));
 
         //THEN
         assertEquals(wrongFilenameMessage, illegalArgumentException.getMessage());
@@ -292,7 +293,7 @@ class MultipartMainFileServiceTest {
         multipartMainDto.setDownloadAs(DownloadAs.KMZ);
 
         //WHEN kmz is returned we extract the processed kml from it
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
         String processedKml = null;
         FileSystem zip = FileSystems.newFileSystem(tmpFile, this.getClass().getClassLoader());
         rootDir:
@@ -337,7 +338,7 @@ class MultipartMainFileServiceTest {
         //WHEN look through the resulting kmz we filter out only files with the same name and parent
         //hen delete them from initial files collection to see that all the initial files were included into the
         //resulting kmz
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
         FileSystem resultingZip = FileSystems.newFileSystem(tmpFile, this.getClass().getClassLoader());
 
         for (Path rootPath : resultingZip.getRootDirectories()) {
@@ -371,7 +372,7 @@ class MultipartMainFileServiceTest {
         Mockito.when(mockKmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartMainDto.class))).thenReturn(testKml);
 
         //WHEN
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN
         assertAll(
@@ -437,7 +438,7 @@ class MultipartMainFileServiceTest {
                 null);
 
         //WHEN
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN
         assertEquals("Test.kmz", tmpFile.getFileName().toString());
@@ -477,7 +478,7 @@ class MultipartMainFileServiceTest {
                 null);
 
         //WHEN
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN
         assertEquals("Test.kmz", tmpFile.getFileName().toString());
@@ -522,7 +523,7 @@ class MultipartMainFileServiceTest {
                 null);
 
         //WHEN
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN
         assertEquals("TestKmzLocusPhotoIcons.kmz", tmpFile.getFileName().toString());
@@ -567,7 +568,7 @@ class MultipartMainFileServiceTest {
                 null);
 
         //WHEN
-        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto, null);
+        tmpFile = multipartMainFileService.processMultipartMainDto(multipartMainDto);
 
         //THEN
         assertEquals("TestKmzLocusPhotoIcons.kmz", tmpFile.getFileName().toString());

@@ -50,14 +50,12 @@ public class MultipartMainFileService {
 
     /**
      * @param multipartMainDto
-     * @param locale           To localize possible messages for User. If null, English will be userd.
      * @return The resulting {@link Path} in a temp directory with the processed file for a User.
      * @throws IOException To be treated in an ExceptionHandler method or ControllerAdvice level
      */
-    public Path processMultipartMainDto(@NonNull MultipartMainDto multipartMainDto, @Nullable Locale locale)
+    public Path processMultipartMainDto(@NonNull MultipartMainDto multipartMainDto)
             throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
-        log.info("{} has been received. Locale = {}", multipartMainDto, locale);
-        locale = locale == null ? this.DEFAULT_LOCALE : locale;
+        log.info("{} has been received. Locale = {}", multipartMainDto, multipartMainDto.getLocale());
         tempFiles.add(multipartMainDto);
         String processedXml;
         //Determine the extension of a given filename
@@ -66,16 +64,16 @@ public class MultipartMainFileService {
             multipartMainDto.setXmlFilename(fileName);
             processedXml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
         } else if (DownloadAs.KMZ.hasSameExtension(multipartMainDto.getMultipartFile().getOriginalFilename())) {
-            InputStream kmlInputStream = getXmlFromZip(multipartMainDto, DownloadAs.KML, locale);
+            InputStream kmlInputStream = getXmlFromZip(multipartMainDto, DownloadAs.KML, multipartMainDto.getLocale());
             processedXml = kmlHandler.processXml(kmlInputStream, multipartMainDto);
         } else {
             throw new IllegalArgumentException(messageSource.getMessage(
                     "exception.fileExtensionNotSupported",
                     new Object[]{multipartMainDto.getMultipartFile().getOriginalFilename()},
-                    locale));
+                    multipartMainDto.getLocale()));
         }
         log.info("Xml file has been successfully processed.");
-        return writeTempFile(processedXml, multipartMainDto, locale);
+        return writeTempFile(processedXml, multipartMainDto, multipartMainDto.getLocale());
     }
 
     /**

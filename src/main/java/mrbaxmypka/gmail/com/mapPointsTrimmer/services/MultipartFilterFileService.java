@@ -41,26 +41,33 @@ public class MultipartFilterFileService extends MultipartMainFileService {
 		this.kmlHandler = kmlHandler;
 	}
 	
-	public Path processMultipartFilterDto(MultipartFilterDto multipartFilterDto, Locale locale)
+	public Path processMultipartFilterDto(MultipartFilterDto multipartFilterDto)
 			throws IOException, ParserConfigurationException, SAXException, TransformerException {
+		log.info("{} has been received. Locale = {}", multipartFilterDto, multipartFilterDto.getLocale());
+
+		getTempFiles().add(multipartFilterDto);
+
 		String zipFilename = getFileService().getFileName(multipartFilterDto.getMultipartZipFile().getOriginalFilename());
 		String xmlFilename = getFileService().getFileName(multipartFilterDto.getMultipartXmlFile().getOriginalFilename());
 		
-		checkCorrectZipFilename(zipFilename, locale);
-		checkCorrectXmlFilename(xmlFilename, locale);
+		checkCorrectZipFilename(zipFilename, multipartFilterDto.getLocale());
+		checkCorrectXmlFilename(xmlFilename, multipartFilterDto.getLocale());
 		
 		multipartFilterDto.setXmlFilename(xmlFilename);
 		String xmlExtension = getFileService().getExtension(xmlFilename);
 		
 		if (xmlExtension.equals("kml") || xmlExtension.equals("xml")) {
-			return processXml(multipartFilterDto, locale);
+			log.info("The {} and {} files have been processed.", xmlFilename, zipFilename);
+			return processXml(multipartFilterDto, multipartFilterDto.getLocale());
 		} else if (getFileService().getExtension(xmlFilename).equals("txt")) {
-			return processTxt(multipartFilterDto, locale);
+			log.info("The {} and {} files have been processed.", xmlFilename, zipFilename);
+			return processTxt(multipartFilterDto, multipartFilterDto.getLocale());
 		} else if (xmlExtension.equals("kmz")) {
-			return processKmz(multipartFilterDto, locale);
+			log.info("The {} and {} files have been processed.", xmlFilename, zipFilename);
+			return processKmz(multipartFilterDto, multipartFilterDto.getLocale());
 		} else {
-			throw new FileNotFoundException(getMessageSource().getMessage(
-					"exception.filenameNotSupported(1)", new Object[]{xmlFilename}, locale));
+			throw new IllegalArgumentException(getMessageSource().getMessage(
+					"exception.filenameNotSupported(1)", new Object[]{xmlFilename}, multipartFilterDto.getLocale()));
 		}
 	}
 	
@@ -201,10 +208,7 @@ public class MultipartFilterFileService extends MultipartMainFileService {
 				
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				String imageFileName = getFileService().getFileName(zipOutEntry.getName());
-				
-				//TODO: to delete
-				System.out.println(imageFileName);
-				
+
 				if (multipartFilterDto.getFilesToBeExcluded().contains(imageFileName)) {
 					//If a file has not to be included in the resultant .zip just skip it
 					continue;
