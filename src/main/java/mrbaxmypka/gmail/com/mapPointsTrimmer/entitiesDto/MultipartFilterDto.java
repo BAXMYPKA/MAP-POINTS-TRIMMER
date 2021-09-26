@@ -6,6 +6,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFilterFileService
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.nio.charset.Charset;
@@ -43,7 +44,7 @@ public class MultipartFilterDto extends MultipartDto {
 	private String xmlFilename = "";
 	
 	/**
-	 * To be filled by {@link FilesController#postKml(MultipartMainDto, Locale, HttpSession)}
+	 * To be filled by {@link FilesController#postKml(MultipartMainDto, Locale, HttpSession, HttpServletResponse)}
 	 * to associate a process (thread) and a temp file with the current User session.
 	 */
 	@Nullable

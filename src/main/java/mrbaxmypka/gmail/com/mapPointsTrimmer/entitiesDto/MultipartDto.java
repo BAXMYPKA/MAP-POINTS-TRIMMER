@@ -7,6 +7,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -34,7 +35,7 @@ public abstract class MultipartDto implements Serializable {
     private DownloadAs downloadAs;
 
     /**
-     * To be filled by {@link FilesController#postKml(MultipartMainDto, Locale, HttpSession)}
+     * To be filled by {@link FilesController#postKml(MultipartMainDto, Locale, HttpSession, HttpServletResponse)}
      * to associate a process (thread) and a temp file with the current User session.
      */
     @Nullable
@@ -42,6 +43,10 @@ public abstract class MultipartDto implements Serializable {
     private String sessionId;
     
 //    @NotNull(message = "{validation.notNull}")
+    /**
+     * To localize any messages for users.
+     * Default ENGLISH.
+     */
     @ToString.Include
     private Locale locale = Locale.ENGLISH;
 

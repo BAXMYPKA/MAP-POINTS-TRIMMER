@@ -428,6 +428,7 @@ public class MultipartMainDto extends MultipartDto {
 
     public MultipartMainDto(MultipartFile multipartFile) {
         super(multipartFile);
+        this.multipartFile = multipartFile;
     }
 
     /**

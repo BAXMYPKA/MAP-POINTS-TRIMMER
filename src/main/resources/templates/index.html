@@ -610,9 +610,10 @@
 
         </fieldset>
 
-        <form id="filterFiles" class="loadForm filterLoadForm" action="/filter" method="post"
+        <form id="filterFilesLoadForm" class="loadForm filterLoadForm" action="/filter" method="post"
               enctype="multipart/form-data"
-              th:action="@{/filter}">
+              th:action="@{/filter}"
+              hidden>
 
             <details class="details">
                 <summary class="summaryOption" th:text="#{html.text.imageFilter}">Images filter</summary>
@@ -654,7 +655,8 @@
                          th:title="#{commonMessages.interrogationAsDescription.zipFile}">?
                     </div>
                     <br>
-                    <input id="zipFile" type="file" accept=".zip, .jar, .gz, .kmz" class="inputButton" name="multipartZipFile"
+                    <input id="zipFile" type="file" accept=".zip, .jar, .gz, .kmz" class="inputButton"
+                           name="multipartZipFile"
                            required autofocus>
 
                     <select id="zipEncoding" name="zipEncoding" class="loadForm__selectDownloadAs"
@@ -712,7 +714,7 @@
 
 
                     <span id="downloadMessageFilter" class="downloadMessage"
-                          th:utext="#{userMessage.downloadMessageAwait}" hidden>
+                          th:utext="#{userMessage.downloadMessageArchive}" hidden>
 					The long download message with the explicit instructions.<br>This is an example.
 				</span>
 

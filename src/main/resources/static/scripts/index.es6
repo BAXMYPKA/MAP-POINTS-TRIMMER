@@ -186,14 +186,14 @@
         });
 
         document.getElementById("trim").addEventListener('click', ev => {
-            //Checks for all the inputs on page for HTML5 inner validation
-            for (const value of document.querySelectorAll("input")) {
-                if (!value.checkValidity()) {
+            //Checks all the filter inputs within the main fieldset for HTML5 inner validation
+            for (const child of document.getElementById('poiFileLoadForm').children) {
+                if (child.tagName === "INPUT" && !child.checkValidity()) {
                     return;
                 }
             }
-            document.querySelector('.loadForm').submit();
             document.getElementById('downloadMessageMain').hidden = false;
+            document.querySelector('.loadForm').submit();
         });
 
         document.getElementById("replaceLocusIcons").addEventListener('change', ev => {
@@ -337,13 +337,14 @@
                     return;
                 }
             }
-            document.querySelector('.filterLoadForm').submit();
             document.getElementById("downloadMessageFilter").hidden = false;
+            document.querySelector('.filterLoadForm').submit();
         });
 
         document.getElementById("mainHeader__logoImg").addEventListener('click', ev => {
             adminLoginCounter++;
             if (adminLoginCounter === 3) {
+                document.getElementById("filterFilesLoadForm").hidden = false;
                 document.getElementById("adminLoadForm").hidden = false;
                 ev.currentTarget.title = "Admin opened";
                 ev.currentTarget.className = "mainHeader__logoImg_opened";

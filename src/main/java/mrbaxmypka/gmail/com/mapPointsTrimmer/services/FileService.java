@@ -214,8 +214,6 @@ public class FileService {
         return path.isBlank() ? "" : path;
     }
 
-    //TODO: to test the work with the last dot 'word.'
-
     /**
      * @param filename The file extension to be derived from.
      * @return The filename extension in lowercase without a dot (e.g. "image.img" will be returned as "img")

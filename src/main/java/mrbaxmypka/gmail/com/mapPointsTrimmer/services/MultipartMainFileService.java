@@ -10,7 +10,6 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.xml.KmlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
@@ -291,34 +290,40 @@ public class MultipartMainFileService {
      */
     public void deleteTempFiles() {
         if (tempFiles.isEmpty()) return;
-        try {
-            for (MultipartDto multipartDto : tempFiles) {
-                tempFiles.remove(multipartDto);
-                if (multipartDto.getTempFile() != null) {
+
+        tempFiles.removeIf(multipartDto -> {
+            if (multipartDto.getTempFile() != null) {
+                try {
                     Files.deleteIfExists(multipartDto.getTempFile());
                     log.info("Temp file={} has been deleted", multipartDto.getTempFile().toString());
+                } catch (IOException e) {
+                    log.info("Deleting temp file has caused an exception:\n", e);
+                    return true;
                 }
             }
-        } catch (IOException e) {
-            log.info("Deleting temp file has caused an exception:\n", e);
-            deleteTempFiles();
-        }
+            return true;
+        });
         log.info("All temp files have been deleted!");
     }
 
+    /**
+     * @param sessionId Deletes the specific temp file by its sessionId from the server temp directory.
+     */
     public void deleteTempFile(String sessionId) {
         if (sessionId == null || sessionId.isBlank()) return;
-        try {
 
-            for (MultipartDto multipartDto : tempFiles) {
-                if (multipartDto.getSessionId() != null && multipartDto.getSessionId().equals(sessionId)) {
-                    tempFiles.remove(multipartDto);
+        tempFiles.removeIf(multipartDto -> {
+            if (multipartDto.getSessionId() != null && multipartDto.getSessionId().equals(sessionId)) {
+                try {
                     Files.deleteIfExists(multipartDto.getTempFile());
-                    log.info("Temp file={} has been deleted", multipartDto.getTempFile().toString());
+                } catch (IOException e) {
+                    log.info("Deleting temp file has caused an exception:\n", e);
                 }
+                log.info("Temp file={} has been deleted", multipartDto.getTempFile().toString());
+                return true;
+            } else {
+                return false;
             }
-        } catch (IOException e) {
-            log.info("Deleting temp file has caused an exception:\n", e);
-        }
+        });
     }
 }
