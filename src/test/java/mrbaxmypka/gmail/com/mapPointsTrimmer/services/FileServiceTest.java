@@ -40,7 +40,7 @@ class FileServiceTest {
     @ValueSource(strings = {"files/", "../myFiles/", "/storage/0/data/media/", "file:///D:/Folder/MyPOI/", "http://site/"})
     public void only_Filename_Should_Be_Returned_Whet_GetFilename(String path) {
         //GIVEN
-        final String pictureFilename = "Pic.png";
+        final String pictureFilename = "Pic ture.png";
         String pathWithFilename = path + pictureFilename;
 
         //WHEN
@@ -51,7 +51,7 @@ class FileServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"files/pic", "./myFiles/pic.j", "files/pic.", "files pic.jpg", "pic.", "pic.jpegui"})
+    @ValueSource(strings = {"files/pic", "./myFiles/pic.j", "files/pic.", "pic.", "pic.jpegui"})
     public void empty_String_Should_Be_Returned_When_Filename_Not_Valid(String pathWithNotValidFilename) {
         //GIVEN
 

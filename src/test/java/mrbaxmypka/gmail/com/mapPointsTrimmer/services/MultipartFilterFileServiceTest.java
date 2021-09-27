@@ -141,7 +141,10 @@ class MultipartFilterFileServiceTest {
         Mockito.when(mockMessageSource.getMessage(
                 "exception.fileExtensionNotSupported", new Object[]{textFilename}, Locale.ENGLISH))
                 .thenReturn(notSupportedFilename);
-
+        Mockito.when(mockMessageSource.getMessage(
+              "exception.nullFilename", null, Locale.ENGLISH))
+              .thenReturn(notSupportedFilename);
+    
         //WHEN
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
                 () -> tmpFile = multipartFilterFileService.processMultipartFilterDto(multipartFilterDto));
