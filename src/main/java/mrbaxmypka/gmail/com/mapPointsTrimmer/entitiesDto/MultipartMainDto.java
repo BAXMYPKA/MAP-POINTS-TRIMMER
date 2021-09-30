@@ -17,7 +17,6 @@ import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-//@RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @Getter
