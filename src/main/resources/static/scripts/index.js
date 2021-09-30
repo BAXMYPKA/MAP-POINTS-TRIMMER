@@ -8,7 +8,7 @@
         if (typeof singleUserMode === 'undefined' || singleUserMode == null) {
             singleUserMode = true;
         }
-        //2160 = 2 hours, 1620 = 1.5 hours, 1080 = 1 hour of session idle for single- or multi-user server mode
+        //2160 = 2 hours, 1620 = 1.5 hours, 1080 = 1 hour, 540 = 30 minutes of session idle for single- or multi-user server mode
         const sessionInterval = singleUserMode ? 1620 : 1080;
 
         let userMessageClose = document.querySelector(".specialButtons_close");
