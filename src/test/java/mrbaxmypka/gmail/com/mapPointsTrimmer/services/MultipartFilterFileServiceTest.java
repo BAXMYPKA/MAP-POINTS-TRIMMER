@@ -66,12 +66,6 @@ class MultipartFilterFileServiceTest {
             IOException {
         mockMessageSource = Mockito.mock(MessageSource.class);
 
-        Resource resource = Mockito.mock(Resource.class);
-        Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
-
-        ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
-        Mockito.when(resourceLoader.getResource("classpath:static/pictograms")).thenReturn(resource);
-
         FileService mockFileService = Mockito.mock(FileService.class);
         Mockito.when(mockFileService.getFileName(Mockito.anyString())).thenCallRealMethod();
         Mockito.when(mockFileService.getExtension(Mockito.anyString())).thenCallRealMethod();

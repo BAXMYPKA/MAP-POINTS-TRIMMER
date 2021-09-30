@@ -43,11 +43,11 @@ class MultipartMainFileServiceTest {
     private MessageSource mockMessageSource;
     private MultipartMainDto multipartMainDto;
     private Path tmpFile;
-    private String originalKmlFilename = "MockKml.kml";
-    private String testKml = "<kml>test</kml>";
+    private final String originalKmlFilename = "MockKml.kml";
+    private final String testKml = "<kml>test</kml>";
     private MultipartFile multipartFile;
-    private Path testKmz = Paths.get("src/test/java/resources/TestKmz.kmz");
-    private Path testKmzLocusPhotoIcons = Paths.get("src/test/java/resources/TestKmzLocusPhotoIcons.kmz");
+    private final Path testKmz = Paths.get("src/test/java/resources/TestKmz.kmz");
+    private final Path testKmzLocusPhotoIcons = Paths.get("src/test/java/resources/TestKmzLocusPhotoIcons.kmz");
     private final String PICTOGRAM1_PNG = "Pictogram1.png";
     private final String PICTOGRAM2_PNG = "Pictogram2.png";
     private final ArrayList<String> PICTOGRAM_NAMES = new ArrayList<>(Arrays.asList(PICTOGRAM1_PNG, PICTOGRAM2_PNG));
@@ -67,12 +67,6 @@ class MultipartMainFileServiceTest {
         mockKmlHandler = Mockito.mock(KmlHandler.class);
         Mockito.when(mockKmlHandler.processXml(Mockito.any(InputStream.class), Mockito.any(MultipartMainDto.class))).thenReturn(testKml);
 
-        Resource resource = Mockito.mock(Resource.class);
-        Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
-
-        ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
-        Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
-
         FileService mockFileService = Mockito.mock(FileService.class);
         Mockito.when(mockFileService.getFileName(Mockito.anyString())).thenCallRealMethod();
 
@@ -82,7 +76,7 @@ class MultipartMainFileServiceTest {
 
         GoogleIconsService googleIconsService = new GoogleIconsService(googleIconsCache);
 
-        fileService = new FileService(mockMessageSource, resourceLoader);
+        fileService = new FileService(mockMessageSource);
 
         HtmlHandler htmlHandler = new HtmlHandler(fileService);
 

@@ -2,8 +2,6 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartMainFileService;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.springframework.lang.Nullable;

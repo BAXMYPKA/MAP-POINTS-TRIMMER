@@ -43,7 +43,7 @@ class XmlHandlerTest {
 		resource = Mockito.mock(Resource.class);
 		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
 		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
-		fileService = new FileService(messageSource, resourceLoader);
+		fileService = new FileService(messageSource);
 		
 		htmlHandler = new HtmlHandler(fileService);
 		googleIconsCache = new GoogleIconsCache();
