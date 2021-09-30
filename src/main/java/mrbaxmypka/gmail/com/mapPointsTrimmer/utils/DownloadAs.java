@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ToString
 public enum DownloadAs {
-    KML, KMZ;
+    KML, KMZ, ZIP;
 
     /**
      * Case insensitive method.
@@ -35,7 +35,6 @@ public enum DownloadAs {
             return ".".concat(this.name()).toLowerCase().equals(originalExtension);
         } catch (Exception e) {
             log.info("Filename {} is incorrect!", filename == null ? "null" : filename);
-//			e.printStackTrace();
             return false;
         }
     }

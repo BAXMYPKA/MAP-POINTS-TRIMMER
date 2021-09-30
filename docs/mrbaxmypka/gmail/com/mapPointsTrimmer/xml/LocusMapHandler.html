@@ -225,7 +225,7 @@ extends java.lang.Object</pre>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>private java.util.List&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLocusSpecificAttachmentsHref(java.util.List,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">getLocusSpecificAttachmentsHref</a></span>&#8203;(java.util.List&lt;java.lang.String&gt;&nbsp;imagesToAttach,
-                               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
@@ -240,7 +240,7 @@ extends java.lang.Object</pre>
                             java.util.List&lt;java.lang.String&gt;&nbsp;imgSrcFromDescription,
                             java.util.List&lt;org.w3c.dom.Node&gt;&nbsp;attachmentNodes,
                             org.w3c.dom.Node&nbsp;placemark,
-                            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">1) Compares the given List of images src from user description to the existing <lc:attacmhent></lc:attacmhent>
  from <ExtendedData></ExtendedData> from Locus xml.
@@ -255,13 +255,13 @@ extends java.lang.Object</pre>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>(package private) org.w3c.dom.Document</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processKml(org.w3c.dom.Document,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processKml</a></span>&#8203;(org.w3c.dom.Document&nbsp;document,
-          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processLocusAttachments(org.w3c.dom.Document,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processLocusAttachments</a></span>&#8203;(org.w3c.dom.Document&nbsp;document,
-                       <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                       <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">1) Compares the given List of src to images from user description
  and an existing <lc:attacmhent></lc:attacmhent> from <ExtendedData></ExtendedData> of Locus xml.
@@ -369,7 +369,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>processKml</h4>
 <pre class="methodSignature">org.w3c.dom.Document&nbsp;processKml&#8203;(org.w3c.dom.Document&nbsp;document,
-                                <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 </li>
 </ul>
 <a id="processLocusAttachments(org.w3c.dom.Document,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">
@@ -379,7 +379,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>processLocusAttachments</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;processLocusAttachments&#8203;(org.w3c.dom.Document&nbsp;document,
-                                     <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                     <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">1) Compares the given List of src to images from user description
  and an existing <lc:attacmhent></lc:attacmhent> from <ExtendedData></ExtendedData> of Locus xml.
  2) Overwrites src in attachments if they have the same filenames as those from User description
@@ -397,7 +397,7 @@ extends java.lang.Object</pre>
                                           java.util.List&lt;java.lang.String&gt;&nbsp;imgSrcFromDescription,
                                           java.util.List&lt;org.w3c.dom.Node&gt;&nbsp;attachmentNodes,
                                           org.w3c.dom.Node&nbsp;placemark,
-                                          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">1) Compares the given List of images src from user description to the existing <lc:attacmhent></lc:attacmhent>
  from <ExtendedData></ExtendedData> from Locus xml.
  1.1) If no <lc:attachment> presented, it will create a new <ExtendedData> and all the existing images src will
@@ -433,7 +433,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getLocusSpecificAttachmentsHref</h4>
 <pre class="methodSignature">private&nbsp;java.util.List&lt;java.lang.String&gt;&nbsp;getLocusSpecificAttachmentsHref&#8203;(java.util.List&lt;java.lang.String&gt;&nbsp;imagesToAttach,
-                                                                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                                                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 </li>
 </ul>
 <a id="getImagesSrcAsLcAttachments(org.w3c.dom.Document,java.util.List)">

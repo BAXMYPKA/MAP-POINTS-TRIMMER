@@ -3,7 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +49,14 @@ public abstract class XmlHandler {
      * {@link DocumentBuilderFactory#setNamespaceAware(boolean)} true is crucial for getting
      * {@link Node#getLocalName()}!
      *
-     * @param inputStream  An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartDto}
-     * @param multipartDto The main object to get data from.
+     * @param inputStream  An xml file (kml, gpx etc) as the {@link InputStream} from a given {@link MultipartMainDto}
+     * @param multipartMainDto The main object to get data from.
      * @return A fully processed xml string.
      */
-    public abstract String processXml(InputStream inputStream, MultipartDto multipartDto)
+    public abstract String processXml(InputStream inputStream, MultipartMainDto multipartMainDto)
             throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException;
 
-    protected Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
+    public Document getDocument(InputStream xmlInputStream) throws ParserConfigurationException, IOException, SAXException {
         log.info("Getting 'document' from InputStream from a MultipartFile...");
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         //IMPORTANT! This is essential part of getting localNames of xml tags.
@@ -72,7 +72,6 @@ public abstract class XmlHandler {
                         " 'lc:' namespace will be added into xml header...");
                 xmlInputStream.reset();
                 xmlInputStream = fixNamespaceForLcPrefixMethod(xmlInputStream);
-//				document = documentBuilder.parse(xmlInputStream);
                 return getDocument(xmlInputStream);
             } else if (e.getMessage().contains("The prefix \"xsi\" for attribute \"xsi:schemaLocation\" associated with an element type \"Document\" is not bound")) {
                 //KML exception
@@ -80,7 +79,6 @@ public abstract class XmlHandler {
                         "The attribute \"xsi:schemaLocation\" will be added into xml header...");
                 xmlInputStream.reset();
                 xmlInputStream = fixXsiSchemaLocationAttributeMethod(xmlInputStream);
-//				document = documentBuilder.parse(xmlInputStream);
                 return getDocument(xmlInputStream);
             } else {
                 throw e;
@@ -98,7 +96,7 @@ public abstract class XmlHandler {
      * @return A raw {@link String} without any optimizations, settings, crearFixing etc.
      * @throws TransformerException
      */
-    protected String getAsString(Document document) throws TransformerException {
+    public String getAsString(Document document) throws TransformerException {
         log.info("Getting the quick document to be transformed and written as String...");
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         DOMSource domSource = new DOMSource(document);
@@ -209,18 +207,10 @@ public abstract class XmlHandler {
             }
             trimWhitespaces(childNode);
         }
-//		log.trace("Whitespaces have been trimmed from KML");
     }
 
     void trimWhitespaces(Document document) {
-//		NodeList childNodes = document.getChildNodes();
-//		for (int i = 0; i < childNodes.getLength(); i++) {
-//			Node childNode = childNodes.item(i);
-//			if (childNode.getNodeType() == Node.TEXT_NODE) {
-//				childNode.setTextContent(childNode.getTextContent().trim());
-//			}
         trimWhitespaces(document.getDocumentElement());
-//		}
         log.trace("Whitespaces have been trimmed from KML");
     }
 

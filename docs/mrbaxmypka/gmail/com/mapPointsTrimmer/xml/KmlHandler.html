@@ -187,7 +187,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>private java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#prettyPrintCdataXml(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">prettyPrintCdataXml</a></span>&#8203;(java.lang.String&nbsp;processedHtmlCdata,
-                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">Just for pretty printing and mark out CDATA descriptions.</div>
 </td>
@@ -195,7 +195,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processDescriptionsTexts(org.w3c.dom.Document,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processDescriptionsTexts</a></span>&#8203;(org.w3c.dom.Document&nbsp;document,
-                        <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                        <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">The first temporary condition checks <code>'\\s*&gt;\\s*'</code> regexp as Locus may spread those signs occasionally
  (especially after <code>&lt;ExtendedData&gt; tag</code>).</div>
@@ -204,7 +204,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processHref(org.w3c.dom.Document,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processHref</a></span>&#8203;(org.w3c.dom.Document&nbsp;document,
-           <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+           <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">Every old href tag contains path to file and a filename.</div>
 </td>
@@ -212,7 +212,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processXml(java.io.InputStream,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processXml</a></span>&#8203;(java.io.InputStream&nbsp;kmlInputStream,
-          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+          <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">All the additional information for a User (preview size, outdated descriptions etc) are placed inside the
  CDATA[[]] as an HTML markup.</div>
@@ -221,7 +221,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeUnusedFiles(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">removeUnusedFiles</a></span>&#8203;(java.lang.String&nbsp;kml,
-                 <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                 <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">By just looking through the .xml(.kml) as a <code>String</code> adds files from the <code>MultipartDto#getImagesNamesFromZip()</code>
   into the <code>MultipartDto#getFilesToBeExcluded()</code> if a given String doesn't contain it.</div>
@@ -286,7 +286,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <li class="blockList">
 <h4>processXml</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;processXml&#8203;(java.io.InputStream&nbsp;kmlInputStream,
-                                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)
+                                   <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)
                             throws java.io.IOException,
                                    javax.xml.parsers.ParserConfigurationException,
                                    org.xml.sax.SAXException,
@@ -300,7 +300,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <dd><code><a href="XmlHandler.html#processXml(java.io.InputStream,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processXml</a></code>&nbsp;in class&nbsp;<code><a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.xml">XmlHandler</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>kmlInputStream</code> - An xml file (kml, gpx etc) as the <code>InputStream</code> from a given <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto"><code>MultipartDto</code></a></dd>
-<dd><code>multipartDto</code> - The main object to get data from.</dd>
+<dd><code>multipartMainDto</code> - The main object to get data from.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A fully processed xml string.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -319,7 +319,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <li class="blockList">
 <h4>processHref</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;processHref&#8203;(org.w3c.dom.Document&nbsp;document,
-                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">Every old href tag contains path to file and a filename. So here we derive an existing filename
  and append it to the new path.</div>
 <dl>
@@ -335,7 +335,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <li class="blockList">
 <h4>processDescriptionsTexts</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;processDescriptionsTexts&#8203;(org.w3c.dom.Document&nbsp;document,
-                                      <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                      <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">The first temporary condition checks <code>'\\s*&gt;\\s*'</code> regexp as Locus may spread those signs occasionally
  (especially after <code>&lt;ExtendedData&gt; tag</code>). So</div>
 </li>
@@ -347,7 +347,7 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <li class="blockList">
 <h4>prettyPrintCdataXml</h4>
 <pre class="methodSignature">private&nbsp;java.lang.String&nbsp;prettyPrintCdataXml&#8203;(java.lang.String&nbsp;processedHtmlCdata,
-                                             <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                             <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">Just for pretty printing and mark out CDATA descriptions.
  If the whole XML document is inline except CDATA so as to emphasize that CDATA among XML this method add start
  and end lineBreaks.</div>
@@ -360,14 +360,14 @@ extends <a href="XmlHandler.html" title="class in mrbaxmypka.gmail.com.mapPoints
 <li class="blockList">
 <h4>removeUnusedFiles</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;removeUnusedFiles&#8203;(java.lang.String&nbsp;kml,
-                               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">By just looking through the .xml(.kml) as a <code>String</code> adds files from the <code>MultipartDto#getImagesNamesFromZip()</code>
   into the <code>MultipartDto#getFilesToBeExcluded()</code> if a given String doesn't contain it.
  Removes</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>kml</code> - </dd>
-<dd><code>multipartDto</code> - </dd>
+<dd><code>multipartMainDto</code> - </dd>
 </dl>
 </li>
 </ul>

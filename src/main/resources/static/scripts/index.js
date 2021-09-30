@@ -2,11 +2,13 @@
 
         const userMessage = document.querySelector("#userMessage");
         const previewSize = document.getElementById("previewSize");
-        const previesSizeUnits = document.getElementById("previewSizeUnits");
+        const previewSizeUnits = document.getElementById("previewSizeUnits");
+        let adminLoginCounter = 0;
+
         if (typeof singleUserMode === 'undefined' || singleUserMode == null) {
             singleUserMode = true;
         }
-        //2160 = 2 hours, 1620 = 1.5 hours, 1080 = 1 hour of session idle for single- or multi-user server mode
+        //2160 = 2 hours, 1620 = 1.5 hours, 1080 = 1 hour, 540 = 30 minutes of session idle for single- or multi-user server mode
         const sessionInterval = singleUserMode ? 1620 : 1080;
 
         let userMessageClose = document.querySelector(".specialButtons_close");
@@ -16,6 +18,25 @@
                 userMessage.className = "userMessage.hidden";
 
             });
+        }
+
+        function showUserMessage(text) {
+            userMessage.innerHTML = text;
+            userMessage.className = "userMessage";
+        }
+
+        function showWarningUserMessage(text) {
+            userMessage.innerHTML = text;
+            userMessage.className = "userMessage warningUserMessage";
+        }
+
+        function hideUserMessage() {
+            userMessage.innerHTML = "";
+            userMessage.className = "userMessage.hidden";
+        }
+
+        function getUserMessage() {
+            return userMessage.innerHTML;
         }
 
         setInterval(function () {
@@ -71,34 +92,6 @@
 
         window.onload = setLoggingLevel("WARN");
 
-        /*
-                window.addEventListener('beforeunload', function (event) {
-                    //May not work
-                    navigator.sendBeacon(serverAddress.concat('/shutdown'));
-                });
-        */
-
-        let verifyAdminCredentials = function (login, password) {
-            if ((!login || login.length === 0) || (!login || login.length === 0)) return;
-            let adminCredentials = {
-                "login": login,
-                "password": password
-            }
-            fetch(serverAddress.concat("/admin"), {
-                method: "POST",
-                body: JSON.stringify(adminCredentials),
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8"
-                }
-            }).then(function (response) {
-                if (!response.ok) {
-                    userMessage.textContent = "Bad admin credentials";
-                } else {
-                    document.getElemenById("fieldSetLocusAdmin").style.display = 'block';
-                }
-            });
-        };
-
         document.querySelector(".rightHeaderGroup__shutdownButtonOn_img").addEventListener('click', ev => {
             if (singleUserMode) {
                 ev.preventDefault();
@@ -106,17 +99,17 @@
             }
         });
 
-        document.querySelector(".mainHeader__logoImg").addEventListener('click', ev => {
-            window.location.href = serverAddress;
-        });
+        // document.querySelector(".mainHeader__logoImg").addEventListener('click', ev => {
+        //     window.location.href = serverAddress;
+        // });
 
         document.getElementById('setPreviewSize').addEventListener('change', ev => {
                 if (ev.target.checked) {
                     previewSize.disabled = false;
-                    previesSizeUnits.disabled = false;
+                    previewSizeUnits.disabled = false;
                 } else {
                     previewSize.disabled = true;
-                    previesSizeUnits.disabled = true;
+                    previewSizeUnits.disabled = true;
                 }
             }
         );
@@ -131,17 +124,15 @@
 
         document.querySelectorAll(".interrogation").forEach(value => {
             value.addEventListener('click', evt => {
-                if (userMessage.innerHTML === evt.target.getAttribute("title")) {
+                if (getUserMessage() === evt.target.getAttribute("title")) {
                     //To hide the description if same interrogation is clicked
-                    userMessage.innerHTML = "";
-                    userMessage.className = "userMessage.hidden";
+                    hideUserMessage();
                     document.querySelectorAll(".interrogation").forEach(interrogation => {
                         interrogation.style.backgroundColor = "limegreen";
                     });
                 } else {
                     //To show the interrogation description in userMessage innerHtml
-                    userMessage.innerHTML = evt.target.getAttribute("title");
-                    userMessage.className = "userMessage";
+                    showUserMessage(evt.target.getAttribute("title"));
                     evt.target.style.backgroundColor = "greenyellow";
                     document.querySelectorAll(".interrogation").forEach(interrogation => {
                         if (interrogation !== evt.target) {
@@ -154,9 +145,9 @@
 
         document.getElementById("locusFile").addEventListener('change', ev => {
             if (ev.target.files[0].size / 1024 / 1024 > maxFileSizeMb) {
-                userMessage.innerHTML = "Max file size = " + maxFileSizeMb + "Mb!";
+                showWarningUserMessage("Max file size = " + maxFileSizeMb + "Mb!");
             } else {
-                userMessage.innerHTML = "";
+                hideUserMessage();
             }
         });
 
@@ -180,21 +171,6 @@
             }
         });
 
-        /*
-        // Doesn't work in Microsoft EdgeHTML v17
-                document.getElementsByName("pathType").forEach(pathType => {
-                    pathType.addEventListener('change', ev => {
-                        const asAttachmentInLocus = document.getElementById("asAttachmentInLocus");
-                        if (ev.target.getAttribute("id") === "webPath") {
-                            asAttachmentInLocus.disabled = true;
-                        } else {
-                            asAttachmentInLocus.disabled = false;
-                        }
-
-                    });
-                });
-        */
-
         const elementsByName = document.getElementsByName("pathType");
         const pathTypes = Array.from(elementsByName);
         pathTypes.forEach(pathType => {
@@ -210,14 +186,14 @@
         });
 
         document.getElementById("trim").addEventListener('click', ev => {
-            //Checks for all the inputs on page for HTML5 inner validation
-            for (const value of document.querySelectorAll("input")) {
-                if (!value.checkValidity()) {
+            //Checks all the filter inputs within the main fieldset for HTML5 inner validation
+            for (const child of document.getElementById('poiFileLoadForm').children) {
+                if (child.tagName === "INPUT" && !child.checkValidity()) {
                     return;
                 }
             }
+            document.getElementById('downloadMessageMain').hidden = false;
             document.querySelector('.loadForm').submit();
-            document.querySelector(".downloadMessage").hidden = false;
         });
 
         document.getElementById("replaceLocusIcons").addEventListener('change', ev => {
@@ -354,11 +330,54 @@
             }
         });
 
+        document.getElementById("filterOut").addEventListener('click', ev => {
+            //Checks all the filter inputs within the fieldset for HTML5 inner validation
+            for (const child of document.getElementById('fieldSetFilter').children) {
+                if (child.tagName === "INPUT" && !child.checkValidity()) {
+                    return;
+                }
+            }
+            document.getElementById("downloadMessageFilter").hidden = false;
+            document.querySelector('.filterLoadForm').submit();
+        });
+
+        document.getElementById("mainHeader__logoImg").addEventListener('click', ev => {
+            adminLoginCounter++;
+            if (adminLoginCounter === 3) {
+                document.getElementById("filterFilesLoadForm").hidden = false;
+                document.getElementById("adminLoadForm").hidden = false;
+                ev.currentTarget.title = "Admin opened";
+                ev.currentTarget.className = "mainHeader__logoImg_opened";
+            }
+        });
+
         document.getElementById("adminVerifyButton").addEventListener('click', ev => {
             let adminLogin = document.getElementById("adminLogin").value;
             let adminPassword = document.getElementById("adminPassword").value;
             verifyAdminCredentials(adminLogin, adminPassword);
         });
 
+        let verifyAdminCredentials = function (login, password) {
+            if ((!login || login.length === 0) || (!password || password.length === 0)) return;
+            let adminCredentials = {
+                'login': login,
+                'password': password
+            }
+            fetch(serverAddress.concat("/admin"), {
+                method: "POST",
+                body: JSON.stringify(adminCredentials),
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8"
+                }
+            }).then(function (response) {
+                if (!response.ok) {
+                    response.text().then(text => showWarningUserMessage(text));
+
+                } else {
+                    response.text().then(text => showUserMessage(text));
+                    console.log(response, "OK");
+                }
+            });
+        };
     }
 )();

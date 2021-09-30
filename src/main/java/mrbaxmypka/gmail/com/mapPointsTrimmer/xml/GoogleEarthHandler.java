@@ -1,7 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import org.springframework.lang.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,48 +23,48 @@ public class GoogleEarthHandler {
         this.kmlUtils = kmlUtils;
     }
 
-    Document processKml(Document document, MultipartDto multipartDto) {
+    Document processKml(Document document, MultipartMainDto multipartMainDto) {
         this.document = document;
         xmlDomUtils = new XmlDomUtils(document);
-        log.info("Document and {} are received", multipartDto);
+        log.info("Document and {} are received", multipartMainDto);
 
-        if (multipartDto.getPointIconSize() != null) {
-            setPointsIconsSize(multipartDto);
+        if (multipartMainDto.getPointIconSize() != null) {
+            setPointsIconsSize(multipartMainDto);
         }
-        if (multipartDto.getPointIconOpacity() != null) {
-            setPointsIconsOpacity(multipartDto);
+        if (multipartMainDto.getPointIconOpacity() != null) {
+            setPointsIconsOpacity(multipartMainDto);
         }
-        if (multipartDto.getPointTextSize() != null) {
-            setPointsTextSize(multipartDto);
+        if (multipartMainDto.getPointTextSize() != null) {
+            setPointsTextSize(multipartMainDto);
         }
-        if (multipartDto.getPointTextHexColor() != null) {
-            setPointsTextColor(multipartDto);
+        if (multipartMainDto.getPointTextHexColor() != null) {
+            setPointsTextColor(multipartMainDto);
         }
         //If something dynamic is set we create and assign <StyleMap>'s if absent
-        if (multipartDto.getPointIconSizeDynamic() != null ||
-                multipartDto.getPointTextSizeDynamic() != null ||
-                multipartDto.getPointTextHexColorDynamic() != null) {
+        if (multipartMainDto.getPointIconSizeDynamic() != null ||
+                multipartMainDto.getPointTextSizeDynamic() != null ||
+                multipartMainDto.getPointTextHexColorDynamic() != null) {
             createStyleMaps();
         }
-        if (multipartDto.getPointIconSizeDynamic() != null) {
-            setPointsIconsSizeDynamic(multipartDto);
+        if (multipartMainDto.getPointIconSizeDynamic() != null) {
+            setPointsIconsSizeDynamic(multipartMainDto);
         }
-        if (multipartDto.getPointIconOpacityDynamic() != null) {
-            setPointsIconsOpacityDynamic(multipartDto);
+        if (multipartMainDto.getPointIconOpacityDynamic() != null) {
+            setPointsIconsOpacityDynamic(multipartMainDto);
         }
-        if (multipartDto.getPointTextSizeDynamic() != null) {
-            setPointsTextSizeDynamic(multipartDto);
+        if (multipartMainDto.getPointTextSizeDynamic() != null) {
+            setPointsTextSizeDynamic(multipartMainDto);
         }
-        if (multipartDto.getPointTextHexColorDynamic() != null) {
-            setPointsTextColorDynamic(multipartDto);
+        if (multipartMainDto.getPointTextHexColorDynamic() != null) {
+            setPointsTextColorDynamic(multipartMainDto);
         }
         return this.document;
     }
 
-    private void setPointsIconsSize(MultipartDto multipartDto) {
+    private void setPointsIconsSize(MultipartMainDto multipartMainDto) {
         log.info("Setting the icons size...");
 
-        String scale = multipartDto.getPointIconSizeScaled().toString();
+        String scale = multipartMainDto.getPointIconSizeScaled().toString();
 
         kmlUtils.getStyleUrlsFromPlacemarks().forEach(styleUrl -> {
             Node styleObject = kmlUtils.getStyleObject(styleUrl);
@@ -85,10 +85,10 @@ public class GoogleEarthHandler {
      * HTML hexadecimal color with max value "#FFFFFF" will be prefixed with 'kml color' hexadecimal value
      * from 00 to FF as "00FFFFFF" or "FFFFFFFF" etc.
      */
-    private void setPointsIconsOpacity(MultipartDto multipartDto) {
+    private void setPointsIconsOpacity(MultipartMainDto multipartMainDto) {
         log.info("Setting the icons opacity...");
 
-        String opacityColor = getKmlColor("#ffffff", multipartDto.getPointIconHexOpacity());
+        String opacityColor = getKmlColor("#ffffff", multipartMainDto.getPointIconHexOpacity());
 
         kmlUtils.getStyleUrlsFromPlacemarks().forEach(styleUrl -> {
             Node styleObject = kmlUtils.getStyleObject(styleUrl);
@@ -110,9 +110,9 @@ public class GoogleEarthHandler {
      * Either applies to existing <LabelStyle> tags or a new ones will be created for every <Style>.
      * Because <LabelStyle> automatically displays <name> content from <Placemark>s.
      */
-    private void setPointsTextSize(MultipartDto multipartDto) {
+    private void setPointsTextSize(MultipartMainDto multipartMainDto) {
         log.info("Setting the points names size...");
-        String scale = multipartDto.getPointTextSizeScaled().toString();
+        String scale = multipartMainDto.getPointTextSizeScaled().toString();
 
         kmlUtils.getStyleUrlsFromPlacemarks().forEach(styleUrl -> {
             Node styleObject = kmlUtils.getStyleObject(styleUrl);
@@ -129,9 +129,9 @@ public class GoogleEarthHandler {
         log.info("Points names size has been set.");
     }
 
-    private void setPointsTextColor(MultipartDto multipartDto) {
+    private void setPointsTextColor(MultipartMainDto multipartMainDto) {
         log.info("Setting the names text color...");
-        String kmlColor = getKmlColor(multipartDto.getPointTextHexColor(), multipartDto.getPointTextOpacity());
+        String kmlColor = getKmlColor(multipartMainDto.getPointTextHexColor(), multipartMainDto.getPointTextOpacity());
 
         kmlUtils.getStyleUrlsFromPlacemarks().forEach(styleUrl -> {
             Node styleObject = kmlUtils.getStyleObject(styleUrl);
@@ -260,7 +260,7 @@ public class GoogleEarthHandler {
         return styleHighlightNode;
     }
 
-    private void setPointsIconsSizeDynamic(MultipartDto multipartDto) {
+    private void setPointsIconsSizeDynamic(MultipartMainDto multipartMainDto) {
         log.info("Setting the points icons dynamic size...");
         NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
         for (int i = 0; i < styleMapNodes.getLength(); i++) {
@@ -268,7 +268,7 @@ public class GoogleEarthHandler {
             kmlUtils.getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
                 Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
                 Node scaleNode = xmlDomUtils.getChildNodesFromParent(iconStyleNode, "scale", null, false, true, true).get(0);
-                scaleNode.setTextContent(multipartDto.getPointIconSizeScaledDynamic().toString());
+                scaleNode.setTextContent(multipartMainDto.getPointIconSizeScaledDynamic().toString());
             });
         }
         log.info("All the points icons dynamic size has been set.");
@@ -288,10 +288,10 @@ public class GoogleEarthHandler {
      * Source: https://developers.google.com/kml/documentation/kmlreference#colorstyle
      * **************************************************************
      */
-    private void setPointsIconsOpacityDynamic(MultipartDto multipartDto) {
+    private void setPointsIconsOpacityDynamic(MultipartMainDto multipartMainDto) {
         log.info("Setting the dynamic icons opacity...");
 
-        String opacityColor = getKmlColor("#ffffff", multipartDto.getPointIconHexOpacityDynamic());
+        String opacityColor = getKmlColor("#ffffff", multipartMainDto.getPointIconHexOpacityDynamic());
 
         NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
         for (int i = 0; i < styleMapNodes.getLength(); i++) {
@@ -306,7 +306,7 @@ public class GoogleEarthHandler {
     }
 
 
-    private void setPointsTextSizeDynamic(MultipartDto multipartDto) {
+    private void setPointsTextSizeDynamic(MultipartMainDto multipartMainDto) {
         log.info("Setting the points text dynamic size...");
         NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
         for (int i = 0; i < styleMapNodes.getLength(); i++) {
@@ -314,15 +314,15 @@ public class GoogleEarthHandler {
             kmlUtils.getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
                 Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
                 Node scaleNode = xmlDomUtils.getChildNodesFromParent(labelStyleNode, "scale", null, false, true, true).get(0);
-                scaleNode.setTextContent(multipartDto.getPointTextSizeScaledDynamic().toString());
+                scaleNode.setTextContent(multipartMainDto.getPointTextSizeScaledDynamic().toString());
             });
         }
         log.info("All the points text dynamic size has been set.");
     }
 
-    private void setPointsTextColorDynamic(MultipartDto multipartDto) {
+    private void setPointsTextColorDynamic(MultipartMainDto multipartMainDto) {
         log.info("Setting the names text dynamic color...");
-        String kmlColor = getKmlColor(multipartDto.getPointTextHexColorDynamic(), multipartDto.getPointTextOpacityDynamic());
+        String kmlColor = getKmlColor(multipartMainDto.getPointTextHexColorDynamic(), multipartMainDto.getPointTextOpacityDynamic());
         NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
         for (int i = 0; i < styleMapNodes.getLength(); i++) {
             Node styleMapNode = styleMapNodes.item(i);
@@ -354,9 +354,9 @@ public class GoogleEarthHandler {
      * * HEX COLOR : #8e4848
      *
      * @param hexColor "#rrggbb" (reg, green, blue) natural input from HTML color picker in hex
-     *                 {@link MultipartDto#getPointTextHexColor()} or {@link MultipartDto#getPointTextHexColorDynamic()}
+     *                 {@link MultipartMainDto#getPointTextHexColor()} or {@link MultipartMainDto#getPointTextHexColorDynamic()}
      * @param opacity  Percentage value from 0 to 100%.
-     *                 {@link MultipartDto#getPointTextOpacity()} or {@link MultipartDto#getPointTextOpacityDynamic()}
+     *                 {@link MultipartMainDto#getPointTextOpacity()} or {@link MultipartMainDto#getPointTextOpacityDynamic()}
      *                 If null, the max "ff" value will be set.
      * @return kml specific color with opacity (alpha-channel) as "aabbggrr" (alpha, blue, green,red)
      * witch is corresponds to KML specification.
@@ -392,9 +392,9 @@ public class GoogleEarthHandler {
      * * HEX COLOR : #8e4848
      *
      * @param hexColor   "#rrggbb" (reg, green, blue) natural input from HTML color picker in hex
-     *                   {@link MultipartDto#getPointTextHexColor()} or {@link MultipartDto#getPointTextHexColorDynamic()}
+     *                   {@link MultipartMainDto#getPointTextHexColor()} or {@link MultipartMainDto#getPointTextHexColorDynamic()}
      * @param hexOpacity Hexadecimal value from 00 to FF.
-     *                   {@link MultipartDto#getPointTextHexOpacity()} or {@link MultipartDto#getPointTextHexOpacityDynamic()}
+     *                   {@link MultipartMainDto#getPointTextHexOpacity()} or {@link MultipartMainDto#getPointTextHexOpacityDynamic()}
      *                   If null, the max "ff" value will be set.
      * @return kml specific color with opacity (alpha-channel) as "aabbggrr" (alpha, blue, green,red)
      * witch is corresponds to KML specification.

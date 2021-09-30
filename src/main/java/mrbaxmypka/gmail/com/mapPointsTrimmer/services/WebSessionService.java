@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.services;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.AdminController;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.BeaconController;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.IndexController;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.SessionTimer;
@@ -31,20 +32,20 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class WebSessionService {
 
-    private final static Map<String, SessionTimer> sessionBeacons = new ConcurrentHashMap<>(2);
+    private final Map<String, SessionTimer> sessionBeacons = new ConcurrentHashMap<>(2);
     private final static ScheduledExecutorService scheduledTimers = Executors.newScheduledThreadPool(10);
     private final boolean singleUserMode;
     private final MapPointsTrimmerApplication mapPointsTrimmerApplication;
-    private final MultipartFileService multipartFileService;
+    private final MultipartMainFileService multipartMainFileService;
     protected final int INITIAL_DELAY = 60;
     protected final int PERIOD = 25;
 
     @Autowired
     public WebSessionService(MapPointsTrimmerApplication mapPointsTrimmerApplication,
-                             MultipartFileService multipartFileService,
+                             MultipartMainFileService multipartMainFileService,
                              @Value("${trimmer.single-user-mode:true}") boolean singleUserMode) {
         this.mapPointsTrimmerApplication = mapPointsTrimmerApplication;
-        this.multipartFileService = multipartFileService;
+        this.multipartMainFileService = multipartMainFileService;
         this.singleUserMode = singleUserMode;
         log.warn("SingleUserMode={}", singleUserMode);
         if (singleUserMode) {
@@ -63,6 +64,7 @@ public class WebSessionService {
     }
 
     /**
+     * Starts a new {@link SessionTimer} or renews a new one.
      * When the {@link IndexController#getIndex(Model, HttpSession)} responds with the start page it starts to keep track
      * a User session by its ID with the new {@link SessionTimer} (or the renewed one) and put it in the {@link #sessionBeacons} HashMap.
      * The tracking allows to stop processing and delete temp files associated with the session id as the User won't be able
@@ -74,7 +76,7 @@ public class WebSessionService {
     public void startSessionBeaconTimer(String sessionId) {
         log.trace("Session timer has been started for sessionId={}", sessionId);
         if (!sessionBeacons.containsKey(sessionId)) {
-            SessionTimer timerTask = new SessionTimer(sessionId, sessionBeacons, multipartFileService);
+            SessionTimer timerTask = new SessionTimer(sessionId, sessionBeacons, multipartMainFileService);
             sessionBeacons.put(sessionId, timerTask);
             scheduledTimers.scheduleAtFixedRate(timerTask, 1, 10, TimeUnit.SECONDS);
         } else {
@@ -87,7 +89,7 @@ public class WebSessionService {
      * Treats the 'sessionId' when {@link BeaconController#postBeacon(HttpSession)}.
      * {@link BeaconController#postBeacon(HttpSession)} resets it to 0 when the 'navigator.sendBeacon()' is sent.
      * When {@link SessionTimer#getCount()} > 3 the appropriate process and the temp file for this session will be killed by
-     * {@link MultipartFileService#deleteTempFile(String)}. If {@link #isSingleUserMode()} = true, the full Application
+     * {@link MultipartMainFileService#deleteTempFile(String)}. If {@link #isSingleUserMode()} = true, the full Application
      * will be shut down.
      *
      * @param sessionId A beacon from the {@link BeaconController#postBeacon(HttpSession)}.
@@ -117,6 +119,24 @@ public class WebSessionService {
             sessionTimer.setCancelled(true);
             log.trace("The session id={} has been set as cancelled. SessionBeacons contains {} sessions.",
                     sessionId, sessionBeacons.size());
+        }
+    }
+
+    /**
+     * Sets a particular {@link SessionTimer#isAdmin()} as the Admin session when the Administrator credentials are
+     * successfully verified in the {@link AdminController}.
+     *
+     * @param sessionId
+     * @return True = if a current {@link HttpSession} is still alive and now belongs to Administrator.
+     * False - if the session is outdated.
+     */
+    public boolean setAdminSession(String sessionId) {
+        SessionTimer sessionTimer = sessionBeacons.get(sessionId);
+        if (sessionTimer != null) {
+            sessionTimer.setAdmin(true);
+            return true;
+        } else {
+            return false;
         }
     }
 

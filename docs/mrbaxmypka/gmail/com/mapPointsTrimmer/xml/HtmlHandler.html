@@ -217,7 +217,7 @@ extends java.lang.Object</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearOutdatedDescriptions(org.jsoup.nodes.Element,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">clearOutdatedDescriptions</a></span>&#8203;(org.jsoup.nodes.Element&nbsp;parsedHtmlFragment,
-                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">Removes all the unnecessary HTML nodes and data duplicates.</div>
 </td>
@@ -225,7 +225,7 @@ extends java.lang.Object</pre>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>private org.jsoup.nodes.Element</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createNewHtmlDescription(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">createNewHtmlDescription</a></span>&#8203;(java.lang.String&nbsp;userDescription,
-                        <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                        <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">For Locus Pro <code>&lt;!-- desc_user:start --&gt;</code> and <code>&lt;!-- desc_user:end --&gt;</code> are the markers
  for displaying all inner data and text on POI screen (description text, photo, photo data etc).</div>
@@ -263,7 +263,7 @@ extends java.lang.Object</pre>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>(package private) java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLocusAttachmentAbsoluteHref(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">getLocusAttachmentAbsoluteHref</a></span>&#8203;(java.lang.String&nbsp;oldHrefAbsoluteTypeWithFilename,
-                              <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                              <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">Locus Map &lt;lc:attachment&gt;&lt;/lc:attachment&gt; receives only <a href="../utils/PathTypes.html#RELATIVE"><code>PathTypes.RELATIVE</code></a> or
  <a href="../utils/PathTypes.html#ABSOLUTE"><code>PathTypes.ABSOLUTE</code></a> without (!)</div>
@@ -325,7 +325,7 @@ extends java.lang.Object</pre>
 <tr id="i18" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processDescriptionText(java.lang.String,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">processDescriptionText</a></span>&#8203;(java.lang.String&nbsp;description,
-                      <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+                      <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i19" class="rowColor">
@@ -340,7 +340,7 @@ extends java.lang.Object</pre>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>private void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setPreviewSize(org.jsoup.nodes.Element,mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto)">setPreviewSize</a></span>&#8203;(org.jsoup.nodes.Element&nbsp;parsedHtmlFragment,
-              <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</code></th>
+              <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</code></th>
 <td class="colLast">
 <div class="block">1) Sets preview size in pixels for all <img> Elements.
  2) Checks if the given <img> Elements are presented as links within <a></a>.</div>
@@ -445,12 +445,12 @@ public&nbsp;HtmlHandler&#8203;(<a href="../services/FileService.html" title="cla
 <li class="blockList">
 <h4>processDescriptionText</h4>
 <pre class="methodSignature">public&nbsp;java.lang.String&nbsp;processDescriptionText&#8203;(java.lang.String&nbsp;description,
-                                               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                               <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>description</code> - Receives inner text from &lt;description&gt;...&lt;/description&gt; which in fact is the
                      HTML markup</dd>
-<dd><code>multipartDto</code> - To determine all other conditions to be processed on CDATA HTML</dd>
+<dd><code>multipartMainDto</code> - To determine all other conditions to be processed on CDATA HTML</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Fully processed HTML markup to be included in CDATA block.</dd>
 </dl>
@@ -525,7 +525,7 @@ public&nbsp;HtmlHandler&#8203;(<a href="../services/FileService.html" title="cla
 <li class="blockList">
 <h4>getLocusAttachmentAbsoluteHref</h4>
 <pre class="methodSignature">java.lang.String&nbsp;getLocusAttachmentAbsoluteHref&#8203;(java.lang.String&nbsp;oldHrefAbsoluteTypeWithFilename,
-                                                <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                                <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">Locus Map &lt;lc:attachment&gt;&lt;/lc:attachment&gt; receives only <a href="../utils/PathTypes.html#RELATIVE"><code>PathTypes.RELATIVE</code></a> or
  <a href="../utils/PathTypes.html#ABSOLUTE"><code>PathTypes.ABSOLUTE</code></a> without (!) 'file:///' prefix.</div>
 <dl>
@@ -572,7 +572,7 @@ public&nbsp;HtmlHandler&#8203;(<a href="../services/FileService.html" title="cla
 <li class="blockList">
 <h4>setPreviewSize</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;setPreviewSize&#8203;(org.jsoup.nodes.Element&nbsp;parsedHtmlFragment,
-                            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                            <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">1) Sets preview size in pixels for all <img> Elements.
  2) Checks if the given <img> Elements are presented as links within <a></a>. If not, wrap images with <a></a>
  to create links.
@@ -656,7 +656,7 @@ public&nbsp;HtmlHandler&#8203;(<a href="../services/FileService.html" title="cla
 <li class="blockList">
 <h4>clearOutdatedDescriptions</h4>
 <pre class="methodSignature">private&nbsp;void&nbsp;clearOutdatedDescriptions&#8203;(org.jsoup.nodes.Element&nbsp;parsedHtmlFragment,
-                                       <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                       <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">Removes all the unnecessary HTML nodes and data duplicates.
  MUST be the last method in a chain.</div>
 </li>
@@ -692,7 +692,7 @@ public&nbsp;HtmlHandler&#8203;(<a href="../services/FileService.html" title="cla
 <li class="blockList">
 <h4>createNewHtmlDescription</h4>
 <pre class="methodSignature">private&nbsp;org.jsoup.nodes.Element&nbsp;createNewHtmlDescription&#8203;(java.lang.String&nbsp;userDescription,
-                                                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartDto)</pre>
+                                                         <a href="../entitiesDto/MultipartDto.html" title="class in mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto">MultipartDto</a>&nbsp;multipartMainDto)</pre>
 <div class="block">For Locus Pro <code>&lt;!-- desc_user:start --&gt;</code> and <code>&lt;!-- desc_user:end --&gt;</code> are the markers
  for displaying all inner data and text on POI screen (description text, photo, photo data etc).
  So when <code>MultipartDto#getPreviewSize()</code>  != null} to display it on the screen these comments

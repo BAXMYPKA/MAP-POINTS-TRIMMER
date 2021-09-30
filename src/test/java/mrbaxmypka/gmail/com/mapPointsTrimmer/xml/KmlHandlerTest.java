@@ -1,6 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.GoogleIconsCache;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class KmlHandlerTest {
 	
 	private static InputStream inputStream;
-	private static MultipartDto multipartDto;
+	private static MultipartMainDto multipartMainDto;
 	private static MultipartFile multipartFile;
 	private static MessageSource messageSource;
 	private static Resource resource;
@@ -132,7 +132,7 @@ class KmlHandlerTest {
 		resource = Mockito.mock(Resource.class);
 		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
 		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
-		fileService = new FileService(messageSource, resourceLoader);
+		fileService = new FileService(messageSource);
 		
 		htmlHandler = new HtmlHandler(fileService);
 		googleIconsCache = new GoogleIconsCache();
@@ -147,12 +147,12 @@ class KmlHandlerTest {
 		String newPath = "C:\\MyPoi\\MyPoiImages";
 		multipartFile = new MockMultipartFile(
 			"LocusTestPoi.kml", "LocusTestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPath(newPath);
-		multipartDto.setPathType("absolute");
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath(newPath);
+		multipartMainDto.setPathType("absolute");
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 		
 		//THEN
 		assertTrue(processedKml.contains("<href>file:///C:/MyPoi/MyPoiImages/file-sdcardLocuscacheimages1571471453728.png</href>"));
@@ -176,12 +176,12 @@ class KmlHandlerTest {
 		//GIVEN
 		multipartFile = new MockMultipartFile(
 			"TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPath("C:\\MyPoi\\MyPoiImages");
-		multipartDto.setPathType("absolute");
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath("C:\\MyPoi\\MyPoiImages");
+		multipartMainDto.setPathType("absolute");
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 		
 		//THEN
 		//Special GoogleEarth icons paths should be preserved
@@ -195,12 +195,12 @@ class KmlHandlerTest {
 		String pathWithWhitespaces = "D:\\My Folder\\My POI";
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPath(pathWithWhitespaces);
-		multipartDto.setPathType("absolute");
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath(pathWithWhitespaces);
+		multipartMainDto.setPathType("absolute");
 		
 		//WHEN
-		String processedHtml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedHtml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 		
 		//THEN All whitespaces should be replaced with URL '%20' sign
 		assertAll(
@@ -257,11 +257,11 @@ class KmlHandlerTest {
 		inputStream = new ByteArrayInputStream(locusKml.getBytes(StandardCharsets.UTF_8));
 		multipartFile = new MockMultipartFile(
 			"LocusTestPois.kml", "LocusTestPois.kml", null, inputStream);
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setTrimXml(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setTrimXml(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 //		System.out.println(processedKml);
 		
 		//THEN xml tags are without whitespaces but CDATA starts and ends with them
@@ -319,11 +319,11 @@ class KmlHandlerTest {
 			"</Document>\n" +
 			"</kml>\n";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setAsAttachmentInLocus(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 
 		//THEN <ExtendedData> ans <lc:attachment xmlns:lc="http://www.locusmap.eu"> has to be created
 		assertAll(
@@ -376,11 +376,11 @@ class KmlHandlerTest {
 			"</Document>\n" +
 			"</kml>\n";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setAsAttachmentInLocus(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 
 		//THEN <lc:attachments> text has to be replaced from description one
 		assertTrue(processedKml.contains("<ExtendedData xmlns:lc=\"http://www.locusmap.eu\""));//Just a check
@@ -432,11 +432,11 @@ class KmlHandlerTest {
 			"</Document>\n" +
 			"</kml>\n";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setAsAttachmentInLocus(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertFalse(processedKml.contains("<lc:attachment>files/_1318431492316.jpg</lc:attachment>"));
@@ -509,13 +509,13 @@ class KmlHandlerTest {
 			"</Document>\n" +
 			"</kml>\n";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locus.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setAsAttachmentInLocus(true);
-		multipartDto.setPreviewSize(640);
-		multipartDto.setPreviewSizeUnit(PreviewSizeUnits.PIXELS);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
+		multipartMainDto.setPreviewSize(640);
+		multipartMainDto.setPreviewSizeUnit(PreviewSizeUnits.PIXELS);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(
@@ -572,11 +572,11 @@ class KmlHandlerTest {
 			"</Document>\n" +
 			"</kml>\n";
 		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setAsAttachmentInLocus(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
 		
 		//WHEN
-		String processedKml = kmlHandler.processXml(multipartDto.getMultipartFile().getInputStream(), multipartDto);
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
 		
 		//THEN <ExtendedData> has to be filled with new <lc:attachment>'s with src to images from description
 		assertAll(

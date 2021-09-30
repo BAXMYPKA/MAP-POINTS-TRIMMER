@@ -5,7 +5,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartMainFileService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 public class MapPointsTrimmerApplication {
 
     @Autowired
-    private MultipartFileService multipartFileService;
+    private MultipartMainFileService multipartMainFileService;
     @Autowired
     private FileService fileService;
     @Autowired
@@ -52,7 +52,7 @@ public class MapPointsTrimmerApplication {
             } catch (InterruptedException e) {
                 log.error(e.getMessage(), e);
             } finally {
-                multipartFileService.deleteTempFiles();
+                multipartMainFileService.deleteTempFiles();
                 fileService.deleteLogFile();
                 SpringApplication.exit(applicationContext, () -> 666);
             }
