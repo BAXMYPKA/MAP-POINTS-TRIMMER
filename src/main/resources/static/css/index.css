@@ -424,6 +424,12 @@ input[type=radio] {
     padding-right: 0.2em;
     border-radius: 0.3em;
     box-shadow: 0 -0.4em 0.5em -0.3em lightgray inset;
+    transition-duration: 0.3s;
+}
+
+.loadForm__fieldSet__presetsButtons:hover{
+    transition-duration: 0.3s;
+    box-shadow: 0 -0.4em 0.5em -0.3em darkgray inset;
 }
 
 #pictogram-dropdown {
