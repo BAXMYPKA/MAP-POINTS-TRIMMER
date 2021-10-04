@@ -38,8 +38,8 @@ public class HtmlHandler {
     }
 
     /**
-     * @param description  Receives inner text from {@literal <description>...</description>} which in fact is the
-     *                     HTML markup
+     * @param description      Receives inner text from {@literal <description>...</description>} which in fact is the
+     *                         HTML markup
      * @param multipartMainDto To determine all other conditions to be processed on CDATA HTML
      * @return Fully processed HTML markup to be included in CDATA block.
      */
@@ -111,14 +111,17 @@ public class HtmlHandler {
     }
 
     /**
-     * Sets new local or remote paths instead old ones.
+     * 1) Sets new local or remote paths instead old ones.
      * I.e. old path {@code <a href="files:/_1404638472855.jpg"></>}
      * can be replaced with {@code <a href="C:/files:/a new path/_1404638472855.jpg"></>}
+     * 2) Deletes images duplicates
      */
     private void setPath(Element parsedHtmlFragment, PathTypes pathType, String path) {
         log.trace("Setting the new path to images...");
         Elements aElements = parsedHtmlFragment.select("a[href]");
         Elements imgElements = parsedHtmlFragment.select("img[src]");
+
+        deleteImagesDuplicates(parsedHtmlFragment);
 
         aElements.forEach((a) -> {
             String newPathWithFilename = getNewHrefWithOldFilename(a.attr("href"), pathType, path);
@@ -167,7 +170,27 @@ public class HtmlHandler {
     }
 
     /**
-     * Locus Map {@literal <lc:attachment></lc:attachment>} receives only {@link PathTypes#RELATIVE} or
+     * {@literal Locus Map <lc:attachment></lc:attachment>} receives only {@link PathTypes#RELATIVE} or
+     * {@link PathTypes#ABSOLUTE} without (!) 'file:///' prefix.
+     * @param imageSrc Image name with the full path to it
+     * @return
+     */
+    boolean isLocusAbsoluteHref(String imageSrc) {
+        if (imageSrc.startsWith("http") || imageSrc.startsWith("www")) {
+            log.debug("Locus doesn't accept web types of href for <attachment>, blank string will be returned");
+            return false;
+        } else if (imageSrc.startsWith("file:///")) {
+            return false;
+        } else if (imageSrc.startsWith("/") || imageSrc.startsWith("...") || imageSrc.startsWith("files/")) {
+            return true;
+        } else {
+            //The given path starts with a folder name or a filename
+            return true;
+        }
+    }
+
+    /**
+     * {@literal Locus Map <lc:attachment></lc:attachment>} receives only {@link PathTypes#RELATIVE} or
      * {@link PathTypes#ABSOLUTE} without (!) 'file:///' prefix.
      *
      * @return 1) Locus specific absolute type of path like: '/sdcard/Locus/photos/'
@@ -350,7 +373,7 @@ public class HtmlHandler {
      */
     private void clearOutdatedDescriptions(Element parsedHtmlFragment, MultipartMainDto multipartMainDto) {
         log.debug("The description is being cleared...");
-        deleteImagesDuplicates(parsedHtmlFragment);
+//        deleteImagesDuplicates(parsedHtmlFragment);
 
         Elements imgElements = parsedHtmlFragment.select("img[src]");
         String userDescriptionText = getUserDescriptionText(parsedHtmlFragment).trim();
@@ -374,7 +397,7 @@ public class HtmlHandler {
         Elements tableRowWithMinDateTime = getTableRowsWithMinDateTime(parsedHtmlFragment.getAllElements());
         if (!tableRowWithMinDateTime.isEmpty()) {
             tableRowWithMinDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
-            newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
+//            newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
         }
         clearEmptyTables(newHtmlDescription);
         parsedHtmlFragment.html(newHtmlDescription.outerHtml());
@@ -534,6 +557,7 @@ public class HtmlHandler {
 
     /**
      * @return Just a tr with td with a hr )))
+     * @deprecated
      */
     private Element getTableRowWithSeparator() {
         Element tr = new Element("tr");
@@ -545,15 +569,23 @@ public class HtmlHandler {
     }
 
     /**
-     * If every <td></td> within their <tr></tr> is empty those "tr" elements will be deleted from the DOM
+     * {@literal If every <td></td> within their <tr></tr> is empty or just contain a single <hr> element, those "tr" elements will be deleted from the DOM}
      */
     private void clearEmptyTables(Element table) {
         Elements tableRows = table.select("tr");
         tableRows.forEach(tr -> {
             Elements tdElements = tr.select("td");
-            if (tdElements.stream().allMatch(td -> td.children().isEmpty())) tr.remove();
+            if (tdElements.stream().allMatch(td -> td.children().isEmpty())) {
+                //Removes <td> with no inner elements
+                tr.remove();
+            } else if (tdElements.stream().allMatch(td ->
+                    (long) td.getAllElements().size() == 2 &&
+                            ((td.getElementsByTag("hr") != null && td.hasAttr("colspan"))))) {
+                //There is an old deprecated table row with just an attribute "colspan='2'" and a <hr> divider
+                tr.remove();
+            }
         });
-        log.trace("Empty <td> and <tr> are eliminated from the given table");
+        log.debug("Empty <td> and <tr> are eliminated from the given table");
     }
 
     /**
@@ -564,6 +596,7 @@ public class HtmlHandler {
         Elements imgElements = parsedHtmlFragment.select("img[src]");
 
         Set<String> fileNames = new HashSet<>(3);
+
         imgElements.forEach(img -> {
             String fileName = fileService.getFileName(img.attr("src"));
             if (fileNames.contains(fileName)) {

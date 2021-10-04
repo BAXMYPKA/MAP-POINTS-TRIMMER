@@ -215,15 +215,19 @@ public abstract class XmlHandler {
     }
 
     /**
-     * First checks Locus artifacts as the "&gt;\t" regexp (or {@code '\\s*>\\s*'} within original kml)
-     * as Locus may spread those signs ">" occasionally (especially after {@code <ExtendedData> tag}).
+     * First it checks Locus artifacts by the regexes as the:
+     * a) "&gt;\t" when no indents deleted. Has to be eliminated.
+     * b) ">&gt;<" which is originated from {@literal </lc:attachment></ExtendedData>&gt;<Point>} fragments when all indents cleared. Has to be replaced with just "><".
+     * c) {@code '\\s*>\\s*'}
+     * within original kml as Locus may spread those signs ">" and "&gt" occasionally (especially after {@code <ExtendedData> tag}).
      * Second replaces all the {@link Transformer}'s "\r\n" indents with standard "\r"
      *
      * @param rawXml A newly transformed raw Xml.
      * @return The cleared xml String.
      */
     private String clearFix(StringWriter rawXml) {
-        String xmlResult = rawXml.toString().replaceAll("\r\n", "\n").replaceAll("&gt;\t", "");
+        String xmlResult = rawXml.toString().replaceAll("\r\n", "\n").replaceAll("&gt;\t", "")
+                .replaceAll(">&gt;<", "><");
         log.info(
                 "Clear fix to delete all the unnecessary '>\\t' and replace '\\r\\n' with standard '\\n' has been completed");
         return xmlResult;

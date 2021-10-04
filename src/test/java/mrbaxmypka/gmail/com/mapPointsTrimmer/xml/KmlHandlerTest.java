@@ -302,7 +302,7 @@ class KmlHandlerTest {
 			"   <tr>\n" +
 			"\t<td width=\"100%\" align=\"center\">" +
 			"<a href=\"files/_1318431492316.jpg\" target=\"_blank\">" +
-			"<img src=\"files//_1318431492316.jpg\" width=\"330px\" align=\"center\">" +
+			"<img src=\"files/_1318431492316.jpg\" width=\"330px\" align=\"center\">" +
 			"</a>Test place name</td>\n</tr>\n" +
 			"\t Test user description<!-- desc_user:end --> \n" +
 			" </tbody>\n" +
@@ -338,7 +338,7 @@ class KmlHandlerTest {
 	
 	@Test
 	public void locusAsAttachment_Should_Just_Replace_Existing_Src_From_Description()
-			throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException, InterruptedException {
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
 		//GIVEN with existing <ExtendedData>
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -387,7 +387,60 @@ class KmlHandlerTest {
 		assertTrue(processedKml.contains("<lc:attachment>C:/MyPOI/_1318431492316.jpg</lc:attachment>"));
 		assertFalse(processedKml.contains("<lc:attachment>files/_1318431492316.jpg</lc:attachment>"));
 	}
-	
+
+	@Test
+	public void different_Paths_For_One_Image_In_Description_Should_Be_One_Into_Attachment_With_Same_Imagename()
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
+		//GIVEN with existing <ExtendedData>
+		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+				"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
+				"xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+				"<Document>\n" +
+				"\t<name>Test POIs from Locus</name>\n" +
+				"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+				"<Placemark>\n" +
+				"\t<name>Просека у элит поселка</name>\n" +
+				"\t<description><![CDATA[<!-- desc_gen:start -->\n" +
+				"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+				"<a href=\"files/_1341841939032.jpg\" target=\"_blank\"><img src=\"files/_1341841939032.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\"></a>" +
+				"<br /><br />\n" +
+				"<!-- desc_user:start -->\n" +
+				"<table width=\"100%\" style=\"color:black\"><tbody><tr><td align=\"center\" colspan=\"2\">" +
+				"<a href=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" target=\"_blank\">" +
+				"<img src=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" width=\"100%\" align=\"center\" style=\"border:1px white solid;width:100%;\"></a>" +
+				"</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">217m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">49°</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">30m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr></tbody></table>\n" +
+				"<!-- desc_user:end -->\n" +
+				"</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2021-10-02 20:17:24</td></tr>\n" +
+				"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+				"<!-- desc_gen:end -->]]></description>\n" +
+				"\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+				"\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+				"\t\t<lc:attachment>files/_1341841939032.jpg</lc:attachment>\n" +
+				"\t</ExtendedData>\n" +
+				">\t<Point>\n" +
+				"\t\t<coordinates>37.5902000,55.9564670,0.00</coordinates>\n" +
+				"\t</Point>\n" +
+				"\t<gx:TimeStamp>\n" +
+				"\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+				"\t</gx:TimeStamp>\n" +
+				"</Placemark>\n" +
+				"</Document>\n" +
+				"</kml>\n";
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, locusKml.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
+		multipartMainDto.setPath("newPath/");
+
+		//WHEN
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
+
+		//THEN <lc:attachments> text has to be replaced from description one
+		assertTrue(processedKml.contains("<ExtendedData xmlns:lc=\"http://www.locusmap.eu\""));//Just a check
+		assertTrue(processedKml.contains("<lc:attachment>newPath/_1341841939032.jpg</lc:attachment>"));
+
+		assertFalse(processedKml.contains("<lc:attachment>file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg</lc:attachment>"));
+	}
+
 	@Test
 	public void locusAsAttachment_Should_Add_More_Attachments_Src_From_Description()
 			throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException, InterruptedException {

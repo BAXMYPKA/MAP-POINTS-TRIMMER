@@ -10,10 +10,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.stream.events.XMLEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -134,7 +131,7 @@ public class LocusMapHandler {
             log.trace("Web type isn't supported for Locus <attachment>");
             return;
         }
-        //Turn all imgSrc into Locus specific paths
+        //Turns all imgSrc into Locus specific paths
         final List<String> locusAttachmentsHref = getLocusSpecificAttachmentsHref(imgSrcFromDescription, multipartMainDto);
 
         //Iterate through existing <ExtendedData> elements
@@ -178,15 +175,39 @@ public class LocusMapHandler {
     }
 
     private List<String> getLocusSpecificAttachmentsHref(List<String> imagesToAttach, MultipartMainDto multipartMainDto) {
-        imagesToAttach = imagesToAttach.stream()
-                .map(imgSrc -> {
-                    //Locus lc:attachments accepts only RELATIVE type of path
-                    //So remake path to Locus specific absolute path without "file:///"
-                    return htmlHandler.getLocusAttachmentAbsoluteHref(imgSrc, multipartMainDto);
-                })
-                .filter(imgSrc -> !imgSrc.isBlank())
-                .collect(Collectors.toList());
-        log.trace("{} processed 'src' for Locus <attachment> will be returned", imagesToAttach.size());
+        //ImagesToAttach may contain same image name with various paths
+        if (imagesToAttach.stream().map(imgSrc -> fileService.getFileName(imgSrc)).collect(Collectors.toSet()).size() == 1) {
+            //There is a single image which can contain various paths in various src
+            for (String imgSrc : imagesToAttach) {
+                if (htmlHandler.isLocusAbsoluteHref(imgSrc)) {
+                    //First search for an image src with the Locus specific path. The first and single one is returned
+                    return new ArrayList<>(Collections.singletonList(imgSrc));
+                }
+            }
+            //No image with Locus specific href found
+            //Find the first one with a new specific Locus path and return it
+            imagesToAttach = imagesToAttach.stream()
+                    .map(imgSrc -> {
+                        //Locus lc:attachments accepts only RELATIVE type of path
+                        //So remake path to Locus specific absolute path without "file:///"
+                        return htmlHandler.getLocusAttachmentAbsoluteHref(imgSrc, multipartMainDto);
+                    })
+                    .filter(imgSrc -> !imgSrc.isBlank())
+                    .limit(1)
+                    .collect(Collectors.toList());
+        } else {
+            //ImagesToAttach contains various images names or no specific Locus path
+            imagesToAttach = imagesToAttach.stream()
+                    .map(imgSrc -> {
+                        //Locus lc:attachments accepts only RELATIVE type of path
+                        //So remake path to Locus specific absolute path without "file:///"
+                        return htmlHandler.getLocusAttachmentAbsoluteHref(imgSrc, multipartMainDto);
+                    })
+                    .filter(imgSrc -> !imgSrc.isBlank())
+                    .collect(Collectors.toList());
+            log.trace("{} processed 'src' for Locus <attachment> will be returned", imagesToAttach.size());
+
+        }
         return imagesToAttach;
     }
 

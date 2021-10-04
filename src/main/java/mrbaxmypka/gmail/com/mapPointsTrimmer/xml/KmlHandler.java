@@ -41,8 +41,8 @@ public class KmlHandler extends XmlHandler {
         XmlDomUtils xmlDomUtils = new XmlDomUtils(document);
         KmlUtils kmlUtils = new KmlUtils(document, xmlDomUtils);
         LocusMapHandler locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
-
-        locusMapHandler.processKml(document, multipartMainDto);
+        //It was HERE first
+        //        locusMapHandler.processKml(document, multipartMainDto);
 
         //Processing Google Earth specific options
         GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
@@ -54,6 +54,8 @@ public class KmlHandler extends XmlHandler {
         log.info("Descriptions from KML are being processed...");
         //Processing the further text options regarding to inner CDATA or plain text from <description>s
         processDescriptionsTexts(document, multipartMainDto);
+
+        locusMapHandler.processKml(document, multipartMainDto);
 
         if (multipartMainDto.isTrimXml()) {
             log.info("KML is being trimmed...");

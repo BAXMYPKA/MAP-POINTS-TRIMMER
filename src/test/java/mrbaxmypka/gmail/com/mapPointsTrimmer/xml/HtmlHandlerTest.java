@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -735,10 +736,188 @@ class HtmlHandlerTest {
 			() -> assertEquals(1, matcherHref.results().count())
 		
 		);
-
-//		assertFalse(processedHtml.contains("<a href=\"/storage/p__20200511_130333.jpg\" target=\"_blank\"></a>"));
 	}
-	
+
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	public void empty_Tr_And_Td_From_Locus_Should_Have_Been_Eliminated_Within_Indented_And_Inline_Description(boolean isTrimDescriptions) {
+		//GIVEN
+		String emptyTableRows = "<!-- desc_gen:start -->\n" +
+				"<div>\n" +
+				"\t<!-- desc_user:start -->\n" +
+				"\t<table width=\"100%\" style=\"color:black\">\n" +
+				"\t\t<tbody>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"center\" colspan=\"2\">\n" +
+				"\t\t\t\t\t<a href=\"file:///storage/emulated/0/Locus/data/media/photo/_1318431492316.jpg\" target=\"_blank\">\n" +
+				"\t\t\t\t\t\t<img src=\"file:///storage/emulated/0/Locus/data/media/photo/_1318431492316.jpg\" width=\"100%\" align=\"center\" style=\"border:1px white solid;width:100%;\"</a>\n" +
+				"\t\t\t\t\t<a href=\"file:///storage/emulated/0/Locus/data/media/photo/Точка_1318431492316.jpg\" target=\"_blank\">\n" +
+				"\t\t\t\t\t\t<img src=\"file:///storage/emulated/0/Locus/data/media/photo/Точка_1318431492316.jpg\" width=\"100%\" align=\"center\" style=\"width:100%;border:1px white solid;\"</a>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Высота</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">203m</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Азимут</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">332°</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Точность</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">10m</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Создано</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">2012-09-18 18:46:14</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t</tbody>\n" +
+				"\t</table>\n" +
+				"\t<!-- desc_user:end -->\n" +
+				"</div>\n" +
+				"<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", emptyTableRows.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setClearOutdatedDescriptions(true);
+		multipartMainDto.setTrimDescriptions(isTrimDescriptions);
+
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(emptyTableRows, multipartMainDto);
+
+		//THEN
+		Pattern indentedEmptyTableRow = Pattern.compile("\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n", Pattern.MULTILINE);
+		Pattern inlineTableRow = Pattern.compile("<tr><td colspan=\"2\"><hr></td></tr>", Pattern.MULTILINE);
+		Matcher matcherIndentedTableRow = indentedEmptyTableRow.matcher(processedHtml);
+		Matcher matcherInlineTableRow = inlineTableRow.matcher(processedHtml);
+
+		assertAll(
+				() -> assertEquals(0, matcherIndentedTableRow.results().count()),
+				() -> assertEquals(0, matcherInlineTableRow.results().count())
+
+		);
+	}
+
+	@Test
+	public void image_Duplicates_With_Different_Paths_Should_Have_Been_Eliminated_When_SetPath() {
+		//GIVEN
+		String twoDuplicatedImages = "<!-- desc_gen:start -->\n" +
+				"<div>\n" +
+				"<!-- desc_gen:start -->\n" +
+				"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+				"<a href=\"files/_1341841939032.jpg\" target=\"_blank\">" +
+				"<img src=\"files/_1341841939032.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\">" +
+				"</a>" +
+				"<br /><br />\n" +
+				"<!-- desc_user:start -->\n" +
+				"<table width=\"100%\" style=\"color:black\"><tbody><tr><td align=\"center\" colspan=\"2\">" +
+				"<a href=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" target=\"_blank\">" +
+				"<img src=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" width=\"100%\" align=\"center\" style=\"border:1px white solid;width:100%;\">" +
+				"</a>" +
+				"</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">217m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">49°</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">30m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr></tbody></table>\n" +
+				"<!-- desc_user:end -->\n" +
+				"</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2021-10-02 20:17:24</td></tr>\n" +
+				"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+				"<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", twoDuplicatedImages.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath("/newPath/");
+
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(twoDuplicatedImages, multipartMainDto);
+
+		//THEN
+		Pattern imageName = Pattern.compile("/newPath/_1341841939032.jpg", Pattern.MULTILINE);
+		Matcher imageNames = imageName.matcher(processedHtml);
+
+		assertAll(
+				//Only in the href and src
+				() -> assertEquals(2, imageNames.results().count())
+
+		);
+	}
+
+	/**
+	 * {@link MultipartMainDto#isClearOutdatedDescriptions()} doesn't know what exactly path to image has to be deleted
+	 */
+	@Disabled
+	@Test
+	public void image_Duplicates_With_Different_Paths_Should_Have_Been_Eliminated_When_ClearOutdatedDescriptions() {
+		//GIVEN
+		String twoDuplicatedImages = "<!-- desc_gen:start -->\n" +
+				"<div>\n" +
+				"<!-- desc_gen:start -->\n" +
+				"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+				"<a href=\"files/_1341841939032.jpg\" target=\"_blank\">" +
+				"<img src=\"files/_1341841939032.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\">" +
+				"</a>" +
+				"<br /><br />\n" +
+				"<!-- desc_user:start -->\n" +
+				"<table width=\"100%\" style=\"color:black\"><tbody><tr><td align=\"center\" colspan=\"2\">" +
+				"<a href=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" target=\"_blank\">" +
+				"<img src=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" width=\"100%\" align=\"center\" style=\"border:1px white solid;width:100%;\">" +
+				"</a>" +
+				"</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">217m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">49°</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">30m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr></tbody></table>\n" +
+				"<!-- desc_user:end -->\n" +
+				"</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2021-10-02 20:17:24</td></tr>\n" +
+				"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+				"<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", twoDuplicatedImages.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setClearOutdatedDescriptions(true);
+
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(twoDuplicatedImages, multipartMainDto);
+
+		//THEN
+		Pattern imageName = Pattern.compile("/newPath/_1341841939032.jpg", Pattern.MULTILINE);
+		Matcher imageNames = imageName.matcher(processedHtml);
+
+		assertAll(
+				//Only in the href and src
+				() -> assertEquals(2, imageNames.results().count())
+
+		);
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////// GOOGLE EARTH TESTS /////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
