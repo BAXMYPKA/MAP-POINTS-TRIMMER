@@ -394,9 +394,9 @@ public class HtmlHandler {
             tr.appendChild(tdWithImg);
             newHtmlDescription.select("tbody").first().appendChild(tr);
         }
-        Elements tableRowWithMinDateTime = getTableRowsWithMinDateTime(parsedHtmlFragment.getAllElements(), timeStampFromWhen);
-        if (!tableRowWithMinDateTime.isEmpty()) {
-            tableRowWithMinDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
+        Elements tableRowsWithMinDateTime = getTableRowsWithMinDateTime(parsedHtmlFragment.getAllElements(), timeStampFromWhen);
+        if (!tableRowsWithMinDateTime.isEmpty()) {
+            tableRowsWithMinDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
         }
         clearEmptyTables(newHtmlDescription);
         parsedHtmlFragment.html(newHtmlDescription.outerHtml());
@@ -515,8 +515,12 @@ public class HtmlHandler {
     }
 
     /**
-     * Filters td Elements with DateTime, gets the earliest, gets its Parent Node with all the table rows which contain
-     * the whole description of a POI.
+     * 1) Filters td table Elements with DateTime,
+     * 2) gets the earliest and retain only that one,
+     * 3) Compares the previous with the given {@link LocalDateTime} from the {@literal <gx:TimeStamp><when>} Node from the parent Placemark
+     * 3.1) Set the earliest DateTime into td Element
+     * 4) gets td's Parent Node with all the table rows which contain the whole description of a POI.
+     * 4.1) If no td's with the data were found, returns the empty Element.
      *
      * @return {@code new Elements("<tr>")} with the whole POI description for the earliest DateTime
      * or empty {@link Elements} collection (.size() == 0)
@@ -558,9 +562,13 @@ public class HtmlHandler {
             log.trace("The minimum DateTime found and the table with those data will be returned");
             //<tr> is the first parent, <tbody> or <table> is the second which contains all the <tr> with descriptions
             return tdElementWithMinimumDateTime.parent().parent().children();
+        } else if (!tdElementsWithDescription.isEmpty()) {
+            log.trace("No DateTime data has been found, the initial <tr>s with <td>s will be returned");
+            //<tr> is the first parent, <tbody> or <table> is the second which contains all the <tr> with descriptions
+            return tdElementsWithDescription.first().parent().parent().children();
         } else {
-            log.trace("No DateTime data has been found, a new empty HTML will be returned");
-            //No dateTime's found, return empty tag
+            log.trace("No DateTime data and no <td> with dat have been found, a new empty HTML will be returned");
+            //No <td> elements found, return empty tag
             return new Elements();
         }
     }
