@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,7 +96,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -120,7 +121,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -147,7 +148,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(withoutDescUserComments, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(withoutDescUserComments, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -175,7 +176,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(withDescUserCommentsAndText, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(withDescUserCommentsAndText, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -216,7 +217,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(oldStyleCdata, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(oldStyleCdata, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -235,7 +236,7 @@ class HtmlHandlerTest {
 		
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -274,7 +275,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -296,7 +297,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(null);
 		
 		//WHEN
-		String processedKml = htmlHandler.processDescriptionText(html, multipartMainDto);
+		String processedKml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 
 		//THEN
 		
@@ -344,7 +345,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(outdatedDescription, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(outdatedDescription, multipartMainDto, LocalDateTime.now());
 		
 		//THEN contains only the earliest date of creation
 		assertAll(
@@ -392,7 +393,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewUnit("%");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -458,7 +459,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertFalse(processedHtml.contains("<a href=\"/storage/p__20200511_130333.jpg\" target=\"_blank\"></a>"));
@@ -471,7 +472,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPath("../myFiles");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -495,7 +496,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPath(absolutePath);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 //		System.out.println(processedHtml);
 		
 		//THEN
@@ -520,7 +521,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPath(pathWithWhitespaces);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN All whitespaces should be replaced with URL '%20' sign
 		assertAll(
@@ -543,7 +544,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPath("http://www.mysite.com/my images");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -581,7 +582,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPath("..My maps\\my folder");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(descriptionCdata, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(descriptionCdata, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -603,7 +604,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setTrimDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		//Doesn't contain new strings
@@ -618,7 +619,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN contains only the earliest date of creation
 		assertAll(
@@ -655,7 +656,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -723,7 +724,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		Pattern image = Pattern.compile("src=\"/storage/p__20200511_130333.jpg\"", Pattern.MULTILINE);
@@ -818,7 +819,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setTrimDescriptions(isTrimDescriptions);
 
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(emptyTableRows, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(emptyTableRows, multipartMainDto, LocalDateTime.now());
 
 		//THEN
 		Pattern indentedEmptyTableRow = Pattern.compile("\t\t\t<tr>\n" +
@@ -862,7 +863,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPath("/newPath/");
 
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoDuplicatedImages, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoDuplicatedImages, multipartMainDto, LocalDateTime.now());
 
 		//THEN
 		Pattern imageName = Pattern.compile("/newPath/_1341841939032.jpg", Pattern.MULTILINE);
@@ -905,7 +906,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setClearOutdatedDescriptions(true);
 
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoDuplicatedImages, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoDuplicatedImages, multipartMainDto, LocalDateTime.now());
 
 		//THEN
 		Pattern imageName = Pattern.compile("/newPath/_1341841939032.jpg", Pattern.MULTILINE);
@@ -931,7 +932,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertTrue(processedHtml.contentEquals("Plain text description"));
@@ -955,7 +956,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoPureImgs, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoPureImgs, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -975,7 +976,7 @@ class HtmlHandlerTest {
 		multipartMainDto.setPreviewSize(300);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto, LocalDateTime.now());
 
 		//THEN
 		assertEquals("Plain text description", processedHtml);

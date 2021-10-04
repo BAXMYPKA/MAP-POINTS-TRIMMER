@@ -443,7 +443,7 @@ class KmlHandlerTest {
 
 	@Test
 	public void locusAsAttachment_Should_Add_More_Attachments_Src_From_Description()
-			throws IOException, ParserConfigurationException, SAXException, XMLStreamException, TransformerException, InterruptedException {
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
 		//GIVEN with existing <ExtendedData> and additional images in description
 		String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -650,7 +650,117 @@ class KmlHandlerTest {
 				"<lc:attachment>/C:/MyPOI/_1318431492316.jpg</lc:attachment>"))
 		);
 	}
-	
+
+	@Test
+	public void clearOutdatedDescriptions_Should_Retain_Older_Timestamp_From_Description_Not_TimeStamp()
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
+		//GIVEN
+		String descriptionWithOlderDate = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+				"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
+				"xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+				"<Document>\n" +
+				"\t<name>Test POIs from Locus</name>\n" +
+				"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+				"<Placemark>\n" +
+				"\t<name>A road fork</name>\n" +
+				"\t<description><![CDATA[<!-- desc_gen:start --><div> <!-- desc_user:start -->" +
+				"<table width=\"100%\" style=\"color:black\"><tbody><tr><td align=\"center\" colspan=\"2\">" +
+				"<a href=\"file:///storage/emulated/0/Locus/data/media/photo/_1318431492316.jpg\" target=\"_blank\">" +
+				"<img src=\"file:///storage/emulated/0/Locus/data/media/photo/_1318431492316.jpg\" width=\"100%\" align=\"center\" style=\"border:1px white solid;width:100%;\"></a></td></tr>" +
+				"<tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">154 m</td></tr>" +
+				"<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">303°</td></tr" +
+				"><tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">4.0 m</td></tr>" +
+				"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td></tr>" +
+				"</tbody></table><!-- desc_user:end --></div><!-- desc_gen:end -->]]></description>\n" +
+				"\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+				"\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+				"\t\t<lc:attachment>files/_1318431492316.jpg</lc:attachment>\n" +
+				"\t</ExtendedData>\n" +
+				"\t<Point>\n" +
+				"\t\t<coordinates>37.558700,55.919883,0.00</coordinates>\n" +
+				"\t</Point>\n" +
+				"\t<gx:TimeStamp>\n" +
+				"\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+				"\t</gx:TimeStamp>\n" +
+				"</Placemark>\n" +
+				"</Document>\n" +
+				"</kml>\n";
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, descriptionWithOlderDate.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
+		multipartMainDto.setClearOutdatedDescriptions(true);
+
+		//WHEN
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
+
+		//THEN
+		assertAll(
+				() -> assertTrue(processedKml.contains(
+						"<td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td>")),
+				() -> assertFalse(processedKml.contains(
+						"<td align=\"center\" valign=\"center\">2014-11-21 00:27:31</td>")),
+				() -> assertTrue(processedKml.contains(
+						"<when>2014-11-21T00:27:31Z</when>"))
+
+		);
+	}
+
+	@Test
+	public void clearOutdatedDescriptions_Should_Delete_Table_Rows_With_Content_If_No_Creation_Date_Presented_In_Description()
+			throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
+		//GIVEN
+		String descriptionWithoutDate = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+				"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
+				"xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+				"<Document>\n" +
+				"\t<name>Test POIs from Locus</name>\n" +
+				"\t<atom:author><atom:name>Locus (Android)</atom:name></atom:author>\n" +
+				"<Placemark>\n" +
+				"\t<name>A road fork</name>\n" +
+				"\t<description><![CDATA[<!-- desc_gen:start --><div> <!-- desc_user:start -->" +
+				"<table width=\"100%\" style=\"color:black\"><tbody><tr><td align=\"center\" colspan=\"2\">" +
+				"<a href=\"file:///storage/emulated/0/Locus/data/media/photo/_1318431492316.jpg\" target=\"_blank\">" +
+				"<img src=\"file:///storage/emulated/0/Locus/data/media/photo/_1318431492316.jpg\" width=\"100%\" align=\"center\" style=\"border:1px white solid;width:100%;\"></a></td></tr>" +
+				"<tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">154 m</td></tr>" +
+				"<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">303°</td></tr>" +
+				"<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">4.0 m</td></tr>" +
+				"</tbody></table><!-- desc_user:end --></div><!-- desc_gen:end -->]]></description>\n" +
+				"\t<styleUrl>#misc-sunny.png</styleUrl>\n" +
+				"\t<ExtendedData xmlns:lc=\"http://www.locusmap.eu\">\n" +
+				"\t\t<lc:attachment>files/_1318431492316.jpg</lc:attachment>\n" +
+				"\t</ExtendedData>\n" +
+				"\t<Point>\n" +
+				"\t\t<coordinates>37.558700,55.919883,0.00</coordinates>\n" +
+				"\t</Point>\n" +
+				"\t<gx:TimeStamp>\n" +
+				"\t\t<when>2014-11-21T00:27:31Z</when>\n" +
+				"\t</gx:TimeStamp>\n" +
+				"</Placemark>\n" +
+				"</Document>\n" +
+				"</kml>\n";
+		multipartFile = new MockMultipartFile("TestPoi.kml", "TestPoi.kml", null, descriptionWithoutDate.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setAsAttachmentInLocus(true);
+		multipartMainDto.setClearOutdatedDescriptions(true);
+
+		//WHEN
+		String processedKml = kmlHandler.processXml(multipartMainDto.getMultipartFile().getInputStream(), multipartMainDto);
+
+		//THEN
+		assertAll(
+				() -> assertFalse(processedKml.contains(
+						"<tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">154 m</td></tr>")),
+				() -> assertFalse(processedKml.contains(
+						"<tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">303°</td></tr>")),
+				() -> assertFalse(processedKml.contains(
+						"<tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">4.0 m</td></tr>")),
+				() -> assertTrue(processedKml.contains(
+						"<when>2014-11-21T00:27:31Z</when>"))
+
+		);
+	}
+
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////// GOOGLE EARTH TESTS ////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////

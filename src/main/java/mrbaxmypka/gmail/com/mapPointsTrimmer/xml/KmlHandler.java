@@ -16,6 +16,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Kml processing class based on the StAX xml-library.
@@ -41,27 +44,33 @@ public class KmlHandler extends XmlHandler {
         XmlDomUtils xmlDomUtils = new XmlDomUtils(document);
         KmlUtils kmlUtils = new KmlUtils(document, xmlDomUtils);
         LocusMapHandler locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
-        //It was HERE first
+        //It was HERE as the first method
         //        locusMapHandler.processKml(document, multipartMainDto);
-
+/*
         //Processing Google Earth specific options
+        log.info("Kml Google options are being processed...");
         GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
         googleEarthHandler.processKml(document, multipartMainDto);
-
+*/
         log.info("Setting the new path to images...");
         processHref(document, multipartMainDto);
 
-        log.info("Descriptions from KML are being processed...");
         //Processing the further text options regarding to inner CDATA or plain text from <description>s
+        log.info("Descriptions from KML are being processed...");
         processDescriptionsTexts(document, multipartMainDto);
 
         locusMapHandler.processKml(document, multipartMainDto);
+
+        //Processing Google Earth specific options
+        log.info("Kml Google options are being processed...");
+        GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
+        googleEarthHandler.processKml(document, multipartMainDto);
 
         if (multipartMainDto.isTrimXml()) {
             log.info("KML is being trimmed...");
             trimWhitespaces(document);
         }
-        log.info("The KML has been processed");
+        log.info("The given KML has been processed.");
         return writeTransformedDocument(document, !multipartMainDto.isTrimXml());
     }
 
@@ -112,8 +121,15 @@ public class KmlHandler extends XmlHandler {
                 descriptionNode.setTextContent("");
                 log.trace("Description has been set as blank string");
             } else {
+                LocalDateTime timeStampFromPlacemark = null;
+                if (multipartMainDto.isClearOutdatedDescriptions()) {
+                    //Get the <gx:TimeStamp> <when>2014-11-21T00:27:36Z</when>	</gx:TimeStamp> "when" timestamp
+                    //To compare with the possible one into the <description>
+                    timeStampFromPlacemark = getTimeStampFromPlacemark(descriptionNode.getParentNode(), document);
+                }
+
                 //Obtain an inner CDATA text to treat as HTML elements or plain text
-                String processedHtmlCdata = getHtmlHandler().processDescriptionText(textContent, multipartMainDto);
+                String processedHtmlCdata = getHtmlHandler().processDescriptionText(textContent, multipartMainDto, timeStampFromPlacemark);
                 processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartMainDto);
                 CDATASection cdataSection = document.createCDATASection(processedHtmlCdata);
                 descriptionNode.setTextContent("");
@@ -122,6 +138,51 @@ public class KmlHandler extends XmlHandler {
             }
         }
         log.info("All the <description> have been processed.");
+    }
+
+    private LocalDateTime getTimeStampFromPlacemark(Node placemarkNode, Document document) {
+        LocalDateTime dateTime = null;
+        Node when = null;
+        NodeList childNodes = placemarkNode.getChildNodes();
+        try {
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                Node childrenNode = childNodes.item(i);
+                if ("gx:TimeStamp".equalsIgnoreCase(childrenNode.getNodeName())) {
+                    when = getWhenFromTimeStamp(childrenNode, document);
+                    dateTime = LocalDateTime.parse(when.getTextContent().trim(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                    break;
+                }
+            }
+        } catch (DateTimeException e) {
+            log.info(e.getMessage(), e);
+            dateTime = LocalDateTime.parse(when.getTextContent().trim(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        } finally {
+            return dateTime != null ? dateTime : LocalDateTime.now();
+        }
+    }
+
+    /**
+     * @param timeStampNode
+     * @param document
+     * @return The extracted Node or a newly created, filled with the LocalDateTime.now() and appended to the parent Node one.
+     */
+    private Node getWhenFromTimeStamp(Node timeStampNode, Document document) {
+        Node when = null;
+        NodeList childNodes = timeStampNode.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node childrenNode = childNodes.item(i);
+            if ("when".equalsIgnoreCase(childrenNode.getNodeName())) {
+                when = childrenNode;
+            }
+        }
+        if (when == null) {
+            when = document.createElement("when");
+            when.setTextContent(LocalDateTime.now().toString());
+            timeStampNode.appendChild(when);
+        } else if (when.getTextContent() == null || when.getTextContent().isBlank()) {
+            when.setTextContent(LocalDateTime.now().toString());
+        }
+        return when;
     }
 
     /**

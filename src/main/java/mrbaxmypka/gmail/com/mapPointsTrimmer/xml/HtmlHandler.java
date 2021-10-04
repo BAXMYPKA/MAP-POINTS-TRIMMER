@@ -43,7 +43,7 @@ public class HtmlHandler {
      * @param multipartMainDto To determine all other conditions to be processed on CDATA HTML
      * @return Fully processed HTML markup to be included in CDATA block.
      */
-    public String processDescriptionText(String description, MultipartMainDto multipartMainDto) {
+    public String processDescriptionText(String description, MultipartMainDto multipartMainDto, LocalDateTime timeStampFromWhen) {
         log.debug("Description and '{}' are received", multipartMainDto);
         Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
 
@@ -61,7 +61,7 @@ public class HtmlHandler {
         //MUST be the first treatment
         if (multipartMainDto.isClearOutdatedDescriptions()) { //Locus Map specific
             log.debug("Outdated descriptions will be cleared...");
-            clearOutdatedDescriptions(parsedHtmlFragment, multipartMainDto);
+            clearOutdatedDescriptions(parsedHtmlFragment, multipartMainDto, timeStampFromWhen);
         }
         if (multipartMainDto.getPath() != null) {
             log.debug("The new path for the images will be set...");
@@ -69,7 +69,7 @@ public class HtmlHandler {
         }
         if (multipartMainDto.getPreviewSize() != null) {
             log.debug("The new preview size for the images will be set...");
-            setPreviewSize(parsedHtmlFragment, multipartMainDto);
+            setPreviewSize(parsedHtmlFragment, multipartMainDto, timeStampFromWhen);
         }
         addStartEndComments(parsedHtmlFragment);
         // MUST be the last treatment in all the conditions chain
@@ -255,7 +255,7 @@ public class HtmlHandler {
      * So when {@link MultipartMainDto#getPreviewSize()} != null to display it on the screen these comments
      * have to embrace all the description.
      */
-    private void setPreviewSize(Element parsedHtmlFragment, MultipartMainDto multipartMainDto) {
+    private void setPreviewSize(Element parsedHtmlFragment, MultipartMainDto multipartMainDto, LocalDateTime timeStampWhen) {
 
         String previewValue = multipartMainDto.getPreviewSize() + multipartMainDto.getPreviewSizeUnit().getUnit();
 
@@ -293,7 +293,7 @@ public class HtmlHandler {
         if (!multipartMainDto.isClearOutdatedDescriptions()) { //Locus Map specific
             log.trace("Clearing outdated description as this option isn't presented in MultipartDto...");
             //All is not clear and need to be placed within UserDescStartEnd comments
-            clearOutdatedDescriptions(parsedHtmlFragment, multipartMainDto);
+            clearOutdatedDescriptions(parsedHtmlFragment, multipartMainDto, timeStampWhen);
         }
     }
 
@@ -367,13 +367,14 @@ public class HtmlHandler {
                 .replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
     }
 
+    //TODO: to add about timestamps
     /**
      * Removes all the unnecessary HTML nodes and data duplicates.
      * MUST be the last method in a chain.
      */
-    private void clearOutdatedDescriptions(Element parsedHtmlFragment, MultipartMainDto multipartMainDto) {
+    private void clearOutdatedDescriptions(
+            Element parsedHtmlFragment, MultipartMainDto multipartMainDto, LocalDateTime timeStampFromWhen) {
         log.debug("The description is being cleared...");
-//        deleteImagesDuplicates(parsedHtmlFragment);
 
         Elements imgElements = parsedHtmlFragment.select("img[src]");
         String userDescriptionText = getUserDescriptionText(parsedHtmlFragment).trim();
@@ -392,12 +393,10 @@ public class HtmlHandler {
             tdWithImg.insertChildren(0, getAElementsWithInnerImgElement(imgElements));
             tr.appendChild(tdWithImg);
             newHtmlDescription.select("tbody").first().appendChild(tr);
-//			newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
         }
-        Elements tableRowWithMinDateTime = getTableRowsWithMinDateTime(parsedHtmlFragment.getAllElements());
+        Elements tableRowWithMinDateTime = getTableRowsWithMinDateTime(parsedHtmlFragment.getAllElements(), timeStampFromWhen);
         if (!tableRowWithMinDateTime.isEmpty()) {
             tableRowWithMinDateTime.forEach(tr -> newHtmlDescription.select("tbody").first().appendChild(tr));
-//            newHtmlDescription.select("tbody").first().appendChild(getTableRowWithSeparator());
         }
         clearEmptyTables(newHtmlDescription);
         parsedHtmlFragment.html(newHtmlDescription.outerHtml());
@@ -522,7 +521,7 @@ public class HtmlHandler {
      * @return {@code new Elements("<tr>")} with the whole POI description for the earliest DateTime
      * or empty {@link Elements} collection (.size() == 0)
      */
-    private Elements getTableRowsWithMinDateTime(Elements htmlElements) {
+    private Elements getTableRowsWithMinDateTime(Elements htmlElements, LocalDateTime timeStampFromWhen) {
         log.trace("Getting a table row with the minimum DataTime within the given HTML...");
         Elements tdElementsWithDescription = htmlElements.select("td");
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -537,11 +536,22 @@ public class HtmlHandler {
                     }
                 })
                 .min((e1, e2) -> {
+                    //Gets minimum from existing dates into the Description
                     LocalDateTime dateTime1 =
                             LocalDateTime.parse(e1.text(), dateTimeFormatter);
                     LocalDateTime dateTime2 =
                             LocalDateTime.parse(e2.text(), dateTimeFormatter);
                     return dateTime1.compareTo(dateTime2);
+                })
+                .map(element -> {
+                    //The minimum date from the Description is being compared with <when> timestamp
+                    LocalDateTime descriptionMinDate = LocalDateTime.parse(element.text(), dateTimeFormatter);
+                    if (descriptionMinDate.isAfter(timeStampFromWhen)) {
+                        //The minimum timestamp now is from <when> tag as the minimum one
+                        element.text(timeStampFromWhen.format(dateTimeFormatter));
+                    }
+                    //The timestamp in the Description is the minimum one
+                    return element;
                 })
                 .orElse(new Element("empty"));
         if (tdElementWithMinimumDateTime.hasParent()) {
