@@ -40,7 +40,7 @@
 * Windows 7/Linux
 * Intel/AMD Dual Core CPU with 2.0GHz+
 * 4Gb+ RAM
-* Установленная Ява JVM версии не ниже [Java SE Runtime Environment 14+]( https://www.oracle.com/java/technologies/javase-downloads.html "Where to download and install")
+* Установленная Ява JVM версии не ниже [Java SE Runtime Environment 11+]( https://www.oracle.com/java/technologies/javase-downloads.html "Where to download and install")
 * Крайне желательна последняя версия любого интернет браузера.
  
 ##  Особенности
@@ -50,7 +50,7 @@
 ## ТЕХНИЧЕСКИЕ ПОДРОБНОСТИ
 
 При создании использовались:
-* Java v.14
+* Java v.11
 * Maven
 * Spring Boot
 * JavaScript 2015+

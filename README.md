@@ -40,7 +40,7 @@ For the moment the utility supports only .kml and .kmz formats as the most power
 * Windows 7/Linux
 * Intel/AMD Dual Core CPU with 2.0GHz+
 * 4Gb+ RAM
-* Preinstalled Java JVM with a minimum version [Java SE Runtime Environment 14+]( https://www.oracle.com/java/technologies/javase-downloads.html "Where to download and install")
+* Preinstalled Java JVM with a minimum version [Java SE Runtime Environment 11+]( https://www.oracle.com/java/technologies/javase-downloads.html "Where to download and install")
 * It is expected you use not an outdated version of any Internet browser
  
 ##  Features
@@ -50,7 +50,7 @@ Use it with caution.
 ## TECH INFO
 
 Used technologies:
-* Java v.14
+* Java v.11
 * Maven
 * Spring Boot
 * JavaScript 2015+

@@ -7,9 +7,9 @@
     <link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
           th:href="@{/img/favicon32x32.png}">
     <link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
-    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.es6}" defer></script>
-    <script src="../static/scripts/index.js" th:src="@{scripts/index.es6}" type="application/javascript" defer></script>
-    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.es6}" defer></script>
+    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}" defer></script>
+    <script src="../static/scripts/index.js" th:src="@{scripts/index.js}" type="application/javascript" defer></script>
+    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.js}" defer></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         const maxFileSizeMb = [[${maxFileSizeMb}]] !== null ? [[${maxFileSizeMb}]] : 4096;
