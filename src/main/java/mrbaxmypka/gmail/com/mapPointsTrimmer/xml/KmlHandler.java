@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Kml processing class based on the StAX xml-library.
@@ -110,7 +111,6 @@ public class KmlHandler extends XmlHandler {
      * (especially after {@code <ExtendedData> tag}). So
      */
     private void processDescriptionsTexts(Document document, MultipartMainDto multipartMainDto) {
-//		NodeList descriptions = documentRoot.getElementsByTagName("description");
         NodeList descriptions = document.getElementsByTagName("description");
         for (int i = 0; i < descriptions.getLength(); i++) {
 
@@ -121,49 +121,83 @@ public class KmlHandler extends XmlHandler {
                 descriptionNode.setTextContent("");
                 log.trace("Description has been set as blank string");
             } else {
-                LocalDateTime timeStampFromPlacemark = null;
+                LocalDateTime whenTimestamp = null;
                 if (multipartMainDto.isClearOutdatedDescriptions()) {
                     //Get the <gx:TimeStamp> <when>2014-11-21T00:27:36Z</when>	</gx:TimeStamp> "when" timestamp
                     //To compare with the possible one into the <description>
-                    timeStampFromPlacemark = getTimeStampFromPlacemark(descriptionNode.getParentNode(), document);
+                    whenTimestamp = getTimeStampFromPlacemark(descriptionNode.getParentNode(), document);
                 }
 
                 //Obtain an inner CDATA text to treat as HTML elements or plain text
-                String processedHtmlCdata = getHtmlHandler().processDescriptionText(textContent, multipartMainDto, timeStampFromPlacemark);
+                String processedHtmlCdata = getHtmlHandler().processDescriptionText(textContent, multipartMainDto, whenTimestamp);
                 processedHtmlCdata = prettyPrintCdataXml(processedHtmlCdata, multipartMainDto);
                 CDATASection cdataSection = document.createCDATASection(processedHtmlCdata);
                 descriptionNode.setTextContent("");
                 descriptionNode.appendChild(cdataSection);
+
+                if (getHtmlHandler().getDescriptionCreationTimestamp().isBefore(whenTimestamp)) {
+                    //Set the earliest creation time from the Description into <when>
+                    setTimestampInPlacemark(descriptionNode.getParentNode(), document, getHtmlHandler().getDescriptionCreationTimestamp());
+                }
+
                 log.trace("Description has been processed and set");
             }
         }
         log.info("All the <description> have been processed.");
     }
 
+    /**
+     * {@literal <Placemark>
+     * <gx:TimeStamp>
+     * <when>2014-11-21T00:27:31Z</when>
+     * </gx:TimeStamp>
+     * </Placemark}
+     * <p>
+     * Warning! The format "yyyy-MM-dd'T'HH:mm:ss'Z'" can only be parsed as {@link java.time.OffsetDateTime}
+     * or
+     * {@link java.time.Instant#parse(CharSequence)}, e.g. Instant instant = Instant.parse( "2018-01-23T01:23:45.123456789Z" )
+     *
+     * @param placemarkNode
+     * @param document
+     * @return {@link LocalDateTime} parsed from
+     * {@literal <Placemark>
+     * <gx:TimeStamp>
+     * <when>2014-11-21T00:27:31Z</when>
+     * </gx:TimeStamp>
+     * </Placemark}.
+     * Otherwise returns {@link LocalDateTime#now()}
+     */
     private LocalDateTime getTimeStampFromPlacemark(Node placemarkNode, Document document) {
         LocalDateTime dateTime = null;
-        Node when = null;
+        Node whenNode = null;
         NodeList childNodes = placemarkNode.getChildNodes();
         try {
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node childrenNode = childNodes.item(i);
                 if ("gx:TimeStamp".equalsIgnoreCase(childrenNode.getNodeName())) {
-                    when = getWhenFromTimeStamp(childrenNode, document);
-                    dateTime = LocalDateTime.parse(when.getTextContent().trim(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                    whenNode = getWhenFromTimeStamp(childrenNode, document);
+                    try {
+                        dateTime = LocalDateTime.parse(whenNode.getTextContent().trim(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                    } catch (DateTimeParseException e) {
+                        try {
+                            dateTime = LocalDateTime.parse(whenNode.getTextContent().trim(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                        } catch (DateTimeException ex) {
+                            dateTime = LocalDateTime.now();
+                        }
+                    }
                     break;
                 }
             }
         } catch (DateTimeException e) {
             log.info(e.getMessage(), e);
-            dateTime = LocalDateTime.parse(when.getTextContent().trim(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            dateTime = LocalDateTime.parse(whenNode.getTextContent().trim(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         } finally {
+            log.trace("LocalDateTime from the <when> has been extracted.");
             return dateTime != null ? dateTime : LocalDateTime.now();
         }
     }
 
     /**
-     * @param timeStampNode
-     * @param document
      * @return The extracted Node or a newly created, filled with the LocalDateTime.now() and appended to the parent Node one.
      */
     private Node getWhenFromTimeStamp(Node timeStampNode, Document document) {
@@ -173,6 +207,7 @@ public class KmlHandler extends XmlHandler {
             Node childrenNode = childNodes.item(i);
             if ("when".equalsIgnoreCase(childrenNode.getNodeName())) {
                 when = childrenNode;
+                break;
             }
         }
         if (when == null) {
@@ -183,6 +218,19 @@ public class KmlHandler extends XmlHandler {
             when.setTextContent(LocalDateTime.now().toString());
         }
         return when;
+    }
+
+    private void setTimestampInPlacemark(Node placemark, Document document, LocalDateTime timestamp) {
+        Node when = null;
+        NodeList childNodes = placemark.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node childrenNode = childNodes.item(i);
+            if ("gx:TimeStamp".equalsIgnoreCase(childrenNode.getNodeName())) {
+                when = getWhenFromTimeStamp(childrenNode, document);
+                when.setTextContent(timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")));
+                break;
+            }
+        }
     }
 
     /**

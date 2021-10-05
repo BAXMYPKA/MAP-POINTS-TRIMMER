@@ -1,5 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
@@ -31,6 +33,8 @@ import java.util.stream.Collectors;
 public class HtmlHandler {
 
     private final FileService fileService;
+    @Getter(AccessLevel.PACKAGE)
+    private LocalDateTime descriptionCreationTimestamp = LocalDateTime.now();
 
     @Autowired
     public HtmlHandler(FileService fileService) {
@@ -172,6 +176,7 @@ public class HtmlHandler {
     /**
      * {@literal Locus Map <lc:attachment></lc:attachment>} receives only {@link PathTypes#RELATIVE} or
      * {@link PathTypes#ABSOLUTE} without (!) 'file:///' prefix.
+     *
      * @param imageSrc Image name with the full path to it
      * @return
      */
@@ -367,9 +372,9 @@ public class HtmlHandler {
                 .replaceAll("\\s{2,}", "").replaceAll("\\n", "").trim();
     }
 
-    //TODO: to add about timestamps
     /**
      * Removes all the unnecessary HTML nodes and data duplicates.
+     * Also extracts the earliest creation timestamp within table's tr-td with the according td's from the given Description.
      * MUST be the last method in a chain.
      */
     private void clearOutdatedDescriptions(
@@ -521,6 +526,15 @@ public class HtmlHandler {
      * 3.1) Set the earliest DateTime into td Element
      * 4) gets td's Parent Node with all the table rows which contain the whole description of a POI.
      * 4.1) If no td's with the data were found, returns the empty Element.
+     * {@literal While descriptions contain DateTimeFormat as ""yyyy-MM-dd HH:mm:ss", the Placemark's timestamp contains it as:
+     * <Placemark>
+     * <gx:TimeStamp>
+     * <when>2014-11-21T00:27:31Z</when>
+     * </gx:TimeStamp>
+     * </Placemark}
+     * The format "yyyy-MM-dd'T'HH:mm:ss'Z'" can only be parsed as {@link java.time.OffsetDateTime}
+     * or
+     * {@link java.time.Instant#parse(CharSequence)}, e.g. Instant instant = Instant.parse( "2018-01-23T01:23:45.123456789Z" )
      *
      * @return {@code new Elements("<tr>")} with the whole POI description for the earliest DateTime
      * or empty {@link Elements} collection (.size() == 0)
@@ -532,29 +546,52 @@ public class HtmlHandler {
         Element tdElementWithMinimumDateTime = tdElementsWithDescription.stream()
                 .filter(Element::hasText)
                 .filter(e -> {
+                    //Filters only timestamps which can be parsed anyway
                     try {
                         LocalDateTime.parse(e.text(), dateTimeFormatter);
                         return true;
                     } catch (DateTimeParseException ex) {
-                        return false;
+                        try {
+                            LocalDateTime.parse(e.text(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                            return true;
+                        } catch (DateTimeParseException exception) {
+                            return false;
+                        }
                     }
                 })
                 .min((e1, e2) -> {
                     //Gets minimum from existing dates into the Description
-                    LocalDateTime dateTime1 =
-                            LocalDateTime.parse(e1.text(), dateTimeFormatter);
-                    LocalDateTime dateTime2 =
-                            LocalDateTime.parse(e2.text(), dateTimeFormatter);
+                    LocalDateTime dateTime1 = LocalDateTime.now();
+                    LocalDateTime dateTime2 = LocalDateTime.now();
+                    try {
+                        dateTime1 =
+                                LocalDateTime.parse(e1.text(), dateTimeFormatter);
+                        dateTime2 =
+                                LocalDateTime.parse(e2.text(), dateTimeFormatter);
+                    } catch (DateTimeParseException e) {
+                        dateTime1 =
+                                LocalDateTime.parse(e1.text(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                        dateTime2 =
+                                LocalDateTime.parse(e2.text(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                    }
                     return dateTime1.compareTo(dateTime2);
                 })
                 .map(element -> {
                     //The minimum date from the Description is being compared with <when> timestamp
-                    LocalDateTime descriptionMinDate = LocalDateTime.parse(element.text(), dateTimeFormatter);
-                    if (descriptionMinDate.isAfter(timeStampFromWhen)) {
-                        //The minimum timestamp now is from <when> tag as the minimum one
-                        element.text(timeStampFromWhen.format(dateTimeFormatter));
+                    LocalDateTime descriptionMinDate;
+                    try {
+                        descriptionMinDate = LocalDateTime.parse(element.text(), dateTimeFormatter);
+                    } catch (DateTimeParseException e) {
+                        descriptionMinDate = LocalDateTime.parse(element.text(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                     }
-                    //The timestamp in the Description is the minimum one
+                    if (descriptionMinDate.isAfter(timeStampFromWhen)) {
+                        //The earliest timestamp now is from <when> tag as the minimum one
+                        element.text(timeStampFromWhen.format(dateTimeFormatter));
+                        descriptionCreationTimestamp = timeStampFromWhen;
+                    } else {
+                        //The earliest timestamp is in the Description. Stay unchanged.
+                        descriptionCreationTimestamp = descriptionMinDate;
+                    }
                     return element;
                 })
                 .orElse(new Element("empty"));

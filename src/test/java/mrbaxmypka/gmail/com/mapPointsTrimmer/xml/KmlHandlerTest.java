@@ -142,7 +142,7 @@ class KmlHandlerTest {
 
     @Test
     public void setPath_Should_Replace_All_Href_Tags_Content_In_Xml_Body()
-            throws IOException, XMLStreamException, ParserConfigurationException, SAXException, TransformerException, ClassNotFoundException, InterruptedException {
+            throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
         //GIVEN
         String newPath = "C:\\MyPoi\\MyPoiImages";
         multipartFile = new MockMultipartFile(
@@ -190,7 +190,7 @@ class KmlHandlerTest {
 
     @Test
     public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded()
-            throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, ClassNotFoundException, InterruptedException {
+            throws IOException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
         //GIVEN
         String pathWithWhitespaces = "D:\\My Folder\\My POI";
         multipartFile = new MockMultipartFile(
@@ -220,7 +220,7 @@ class KmlHandlerTest {
 
     @Test
     public void trimXml_Only_Should_Return_Only_Xml_Without_LineBreaks()
-            throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
+            throws IOException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
         //GIVEN
         String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -510,7 +510,7 @@ class KmlHandlerTest {
 
     @Test
     public void locusAsAttachment_With_2_Placemarks_Should_Add_More_Attachments_Src_From_Description_To_Each_Without_Dublicates()
-            throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
+            throws IOException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
         //GIVEN For 2 Placemarks in a row with existing <ExtendedData> and additional images in description
         String locus = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
@@ -580,7 +580,7 @@ class KmlHandlerTest {
 
     @Test
     public void locusAsAttachment_Should_Contain_Only_Relative_And_Absolute_Type_Of_Href_When_PathTypes_Undefined()
-            throws IOException, XMLStreamException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
+            throws IOException, TransformerException, SAXException, ParserConfigurationException, InterruptedException {
         //GIVEN with existing <ExtendedData> and additional images in description with various types of path
         String locusKml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n" +
@@ -695,10 +695,8 @@ class KmlHandlerTest {
 
         //THEN
         assertAll(
-                () -> assertTrue(processedKml.contains(
-                        "<td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td>")),
-                () -> assertFalse(processedKml.contains(
-                        "<td align=\"center\" valign=\"center\">2014-11-21 00:27:31</td>"))
+                () -> assertTrue(processedKml.contains("<td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td>")),
+                () -> assertFalse(processedKml.contains("<td align=\"center\" valign=\"center\">2014-11-21 00:27:31</td>"))
         );
     }
 
@@ -746,10 +744,8 @@ class KmlHandlerTest {
 
         //THEN
         assertAll(
-                () -> assertTrue(processedKml.contains(
-                        "<td align=\"center\" valign=\"center\">2012-08-21 00:27:31</td>")),
-                () -> assertFalse(processedKml.contains(
-                        "<td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td>"))
+                () -> assertTrue(processedKml.contains("<td align=\"center\" valign=\"center\">2012-08-21 00:27:31</td>")),
+                () -> assertFalse(processedKml.contains("<td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td>"))
 
         );
     }
@@ -819,7 +815,7 @@ class KmlHandlerTest {
     }
 
     @Test
-    public void clearOutdatedDescriptions_Should_Replace_Newer_Timestamp_When_From_Description()
+    public void clearOutdatedDescriptions_Should_Replace_Newer_Timestamp_In_When_From_Description()
             throws IOException, ParserConfigurationException, SAXException, TransformerException, InterruptedException {
         //GIVEN
         String descriptionWithOlderDate = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -862,10 +858,8 @@ class KmlHandlerTest {
 
         //THEN
         assertAll(
-                () -> assertTrue(processedKml.contains(
-                        "<td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td>")),
-                () -> assertFalse(processedKml.contains(
-                        "<td align=\"center\" valign=\"center\">2014-11-21 00:27:31</td>")),
+                () -> assertTrue(processedKml.contains("<td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td>")),
+                () -> assertFalse(processedKml.contains("<td align=\"center\" valign=\"center\">2014-11-21 00:27:31</td>")),
                 () -> assertTrue(processedKml.contains("2012-09-18T18:48:48Z")),
                 () -> assertFalse(processedKml.contains("2014-11-21T00:27:31Z"))
         );
