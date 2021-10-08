@@ -1,8 +1,9 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,18 +58,18 @@ class HtmlHandlerTest {
 		"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2014-11-21 00:27:31</td></tr>\n" +
 		"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 		"<!-- desc_gen:end -->";
-	private MultipartDto multipartDto;
+	private MultipartMainDto multipartMainDto;
 	
 	@BeforeEach
 	public void beforeEach() throws IOException {
 		MultipartFile multipartFile = new MockMultipartFile("html", html.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
+		multipartMainDto = new MultipartMainDto(multipartFile);
 		messageSource = Mockito.mock(MessageSource.class);
 		resourceLoader = Mockito.mock(ResourceLoader.class);
 		resource = Mockito.mock(Resource.class);
 		Mockito.when(resourceLoader.getResource(CLASSPATH_TO_DIRECTORY)).thenReturn(resource);
 		Mockito.when(resource.getInputStream()).thenReturn(new ByteArrayInputStream("Pictogram1.png".getBytes(StandardCharsets.UTF_8)));
-		fileService = new FileService(messageSource, resourceLoader);
+		fileService = new FileService(messageSource);
 		htmlHandler = new HtmlHandler(fileService);
 	
 	}
@@ -90,11 +92,11 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -115,11 +117,11 @@ class HtmlHandlerTest {
 			"<tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2018-05-14 15:28:41</td></tr>\n" +
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -142,11 +144,11 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile(
 			"html", withoutDescUserComments.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(400);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(withoutDescUserComments, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(withoutDescUserComments, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -170,11 +172,11 @@ class HtmlHandlerTest {
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile(
 			"html", withDescUserCommentsAndText.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(400);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(withDescUserCommentsAndText, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(withDescUserCommentsAndText, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -211,11 +213,11 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", oldStyleCdata.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(400);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(400);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(oldStyleCdata, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(oldStyleCdata, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -229,12 +231,12 @@ class HtmlHandlerTest {
 	@Test
 	public void setPath_and_ClearDescription_for_Old_Style_Placemarks_Should_Embrace_Images_And_Data_Within_DescUserStart_And_DescUserEnd_Comments_With_them_Initially() {
 		//GIVEN CDATA with image and user descriptions within <!-- desc_user:start --> and <!-- desc_user:end -->
-		multipartDto.setPathType("relative");
-		multipartDto.setPath("../myFiles");
+		multipartMainDto.setPathType("relative");
+		multipartMainDto.setPath("../myFiles");
 		
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -269,11 +271,11 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoImgsWithStyles.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoImgsWithStyles, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -292,10 +294,10 @@ class HtmlHandlerTest {
 	@Test
 	public void setPreviewSize_With_Null_Integer_Should_Left_All_Img_Widths_Attributes_As_They_Were_Before() {
 		//GIVEN
-		multipartDto.setPreviewSize(null);
+		multipartMainDto.setPreviewSize(null);
 		
 		//WHEN
-		String processedKml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedKml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 
 		//THEN
 		
@@ -339,11 +341,11 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", outdatedDescription.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(outdatedDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(outdatedDescription, multipartMainDto, LocalDateTime.now());
 		
 		//THEN contains only the earliest date of creation
 		assertAll(
@@ -386,12 +388,12 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(90);
-		multipartDto.setPreviewUnit("%");
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(90);
+		multipartMainDto.setPreviewUnit("%");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -449,15 +451,15 @@ class HtmlHandlerTest {
 			" </table><!-- desc_user:end --> \n" +
 			"</div><!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(100);
-		multipartDto.setPreviewUnit("%");
-		multipartDto.setPath("/storage/");
-		multipartDto.setAsAttachmentInLocus(true);
-		multipartDto.setClearOutdatedDescriptions(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(100);
+		multipartMainDto.setPreviewUnit("%");
+		multipartMainDto.setPath("/storage/");
+		multipartMainDto.setAsAttachmentInLocus(true);
+		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertFalse(processedHtml.contains("<a href=\"/storage/p__20200511_130333.jpg\" target=\"_blank\"></a>"));
@@ -466,11 +468,11 @@ class HtmlHandlerTest {
 	@Test
 	public void set_Relative_Path_Should_Set_Relative_Path_Type() {
 		//GIVEN
-		multipartDto.setPathType("relative");
-		multipartDto.setPath("../myFiles");
+		multipartMainDto.setPathType("relative");
+		multipartMainDto.setPath("../myFiles");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -490,11 +492,11 @@ class HtmlHandlerTest {
 	@ValueSource(strings = {"D:\\MyFolder\\MyPOI", "\\D:\\MyFolder\\MyPOI", "\\D:\\MyFolder\\MyPOI\\"})
 	public void set_Absolute_Windows_Path_Without_Whitespaces_Should_Set_Correct_Absolute_Path_Type(String absolutePath) {
 		//GIVEN
-		multipartDto.setPathType("Absolute");
-		multipartDto.setPath(absolutePath);
+		multipartMainDto.setPathType("Absolute");
+		multipartMainDto.setPath(absolutePath);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 //		System.out.println(processedHtml);
 		
 		//THEN
@@ -515,11 +517,11 @@ class HtmlHandlerTest {
 	public void set_Paths_With_Whitespaces_Should_Set_Correct_Absolute_Path_Type_URL_Encoded() {
 		//GIVEN
 		String pathWithWhitespaces = "D:\\My Folder\\My POI";
-		multipartDto.setPathType("Absolute");
-		multipartDto.setPath(pathWithWhitespaces);
+		multipartMainDto.setPathType("Absolute");
+		multipartMainDto.setPath(pathWithWhitespaces);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN All whitespaces should be replaced with URL '%20' sign
 		assertAll(
@@ -538,11 +540,11 @@ class HtmlHandlerTest {
 	@Test
 	public void set_Web_Path_Should_Set_Correct_HTTP_Path_Type() {
 		//GIVEN
-		multipartDto.setPathType("wEb");
-		multipartDto.setPath("http://www.mysite.com/my images");
+		multipartMainDto.setPathType("wEb");
+		multipartMainDto.setPath("http://www.mysite.com/my images");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -573,14 +575,14 @@ class HtmlHandlerTest {
 			"</font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", descriptionCdata.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(400);
-		multipartDto.setPathType("relAtive");
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(400);
+		multipartMainDto.setPathType("relAtive");
 		//Wrong backslash
-		multipartDto.setPath("..My maps\\my folder");
+		multipartMainDto.setPath("..My maps\\my folder");
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(descriptionCdata, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(descriptionCdata, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -599,10 +601,10 @@ class HtmlHandlerTest {
 	@Test
 	public void setTrimDescriptions_Should_Trim_All_Whitespaces_And_Write_Only_Descriptions_Inline() {
 		//GIVEN
-		multipartDto.setTrimDescriptions(true);
+		multipartMainDto.setTrimDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		//Doesn't contain new strings
@@ -614,10 +616,10 @@ class HtmlHandlerTest {
 	@Test
 	public void clearDescriptions_Should_Return_Single_Table_With_Earliest_DateTimes_And_Full_Descriptions() {
 		//GIVEN
-		multipartDto.setClearOutdatedDescriptions(true);
+		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(html, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(html, multipartMainDto, LocalDateTime.now());
 		
 		//THEN contains only the earliest date of creation
 		assertAll(
@@ -648,13 +650,13 @@ class HtmlHandlerTest {
 			"</div>" +
 			"Plain text description";
 		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPath("files");
-		multipartDto.setPreviewSize(300);
-		multipartDto.setClearOutdatedDescriptions(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath("files");
+		multipartMainDto.setPreviewSize(300);
+		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -715,14 +717,14 @@ class HtmlHandlerTest {
 			"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", imgInPixels.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(800);
-		multipartDto.setPreviewUnit("px");
-		multipartDto.setPath("/storage/");
-		multipartDto.setClearOutdatedDescriptions(true);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(800);
+		multipartMainDto.setPreviewUnit("px");
+		multipartMainDto.setPath("/storage/");
+		multipartMainDto.setClearOutdatedDescriptions(true);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(imgInPixels, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		Pattern image = Pattern.compile("src=\"/storage/p__20200511_130333.jpg\"", Pattern.MULTILINE);
@@ -735,10 +737,188 @@ class HtmlHandlerTest {
 			() -> assertEquals(1, matcherHref.results().count())
 		
 		);
-
-//		assertFalse(processedHtml.contains("<a href=\"/storage/p__20200511_130333.jpg\" target=\"_blank\"></a>"));
 	}
-	
+
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	public void empty_Tr_And_Td_From_Locus_Should_Have_Been_Eliminated_Within_Indented_And_Inline_Description(boolean isTrimDescriptions) {
+		//GIVEN
+		String emptyTableRows = "<!-- desc_gen:start -->\n" +
+				"<div>\n" +
+				"\t<!-- desc_user:start -->\n" +
+				"\t<table width=\"100%\" style=\"color:black\">\n" +
+				"\t\t<tbody>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"center\" colspan=\"2\">\n" +
+				"\t\t\t\t\t<a href=\"file:///storage/emulated/0/Locus/data/media/photo/_1318431492316.jpg\" target=\"_blank\">\n" +
+				"\t\t\t\t\t\t<img src=\"file:///storage/emulated/0/Locus/data/media/photo/_1318431492316.jpg\" width=\"100%\" align=\"center\" style=\"border:1px white solid;width:100%;\"</a>\n" +
+				"\t\t\t\t\t<a href=\"file:///storage/emulated/0/Locus/data/media/photo/Точка_1318431492316.jpg\" target=\"_blank\">\n" +
+				"\t\t\t\t\t\t<img src=\"file:///storage/emulated/0/Locus/data/media/photo/Точка_1318431492316.jpg\" width=\"100%\" align=\"center\" style=\"width:100%;border:1px white solid;\"</a>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Высота</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">203m</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Азимут</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">332°</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Точность</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">10m</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Создано</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">2012-09-18 18:46:14</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t</tbody>\n" +
+				"\t</table>\n" +
+				"\t<!-- desc_user:end -->\n" +
+				"</div>\n" +
+				"<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", emptyTableRows.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setClearOutdatedDescriptions(true);
+		multipartMainDto.setTrimDescriptions(isTrimDescriptions);
+
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(emptyTableRows, multipartMainDto, LocalDateTime.now());
+
+		//THEN
+		Pattern indentedEmptyTableRow = Pattern.compile("\t\t\t<tr>\n" +
+				"\t\t\t\t<td colspan=\"2\">\n" +
+				"\t\t\t\t\t<hr></td>\n" +
+				"\t\t\t</tr>\n", Pattern.MULTILINE);
+		Pattern inlineTableRow = Pattern.compile("<tr><td colspan=\"2\"><hr></td></tr>", Pattern.MULTILINE);
+		Matcher matcherIndentedTableRow = indentedEmptyTableRow.matcher(processedHtml);
+		Matcher matcherInlineTableRow = inlineTableRow.matcher(processedHtml);
+
+		assertAll(
+				() -> assertEquals(0, matcherIndentedTableRow.results().count()),
+				() -> assertEquals(0, matcherInlineTableRow.results().count())
+
+		);
+	}
+
+	@Test
+	public void image_Duplicates_With_Different_Paths_Should_Have_Been_Eliminated_When_SetPath() {
+		//GIVEN
+		String twoDuplicatedImages = "<!-- desc_gen:start -->\n" +
+				"<div>\n" +
+				"<!-- desc_gen:start -->\n" +
+				"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+				"<a href=\"files/_1341841939032.jpg\" target=\"_blank\">" +
+				"<img src=\"files/_1341841939032.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\">" +
+				"</a>" +
+				"<br /><br />\n" +
+				"<!-- desc_user:start -->\n" +
+				"<table width=\"100%\" style=\"color:black\"><tbody><tr><td align=\"center\" colspan=\"2\">" +
+				"<a href=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" target=\"_blank\">" +
+				"<img src=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" width=\"100%\" align=\"center\" style=\"border:1px white solid;width:100%;\">" +
+				"</a>" +
+				"</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">217m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">49°</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">30m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr></tbody></table>\n" +
+				"<!-- desc_user:end -->\n" +
+				"</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2021-10-02 20:17:24</td></tr>\n" +
+				"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+				"<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", twoDuplicatedImages.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath("/newPath/");
+
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(twoDuplicatedImages, multipartMainDto, LocalDateTime.now());
+
+		//THEN
+		Pattern imageName = Pattern.compile("/newPath/_1341841939032.jpg", Pattern.MULTILINE);
+		Matcher imageNames = imageName.matcher(processedHtml);
+
+		assertAll(
+				//Only in the href and src
+				() -> assertEquals(2, imageNames.results().count())
+
+		);
+	}
+
+	/**
+	 * {@link MultipartMainDto#isClearOutdatedDescriptions()} doesn't know what exactly path to image has to be deleted
+	 */
+	@Disabled
+	@Test
+	public void image_Duplicates_With_Different_Paths_Should_Have_Been_Eliminated_When_ClearOutdatedDescriptions() {
+		//GIVEN
+		String twoDuplicatedImages = "<!-- desc_gen:start -->\n" +
+				"<div>\n" +
+				"<!-- desc_gen:start -->\n" +
+				"<font color=\"black\"><table width=\"100%\"><tr><td width=\"100%\" align=\"center\">" +
+				"<a href=\"files/_1341841939032.jpg\" target=\"_blank\">" +
+				"<img src=\"files/_1341841939032.jpg\" width=\"60px\" align=\"right\" style=\"border: 3px white solid;\">" +
+				"</a>" +
+				"<br /><br />\n" +
+				"<!-- desc_user:start -->\n" +
+				"<table width=\"100%\" style=\"color:black\"><tbody><tr><td align=\"center\" colspan=\"2\">" +
+				"<a href=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" target=\"_blank\">" +
+				"<img src=\"file:///storage/emulated/0/Locus/data/media/photo/_1341841939032.jpg\" width=\"100%\" align=\"center\" style=\"border:1px white solid;width:100%;\">" +
+				"</a>" +
+				"</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Высота</b></small></td><td align=\"center\" valign=\"center\">217m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Азимут</b></small></td><td align=\"center\" valign=\"center\">49°</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td><td align=\"center\" valign=\"center\">30m</td></tr><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2012-09-18 18:48:48</td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr><tr><td colspan=\"2\"><hr></td></tr></tbody></table>\n" +
+				"<!-- desc_user:end -->\n" +
+				"</td></tr><tr><td colspan=\"1\"><hr></td></tr><tr><td><table width=\"100%\"><tr><td align=\"left\" valign=\"center\"><small><b>Создано</b></small></td><td align=\"center\" valign=\"center\">2021-10-02 20:17:24</td></tr>\n" +
+				"</table></td></tr><tr><td><table width=\"100%\"></table></td></tr></table></font>\n" +
+				"<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", twoDuplicatedImages.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setClearOutdatedDescriptions(true);
+
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(twoDuplicatedImages, multipartMainDto, LocalDateTime.now());
+
+		//THEN
+		Pattern imageName = Pattern.compile("/newPath/_1341841939032.jpg", Pattern.MULTILINE);
+		Matcher imageNames = imageName.matcher(processedHtml);
+
+		assertAll(
+				//Only in the href and src
+				() -> assertEquals(2, imageNames.results().count())
+
+		);
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////// GOOGLE EARTH TESTS /////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -748,11 +928,11 @@ class HtmlHandlerTest {
 		//GIVEN Plain text from <description>...</description>
 		String plainTextDescription = "Plain text description";
 		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertTrue(processedHtml.contentEquals("Plain text description"));
@@ -772,11 +952,11 @@ class HtmlHandlerTest {
 			"</td></tr></table>\n" +
 			"<!-- desc_gen:end -->";
 		MultipartFile multipartFile = new MockMultipartFile("html", twoPureImgs.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPreviewSize(750);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPreviewSize(750);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(twoPureImgs, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(twoPureImgs, multipartMainDto, LocalDateTime.now());
 		
 		//THEN
 		assertAll(
@@ -791,12 +971,12 @@ class HtmlHandlerTest {
 		//GIVEN Plain text prepended before HTML markup
 		String plainTextDescription = "Plain text description";
 		MultipartFile multipartFile = new MockMultipartFile("text", plainTextDescription.getBytes(StandardCharsets.UTF_8));
-		multipartDto = new MultipartDto(multipartFile);
-		multipartDto.setPath("file");
-		multipartDto.setPreviewSize(300);
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath("file");
+		multipartMainDto.setPreviewSize(300);
 		
 		//WHEN
-		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartDto);
+		String processedHtml = htmlHandler.processDescriptionText(plainTextDescription, multipartMainDto, LocalDateTime.now());
 
 		//THEN
 		assertEquals("Plain text description", processedHtml);

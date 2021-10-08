@@ -27,7 +27,7 @@
     <header class="mainHeader">
 
         <img src="../static/img/MapPointsTrimmerLogo.png" th:src="@{/img/MapPointsTrimmerLogo.png}" alt="logo"
-             class="mainHeader__logoImg">
+             id="mainHeader__logoImg" class="mainHeader__logoImg">
 
         <div class="nameHeaderGroup">
 
@@ -127,7 +127,7 @@
 
         </div>
 
-        <form id="poiFile" class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
+        <form id="poiFileLoadForm" class="loadForm" action="/poi" method="post" enctype="multipart/form-data"
               th:action="@{/poi}" name="poiFile">
             <label for="locusFile" th:text="#{html.label.loadPoi}" class="loadForm__label">
                 Load custom points file
@@ -545,7 +545,8 @@
                 </div>
 
 
-                <span class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}" hidden>
+                <span id="downloadMessageMain" class="downloadMessage" th:utext="#{userMessage.downloadMessageAwait}"
+                      hidden>
 					The long download message with the explicit instructions.<br>This is an example.
 				</span>
 
@@ -553,7 +554,8 @@
 
         </form>
 
-        <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet__debugFieldset">
+
+        <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet__presetsFieldset">
 
             <div class="loadForm__fieldSet__settingsContainer">
 
@@ -565,20 +567,24 @@
                     <datalist id="presetsDatalist">
                     </datalist>
 
+                    <div class="loadForm__fieldSet__presetsButtons">
+
                     <span id="presetClear" class="specialButtons specialButtons_clear" title="Clear..."
                           th:title="#{html.title.clearTextArea}">
 						&#9851;
 					</span>
 
-                    <span id="presetSave" class="specialButtons specialButtons_accept" title="Save or Update preset"
-                          th:title="#{html.title.saveUpdatePreset}">
+                        <span id="presetSave" class="specialButtons specialButtons_accept" title="Save or Update preset"
+                              th:title="#{html.title.saveUpdatePreset}">
 						&#10004;
 					</span>
 
-                    <span id="presetDelete" class="specialButtons specialButtons_close" title="Delete preset"
-                          th:title="#{html.title.deletePreset}">
+                        <span id="presetDelete" class="specialButtons specialButtons_close" title="Delete preset"
+                              th:title="#{html.title.deletePreset}">
 						x
 					</span>
+
+                    </div>
 
                     <div class="interrogation" title="Description" style="margin-left: 0.7em"
                          th:title="#{commonMessages.interrogationAsDescription.presets}">
@@ -604,29 +610,143 @@
 
         </fieldset>
 
-        <fieldset class="loadForm loadForm__fieldSet loadForm__fieldSet_adminFieldset" hidden>
+        <form id="filterFilesLoadForm" class="loadForm filterLoadForm" action="/filter" method="post"
+              enctype="multipart/form-data"
+              th:action="@{/filter}">
 
             <details class="details">
-                <summary class="summaryOption" th:utext="#{html.text.adminLogin}"><small>Admin login...</small>
-                </summary>
+                <summary class="summaryOption" th:text="#{html.text.imageFilter}">Images filter</summary>
 
                 <br>
-                <input type="text" id="adminLogin" class="textInput" placeholder="Login...">
-                <br>
-                <input type="password" id="adminPassword" class="textInput" placeholder="Password...">
-                <br>
-                <input type="button" id="adminVerifyButton" class="inputButton" value="Verify">
-                <span> </span>
-                <div id="adminInterrogation" class="interrogation" title="Description"
-                     th:title="#{commonMessages.interrogationAsDescription.adminLoginDescription}">
-                    ?
-                </div>
+
+                <details class="details">
+                    <summary class="summaryOption summaryOption_small" th:text="#{html.text.howFilterWorks}">How it
+                        works...
+                    </summary>
+
+                    <div th:utext="#{commonMessages.filterDescription}">
+                        The description of this filtering option.
+                    </div>
+
+                </details>
 
                 <br>
+
+                <fieldset id="fieldSetFilter" class="loadForm loadForm__fieldSet">
+
+                    <label for="xmlFile" th:text="#{html.label.loadXml}" class="loadForm__label">
+                        Load custom .kml file
+                    </label>
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.xmlFile}">?
+                    </div>
+                    <br>
+                    <input id="xmlFile" type="file" accept=".kmz, .kml, .xml, .txt" class="inputButton"
+                           name="multipartXmlFile"
+                           required autofocus>
+                    <br>
+                    <br>
+
+                    <label for="zipFile" th:text="#{html.label.loadZip}" class="loadForm__label">
+                        Load your zip file with images
+                    </label>
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.zipFile}">?
+                    </div>
+                    <br>
+                    <input id="zipFile" type="file" accept=".zip, .jar, .gz, .kmz" class="inputButton"
+                           name="multipartZipFile"
+                           required autofocus>
+
+                    <select id="zipEncoding" name="zipEncoding" class="loadForm__selectDownloadAs"
+                            th:title="#{html.title.select.zipEncoding}"
+                            title="Zipped filenames encoding...">
+                        <option value="UTF8" selected title="Default filenames encoding for a given language."
+                                th:title="#{html.title.select.defaultEncoding}">
+                            Default (UTF-8)
+                        </option>
+
+                        <th:block th:each="zipEncoding:${zipEncodings}">
+                            <option value="IBM866"
+                                    title="IBM866"
+                                    th:value="${zipEncoding}"
+                                    th:title="${zipEncoding}"
+                                    th:text="${zipEncoding}">
+                                IBM866
+                            </option>
+                        </th:block>
+
+                    </select>
+
+                    <div class="interrogation" title="Description" style="margin-left: 0.7em"
+                         th:title="#{commonMessages.interrogationAsDescription.zipEncoding}">
+                        ?
+                    </div>
+
+                    <br>
+
+                </fieldset>
+
+                <fieldset id="filterFieldset" class="loadForm loadForm__fieldSet loadForm__fieldSet_bottomFieldset">
+
+                    <input type="submit" id="filterOut" value="FILTER OUT"
+                           class="inputButton loadForm__inputButton_processSpecialButton"
+                           th:value="#{html.input.value.filterOut}">
+
+                    <select id="downloadAsFilter" name="downloadAs" class="loadForm__selectDownloadAs"
+                            th:title="#{html.title.select.downloadAs}"
+                            title="Download as... (.zip archive by default)">
+                        <option value="zip" selected title="A processed zip archive with the filtered out photos."
+                                th:title="#{html.title.select.downloadAsZip}">
+                            .zip
+                        </option>
+                        <option value="kmz" title="A full archive with photos and the processed .kml file inside."
+                                th:title="#{html.title.select.downloadAsKmz}" disabled>
+                            .kmz
+                        </option>
+                    </select>
+
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.filterOut}">
+                        ?
+                    </div>
+
+
+                    <span id="downloadMessageFilter" class="downloadMessage"
+                          th:utext="#{userMessage.downloadMessageArchive}" hidden>
+					The long download message with the explicit instructions.<br>This is an example.
+				</span>
+
+                </fieldset>
 
             </details>
 
-        </fieldset>
+        </form>
+
+        <form id="adminLoadForm" class="loadForm" hidden>
+
+            <details class="details">
+                <summary class="summaryOption" th:utext="#{html.text.adminLogin}">Admin login...</summary>
+
+                <fieldset id="adminFieldset" class="loadForm loadForm__fieldSet loadForm__fieldSet_adminFieldset">
+
+                    <input type="text" id="adminLogin" class="textInput" placeholder="Login...">
+                    <br>
+                    <input type="password" id="adminPassword" class="textInput" placeholder="Password...">
+                    <br>
+                    <input type="button" id="adminVerifyButton" class="inputButton adminVerifyButton" value="Verify">
+                    <span> </span>
+                    <div id="adminInterrogation" class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.adminLoginDescription}">
+                        ?
+                    </div>
+
+                    <br>
+                </fieldset>
+
+            </details>
+
+        </form>
 
     </main>
 

@@ -1,6 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DownloadAs;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,7 +29,7 @@ class LocusIconsHandlerTest {
     private static FileService fileService;
     private static KmlUtils kmlUtils;
     private static LocusIconsHandler locusIconsHandler;
-    private static MultipartDto multipartDto;
+    private static MultipartMainDto multipartMainDto;
     private static MultipartFile multipartFile;
     private static Document document;
     private static final String PICTOGRAM1_PNG = "Pictogram1.png";
@@ -72,10 +72,10 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoIconStyle.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
@@ -117,10 +117,10 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoIconStyle.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
@@ -160,10 +160,10 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoIconStyle.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
@@ -203,10 +203,10 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoIconStyle.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
@@ -271,10 +271,10 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoIconStyle.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
@@ -341,10 +341,10 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoIconStyle.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
@@ -411,10 +411,10 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoIconStyle.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
@@ -456,10 +456,10 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoIconStyle.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
@@ -523,24 +523,24 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoAndPictogramStylesWithPlacemarks.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        multipartDto.setDownloadAs(DownloadAs.KMZ);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        multipartMainDto.setDownloadAs(DownloadAs.KMZ);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartMainDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
-        assertEquals(3, multipartDto.getFilesToBeExcluded().size());
-        assertTrue(multipartDto.getFilesToBeExcluded().contains(photoFilename1));
-        assertTrue(multipartDto.getFilesToBeExcluded().contains(photoFilename2));
-        assertTrue(multipartDto.getFilesToBeExcluded().contains(photoFilename3));
+        assertEquals(3, multipartMainDto.getFilesToBeExcluded().size());
+        assertTrue(multipartMainDto.getFilesToBeExcluded().contains(photoFilename1));
+        assertTrue(multipartMainDto.getFilesToBeExcluded().contains(photoFilename2));
+        assertTrue(multipartMainDto.getFilesToBeExcluded().contains(photoFilename3));
     }
 
     @Test
@@ -591,21 +591,21 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoAndPictogramStylesWithPlacemarks.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        multipartDto.setDownloadAs(DownloadAs.KMZ);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        multipartMainDto.setDownloadAs(DownloadAs.KMZ);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartMainDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
-        assertFalse(multipartDto.getFilesToBeExcluded().contains(PICTOGRAM2_PNG));
+        assertFalse(multipartMainDto.getFilesToBeExcluded().contains(PICTOGRAM2_PNG));
     }
 
 
@@ -700,23 +700,23 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoAndPictogramStylesWithPlacemarks.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        multipartDto.setDownloadAs(DownloadAs.KMZ);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        multipartMainDto.setDownloadAs(DownloadAs.KMZ);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartMainDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
-        assertEquals(2, multipartDto.getFilesToBeExcluded().size());
-        assertTrue(multipartDto.getFilesToBeExcluded().contains(photoFilename1));
-        assertTrue(multipartDto.getFilesToBeExcluded().contains(photoFilename2));
+        assertEquals(2, multipartMainDto.getFilesToBeExcluded().size());
+        assertTrue(multipartMainDto.getFilesToBeExcluded().contains(photoFilename1));
+        assertTrue(multipartMainDto.getFilesToBeExcluded().contains(photoFilename2));
     }
 
     @Test
@@ -820,22 +820,22 @@ class LocusIconsHandlerTest {
                 "</kml>\n";
         multipartFile = new MockMultipartFile("LocusTestPoi.kml", "LocusTestPoi.kml",
                 null, new ByteArrayInputStream(photoAndPictogramStylesWithPlacemarks.getBytes(StandardCharsets.UTF_8)));
-        multipartDto = new MultipartDto(multipartFile);
-        multipartDto.setReplaceLocusIcons(true);
-        multipartDto.setPictogramName(PICTOGRAM1_PNG);
-        multipartDto.setDownloadAs(DownloadAs.KMZ);
-        document = XmlTestUtils.getDocument(multipartDto);
+        multipartMainDto = new MultipartMainDto(multipartFile);
+        multipartMainDto.setReplaceLocusIcons(true);
+        multipartMainDto.setPictogramName(PICTOGRAM1_PNG);
+        multipartMainDto.setDownloadAs(DownloadAs.KMZ);
+        document = XmlTestUtils.getDocument(multipartMainDto);
         kmlUtils = new KmlUtils(document, new XmlDomUtils(document));
         locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
         Mockito.when(fileService.getPath(Mockito.anyString())).thenReturn(KML_DEFAULT_PATH);
 
         //WHEN
-        locusIconsHandler.replaceLocusIcons(multipartDto);
+        locusIconsHandler.replaceLocusIcons(multipartMainDto);
 
         //THEN
 //        System.out.println(XmlTestUtils.getAsText(document));
-        assertEquals(2, multipartDto.getFilesToBeExcluded().size());
-        assertFalse(multipartDto.getFilesToBeExcluded().contains(PICTOGRAM2_PNG));
+        assertEquals(2, multipartMainDto.getFilesToBeExcluded().size());
+        assertFalse(multipartMainDto.getFilesToBeExcluded().contains(PICTOGRAM2_PNG));
     }
 
 }

@@ -1,7 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import lombok.extern.slf4j.Slf4j;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartDto;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import org.w3c.dom.Document;
@@ -10,10 +10,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.stream.events.XMLEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,16 +31,16 @@ public class LocusMapHandler {
         this.htmlHandler = htmlHandler;
     }
 
-    Document processKml(Document document, MultipartDto multipartDto) {
+    Document processKml(Document document, MultipartMainDto multipartMainDto) {
         this.xmlDomUtils = new XmlDomUtils(document);
-        if (multipartDto.isAsAttachmentInLocus()) {
+        if (multipartMainDto.isAsAttachmentInLocus()) {
             log.info("Images are being attached for Locus...");
-            processLocusAttachments(document, multipartDto);
+            processLocusAttachments(document, multipartMainDto);
         }
-        if (multipartDto.isReplaceLocusIcons()) {
+        if (multipartMainDto.isReplaceLocusIcons()) {
             log.info("Photo icons are being replaced in Locus...");
             LocusIconsHandler locusIconsHandler = new LocusIconsHandler(fileService, kmlUtils);
-            locusIconsHandler.replaceLocusIcons(multipartDto);
+            locusIconsHandler.replaceLocusIcons(multipartMainDto);
         }
 
         return document;
@@ -59,7 +56,7 @@ public class LocusMapHandler {
      * @return A new {@link LinkedList < XMLEvent >} with modified or new <lc:attachments></lc:attachments>.
      * Or the old unmodified List if no changes were done.</ExtendedData>
      */
-    private void processLocusAttachments(Document document, MultipartDto multipartDto) {
+    private void processLocusAttachments(Document document, MultipartMainDto multipartMainDto) {
         NodeList placemarks = document.getElementsByTagName("Placemark");
         //Iterate though every <Placemark>
         for (int i = 0; i < placemarks.getLength(); i++) {
@@ -92,7 +89,7 @@ public class LocusMapHandler {
                     }
                 }
             }
-            processImagesFromDescription(document, imgSrcFromDescription, attachments, placemark, multipartDto);
+            processImagesFromDescription(document, imgSrcFromDescription, attachments, placemark, multipartMainDto);
         }
         log.info("All <attachment>'s for Locus has been processed and added.");
     }
@@ -124,18 +121,18 @@ public class LocusMapHandler {
      *                              presented.
      */
     private void processImagesFromDescription(
-            Document document, List<String> imgSrcFromDescription, List<Node> attachmentNodes, Node placemark, MultipartDto multipartDto) {
+            Document document, List<String> imgSrcFromDescription, List<Node> attachmentNodes, Node placemark, MultipartMainDto multipartMainDto) {
         log.trace("'{}' images for '{}' attachments are being processed", imgSrcFromDescription.size(), attachmentNodes.size());
         //No images from description to insert as attachments
         if (imgSrcFromDescription.isEmpty()) {
             return;
             //WEB paths are not supported as attachments
-        } else if (multipartDto.getPathType() != null && multipartDto.getPathType().equals(PathTypes.WEB)) {
+        } else if (multipartMainDto.getPathType() != null && multipartMainDto.getPathType().equals(PathTypes.WEB)) {
             log.trace("Web type isn't supported for Locus <attachment>");
             return;
         }
-        //Turn all imgSrc into Locus specific paths
-        final List<String> locusAttachmentsHref = getLocusSpecificAttachmentsHref(imgSrcFromDescription, multipartDto);
+        //Turns all imgSrc into Locus specific paths
+        final List<String> locusAttachmentsHref = getLocusSpecificAttachmentsHref(imgSrcFromDescription, multipartMainDto);
 
         //Iterate through existing <ExtendedData> elements
         if (!attachmentNodes.isEmpty()) {
@@ -177,16 +174,40 @@ public class LocusMapHandler {
         }
     }
 
-    private List<String> getLocusSpecificAttachmentsHref(List<String> imagesToAttach, MultipartDto multipartDto) {
-        imagesToAttach = imagesToAttach.stream()
-                .map(imgSrc -> {
-                    //Locus lc:attachments accepts only RELATIVE type of path
-                    //So remake path to Locus specific absolute path without "file:///"
-                    return htmlHandler.getLocusAttachmentAbsoluteHref(imgSrc, multipartDto);
-                })
-                .filter(imgSrc -> !imgSrc.isBlank())
-                .collect(Collectors.toList());
-        log.trace("{} processed 'src' for Locus <attachment> will be returned", imagesToAttach.size());
+    private List<String> getLocusSpecificAttachmentsHref(List<String> imagesToAttach, MultipartMainDto multipartMainDto) {
+        //ImagesToAttach may contain same image name with various paths
+        if (imagesToAttach.stream().map(imgSrc -> fileService.getFileName(imgSrc)).collect(Collectors.toSet()).size() == 1) {
+            //There is a single image which can contain various paths in various src
+            for (String imgSrc : imagesToAttach) {
+                if (htmlHandler.isLocusAbsoluteHref(imgSrc)) {
+                    //First search for an image src with the Locus specific path. The first and single one is returned
+                    return new ArrayList<>(Collections.singletonList(imgSrc));
+                }
+            }
+            //No image with Locus specific href found
+            //Find the first one with a new specific Locus path and return it
+            imagesToAttach = imagesToAttach.stream()
+                    .map(imgSrc -> {
+                        //Locus lc:attachments accepts only RELATIVE type of path
+                        //So remake path to Locus specific absolute path without "file:///"
+                        return htmlHandler.getLocusAttachmentAbsoluteHref(imgSrc, multipartMainDto);
+                    })
+                    .filter(imgSrc -> !imgSrc.isBlank())
+                    .limit(1)
+                    .collect(Collectors.toList());
+        } else {
+            //ImagesToAttach contains various images names or no specific Locus path
+            imagesToAttach = imagesToAttach.stream()
+                    .map(imgSrc -> {
+                        //Locus lc:attachments accepts only RELATIVE type of path
+                        //So remake path to Locus specific absolute path without "file:///"
+                        return htmlHandler.getLocusAttachmentAbsoluteHref(imgSrc, multipartMainDto);
+                    })
+                    .filter(imgSrc -> !imgSrc.isBlank())
+                    .collect(Collectors.toList());
+            log.trace("{} processed 'src' for Locus <attachment> will be returned", imagesToAttach.size());
+
+        }
         return imagesToAttach;
     }
 

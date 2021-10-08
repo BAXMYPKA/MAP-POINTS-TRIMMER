@@ -10,13 +10,13 @@
 	</parent>
 	<groupId>mrbaxmypka.gmail.com</groupId>
 	<artifactId>Map-Points-Trimmer</artifactId>
-	<version>4.0</version>
+	<version>5.0</version>
 	<name>Map Points Trimmer</name>
 	<description>The trimmer for Locus Map and Google Earth Pro photo points as the client-server application based on Spring Boot</description>
 	<developers>
 		<developer>
 			<name>MrBAXMYPKA</name>
-			<email>mrbaxmypka@yandex.ru</email>
+			<email>mrbaxmypka@gmail.com</email>
 			<timezone>UTC +3</timezone>
 		</developer>
 	</developers>
@@ -103,18 +103,6 @@
 			<artifactId>spring-test</artifactId>
 			<version>5.2.5.RELEASE</version>
 			<scope>compile</scope>
-		</dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
 		</dependency>
 
 	</dependencies>

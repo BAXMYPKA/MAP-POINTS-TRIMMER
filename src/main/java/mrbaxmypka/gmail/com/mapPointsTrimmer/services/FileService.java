@@ -6,20 +6,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 /**
  * @author BAXMYPKA
@@ -29,15 +25,26 @@ import java.util.stream.Collectors;
 public class FileService {
 
     @Autowired
-    private MessageSource messageSource;
-
-    final Resource pictogramsResource;
+    private final MessageSource messageSource;
 
     /**
      * All possible images files extensions in lower case.
      */
     @Getter(AccessLevel.PUBLIC)
-    private List<String> imagesExtensions;
+    private final List<String> allowedImagesExtensions;
+
+    /**
+     * All possible images files extensions in lower case.
+     */
+    @Getter(AccessLevel.PUBLIC)
+    private final List<String> allowedZipExtensions;
+
+    /**
+     * Allowed file extensions to be loaded as xml files from index.html 'xmlFile' form.
+     * .kmz files also allowed as inner .kml file will be extracted and processed.
+     */
+    @Getter(AccessLevel.PUBLIC)
+    private final List<String> allowedXmlExtensions;
 
     /**
      * Collects a list of pictograms names ONLY as '.png' OR '.PNG' files from the 'resources/static/pictograms' directory.
@@ -45,7 +52,7 @@ public class FileService {
      * {@literal ArrayList<String> pictogramNames} or an empty Array if nothing found.
      */
     @Getter(AccessLevel.PUBLIC)
-    private ArrayList<String> pictogramsNames;
+    private final ArrayList<String> pictogramsNames = new ArrayList<>(40);
 
     /**
      * MUST be set AFTER {@link #setPictogramNames()}
@@ -53,7 +60,7 @@ public class FileService {
      * from the 'resources/static/pictograms' directory.
      * Important!
      * For Thymeleaf view by default the path = "pictograms/image.png" because Thymeleaf gets them from its own relative path.
-     * But further in the {@link MultipartFileService} we have to add the "static/" prefix (e.g. "static/pictograms/image.png")
+     * But further in the {@link MultipartMainFileService} we have to add the "static/" prefix (e.g. "static/pictograms/image.png")
      * as the serverside searches for resources by its Classloader from the root of the "resources" directory.
      * <p>
      * <p>
@@ -64,7 +71,7 @@ public class FileService {
      * or an empty Map if nothing found.
      */
     @Getter(AccessLevel.PUBLIC)
-    private Map<String, String> pictogramsNamesPaths;
+    private final Map<String, String> pictogramsNamesPaths = new HashMap<>(40);
 
     @Value("${logging.file.name}")
     private String pathToLogFile;
@@ -74,14 +81,17 @@ public class FileService {
     private String stackTrace;
 
     @Autowired
-    public FileService(MessageSource messageSource, ResourceLoader resourceLoader) {
+    public FileService(MessageSource messageSource) {
         this.messageSource = messageSource;
-        pictogramsResource = resourceLoader.getResource("classpath:static/pictograms");
         setPictogramNames();
         setPictogramsNamesPaths();
-        imagesExtensions = new ArrayList<>(5);
-        imagesExtensions.addAll(Arrays.asList(
+        allowedImagesExtensions = new ArrayList<>(5);
+        allowedImagesExtensions.addAll(Arrays.asList(
                 ".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".gif", ".raw", ".psd", ".xcf", "cdr"));
+        allowedZipExtensions = new ArrayList<>(2);
+        allowedZipExtensions.addAll(Arrays.asList("zip", "kmz", "jar", "gz"));
+        allowedXmlExtensions = new ArrayList<>(5);
+        allowedXmlExtensions.addAll(Arrays.asList("kmz", "kml", "xml", "txt"));
     }
 
 
@@ -132,19 +142,52 @@ public class FileService {
     }
 
     private void setPictogramNames() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(pictogramsResource.getInputStream()))) {
-            pictogramsNames = reader.lines().collect(Collectors.toCollection(ArrayList::new));
-            pictogramsNames.removeIf(s -> !s.toLowerCase().endsWith(".png")); //Delete all non-.png files
+        try {
+            URI pictogramsUri = Objects.requireNonNull(this.getClass().getClassLoader().getResource("static/pictograms"))
+                    .toURI();
+            Path pictogramsPath;
+            if (pictogramsUri.getScheme().equals("jar")) {
+                log.info("Searching for pictograms inside the jar...");
+                FileSystem fileSystem = FileSystems.newFileSystem(pictogramsUri, Collections.<String, Object>emptyMap());
+                pictogramsPath = fileSystem.getPath("../BOOT-INF/classes/static/pictograms/");
+            } else {
+                log.info("Searching for pictograms inside the target classes...");
+                pictogramsPath = Paths.get(pictogramsUri);
+            }
+            log.info("Path to pictograms: " + pictogramsPath.toString());
+            Files.walk(pictogramsPath, 1).forEach(pictogramPath -> {
+                String pictogram = pictogramPath.getFileName().toString();
+                if (getExtension(pictogram).toLowerCase().endsWith("png")) {
+                    pictogramsNames.add(pictogram);
+                }
+            });
             log.info("{} Pictograms names have been collected.", pictogramsNames.size());
+        } catch (URISyntaxException | IOException exception) {
+            log.error(exception.getMessage(), exception);
+        }
+        //This will list all the files inside the jar
+/*
+        try {
+            CodeSource src = this.getClass().getProtectionDomain().getCodeSource();
+            if (src != null) {
+                URL jar = src.getLocation();
+                ZipInputStream zip = new ZipInputStream(jar.openStream());
+                while (true) {
+                    ZipEntry e = zip.getNextEntry();
+                    if (e == null)
+                        break;
+                    String name = e.getName();
+                }
+            }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            pictogramsNames = new ArrayList<>(0);
         }
 
+*/
     }
 
+
     private void setPictogramsNamesPaths() {
-        pictogramsNamesPaths = new HashMap<>(pictogramsNames.size());
         pictogramsNames.forEach(pictogram -> pictogramsNamesPaths.put(pictogram, PICTOGRAMS_PATH + pictogram));
         log.info("{} Pictograms names with full paths have been collected.", pictogramsNamesPaths.size());
     }
@@ -161,7 +204,9 @@ public class FileService {
         if (pathWithFilename == null) {
             throw new IllegalArgumentException(messageSource.getMessage("exception.nullFilename", null, Locale.ENGLISH));
         }
-        if (!pathWithFilename.matches("[.\\S]{1,100}\\.[a-zA-Z1-9]{3,5}")) return "";
+        if (!pathWithFilename.matches("[\\P{L}.\\S]{1,100}\\.[a-zA-Z1-9]{2,5}")) {
+            return "";
+        }
         //If index of '/' or '\' return -1 the 'pathWithFilename' consist of only the filename without a path
         int lastIndexOFSlash = pathWithFilename.lastIndexOf("/") != -1 ?
                 pathWithFilename.lastIndexOf("/") :
@@ -192,5 +237,24 @@ public class FileService {
         String path = pathWithFilename.substring(0, lastIndexOFSlash + 1);
         log.trace("Path as '{}' will be returned", path);
         return path.isBlank() ? "" : path;
+    }
+
+    /**
+     * @param filename The file extension to be derived from.
+     * @return The filename extension in lowercase without a dot (e.g. "image.img" will be returned as "img")
+     * OR an empty String if no extension found.
+     */
+    public String getExtension(@NonNull String filename) {
+        if (!filename.contains(".")) {
+            //The filename doesn't contain an extension
+            log.debug("The given filename = {} doesn't contain the extension!", filename);
+            return "";
+        }
+        String extension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
+        if (extension.isBlank()) {
+            return "";
+        } else {
+            return extension;
+        }
     }
 }

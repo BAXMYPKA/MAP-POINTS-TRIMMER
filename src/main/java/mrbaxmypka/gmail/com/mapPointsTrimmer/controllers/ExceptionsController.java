@@ -3,11 +3,12 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.controllers;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.MapPointsTrimmerApplication;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartFileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.services.MultipartMainFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,7 +31,7 @@ public class ExceptionsController extends AbstractController {
     @Autowired
     private MessageSource messageSource;
     @Autowired
-    private MultipartFileService multipartFileService;
+    private MultipartMainFileService multipartMainFileService;
     @Autowired
     private FileService fileService;
 
@@ -103,6 +104,18 @@ public class ExceptionsController extends AbstractController {
         return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, ve, locale, httpSession);
     }
 
+    @ExceptionHandler(BindException.class)
+    public ModelAndView validationBindingException(BindException be, Locale locale, HttpSession httpSession) {
+        Map<String, String> errors = be.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        fieldError -> fieldError.getField(), fieldError -> fieldError.getDefaultMessage()));
+        String errorMessages = errors.entrySet().stream()
+                .map(e ->
+                        messageSource.getMessage("exception.fieldError(2)", new Object[]{e.getKey(), e.getValue()}, locale))
+                .collect(Collectors.joining());
+        return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, be, locale, httpSession);
+    }
+
     /**
      * @param exception Any specific internal processing exceptions {@link Exception} from Service level
      * @return HttpStatus 500
@@ -132,9 +145,9 @@ public class ExceptionsController extends AbstractController {
         log.error(localizedErrorMessage, throwable);
 
         if (isSingleUserMode()) {
-            multipartFileService.deleteTempFiles();
+            multipartMainFileService.deleteTempFiles();
         } else {
-            multipartFileService.deleteTempFile(httpSession.getId());
+            multipartMainFileService.deleteTempFile(httpSession.getId());
         }
         ModelAndView mav = new ModelAndView();
         mav.setStatus(httpStatus);
