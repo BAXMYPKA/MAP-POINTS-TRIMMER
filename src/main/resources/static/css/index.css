@@ -443,7 +443,6 @@ input[type=radio] {
     /*animate collapsing the dropdown from open to closed state (v. fast)*/
     -moz-transition: height 0.1s;
     -webkit-transition: height 0.1s;
-    -ms-transition: height 0.1s;
     -o-transition: height 0.1s;
     transition: height 0.1s;
 }
@@ -456,7 +455,6 @@ input[type=radio] {
     /*nice and smooth expand - speed this up at your preference or remove animation altogether*/
     -moz-transition: height 0.5s;
     -webkit-transition: height 0.5s;
-    -ms-transition: height 0.5s;
     -o-transition: height 0.5s;
     transition: height 0.5s;
 }
@@ -487,7 +485,7 @@ input[type=radio] {
 }
 
 #pictogram-dropdown label:hover {
-    opacity: 0.5;
+    opacity: 0.7;
 }
 
 #pictogram-dropdown input:checked + label {

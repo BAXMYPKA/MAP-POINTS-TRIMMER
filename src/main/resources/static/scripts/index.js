@@ -371,7 +371,6 @@
 
                 } else {
                     response.text().then(text => showUserMessage(text));
-                    console.log(response, "OK");
                 }
             });
         };

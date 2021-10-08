@@ -3,7 +3,9 @@
 		const MAX_PRESETS_NUMBER = 4;
 		const PRESETS_KEY = "presets";
 		const presetsDatalistInput = document.getElementById("presetsInput");
-		
+		let replaceLocusIcons = document.getElementById("replaceLocusIcons");
+		let replaceLocusIconsEvent = new Event('change', {bobbles: true});
+
 		class Preset {
 			constructor(presetName, inputsArray) {
 				this.presetName = presetName;
@@ -21,7 +23,8 @@
 						id: element.id,
 						value: element.value,
 						checked: element.checked,
-						disabled: element.disabled
+						//Radio buttons within 'pictogram-dropdown' are haven't to be disabled
+						disabled: element.parentNode.id !== "pictogram-dropdown" ? element.disabled : false
 					});
 				}
 			}
@@ -37,6 +40,10 @@
 					formInput.disabled = presetInput.disabled;
 				}
 			});
+
+			//Set event programmatically for detect changes
+			replaceLocusIcons.dispatchEvent(replaceLocusIconsEvent);
+
 			//Open <details> tags if inner inputs are checked or have values
 			//Optional parameters summary
 			const trimXml = document.getElementById('trimXml');
@@ -45,7 +52,6 @@
 				document.getElementById('optionalParametersDetails').open = true;
 			}
 			//Optional Locus parameters summary
-			const replaceLocusIcons = document.getElementById('replaceLocusIcons');
 			if (replaceLocusIcons.checked) {
 				document.getElementById('optionalLocusDetails').open = true;
 			}
@@ -67,12 +73,15 @@
 					if (input.type === "checkbox") {
 						input.checked = false;
 					}
-					if (input.type === "radio") {
+					//Radio buttons within 'pictogram-dropdown' are haven't to be disabled
+					if (input.type === "radio" && input.parentNode.id !== "pictogram-dropdown") {
 						input.disabled = true;
 						document.getElementById("asAttachmentInLocus").disabled = false;
 					}
 				}
 			}
+			//Set event programmatically for detect changes
+			replaceLocusIcons.dispatchEvent(replaceLocusIconsEvent);
 		}
 		
 		document.getElementById("presetClear").addEventListener('click', ev => {

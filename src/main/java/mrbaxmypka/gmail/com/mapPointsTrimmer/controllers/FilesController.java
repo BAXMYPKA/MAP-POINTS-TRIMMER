@@ -36,52 +36,6 @@ public class FilesController extends AbstractController {
     private MultipartFilterFileService multipartFilterFileService;
 
     /**
-     * @param multipartFileDto Can receive .kml or .kmz files only
-     * @param locale           For defining a User language
-     * @return The resulting processed file as the binary body into the response.
-     */
-/*
-    @PostMapping(path = "/poi",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<FileSystemResource> postKml(
-            @Valid @ModelAttribute MultipartMainDto multipartFileDto, Locale locale, HttpSession httpSession)
-            throws IOException, SAXException, ParserConfigurationException, TransformerException, InterruptedException {
-        log.info("{} file has been received as: {}.", MultipartMainDto.class.getSimpleName(), multipartFileDto);
-        multipartFileDto.setSessionId(httpSession.getId());
-        multipartFileDto.setLocale(locale);
-        Path tempFile = multipartMainFileService.processMultipartMainDto(multipartFileDto);
-        log.info("Temp file={}", tempFile);
-        FileSystemResource resource = new FileSystemResource(tempFile);
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=\"" + getAsciiEncodedFilename(tempFile) + "\"; filename*=UTF-8''" + getAsciiEncodedFilename(tempFile))
-                .body(resource);
-    }
-*/
-
-/*
-    @PostMapping(path = "/filter",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<FileSystemResource> postZip(
-            @Valid @ModelAttribute MultipartFilterDto multipartFileDto, Locale locale, HttpSession httpSession, Model model)
-            throws IOException, SAXException, ParserConfigurationException, TransformerException {
-        log.info("{} file has been received as: {}.", MultipartFilterDto.class.getSimpleName(), multipartFileDto);
-        multipartFileDto.setSessionId(httpSession.getId());
-        multipartFileDto.setLocale(locale);
-        Path tempFile = multipartFilterFileService.processMultipartFilterDto(multipartFileDto);
-
-        log.info("Temp file={}", tempFile);
-        FileSystemResource resource = new FileSystemResource(tempFile);
-        ResponseEntity<FileSystemResource> body = ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=\"" + getAsciiEncodedFilename(tempFile) + "\"; filename*=UTF-8''" + getAsciiEncodedFilename(tempFile))
-                .body(resource);
-        return body;
-    }
-*/
-
-
-    /**
      * From the referenced Spring Boot document:
      * "... if the method handles the response itself
      * (by writing the response content directly, declaring an argument of type ServletResponse / HttpServletResponse for that purpose
