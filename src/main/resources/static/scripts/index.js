@@ -4,6 +4,8 @@
         const previewSize = document.getElementById("previewSize");
         const previewSizeUnits = document.getElementById("previewSizeUnits");
         let adminLoginCounter = 0;
+        let xmlFileSize = null;
+        let zipFileSize = null;
 
         if (typeof singleUserMode === 'undefined' || singleUserMode == null) {
             singleUserMode = true;
@@ -141,6 +143,24 @@
 
         document.getElementById("locusFile").addEventListener('change', ev => {
             if (ev.target.files[0].size / 1024 / 1024 > maxFileSizeMb) {
+                showWarningUserMessage("Max file size = " + maxFileSizeMb + "Mb!");
+            } else {
+                hideUserMessage();
+            }
+        });
+
+        document.getElementById("xmlFile").addEventListener('change', ev => {
+            xmlFileSize = ev.target.files[0].size / 1024 / 1024;
+            if (xmlFileSize > maxFileSizeMb || xmlFileSize + zipFileSize > maxFileSizeMb) {
+                showWarningUserMessage("Max file size = " + maxFileSizeMb + "Mb!");
+            } else {
+                hideUserMessage();
+            }
+        });
+
+        document.getElementById("zipFile").addEventListener('change', ev => {
+            zipFileSize = ev.target.files[0].size / 1024 / 1024;
+            if (zipFileSize > maxFileSizeMb || zipFileSize + xmlFileSize > maxFileSizeMb) {
                 showWarningUserMessage("Max file size = " + maxFileSizeMb + "Mb!");
             } else {
                 hideUserMessage();

@@ -12,6 +12,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xml.sax.SAXException;
@@ -115,7 +116,13 @@ public class ExceptionsController extends AbstractController {
                 .collect(Collectors.joining());
         return returnPageWithError(HttpStatus.BAD_REQUEST, errorMessages, be, locale, httpSession);
     }
-
+    
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ModelAndView maxFileSizeException(MaxUploadSizeExceededException ie, Locale locale, HttpSession httpSession) {
+        String maxFileSizeMessage = messageSource.getMessage("exception.MaxFileSize(1)", new Object[]{getMaxFileSizeMb()}, locale);
+        return returnPageWithError(HttpStatus.NOT_ACCEPTABLE, maxFileSizeMessage, ie, locale, httpSession);
+    }
+    
     /**
      * @param exception Any specific internal processing exceptions {@link Exception} from Service level
      * @return HttpStatus 500
