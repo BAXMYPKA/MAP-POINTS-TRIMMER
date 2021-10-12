@@ -267,6 +267,8 @@ input[type=radio] {
 
 
 .userMessage {
+    position: sticky;
+    top: 0;
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5em;
@@ -279,7 +281,9 @@ input[type=radio] {
     transition-duration: 0.5s;
     opacity: 1;
     visibility: visible;
-    background-color: rgba(223, 223, 223, 0.09);
+    z-index: 2;
+    /*background-color: rgba(223, 223, 223, 0.09);*/
+    background-color: beige;
 }
 
 .warningUserMessage {
