@@ -204,7 +204,7 @@ public class FileService {
         if (pathWithFilename == null) {
             throw new IllegalArgumentException(messageSource.getMessage("exception.nullFilename", null, Locale.ENGLISH));
         }
-        if (!pathWithFilename.matches("[\\P{L}.\\S]{1,100}\\.[a-zA-Z1-9]{2,5}")) {
+        if (!pathWithFilename.matches("[\\P{L}.\\S]{1,254}\\.[a-zA-Z1-9]{2,5}")) {
             return "";
         }
         //If index of '/' or '\' return -1 the 'pathWithFilename' consist of only the filename without a path

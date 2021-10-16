@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -915,6 +916,91 @@ class HtmlHandlerTest {
 		assertAll(
 				//Only in the href and src
 				() -> assertEquals(2, imageNames.results().count())
+
+		);
+	}
+
+	@Test
+	public void same_Image_With_Different_Paths_Should_Have_Same_Path_When_SetPath() {
+		//GIVEN
+		String twoPathsImage = "<!-- desc_gen:start -->\n" +
+				"<div>\n" +
+				"\t<!-- desc_user:start -->\n" +
+				"\t<table width=\"100%\" style=\"color:black\">\n" +
+				"\t\t<tbody>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"center\" colspan=\"2\">\n" +
+				"\t\t\t\t\t<a href=\"file:///C:/Users/Sersus/PROGRAMS/CARTOGRAPHY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/p__20180907_111802.jpg\" target=\"_blank\">\n" +
+				"\t\t\t\t\t\t<img src=\"files/p__20180907_111802.jpg\" width=\"860px\" align=\"center\" style=\"border:1px white solid;width:860px;\"</a>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Высота</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">133 m</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Скорость</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">22,6 km/h</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Азимут</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">185 °</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Точность</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">3,0 m</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t\t<tr>\n" +
+				"\t\t\t\t<td align=\"left\" valign=\"center\">\n" +
+				"\t\t\t\t\t<small>\n" +
+				"\t\t\t\t\t\t<b>Создано</b>\n" +
+				"\t\t\t\t\t</small>\n" +
+				"\t\t\t\t</td>\n" +
+				"\t\t\t\t<td align=\"center\" valign=\"center\">2018-09-07 11:18:01</td>\n" +
+				"\t\t\t</tr>\n" +
+				"\t\t</tbody>\n" +
+				"\t</table>\n" +
+				"\t<!-- desc_user:end -->\n" +
+				"</div>\n" +
+				"<!-- desc_gen:end -->";
+		MultipartFile multipartFile = new MockMultipartFile("html", twoPathsImage.getBytes(StandardCharsets.UTF_8));
+		multipartMainDto = new MultipartMainDto(multipartFile);
+		multipartMainDto.setPath("/newPath/");
+		multipartMainDto.setPathType(PathTypes.ABSOLUTE);
+
+		//WHEN
+		String processedHtml = htmlHandler.processDescriptionText(twoPathsImage, multipartMainDto, LocalDateTime.now());
+
+		//THEN
+		Pattern scrImageName = Pattern.compile("<img src=\"file:///newPath/p__20180907_111802.jpg", Pattern.MULTILINE);
+		Pattern aImageName = Pattern.compile("<a href=\"file:///newPath/p__20180907_111802.jpg", Pattern.MULTILINE);
+
+		Matcher srcImage = scrImageName.matcher(processedHtml);
+		Matcher aImage = aImageName.matcher(processedHtml);
+
+		assertAll(
+				//Only in the href and src
+				() -> assertEquals(1, srcImage.results().count()),
+				() -> assertEquals(1, aImage.results().count()),
+
+				() -> assertFalse(processedHtml.contains("files/")),
+				() -> assertFalse(processedHtml.contains("file:///C:/Users/Sersus/PROGRAMS/CARTOGRAPHY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/"))
 
 		);
 	}

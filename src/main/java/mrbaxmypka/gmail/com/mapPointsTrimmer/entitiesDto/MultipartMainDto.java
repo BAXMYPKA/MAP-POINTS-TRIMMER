@@ -7,6 +7,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
@@ -54,6 +55,7 @@ public class MultipartMainDto extends MultipartDto {
      * {@link Nullable}. If null {@link PathTypes#RELATIVE} will be used.
      */
     @Nullable
+    @Setter
     private PathTypes pathType = PathTypes.RELATIVE;
 
     /**
@@ -402,7 +404,7 @@ public class MultipartMainDto extends MultipartDto {
     private String pictogramName;
 
     /**
-     * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartMainDto, Locale, HttpSession)}
+     * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartMainDto, Locale, HttpSession, HttpServletResponse)}
      * to associate a process (thread) and a temp file with the current User session.
      */
     @Nullable
@@ -435,6 +437,15 @@ public class MultipartMainDto extends MultipartDto {
         return Double.toString(scale).matches("\\d\\.\\d") && scale.compareTo(MAX_SCALE) <= 0;
     }
 
+    public void setPathType(@Nullable PathTypes pathType) {
+        if (pathType != null) {
+            this.pathType = pathType;
+        }
+    }
+
+    /**
+     * @param pathType "absolute", "relative", or "web"
+     */
     public void setPathType(@Nullable String pathType) {
         this.pathType = PathTypes.getByValue(pathType);
     }

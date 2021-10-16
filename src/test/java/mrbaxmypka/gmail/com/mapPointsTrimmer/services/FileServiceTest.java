@@ -30,7 +30,7 @@ class FileServiceTest {
         messageSource = Mockito.mock(MessageSource.class);
         fileService = new FileService(messageSource);
     }
-    
+
     @ParameterizedTest
     @ValueSource(strings = {"files/", "../myFiles/", "/storage/0/data/media/", "file:///D:/Folder/MyPOI/", "http://site/"})
     public void only_Filename_Should_Be_Returned_Whet_GetFilename(String path) {
@@ -145,6 +145,20 @@ class FileServiceTest {
         assertEquals("pictograms/" + PICTOGRAM_NAME_2, pictogramsNamesWithPaths.get(PICTOGRAM_NAME_2));
 
         assertFalse(pictogramsNamesWithPaths.containsKey(NON_PICTOGRAM_NAME_2));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "file:///C:/Users/Directory/PROGRAMS/CARTOGRAPHY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/p__20180907_111802.jpg",
+            "file:///C:/Users/Directory/PROGRAMS/CARTOGRAPHY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/p_20180907_тест_111802.jpg"})
+    public void fileName_Should_Be_Returned_When_Correct_Path(String hrefWithFilename) {
+        //GIVEN
+
+        //WHEN
+        String fileName = fileService.getFileName(hrefWithFilename);
+
+        //THEN
+        assertTrue(fileName.equals("p_20180907_тест_111802.jpg") || fileName.equals("p__20180907_111802.jpg"));
     }
 
 }
