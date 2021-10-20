@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ResourceLoader;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -32,10 +31,17 @@ class FileServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"files/", "../myFiles/", "/storage/0/data/media/", "file:///D:/Folder/MyPOI/", "http://site/"})
+    @ValueSource(strings = {
+            "files/",
+            "../myFiles/",
+            "/storage/0/data/media/",
+            "file:///D:/Folder/MyPOI/",
+            "http://site/",
+            "file:///C:/Users/Directory/PROGRAMS/CARTOGRAPHY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/",
+            "file:///C:/Разные Users/A new Directory/MANY PROGRAMS/CARTOGRAPHY DIRECTORY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/"})
     public void only_Filename_Should_Be_Returned_Whet_GetFilename(String path) {
         //GIVEN
-        final String pictureFilename = "Pic ture.png";
+        final String pictureFilename = "Pic тест ture.png";
         String pathWithFilename = path + pictureFilename;
 
         //WHEN
@@ -58,10 +64,17 @@ class FileServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"files/", "../myFiles/", "/storage/0/data/media/", "file:///D:/Folder/MyPOI/", "http://site/"})
+    @ValueSource(strings = {
+            "files/",
+            "../myFiles/",
+            "/storage/0/data/media/",
+            "file:///D:/Folder/MyPOI/",
+            "http://site/",
+            "file:///C:/Users/Directory/PROGRAMS/CARTOGRAPHY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/",
+            "file:///C:/Разные Users/A new Directory/MANY PROGRAMS/CARTOGRAPHY DIRECTORY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/"})
     public void only_Path_Should_Be_Returned_When_GetPath(String path) {
         //GIVEN
-        final String pictureFilename = "Pic.jpeg";
+        final String pictureFilename = "Pic тест.jpeg";
         String pathWithFilename = path + pictureFilename;
 
         //WHEN
@@ -112,7 +125,7 @@ class FileServiceTest {
     }
 
     @Test
-    public void pictogram_Names_Map_Should_Be_Returned_When_GetPictogramNamesMap() throws IOException {
+    public void pictogram_Names_Map_Should_Be_Returned_When_GetPictogramNamesMap() {
         //GIVEN
 
         //WHEN
@@ -129,7 +142,7 @@ class FileServiceTest {
     }
 
     @Test
-    public void only_Pictogram_Names_Map_Should_Be_Returned_When_GetPictogramNamesMap() throws IOException {
+    public void only_Pictogram_Names_Map_Should_Be_Returned_When_GetPictogramNamesMap() {
         //GIVEN
 
         //WHEN
@@ -146,19 +159,4 @@ class FileServiceTest {
 
         assertFalse(pictogramsNamesWithPaths.containsKey(NON_PICTOGRAM_NAME_2));
     }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "file:///C:/Users/Directory/PROGRAMS/CARTOGRAPHY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/p__20180907_111802.jpg",
-            "file:///C:/Users/Directory/PROGRAMS/CARTOGRAPHY/Locus/IMPORTED%20LOCUS%20POINTS/data-media-photo/p_20180907_тест_111802.jpg"})
-    public void fileName_Should_Be_Returned_When_Correct_Path(String hrefWithFilename) {
-        //GIVEN
-
-        //WHEN
-        String fileName = fileService.getFileName(hrefWithFilename);
-
-        //THEN
-        assertTrue(fileName.equals("p_20180907_тест_111802.jpg") || fileName.equals("p__20180907_111802.jpg"));
-    }
-
 }

@@ -80,6 +80,8 @@ public class FileService {
 
     private String stackTrace;
 
+    private final String IMG_PATH_WITH_FILENAME_REGEX = "[\\P{L}.\\S]{1,254}\\.[a-zA-Z1-9]{2,5}";
+
     @Autowired
     public FileService(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -195,6 +197,7 @@ public class FileService {
     /**
      * Extract the exact filename from a given path or http link as img[src] or a[href].
      * E.g. 'files:/image.png' or 'C:\images\image.jpg' will be returned as 'image.png', and 'image.jpg' will be returned as it.
+     * Regexp: "[\P{L}.\S]{1,254}\.[a-zA-Z1-9]{2,5}"
      *
      * @param pathWithFilename Href or src to the image. E.g. "file:///D:/MyFolder/MyPOI/picture.jpg" or "files/picture.png"
      * @return The name of the file from the given src (e.g. "picture.jpg") or empty string if nothing found
@@ -204,7 +207,7 @@ public class FileService {
         if (pathWithFilename == null) {
             throw new IllegalArgumentException(messageSource.getMessage("exception.nullFilename", null, Locale.ENGLISH));
         }
-        if (!pathWithFilename.matches("[\\P{L}.\\S]{1,254}\\.[a-zA-Z1-9]{2,5}")) {
+        if (!pathWithFilename.matches(IMG_PATH_WITH_FILENAME_REGEX)) {
             return "";
         }
         //If index of '/' or '\' return -1 the 'pathWithFilename' consist of only the filename without a path
@@ -219,12 +222,13 @@ public class FileService {
     /**
      * Extract the exact path from a given path with a filename or http link as img[src] or a[href].
      * E.g. 'files:/image.png' or 'C:\images\image.jpg' will be returned as 'files:/' or 'C:\images\'.
+     * Regexp: "[\P{L}.\S]{1,254}\.[a-zA-Z1-9]{2,5}"
      *
      * @param pathWithFilename Href or src to the image ('files:/image.png' or 'C:\images\image.jpg' etc)
      * @return The only path without the filename ('files:/' or 'C:\images\' etc) or an empty String if no path found.
      */
     public String getPath(String pathWithFilename) {
-        if (!pathWithFilename.matches("[.\\S]{1,100}\\.[a-zA-Z1-9]{3,5}")) {
+        if (!pathWithFilename.matches(IMG_PATH_WITH_FILENAME_REGEX)) {
             return "";
         }
         //If index of '/' or '\' return -1 the 'pathWithFilename' consist of only the filename without a path

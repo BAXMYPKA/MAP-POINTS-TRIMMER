@@ -3,6 +3,7 @@
         const userMessage = document.querySelector("#userMessage");
         const previewSize = document.getElementById("previewSize");
         const previewSizeUnits = document.getElementById("previewSizeUnits");
+        const closeButton = document.getElementById("specialButtons_close");
         let adminLoginCounter = 0;
         let xmlFileSize = null;
         let zipFileSize = null;
@@ -23,18 +24,32 @@
         }
 
         function showUserMessage(text) {
-            userMessage.innerHTML = text;
+            let spanElement = document.createElement('span');
+            spanElement.textContent = text;
+
+            closeButton.style.display = 'inline-block';
+            userMessage.innerHTML = "";
             userMessage.className = "userMessage";
+            userMessage.appendChild(spanElement);
+            userMessage.appendChild(closeButton);
         }
 
         function showWarningUserMessage(text) {
-            userMessage.innerHTML = text;
+            let spanElement = document.createElement('span');
+            spanElement.textContent = text;
+
+            closeButton.style.display = 'inline-block';
+
+            userMessage.innerHTML = "";
             userMessage.className = "userMessage warningUserMessage";
+            userMessage.appendChild(spanElement);
+            userMessage.appendChild(closeButton);
         }
 
         function hideUserMessage() {
             userMessage.innerHTML = "";
             userMessage.className = "userMessage.hidden";
+            closeButton.style.display = 'none';
         }
 
         function getUserMessage() {
@@ -122,7 +137,7 @@
 
         document.querySelectorAll(".interrogation").forEach(value => {
             value.addEventListener('click', evt => {
-                if (getUserMessage() === evt.target.getAttribute("title")) {
+                if (evt.target.style.backgroundColor === "greenyellow") {
                     //To hide the description if same interrogation is clicked
                     hideUserMessage();
                     document.querySelectorAll(".interrogation").forEach(interrogation => {
