@@ -119,16 +119,10 @@
             <span th:utext="${userMessage} ? ${userMessage} : ''"></span>
             <span th:text="${#request.getParameter('userMessage')} ? ${#request.getParameter('userMessage')} : ''"></span>
             <span id="specialButtons_close" class="specialButtons_close" title="Close" th:title="#{html.title.close}"
+                  th:style="${userMessage} ? 'userMessage' : (${#request.getParameter('userMessage')} ? 'display: inline-block' : 'display: none')"
                   style="display: none">
 				 x
 			</span>
-            <!--
-                        <span id="specialButtons_close" class="specialButtons_close" title="Close"
-                              th:title="#{html.title.close}"
-                              th:if="${userMessage != null || #request.getParameter('userMessage') != null}">
-                             x
-                        </span>
-            -->
 
         </div>
 
