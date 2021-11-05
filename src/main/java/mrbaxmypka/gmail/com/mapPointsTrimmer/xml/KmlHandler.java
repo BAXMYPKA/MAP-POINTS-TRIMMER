@@ -45,14 +45,7 @@ public class KmlHandler extends XmlHandler {
 		XmlDomUtils xmlDomUtils = new XmlDomUtils(document);
 		KmlUtils kmlUtils = new KmlUtils(document, xmlDomUtils);
 		LocusMapHandler locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
-		//It was HERE as the first method
-		//        locusMapHandler.processKml(document, multipartMainDto);
-/*
-        //Processing Google Earth specific options
-        log.info("Kml Google options are being processed...");
-        GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
-        googleEarthHandler.processKml(document, multipartMainDto);
-*/
+
 		log.info("Setting the new path to images...");
 		processHref(document, multipartMainDto);
 		
@@ -61,7 +54,12 @@ public class KmlHandler extends XmlHandler {
 		processDescriptionsTexts(document, multipartMainDto);
 		
 		locusMapHandler.processKml(document, multipartMainDto);
-		
+
+		if (multipartMainDto.isThinOutPoints()) {
+			log.info("Thinning out points by the distance...");
+
+		}
+
 		//Processing Google Earth specific options
 		log.info("Kml Google options are being processed...");
 		GoogleEarthHandler googleEarthHandler = new GoogleEarthHandler(kmlUtils);
@@ -237,7 +235,7 @@ public class KmlHandler extends XmlHandler {
 			}
 		}
 	}
-	
+
 	/**
 	 * Just for pretty printing and mark out CDATA descriptions.
 	 * If the whole XML document is inline except CDATA so as to emphasize that CDATA among XML this method add start

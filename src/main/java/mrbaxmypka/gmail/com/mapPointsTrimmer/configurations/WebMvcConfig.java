@@ -1,9 +1,6 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.configurations;
 
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.StringToFileTypeConverter;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.StringToPathTypesConverter;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.StringToPreviewSizeUnitConverter;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.StringToThinOutTypesConverter;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.*;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,6 +55,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addConverter(new StringToPreviewSizeUnitConverter());
         registry.addConverter(new StringToFileTypeConverter());
         registry.addConverter(new StringToThinOutTypesConverter());
+        registry.addConverter(new StringToDistanceTypesConverter());
     }
 
     @Override

@@ -409,10 +409,10 @@ public class MultipartMainDto extends MultipartDto {
     private boolean thinOutPoints = false;
 
     /**
-     * {@link Nullable}. If null {@link ThinOutTypes#ALL} will be used.
+     * {@link Nullable}. If null {@link ThinOutTypes#ANY} will be used.
      */
     @Nullable
-    private ThinOutTypes thinOutType = ThinOutTypes.ALL;
+    private ThinOutTypes thinOutType = ThinOutTypes.ANY;
 
     @Nullable
     @PositiveOrZero(message = "{validation.positiveOrZero}")

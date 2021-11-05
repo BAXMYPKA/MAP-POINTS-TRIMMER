@@ -61,17 +61,6 @@
                 document.querySelector("input[name='pictogram']:checked").value;
         }, 1500);
 
-/*
-        setInterval(function () {
-            if (document.querySelector("input[name='pictogramIcon']:checked") !== null) {
-                document.getElementById("pictogramIconValueTrace").value +=
-                    "," +
-                    document.querySelector("input[name='pictogramIcon']:checked").value;
-                console.log(document.getElementById("pictogramIconValueTrace").value);
-            }
-        }, 1500);
-*/
-
         if (typeof isShutDown !== 'undefined' && !isShutDown) {
 
             let intervalCounter = 0;
@@ -228,25 +217,41 @@
         });
 
         document.getElementById("trim").addEventListener('click', ev => {
+            hideUserMessage();
             //Checks all the filter inputs within the main fieldset for HTML5 inner validation
             for (const child of document.getElementById('poiFileLoadForm').children) {
                 if (child.tagName === "INPUT" && !child.checkValidity()) {
-                    return;
+                    ev.preventDefault();
+                    return; //Exit the method for not to submit
                 }
             }
+
+            //Checks if any thinOut type except "ALL" is selected than one or more icons have to be selected
+            let isAnyChecked = false;
+            if (!document.getElementById("any").checked) {
+                for (const checkBox of document.getElementsByName("thinOutIcons")) {
+                    if (checkBox.checked) {
+                        isAnyChecked = true;
+                    }
+                }
+                if (!isAnyChecked) {
+                    ev.preventDefault();
+                    showWarningUserMessage("Select one or more point icons or use thin out type for any icon!");
+                    return; //Exit the method for not to submit
+                }
+            }
+
             document.getElementById('downloadMessageMain').hidden = false;
             document.querySelector('.loadForm').submit();
         });
 
+
         document.getElementById("thinOutPoints").addEventListener('change', ev => {
             const thinOutDiv = document.getElementById("thinOutDiv");
-            const pictogramIconValueTrace = document.getElementById("pictogramIconValueTrace");
             if (ev.target.checked) {
                 thinOutDiv.hidden = false;
-                pictogramIconValueTrace.disabled = false;
             } else {
                 thinOutDiv.hidden = true;
-                pictogramIconValueTrace.disabled = true;
             }
         });
 
@@ -255,7 +260,7 @@
         thinOutTypes.forEach(thinOutType => {
             thinOutType.addEventListener('change', ev => {
                 const pictogramDropdownThinOut = document.getElementById("pictogram-dropdown-thinOut");
-                if (ev.target.getAttribute("id") === "all") {
+                if (ev.target.getAttribute("id") === "any") {
                     pictogramDropdownThinOut.hidden = true;
                 } else {
                     pictogramDropdownThinOut.hidden = false;

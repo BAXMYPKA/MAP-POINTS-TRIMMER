@@ -250,8 +250,8 @@
 
                     <fieldset id="thinOutDiv" class="loadForm loadForm__fieldSet" hidden>
 
-                        <input type="radio" id="all" name="thinOutType" value="all">
-                        <label for="all" class="loadForm__label loadForm__label_subSelectLabel"
+                        <input type="radio" id="any" name="thinOutType" value="any" checked>
+                        <label for="any" class="loadForm__label loadForm__label_subSelectLabel"
                                th:text="#{html.label.thinOutAllPoints}">
                             To thin out points with any icon
                         </label>
@@ -306,10 +306,6 @@
                                        th:style="'background:url(' + @{${pic.value}} + ')'"></label>
 
                             </th:block>
-
-                            <input type="text" value="" id="pictogramIconValueTrace" name="pictogramIconName"
-                                   hidden
-                                   disabled/>
 
                             <br>
 

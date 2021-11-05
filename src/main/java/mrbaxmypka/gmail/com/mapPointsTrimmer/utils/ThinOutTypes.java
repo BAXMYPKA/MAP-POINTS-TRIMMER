@@ -10,7 +10,7 @@ public enum ThinOutTypes {
     /**
      * To thin out all the points by distance
      */
-    ALL("all"),
+    ANY("any"),
     /**
      * To thin out points only with the selected icons
      */
