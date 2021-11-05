@@ -250,8 +250,10 @@
             const thinOutDiv = document.getElementById("thinOutDiv");
             if (ev.target.checked) {
                 thinOutDiv.hidden = false;
+                thinOutDiv.disabled = false;
             } else {
                 thinOutDiv.hidden = true;
+                thinOutDiv.disabled = true;
             }
         });
 

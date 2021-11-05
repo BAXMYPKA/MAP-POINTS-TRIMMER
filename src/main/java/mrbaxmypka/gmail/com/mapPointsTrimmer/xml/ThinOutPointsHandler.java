@@ -1,7 +1,7 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DistanceTypes;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DistanceUnits;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.ThinOutTypes;
 
 /**
@@ -57,17 +57,17 @@ public class ThinOutPointsHandler {
     /*::                                                                         :*/
     /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
-    private double getDistance(double lat1, double lon1, double lat2, double lon2, DistanceTypes distanceType) {
+    private double getDistance(double lat1, double lon1, double lat2, double lon2, DistanceUnits distanceType) {
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         dist = dist * 60 * 1.1515;
-        if (distanceType.equals(DistanceTypes.KILOMETERS)) {
+        if (distanceType.equals(DistanceUnits.KILOMETERS)) {
             dist = dist * 1.609344;
-        } else if (distanceType.equals(DistanceTypes.METERS)) {
+        } else if (distanceType.equals(DistanceUnits.METERS)) {
             dist = dist * 1.609344 * 1000;
-        } else if (distanceType.equals(DistanceTypes.NAUTICAL_MILES)) {
+        } else if (distanceType.equals(DistanceUnits.NAUTICAL_MILES)) {
             dist = dist * 0.8684;
         }
         return (dist);

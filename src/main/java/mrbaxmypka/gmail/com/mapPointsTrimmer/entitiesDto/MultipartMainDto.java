@@ -2,6 +2,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto;
 
 import lombok.*;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DistanceUnits;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.ThinOutTypes;
@@ -421,6 +422,9 @@ public class MultipartMainDto extends MultipartDto {
     private Integer thinOutDistance;
 
     @Nullable
+    private DistanceUnits distanceUnit;
+
+    @Nullable
     private List<String> thinOutIcons;
 
     /**
@@ -481,6 +485,19 @@ public class MultipartMainDto extends MultipartDto {
      */
     public void setThinOutType(@Nullable String thinOutType) {
         this.thinOutType = ThinOutTypes.getByValue(thinOutType);
+    }
+
+    public void setDistanceUnit(@Nullable DistanceUnits distanceUnit) {
+        if (distanceUnit != null) {
+            this.distanceUnit = distanceUnit;
+        }
+    }
+
+    /**
+     * @param distanceUnit like "meters", "kilometers", or "miles"
+     */
+    public void setDistanceUnit(@Nullable String distanceUnit) {
+        this.distanceUnit = DistanceUnits.getByValue(distanceUnit);
     }
 
     /**

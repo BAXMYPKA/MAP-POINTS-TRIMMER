@@ -248,47 +248,49 @@
                     </div>
                     <br>
 
-                    <fieldset id="thinOutDiv" class="loadForm loadForm__fieldSet" hidden>
+                    <fieldset id="thinOutDiv" class="loadForm loadForm__fieldSet" hidden disabled>
 
-                        <input type="radio" id="any" name="thinOutType" value="any" checked>
-                        <label for="any" class="loadForm__label loadForm__label_subSelectLabel"
-                               th:text="#{html.label.thinOutAllPoints}">
-                            To thin out points with any icon
-                        </label>
-                        <div class="interrogation" title="Description"
-                             th:title="#{commonMessages.interrogationAsDescription.thinOutAllDescription}">
-                            ?
-                        </div>
-                        <br>
-                        <input type="radio" id="inclusive" name="thinOutType" value="inclusive">
-                        <label for="inclusive" class="loadForm__label loadForm__label_subSelectLabel"
-                               th:text="#{html.label.thinOutIncludePoints}">
-                            Only points with the checked icons
-                        </label>
-                        <div class="interrogation" title="Description"
-                             th:title="#{commonMessages.interrogationAsDescription.thinOutIncludeDescription}">
-                            ?
-                        </div>
-                        <br>
-                        <input type="radio" id="exclusive" name="thinOutType" value="exclusive">
-                        <label for="exclusive" class="loadForm__label loadForm__label_subSelectLabel"
-                               th:text="#{html.label.thinOutExcludePoints}">
-                            Except points with the checked icons
-                        </label>
-                        <div class="interrogation" title="Description"
-                             th:title="#{commonMessages.interrogationAsDescription.thinOutExcludeDescription}">
-                            ?
-                        </div>
-                        <br>
-                        <input type="number" value="100" min="10" max="5000" step="10" id="distance" name="thinOutDistance"
-                               class="loadForm_previewSizeInput number_input">
-                        <label for="distance" class="loadForm__label" th:text="#{html.label.thinOutDistance}">
+                        <label for="distance" class="loadForm__label" th:text="#{html.label.minimumDistance}">
                             The minimum distance between two points
                         </label>
                         <div class="interrogation" title="Description"
                              th:title="#{commonMessages.interrogationAsDescription.thinOutDistanceDescription}">
                             ?
                         </div>
+                        <br>
+                        <input type="number" value="100" min="10" max="5000" step="10" id="distance"
+                               name="thinOutDistance"
+                               class="loadForm_previewSizeInput number_input">
+
+                        <select id="distanceUnits" name="distanceUnit" th:title="#{html.text.thinOutDistance}">
+                            <option value="meters"
+                                    th:each="unit:${distanceUnits}"
+                                    th:text="${unit.getUnit()}"
+                                    th:value="${unit}"
+                                    th:selected="${unit.getUnit().equals('meters')}"
+                                    selected>
+                                meters
+                            </option>
+                        </select>
+                        <br>
+
+                        <input type="radio" id="any" name="thinOutType" value="any" checked>
+                        <label for="any" class="loadForm__label loadForm__label_subSelectLabel"
+                               th:text="#{html.label.thinOutAllPoints}">
+                            To thin out points with any icon
+                        </label>
+                        <br>
+                        <input type="radio" id="inclusive" name="thinOutType" value="inclusive">
+                        <label for="inclusive" class="loadForm__label loadForm__label_subSelectLabel"
+                               th:text="#{html.label.thinOutIncludePoints}">
+                            Only points with the checked icons
+                        </label>
+                        <br>
+                        <input type="radio" id="exclusive" name="thinOutType" value="exclusive">
+                        <label for="exclusive" class="loadForm__label loadForm__label_subSelectLabel"
+                               th:text="#{html.label.thinOutExcludePoints}">
+                            Except points with the checked icons
+                        </label>
                         <br>
                         <br>
 

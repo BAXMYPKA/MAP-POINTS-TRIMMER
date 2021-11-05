@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.WebSessionService;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DistanceUnits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -47,6 +48,9 @@ public abstract class AbstractController {
 			model.addAttribute("pictogramsMap", fileService.getPictogramsNamesPaths());
 		if (!model.containsAttribute("zipEncodings"))
 			model.addAttribute("zipEncodings", supportedZipEncodings.split(","));
+		if (!model.containsAttribute("distanceUnits")) {
+			model.addAttribute("distanceUnits", DistanceUnits.values());
+		}
 		log.trace("ServerAddress={}, maxFileSizeMb={}, pictograms={} attributes have been added and the 'index' page is being " +
 						"returned.",
 				serverAddress, maxFileSizeMb, fileService.getPictogramsNamesPaths().size());

@@ -4,6 +4,11 @@ import lombok.ToString;
 
 import java.util.StringJoiner;
 
+/**
+ * {@link #ANY} = All the points will be thin out by distance.
+ * {@link #EXCLUSIVE} = All the points except ones with the selected icons will be thin out by distance.
+ * {@link #INCLUSIVE} = Only the points with the selected icons will be thin out by distance.
+ */
 @ToString
 public enum ThinOutTypes {
 

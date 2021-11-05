@@ -55,7 +55,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addConverter(new StringToPreviewSizeUnitConverter());
         registry.addConverter(new StringToFileTypeConverter());
         registry.addConverter(new StringToThinOutTypesConverter());
-        registry.addConverter(new StringToDistanceTypesConverter());
+        registry.addConverter(new StringToDistanceUnitsConverter());
     }
 
     @Override
