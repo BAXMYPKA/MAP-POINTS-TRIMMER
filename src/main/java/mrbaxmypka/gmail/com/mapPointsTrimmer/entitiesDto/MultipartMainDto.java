@@ -4,12 +4,14 @@ import lombok.*;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.GoogleIconsService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PathTypes;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.PreviewSizeUnits;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.ThinOutTypes;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
@@ -403,6 +405,24 @@ public class MultipartMainDto extends MultipartDto {
     @Nullable
     private String pictogramName;
 
+    @Nullable
+    private boolean thinOutPoints = false;
+
+    /**
+     * {@link Nullable}. If null {@link ThinOutTypes#ALL} will be used.
+     */
+    @Nullable
+    private ThinOutTypes thinOutType = ThinOutTypes.ALL;
+
+    @Nullable
+    @PositiveOrZero(message = "{validation.positiveOrZero}")
+    @Min(value = 10, message = "{validation.minNumber}}")
+    @Max(value = 5000, message = "{validation.maxNumber}")
+    private Integer thinOutDistance;
+
+    @Nullable
+    private List<String> thinOutIcons;
+
     /**
      * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartMainDto, Locale, HttpSession, HttpServletResponse)}
      * to associate a process (thread) and a temp file with the current User session.
@@ -448,6 +468,19 @@ public class MultipartMainDto extends MultipartDto {
      */
     public void setPathType(@Nullable String pathType) {
         this.pathType = PathTypes.getByValue(pathType);
+    }
+
+    public void setThinOutType(@Nullable ThinOutTypes thinOutType) {
+        if (thinOutType != null) {
+            this.thinOutType = thinOutType;
+        }
+    }
+
+    /**
+     * @param thinOutType "all", "inclusive", or "exclusive"
+     */
+    public void setThinOutType(@Nullable String thinOutType) {
+        this.thinOutType = ThinOutTypes.getByValue(thinOutType);
     }
 
     /**

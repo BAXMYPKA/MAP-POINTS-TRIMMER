@@ -61,6 +61,17 @@
                 document.querySelector("input[name='pictogram']:checked").value;
         }, 1500);
 
+/*
+        setInterval(function () {
+            if (document.querySelector("input[name='pictogramIcon']:checked") !== null) {
+                document.getElementById("pictogramIconValueTrace").value +=
+                    "," +
+                    document.querySelector("input[name='pictogramIcon']:checked").value;
+                console.log(document.getElementById("pictogramIconValueTrace").value);
+            }
+        }, 1500);
+*/
+
         if (typeof isShutDown !== 'undefined' && !isShutDown) {
 
             let intervalCounter = 0;
@@ -225,6 +236,32 @@
             }
             document.getElementById('downloadMessageMain').hidden = false;
             document.querySelector('.loadForm').submit();
+        });
+
+        document.getElementById("thinOutPoints").addEventListener('change', ev => {
+            const thinOutDiv = document.getElementById("thinOutDiv");
+            const pictogramIconValueTrace = document.getElementById("pictogramIconValueTrace");
+            if (ev.target.checked) {
+                thinOutDiv.hidden = false;
+                pictogramIconValueTrace.disabled = false;
+            } else {
+                thinOutDiv.hidden = true;
+                pictogramIconValueTrace.disabled = true;
+            }
+        });
+
+        const thinOutTypesByName = document.getElementsByName("thinOutType");
+        const thinOutTypes = Array.from(thinOutTypesByName);
+        thinOutTypes.forEach(thinOutType => {
+            thinOutType.addEventListener('change', ev => {
+                const pictogramDropdownThinOut = document.getElementById("pictogram-dropdown-thinOut");
+                if (ev.target.getAttribute("id") === "all") {
+                    pictogramDropdownThinOut.hidden = true;
+                } else {
+                    pictogramDropdownThinOut.hidden = false;
+                }
+
+            });
         });
 
         document.getElementById("replaceLocusIcons").addEventListener('change', ev => {

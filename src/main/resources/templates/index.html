@@ -7,9 +7,9 @@
     <link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
           th:href="@{/img/favicon32x32.png}">
     <link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
-    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}" defer></script>
-    <script src="../static/scripts/index.js" th:src="@{scripts/index.js}" type="application/javascript" defer></script>
-    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.js}" defer></script>
+    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.es6}" defer></script>
+    <script src="../static/scripts/index.js" th:src="@{scripts/index.es6}" type="application/javascript" defer></script>
+    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.es6}" defer></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         const maxFileSizeMb = [[${maxFileSizeMb}]] !== null ? [[${maxFileSizeMb}]] : 4096;
@@ -141,7 +141,7 @@
 
             <label for="fieldSetMain" class="loadForm__label loadForm__label_LoadFieldSet"
                    th:text="#{html.label.additionalParams}">
-                Set parameters
+                Set common parameters
             </label>
 
             <fieldset id="fieldSetMain" class="loadForm loadForm__fieldSet">
@@ -236,6 +236,86 @@
                         ?
                     </div>
                     <br>
+
+                    <input id="thinOutPoints" name="thinOutPoints" type="checkbox">
+                    <label for="thinOutPoints" class="loadForm__label" th:text="#{html.label.thinOutPoints}">
+                        To thin out closely spaced points
+                    </label>
+
+                    <div class="interrogation" title="Description"
+                         th:title="#{commonMessages.interrogationAsDescription.thinOutPointsDesctiption}">
+                        ?
+                    </div>
+                    <br>
+
+                    <fieldset id="thinOutDiv" class="loadForm loadForm__fieldSet" hidden>
+
+                        <input type="radio" id="all" name="thinOutType" value="all">
+                        <label for="all" class="loadForm__label loadForm__label_subSelectLabel"
+                               th:text="#{html.label.thinOutAllPoints}">
+                            To thin out points with any icon
+                        </label>
+                        <div class="interrogation" title="Description"
+                             th:title="#{commonMessages.interrogationAsDescription.thinOutAllDescription}">
+                            ?
+                        </div>
+                        <br>
+                        <input type="radio" id="inclusive" name="thinOutType" value="inclusive">
+                        <label for="inclusive" class="loadForm__label loadForm__label_subSelectLabel"
+                               th:text="#{html.label.thinOutIncludePoints}">
+                            Only points with the checked icons
+                        </label>
+                        <div class="interrogation" title="Description"
+                             th:title="#{commonMessages.interrogationAsDescription.thinOutIncludeDescription}">
+                            ?
+                        </div>
+                        <br>
+                        <input type="radio" id="exclusive" name="thinOutType" value="exclusive">
+                        <label for="exclusive" class="loadForm__label loadForm__label_subSelectLabel"
+                               th:text="#{html.label.thinOutExcludePoints}">
+                            Except points with the checked icons
+                        </label>
+                        <div class="interrogation" title="Description"
+                             th:title="#{commonMessages.interrogationAsDescription.thinOutExcludeDescription}">
+                            ?
+                        </div>
+                        <br>
+                        <input type="number" value="100" min="10" max="5000" step="10" id="distance" name="thinOutDistance"
+                               class="loadForm_previewSizeInput number_input">
+                        <label for="distance" class="loadForm__label" th:text="#{html.label.thinOutDistance}">
+                            The minimum distance between two points
+                        </label>
+                        <div class="interrogation" title="Description"
+                             th:title="#{commonMessages.interrogationAsDescription.thinOutDistanceDescription}">
+                            ?
+                        </div>
+                        <br>
+                        <br>
+
+                        <div id="pictogram-dropdown-thinOut" hidden>
+
+                            <th:block th:each="pic:${pictogramsMap}">
+
+                                <input type="checkbox" id="thinOutIcons" th:id="${'icon-'+pic.key}"
+                                       name="thinOutIcons"
+                                       value="sport-cyclingsport.png"
+                                       th:value="${pic.key}"/>
+                                <label for="thinOutIcons"
+                                       style="background:url('../static/pictograms/sport-cyclingsport.png') no-repeat"
+                                       th:for="${'icon-'+pic.key}"
+                                       th:style="'background:url(' + @{${pic.value}} + ')'"></label>
+
+                            </th:block>
+
+                            <input type="text" value="" id="pictogramIconValueTrace" name="pictogramIconName"
+                                   hidden
+                                   disabled/>
+
+                            <br>
+
+                        </div>
+
+                    </fieldset>
 
                 </details>
 

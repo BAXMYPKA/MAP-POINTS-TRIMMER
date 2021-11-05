@@ -508,6 +508,86 @@ input[type=radio] {
 /*IMPORTANT PIECE OF JS CODE TO BE INCLUDED INTO JS FILE*/
 /*var i = setInterval(function(){$("#trace").val($("input[name=line-style]:checked").val());},100);*/
 
+
+
+
+
+#pictogram-dropdown-thinOut {
+    /*style the "box" in its minimzed state*/
+    /*display: inline-block;*/
+    /*display: none;*/
+    border: 1px solid black;
+    width: 54px;
+    height: 280px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /*animate collapsing the dropdown from open to closed state (v. fast)*/
+    -moz-transition: height 0.1s;
+    -webkit-transition: height 0.1s;
+    -o-transition: height 0.1s;
+    transition: height 0.1s;
+}
+
+#pictogram-dropdown-thinOut:hover {
+    /*when expanded, the dropdown will get native means of scrolling*/
+    /*height: 200px;*/
+    /*width: 54px;*/
+    /*overflow-y: scroll;*/
+    /*nice and smooth expand - speed this up at your preference or remove animation altogether*/
+    -moz-transition: height 0.5s;
+    -webkit-transition: height 0.5s;
+    -o-transition: height 0.5s;
+    transition: 0.5s;
+}
+
+#pictogram-dropdown-thinOut input {
+    /*hide the nasty default radio buttons. like, completely!*/
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0
+}
+
+#pictogram-dropdown-thinOut label {
+    /*style the labels to look like dropdown options, kinda*/
+    display: none;
+    margin: 2px;
+    height: 38px;
+    width: 48px;
+    opacity: 0.2;
+    /*setting correct backgrounds - add additional rules with selectors based on "for" attribute, something like label[for=line2]{background-image:...}*/
+    /*background:url("../pictograms/sport-cyclingsport.png") no-repeat;*/
+    background: no-repeat;
+}
+
+#pictogram-dropdown-thinOut:hover label {
+    /*this is how labels render in the "expanded" state. we want to see only the selected radio button in the collapsed menu, and all of them when expanded*/
+    display: block;
+}
+
+#pictogram-dropdown-thinOut label:hover {
+    opacity: 0.7;
+}
+
+#pictogram-dropdown-thinOut input:checked + label {
+    /*tricky! labels immediately following a checked radio button (with our markup they are semantically related) should be fully opaque regardless of hover, and they should always be visible (i.e. even in the collapsed menu*/
+    opacity: 1 !important;
+    display: block;
+}
+
+/*pfft, nothing as cool here, just the value trace*/
+#pictogramIconValueTrace {
+    margin: 0 0 2px;
+}
+
+
+/*IMPORTANT PIECE OF JS CODE TO BE INCLUDED INTO JS FILE*/
+/*var i = setInterval(function(){$("#trace").val($("input[name=line-style]:checked").val());},100);*/
+
+
+
+
+
 .loadForm_previewSizeInput {
     width: 4em;
 }
@@ -705,4 +785,8 @@ input[type=radio] {
 
 .adminVerifyButton:active {
     background-color: gray;
+}
+
+.number_input {
+    margin-top: 0.2em;
 }
