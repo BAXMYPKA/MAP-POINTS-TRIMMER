@@ -421,8 +421,11 @@ public class MultipartMainDto extends MultipartDto {
     @Max(value = 5000, message = "{validation.maxNumber}")
     private Integer thinOutDistance;
 
+    /**
+     * Default {@link DistanceUnits#METERS}
+     */
     @Nullable
-    private DistanceUnits distanceUnit;
+    private DistanceUnits distanceUnit = DistanceUnits.METERS;
 
     @Nullable
     private List<String> thinOutIcons;

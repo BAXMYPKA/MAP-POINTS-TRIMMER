@@ -504,13 +504,8 @@ input[type=radio] {
     margin: 0 0 2px;
 }
 
-
 /*IMPORTANT PIECE OF JS CODE TO BE INCLUDED INTO JS FILE*/
 /*var i = setInterval(function(){$("#trace").val($("input[name=line-style]:checked").val());},100);*/
-
-
-
-
 
 #pictogram-dropdown-thinOut {
     /*style the "box" in its minimzed state*/
@@ -525,7 +520,7 @@ input[type=radio] {
     -moz-transition: height 0.1s;
     -webkit-transition: height 0.1s;
     -o-transition: height 0.1s;
-    transition: height 0.1s;
+    transition: 0.1s;
 }
 
 #pictogram-dropdown-thinOut:hover {
@@ -534,10 +529,10 @@ input[type=radio] {
     /*width: 54px;*/
     /*overflow-y: scroll;*/
     /*nice and smooth expand - speed this up at your preference or remove animation altogether*/
-    -moz-transition: height 0.5s;
-    -webkit-transition: height 0.5s;
-    -o-transition: height 0.5s;
-    transition: 0.5s;
+    /*-moz-transition: height 0.5s;*/
+    /*-webkit-transition: height 0.5s;*/
+    /*-o-transition: height 0.5s;*/
+    /*transition: 0.5s;*/
 }
 
 #pictogram-dropdown-thinOut input {
@@ -574,19 +569,6 @@ input[type=radio] {
     opacity: 1 !important;
     display: block;
 }
-
-/*pfft, nothing as cool here, just the value trace*/
-#pictogramIconValueTrace {
-    margin: 0 0 2px;
-}
-
-
-/*IMPORTANT PIECE OF JS CODE TO BE INCLUDED INTO JS FILE*/
-/*var i = setInterval(function(){$("#trace").val($("input[name=line-style]:checked").val());},100);*/
-
-
-
-
 
 .loadForm_previewSizeInput {
     width: 4em;

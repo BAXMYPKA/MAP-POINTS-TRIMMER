@@ -3,6 +3,7 @@ package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DistanceUnits;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.ThinOutTypes;
+import org.w3c.dom.Document;
 
 /**
  * Thins out .kml points by a given distance.
@@ -13,7 +14,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.ThinOutTypes;
  */
 public class ThinOutPointsHandler {
 
-    void thinOutPoints(MultipartMainDto multipartMainDto) {
+    void thinOutPoints(Document kmlDocument, MultipartMainDto multipartMainDto) {
         if (multipartMainDto.getThinOutType().equals(ThinOutTypes.ANY)) {
             //
         } else if (multipartMainDto.getThinOutType().equals(ThinOutTypes.EXCLUSIVE)) {
@@ -23,7 +24,7 @@ public class ThinOutPointsHandler {
         }
     }
 
-    private void thinOutInclusive(MultipartMainDto multipartMainDto) {
+    private void thinOutInclusive(Document kmlDocument, MultipartMainDto multipartMainDto) {
         if (multipartMainDto.getThinOutIcons() == null || multipartMainDto.getThinOutIcons().isEmpty()) {
 
         }
