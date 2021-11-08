@@ -10,6 +10,7 @@ public enum DistanceUnits {
     METERS("meters"),
     KILOMETERS("kilometers"),
     MILES("miles"),
+    YARDS("yards"),
     NAUTICAL_MILES("nautical_miles");
 
     private final String unit;

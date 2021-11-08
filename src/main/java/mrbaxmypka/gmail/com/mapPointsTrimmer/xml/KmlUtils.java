@@ -560,6 +560,10 @@ public class KmlUtils {
         return xmlDomUtils.getChildNodesFromParent(placemark, "coordinates", null, true, true, false).get(0);
     }
 
+    Node getDescriptionNodeFromPlacemark(Node placemark) {
+        return xmlDomUtils.getChildNodesFromParent(placemark, "descriptin", null, false, true, false).get(0);
+    }
+
     Node getStyleUrlNodeFromPlacemark(Node placemark) {
         return xmlDomUtils.getChildNodesFromParent(placemark, "styleUrl", null, false, true, false).get(0);
     }

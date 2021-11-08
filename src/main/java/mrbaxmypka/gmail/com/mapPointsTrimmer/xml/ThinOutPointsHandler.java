@@ -4,10 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DistanceUnits;
-import org.springframework.context.MessageSource;
+import org.springframework.lang.Nullable;
 import org.w3c.dom.Document;
-
-import java.util.Locale;
 
 /**
  * Thins out .kml points by a given distance.
@@ -52,13 +50,24 @@ public abstract class ThinOutPointsHandler {
     /*::                                                                         :*/
     /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
-    protected double getDistance(double lat1, double lon1, double lat2, double lon2, DistanceUnits distanceType) {
+    /**
+     * @param lat1
+     * @param lon1
+     * @param lat2
+     * @param lon2
+     * @param distanceType {@link Nullable} If null, the value will be returned in miles.
+     * @return If a given {@link DistanceUnits} is null the value will be returned in miles.
+     * Otherwise it will be returned according to the given units.
+     */
+    protected double getDistance(double lat1, double lon1, double lat2, double lon2, @Nullable DistanceUnits distanceType) {
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
-        if (distanceType.equals(DistanceUnits.KILOMETERS)) {
+        dist = dist * 60 * 1.1515; //In miles
+        if (distanceType.equals(DistanceUnits.YARDS)) {
+            dist = dist * 1760;
+        } else if (distanceType.equals(DistanceUnits.KILOMETERS)) {
             dist = dist * 1.609344;
         } else if (distanceType.equals(DistanceUnits.METERS)) {
             dist = dist * 1.609344 * 1000;

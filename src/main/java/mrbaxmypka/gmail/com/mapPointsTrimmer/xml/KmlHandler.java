@@ -45,7 +45,8 @@ public class KmlHandler extends XmlHandler {
 		XmlDomUtils xmlDomUtils = new XmlDomUtils(document);
 		KmlUtils kmlUtils = new KmlUtils(document, xmlDomUtils);
 		LocusMapHandler locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
-		ThinOutKmlPointsHandler thinOutKmlPointsHandler = new ThinOutKmlPointsHandler(kmlUtils);
+		ThinOutKmlPointsHandler thinOutKmlPointsHandler = new ThinOutKmlPointsHandler(
+				kmlUtils, getFileService(), getHtmlHandler());
 
 		log.info("Setting the new path to images...");
 		processHref(document, multipartMainDto);

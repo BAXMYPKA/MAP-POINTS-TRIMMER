@@ -33,7 +33,7 @@ public class MultipartMainDto extends MultipartDto {
     private final Integer MAX_TEXT_SIZE_PERCENTS = 300;
     private final Double MAX_SCALE = 3.0;
 
-//    @NonNull //Lombok required arg for the constructor
+    //    @NonNull //Lombok required arg for the constructor
     @NotNull(message = "{validation.notNull}")
     private MultipartFile multipartFile;
 
@@ -417,7 +417,7 @@ public class MultipartMainDto extends MultipartDto {
 
     @Nullable
     @PositiveOrZero(message = "{validation.positiveOrZero}")
-    @Min(value = 10, message = "{validation.minNumber}}")
+    @Min(value = 1, message = "{validation.minNumber}}")
     @Max(value = 5000, message = "{validation.maxNumber}")
     private Integer thinOutDistance;
 
@@ -427,8 +427,12 @@ public class MultipartMainDto extends MultipartDto {
     @Nullable
     private DistanceUnits distanceUnit = DistanceUnits.METERS;
 
+    /**
+     * If {@link ThinOutTypes#INCLUSIVE} or {@link ThinOutTypes#EXCLUSIVE} it is a list of icons names which Placemarks are
+     * to be retained or removed.
+     */
     @Nullable
-    private List<String> thinOutIcons;
+    private List<String> thinOutIconsNames;
 
     /**
      * To be filled by {@link mrbaxmypka.gmail.com.mapPointsTrimmer.controllers.FilesController#postKml(MultipartMainDto, Locale, HttpSession, HttpServletResponse)}
