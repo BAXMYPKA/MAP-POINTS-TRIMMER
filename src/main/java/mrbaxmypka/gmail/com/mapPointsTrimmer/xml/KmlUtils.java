@@ -262,11 +262,14 @@ public class KmlUtils {
     }
 
     /**
-     * @param styleUrl {@literal <StyleMap>s or <Placemark>s <styleUrl> to the <Style> Node} WITHOUT FIRST '#' SIGN!
+     * @param styleUrl {@literal <StyleMap>s or <Placemark>s <styleUrl> to the <Style> Node} with or without the first '#' sign.
      * @return {@link Node} {@literal <Style> or <StyleMap>} as StyleObject from {@link KmlUtils#getStyleObjectsMap()}.
      * If "styleUrl" is null returns a new {@link Node} with "Default" tagName.
      */
     Node getStyleObject(String styleUrl) {
+        if (styleUrl.startsWith("#")) {
+            styleUrl = styleUrl.substring(1);
+        }
         Node styleNode = getStyleObjectsMap().getOrDefault(styleUrl, document.createElement("Default"));
         if (styleNode.getNodeName().contentEquals("Default")) {
             log.warn("The Document is incorrect because <styleUrl>#{}</styleUrl> points to non-existent <Style> with no such id", styleUrl);
@@ -553,4 +556,11 @@ public class KmlUtils {
         return highlightStyleUrl;
     }
 
+    Node getCoordinatesNodeFromPlacemark(Node placemark) {
+        return xmlDomUtils.getChildNodesFromParent(placemark, "coordinates", null, true, true, false).get(0);
+    }
+
+    Node getStyleUrlNodeFromPlacemark(Node placemark) {
+        return xmlDomUtils.getChildNodesFromParent(placemark, "styleUrl", null, false, true, false).get(0);
+    }
 }

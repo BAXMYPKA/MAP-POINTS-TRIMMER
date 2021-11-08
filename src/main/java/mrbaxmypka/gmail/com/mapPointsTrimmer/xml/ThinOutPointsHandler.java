@@ -1,9 +1,13 @@
 package mrbaxmypka.gmail.com.mapPointsTrimmer.xml;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DistanceUnits;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.ThinOutTypes;
+import org.springframework.context.MessageSource;
 import org.w3c.dom.Document;
+
+import java.util.Locale;
 
 /**
  * Thins out .kml points by a given distance.
@@ -12,23 +16,13 @@ import org.w3c.dom.Document;
  * If a .KMZ file given AND also a .KMZ is supposed to be returned
  * the close spaced points will be deleted with their icons and photos.
  */
-public class ThinOutPointsHandler {
+@Getter(AccessLevel.PROTECTED)
+public abstract class ThinOutPointsHandler {
 
-    void thinOutPoints(Document kmlDocument, MultipartMainDto multipartMainDto) {
-        if (multipartMainDto.getThinOutType().equals(ThinOutTypes.ANY)) {
-            //
-        } else if (multipartMainDto.getThinOutType().equals(ThinOutTypes.EXCLUSIVE)) {
-            //
-        } else if (multipartMainDto.getThinOutType().equals(ThinOutTypes.INCLUSIVE)) {
-            //
-        }
+    public ThinOutPointsHandler() {
     }
 
-    private void thinOutInclusive(Document kmlDocument, MultipartMainDto multipartMainDto) {
-        if (multipartMainDto.getThinOutIcons() == null || multipartMainDto.getThinOutIcons().isEmpty()) {
-
-        }
-    }
+    abstract void thinOutPoints(Document kmlDocument, MultipartMainDto multipartMainDto);
 
     /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
     /*::                                                                         :*/
@@ -58,7 +52,7 @@ public class ThinOutPointsHandler {
     /*::                                                                         :*/
     /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
-    private double getDistance(double lat1, double lon1, double lat2, double lon2, DistanceUnits distanceType) {
+    protected double getDistance(double lat1, double lon1, double lat2, double lon2, DistanceUnits distanceType) {
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);

@@ -45,6 +45,7 @@ public class KmlHandler extends XmlHandler {
 		XmlDomUtils xmlDomUtils = new XmlDomUtils(document);
 		KmlUtils kmlUtils = new KmlUtils(document, xmlDomUtils);
 		LocusMapHandler locusMapHandler = new LocusMapHandler(getFileService(), xmlDomUtils, kmlUtils, getHtmlHandler());
+		ThinOutKmlPointsHandler thinOutKmlPointsHandler = new ThinOutKmlPointsHandler(kmlUtils);
 
 		log.info("Setting the new path to images...");
 		processHref(document, multipartMainDto);
@@ -57,7 +58,7 @@ public class KmlHandler extends XmlHandler {
 
 		if (multipartMainDto.isThinOutPoints()) {
 			log.info("Thinning out points by the distance...");
-
+			//TODO: to continue
 		}
 
 		//Processing Google Earth specific options
