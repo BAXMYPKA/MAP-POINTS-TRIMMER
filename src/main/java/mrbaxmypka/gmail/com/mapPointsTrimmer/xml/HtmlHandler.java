@@ -86,6 +86,10 @@ public class HtmlHandler {
 		return parsedHtmlFragment.html();
 	}
 	
+	/**
+	 * @param description As CDATA
+	 * @return The full "src" text with paths to images
+	 */
 	List<String> getAllImagesFromDescription(String description) {
 		log.debug("Getting all the images from a given description text...");
 		Element parsedHtmlFragment = Jsoup.parseBodyFragment(description).body();
