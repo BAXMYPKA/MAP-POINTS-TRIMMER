@@ -51,17 +51,27 @@ public abstract class ThinOutPointsHandler {
     /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
     /**
-     * @param lat1
-     * @param lon1
-     * @param lat2
-     * @param lon2
+     * The haversine formula determines the great-circle distance between two points on a sphere given their longitudes and latitudes.
+     * Important in navigation, it is a special case of a more general formula in spherical trigonometry,
+     * the law of haversines, that relates the sides and angles of spherical triangles
+     *
+     * @param latitude1
+     * @param longitude1
+     * @param latitude2
+     * @param longitude2
      * @param distanceType {@link Nullable} If null, the value will be returned in miles.
-     * @return If a given {@link DistanceUnits} is null the value will be returned in miles.
+     * @return A haversine (by a semi sphere, NOT a straight line!) distance between two points.
+     * If a given {@link DistanceUnits} is null the value will be returned in miles.
      * Otherwise it will be returned according to the given units.
      */
-    protected double getDistance(double lat1, double lon1, double lat2, double lon2, @Nullable DistanceUnits distanceType) {
-        double theta = lon1 - lon2;
-        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+    protected double getHaversineDistance(double latitude1, double longitude1,
+                                          double latitude2, double longitude2,
+                                          @Nullable DistanceUnits distanceType) {
+        if (distanceType == null) {
+            distanceType = DistanceUnits.MILES;
+        }
+        double theta = longitude1 - longitude2;
+        double dist = Math.sin(deg2rad(latitude1)) * Math.sin(deg2rad(latitude2)) + Math.cos(deg2rad(latitude1)) * Math.cos(deg2rad(latitude2)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         dist = dist * 60 * 1.1515; //In miles
@@ -89,6 +99,51 @@ public abstract class ThinOutPointsHandler {
     /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
+    }
+
+    /**
+     * The haversine formula determines the great-circle distance between two points on a sphere given their longitudes and latitudes.
+     * Important in navigation, it is a special case of a more general formula in spherical trigonometry,
+     * the law of haversines, that relates the sides and angles of spherical triangles.
+     * This method also invokes the given altitudes difference to determine the distance between two points
+     *
+     * 1)высота одного дерева 20 м а второго 9 м расстояние между деревьями составляет 60 м Найдите расстояние между их верхушками этих деревьев
+     * 2)высоты двух сосен соответственно равны 21 м и 28 м расстояние между ними составляет 24 м Найдите расстояние между верхушками этих деревьев
+     *
+     * Решение1:
+     * Высота1=20
+     * Высота2=9
+     * РасстояниеВплоскости=60
+     * РазницаВысот=Высота1 МИНУС Высота2
+     * По теореме Пифагора:
+     * Расстояние=КВАДРАТНЫЙ КОРЕНЬ из (РазницаВысот В КВАДРАТЕ) + (Расстояние В КВАДРАТЕ)
+     *
+     * Решение2:
+     * Высота1=28
+     * Высота2=21
+     * РасстояниеВплоскости=24
+     * РазницаВысот=7
+     * По теореме Пифагора:
+     * Расстояние=КВАДРАТНЫЙ КОРЕНЬ из (РасстояниеВплоскости В КВАДРАТЕ) ПЛЮС (РазницаВысот В КВАДРАТЕ)
+     *
+     * @param latitude1
+     * @param longitude1
+     * @param latitude2
+     * @param longitude2
+     * @param distanceType {@link Nullable} If null, the value will be returned in miles.
+     * @return A haversine (by a semi sphere, NOT a straight line!) distance between two points
+     * including the altitudes difference.
+     * If a given {@link DistanceUnits} is null the value will be returned in miles.
+     * Otherwise it will be returned according to the given units.
+     */
+    protected double getHaversineDistance(
+            double latitude1, double longitude1,
+            double latitude2, double longitude2,
+            double altitude1, double altitude2,
+            @Nullable DistanceUnits distanceType) {
+        double haversineDistance = getHaversineDistance(latitude1, longitude1, latitude2, longitude2, distanceType);
+        double altitudeDifference = Math.max(altitude1, altitude2) - Math.min(altitude1, altitude2);
+        return Math.sqrt((Math.pow(haversineDistance, 2.0)) + (Math.pow(altitudeDifference, 2)));
     }
 
 //    System.out.println(distance(32.9697, -96.80322, 29.46786, -98.53506, 'M') + " Miles\n");

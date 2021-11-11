@@ -6,7 +6,6 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.PlacemarkNodeDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DateTimeParser;
-import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.ThinOutTypes;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -50,21 +49,16 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
             throw new IllegalArgumentException("The minimum or maximum distance is wrong!");
         }
         setPlacemarkNodeDtoList(kmlDocument);
-
-        if (multipartMainDto.getThinOutType().equals(ThinOutTypes.ANY)) {
-            //
-        } else if (multipartMainDto.getThinOutType().equals(ThinOutTypes.EXCLUSIVE)) {
-            //
-        } else if (multipartMainDto.getThinOutType().equals(ThinOutTypes.INCLUSIVE)) {
-            thinOutInclusive(kmlDocument, multipartMainDto);
-        }
+        checkThinOutType(multipartMainDto);
+        removePlacemarks(kmlDocument, multipartMainDto);
     }
 
-    void thinOutInclusive(Document kmlDocument, MultipartMainDto multipartMainDto) throws IllegalArgumentException {
-        if (multipartMainDto.getThinOutIconsNames() == null || multipartMainDto.getThinOutIconsNames().isEmpty()) {
-            throw new IllegalArgumentException("When inclusive thinning out you have to select one or more icons!");
+    private void checkThinOutType(MultipartMainDto multipartMainDto) throws IllegalArgumentException {
+        if ((multipartMainDto.getThinOutType().isInclusive() || multipartMainDto.getThinOutType().isExclusive()) &&
+                (multipartMainDto.getThinOutIconsNames() == null || multipartMainDto.getThinOutIconsNames().isEmpty())) {
+            throw new IllegalArgumentException(
+                    "When inclusive or exclusive type of thinning out you have to select one or more icons!");
         }
-        removePlacemarks(kmlDocument, multipartMainDto);
     }
 
     /**
@@ -80,7 +74,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
             if (canBeDeleted(placemarkNodeDto, clonedPlacemarksDto, multipartMainDto)) {
                 //Also remove this placemarkDto from the cloned List not to compare it twice in the future
                 clonedPlacemarksDto.remove(placemarkNodeDto);
-                removePlacemarkImagesFromKmz(placemarkNodeDto, multipartMainDto);
+                removePlacemarkImagesFromKmz(placemarkNodeDto, multipartMainDto, clonedPlacemarksDto);
                 //Remove from the main Document
                 kmlDocument.removeChild(placemarkNodeDto.getPlacemarkNode());
                 return true;
@@ -90,32 +84,66 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         });
     }
 
+    /**
+     * Finds the first Placemark by the closest distance and determines the possibility.
+     *
+     * @param placemarkToBeDeleted
+     * @param compareList
+     * @param multipartMainDto
+     * @return
+     */
     private boolean canBeDeleted(
             PlacemarkNodeDto placemarkToBeDeleted, List<PlacemarkNodeDto> compareList, MultipartMainDto multipartMainDto) {
 
-        //TODO: to compare by date
+        if (!canBeDeletedByIcon(placemarkToBeDeleted, multipartMainDto)) {
+            return false;
+        }
 
         return compareList.stream().anyMatch(placemarkToBeCompared -> {
-            double distance = getDistance(placemarkToBeDeleted.getLatitude(), placemarkToBeDeleted.getLongitude(),
+            double distance = getHaversineDistance(placemarkToBeDeleted.getLatitude(), placemarkToBeDeleted.getLongitude(),
                     placemarkToBeCompared.getLatitude(), placemarkToBeCompared.getLongitude(),
+                    placemarkToBeDeleted.getAltitude(), placemarkToBeCompared.getAltitude(),
                     multipartMainDto.getDistanceUnit());
-            if (distance < multipartMainDto.getThinOutDistance() &&
-                    ThinOutTypes.INCLUSIVE.equals(multipartMainDto.getThinOutType()) &&
-                    multipartMainDto.getThinOutIconsNames().contains(placemarkToBeDeleted.getIconName())) {
-                //Has to be deleted inclusively
+            boolean canByDeletedByDistance = distance < multipartMainDto.getThinOutDistance();
+            boolean canBeDeletedByDate = canBeDeletedByDate(placemarkToBeDeleted, placemarkToBeCompared);
+
+            if (canBeDeletedByDate && canByDeletedByDistance) {
+                //Has to be deleted or inclusively either any Placemark with any icon name is allowed for deletion
                 return true;
-            } else if (distance < multipartMainDto.getThinOutDistance() &&
-                    ThinOutTypes.EXCLUSIVE.equals(multipartMainDto.getThinOutType()) &&
-                    multipartMainDto.getThinOutIconsNames().contains(placemarkToBeDeleted.getIconName())) {
-                //The Placemark with that icon name doesn't allowed for deletion
-                return false;
             } else {
-                //Any Placemark with any icon name is allowed for deletion
-                return true;
+                return false;
             }
         });
     }
 
+    /**
+     * @return True if the Placemark icon name is placed in the Inclusive list
+     * either not included in the Exclusive list or Placemarks with any icon are allowed for deletion.
+     * Otherwise returns false.
+     */
+    private boolean canBeDeletedByIcon(PlacemarkNodeDto placemarkNodeDto, MultipartMainDto multipartMainDto) {
+        if (multipartMainDto.getThinOutType().isExclusive() &&
+                multipartMainDto.getThinOutIconsNames().contains(placemarkNodeDto.getIconName())) {
+            //The Placemark to be deleted with that icon name isn't allowed for deletion
+            return false;
+        } else if (multipartMainDto.getThinOutType().isInclusive() &&
+                !multipartMainDto.getThinOutIconsNames().contains(placemarkNodeDto.getIconName())) {
+            //This Placemark to be deleted icon is not included in the allowed for deletion list
+            return false;
+        } else {
+            //This Placemark icon is allowed to be deleted
+            return true;
+        }
+    }
+
+    /**
+     * Determines the oldest TimeStamp.
+     *
+     * @param placemarkToBeDeleted  If it is has the oldest TimeStamp it has to be deleted.
+     * @param placemarkToBeCompared It it is has the oldest TimeStamp the 'placemarkToBeDeleted' has not to be deleted
+     * @return If the 'placemarkToBeDeleted' is older than 'placemarkToBeCompared' or has to gx:TimeStamp at all returns true.
+     * Otherwise false.
+     */
     private boolean canBeDeletedByDate(PlacemarkNodeDto placemarkToBeDeleted, PlacemarkNodeDto placemarkToBeCompared) {
         Node whenToBeDeleted = kmlUtils.getWhenNode(kmlUtils.getGxTimeStampNode(placemarkToBeDeleted.getPlacemarkNode()));
         LocalDateTime dateTimeToBeDeleted = dateTimeParser.parseWhenLocalDateTime(whenToBeDeleted.getTextContent());
@@ -123,12 +151,15 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         Node whenToBeCompared = kmlUtils.getWhenNode(kmlUtils.getGxTimeStampNode(placemarkToBeCompared.getPlacemarkNode()));
         LocalDateTime dateTimeToBeCompared = dateTimeParser.parseWhenLocalDateTime(whenToBeCompared.getTextContent());
 
-        if (dateTimeToBeDeleted.isEqual(LocalDateTime.MIN) && dateTimeToBeCompared.isEqual(LocalDateTime.MIN)) {
+        if (dateTimeToBeDeleted.isEqual(LocalDateTime.MIN)) {
             //Both Placemarks don't have valid timeStamps. Any of them can be deleted
             return true;
+        } else if (dateTimeToBeCompared.isEqual(LocalDateTime.MIN)) {
+            //The only current Placemark to be deleted has the TimeStamp so has to be retained.
+            return false;
         }
 
-        return false;
+        return dateTimeToBeDeleted.isBefore(dateTimeToBeCompared);
     }
 
     /**
@@ -137,30 +168,39 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
      * @param placemarkNodeDto To extract images names from.
      * @param multipartMainDto To add images names to its {@link MultipartMainDto#getFilesToBeExcluded()} exclusion list.
      */
-    private void removePlacemarkImagesFromKmz(PlacemarkNodeDto placemarkNodeDto, MultipartMainDto multipartMainDto) {
+    private void removePlacemarkImagesFromKmz(PlacemarkNodeDto placemarkNodeDto,
+                                              MultipartMainDto multipartMainDto,
+                                              List<PlacemarkNodeDto> clonedPlacemarkNodeDtoList) {
         Node descriptionNode = kmlUtils.getDescriptionNode(placemarkNodeDto.getPlacemarkNode());
-        List<String> imagesNames = htmlHandler.getAllImagesFromDescription(descriptionNode.getTextContent()).stream()
-                .map(src -> fileService.getFileName(src)).collect(Collectors.toList());
+        multipartMainDto.getFilesToBeExcluded().addAll(
+                htmlHandler.getAllImagesFromDescription(descriptionNode.getTextContent())
+                        .stream()
+                        .map(src -> fileService.getFileName(src)).collect(Collectors.toList()));
 
-        //TODO: 1) to check if the icon name is the Locus photo pictogram to be deleted 2) if the icon name is used elsewhere, if not - delete
         if (locusIconsHandler.isLocusPhotoIconThumbnail(placemarkNodeDto.getIconName())) {
-            //TODO: to continue 1)
+            //Has to be excluded from the resulting kmz as a unique Locus photo thumbnail icon
+            multipartMainDto.getFilesToBeExcluded().add(placemarkNodeDto.getIconName());
+        } else if (clonedPlacemarkNodeDtoList.stream().noneMatch(placemarkNodeDtoToBeCompared ->
+                !placemarkNodeDto.getPlacemarkNode().isSameNode(placemarkNodeDtoToBeCompared.getPlacemarkNode()) &&
+                        placemarkNodeDto.getIconName().equals(placemarkNodeDtoToBeCompared.getIconName()))) {
+            //The icon of the Placemark is a unique one and not used among other Placemarks as an icon. Has to be deleted
+            multipartMainDto.getFilesToBeExcluded().add(placemarkNodeDto.getIconName());
         }
-
-        multipartMainDto.getFilesToBeExcluded().addAll(imagesNames);
     }
 
     /**
-     * Sets {@link PlacemarkNodeDto#setAltitude(Integer)},
+     * Sets {@link PlacemarkNodeDto#setAltitude(double)},
      * {@link PlacemarkNodeDto#setLongitude(double)},
      * {@link PlacemarkNodeDto#setLatitude(double)}
      * The "coordinates" Node is a required node.
-     * {@literal <coordinates>-119.779550,33.829268,0</coordinates> or <coordinates>-122.000,37.002</coordinates>}
+     * {@literal {@literal Either <coordinates>-119.779550,33.829268,0</coordinates>
+     * or <coordinates>-122.000,37.002,127.00</coordinates> or <coordinates>-122.000,37.002</coordinates>}
      * A single tuple consisting of floating point values for longitude, latitude, and altitude (in that order).
      * Longitude and latitude values are in degrees, where
      * longitude ≥ −180 and <= 180
      * latitude ≥ −90 and ≤ 90
-     * altitude values (optional) are in meters above sea level
+     * altitude values (optional) are in meters above sea level.
+     * If altitude isn't presented it will be set as 0.0 double value.
      * Do not include spaces between the three values that describe a coordinate.
      *
      * @param placemarkNodeDto
@@ -172,7 +212,9 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         placemarkNodeDto.setLongitude(Double.parseDouble(coordinates[0]));
         placemarkNodeDto.setLatitude(Double.parseDouble(coordinates[1]));
         if (coordinates[3] != null) {
-            placemarkNodeDto.setAltitude(Integer.parseInt(coordinates[2]));
+            placemarkNodeDto.setAltitude(Double.parseDouble(coordinates[2]));
+        } else {
+            placemarkNodeDto.setAltitude(0.0);
         }
     }
 

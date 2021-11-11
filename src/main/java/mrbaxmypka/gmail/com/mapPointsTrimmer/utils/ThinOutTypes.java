@@ -44,6 +44,19 @@ public enum ThinOutTypes {
         return type;
     }
 
+    public boolean isInclusive() {
+        return type.equalsIgnoreCase("inclusive");
+    }
+
+    public boolean isExclusive() {
+        return type.equalsIgnoreCase("exclusive");
+    }
+
+    public boolean isAny() {
+        return type.equalsIgnoreCase("any");
+    }
+
+
     @Override
     public String toString() {
         return new StringJoiner(", ", ThinOutTypes.class.getSimpleName() + "[", "]")

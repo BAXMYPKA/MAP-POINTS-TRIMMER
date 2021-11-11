@@ -61,9 +61,10 @@ public class KmlHandler extends XmlHandler {
 
         locusMapHandler.processKml(document, multipartMainDto);
 
+        //Processing the thinning out closely spaced Placemarks by distance
         if (multipartMainDto.isThinOutPoints()) {
             log.info("Thinning out points by the distance...");
-            //TODO: to continue
+            thinOutKmlPointsHandler.thinOutPoints(document, multipartMainDto);
         }
 
         //Processing Google Earth specific options

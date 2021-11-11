@@ -28,7 +28,6 @@ public abstract class MultipartDto implements Serializable {
     static final long serialVersionUID = 4L;
 
     @NonNull //Lombok required arg for the constructor
-//    @NotNull(message = "{validation.notNull}")
     private MultipartFile multipartFile;
 
     @NotNull
@@ -42,7 +41,6 @@ public abstract class MultipartDto implements Serializable {
     @ToString.Include
     private String sessionId;
     
-//    @NotNull(message = "{validation.notNull}")
     /**
      * To localize any messages for users.
      * Default ENGLISH.
