@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -128,27 +127,6 @@ public class KmlUtils {
                 .forEach(styleUrlNode -> {
                     styleUrlNode.setTextContent(correctStyleUrl);
                 });
-    }
-
-
-    /**
-     * @param id                A special id or a full name of the pictogram
-     * @param pictogramFullName {@link Nullable} If a previous 'id' parameter is not represented a full name, this has to be used
-     * @return A {@link Node} NOT inserted into the {@link Document}. Use {@link #insertIntoDocument(Node)} for this
-     */
-    Node createNotInsertedStyleNode(String id, @Nullable String pictogramFullName) {
-        Element styleNode = document.createElement("Style");
-        styleNode.setAttribute("id", "styleOf" + id);
-        Element iconStyleNode = document.createElement("IconStyle");
-        Element iconNode = document.createElement("Icon");
-        Element hrefNode = document.createElement("href");
-        hrefNode.setTextContent(pictogramFullName != null ? pictogramFullName : KML_FILES_DEFAULT_DIRECTORY + id);
-
-        iconNode.appendChild(hrefNode);
-        iconStyleNode.appendChild(iconNode);
-        styleNode.appendChild(iconStyleNode);
-
-        return styleNode;
     }
 
     /**
@@ -326,7 +304,7 @@ public class KmlUtils {
      * </Style>
      * }
      */
-    Optional<Node> getNormalStyleNodeFromStyleMap(Node styleMap) {
+    Optional<Node> getNormalStyleNode(Node styleMap) {
         return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
                 .stream()
                 .filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "normal", false, false, false).isEmpty())
@@ -384,7 +362,7 @@ public class KmlUtils {
      * </Style>
      * }
      */
-    Optional<Node> getHighlightStyleNodeFromStyleMap(Node styleMap) {
+    Optional<Node> getHighlightStyleNode(Node styleMap) {
         return xmlDomUtils.getChildNodesFromParent(styleMap, "Pair", null, false, false, false)
                 .stream()
                 .filter(pairNode -> !xmlDomUtils.getChildNodesFromParent(pairNode, "key", "highlight", false, false, false).isEmpty())
@@ -410,7 +388,7 @@ public class KmlUtils {
      *
      * @return Returns the existing 'IconStyle' node or created and inserted new one
      */
-    Node getIconStyleNodeFromStyle(Node styleNode) {
+    Node getIconStyleNode(Node styleNode) {
         return xmlDomUtils.getChildNodesFromParent(styleNode, "IconStyle", null, false, true, false).get(0);
     }
 
@@ -431,8 +409,8 @@ public class KmlUtils {
      *
      * @return Returns the existing 'Icon' node or a new one created with its parent ('IconStyle')
      */
-    Node getIconNodeFromStyle(Node styleNode) {
-        Node iconStyleNode = getIconStyleNodeFromStyle(styleNode);
+    Node getIconNode(Node styleNode) {
+        Node iconStyleNode = getIconStyleNode(styleNode);
         return xmlDomUtils.getChildNodesFromParent(iconStyleNode, "Icon", null, false, true, false).get(0);
     }
 
@@ -453,8 +431,8 @@ public class KmlUtils {
      *
      * @return Returns the existing 'href' node or a new one created with all its parents ('IconStyle' -> 'Icon' -> 'href')
      */
-    Node getIconHrefNodeFromStyle(Node styleNode) {
-        Node iconNode = getIconNodeFromStyle(styleNode);
+    Node getIconHrefNode(Node styleNode) {
+        Node iconNode = getIconNode(styleNode);
         return xmlDomUtils.getChildNodesFromParent(iconNode, "href", null, false, true, false).get(0);
     }
 
@@ -556,15 +534,23 @@ public class KmlUtils {
         return highlightStyleUrl;
     }
 
-    Node getCoordinatesNodeFromPlacemark(Node placemark) {
+    Node getCoordinatesNode(Node placemark) {
         return xmlDomUtils.getChildNodesFromParent(placemark, "coordinates", null, true, true, false).get(0);
     }
 
-    Node getDescriptionNodeFromPlacemark(Node placemark) {
+    Node getDescriptionNode(Node placemark) {
         return xmlDomUtils.getChildNodesFromParent(placemark, "descriptin", null, false, true, false).get(0);
     }
 
-    Node getStyleUrlNodeFromPlacemark(Node placemark) {
+    Node getStyleUrlNode(Node placemark) {
         return xmlDomUtils.getChildNodesFromParent(placemark, "styleUrl", null, false, true, false).get(0);
+    }
+
+    Node getGxTimeStampNode(Node placemark) {
+        return xmlDomUtils.getChildNodesFromParent(placemark, "gx:TimeStamp", null, false, true, false).get(0);
+    }
+
+    Node getWhenNode(Node gxTimeStamp) {
+        return xmlDomUtils.getChildNodesFromParent(gxTimeStamp, "when", null, false, true, false).get(0);
     }
 }

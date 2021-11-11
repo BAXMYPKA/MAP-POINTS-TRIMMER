@@ -72,7 +72,7 @@ public class GoogleEarthHandler {
                 Node iconStyleScaleNode = getIconStyleScaleNodeFromStyle(styleObject);
                 iconStyleScaleNode.setTextContent(scale);
             } else if (styleObject.getNodeName().equals("StyleMap")) {
-                kmlUtils.getNormalStyleNodeFromStyleMap(styleObject).ifPresent(normalStyleNode -> {
+                kmlUtils.getNormalStyleNode(styleObject).ifPresent(normalStyleNode -> {
                     Node iconStyleScaleNode = getIconStyleScaleNodeFromStyle(normalStyleNode);
                     iconStyleScaleNode.setTextContent(scale);
                 });
@@ -97,7 +97,7 @@ public class GoogleEarthHandler {
                 Node iconStyleColorNode = getIconsStyleColorNodeFromStyle(styleObject);
                 iconStyleColorNode.setTextContent(opacityColor);
             } else if (styleObject.getNodeName().equals("StyleMap")) {
-                kmlUtils.getNormalStyleNodeFromStyleMap(styleObject).ifPresent(normalStyleNode -> {
+                kmlUtils.getNormalStyleNode(styleObject).ifPresent(normalStyleNode -> {
                     Node iconStyleColorNode = getIconsStyleColorNodeFromStyle(normalStyleNode);
                     iconStyleColorNode.setTextContent(opacityColor);
                 });
@@ -120,7 +120,7 @@ public class GoogleEarthHandler {
                 Node labelStyleScaleNode = getLabelStyleScaleNodeFromStyle(styleObject);
                 labelStyleScaleNode.setTextContent(scale);
             } else if (styleObject.getNodeName().equals("StyleMap")) {
-                kmlUtils.getNormalStyleNodeFromStyleMap(styleObject).ifPresent(normalStyleNode -> {
+                kmlUtils.getNormalStyleNode(styleObject).ifPresent(normalStyleNode -> {
                     Node labelStyleScaleNode = getLabelStyleScaleNodeFromStyle(normalStyleNode);
                     labelStyleScaleNode.setTextContent(scale);
                 });
@@ -139,7 +139,7 @@ public class GoogleEarthHandler {
                 Node labelStyleColorNode = getLabelStyleColorNodeFromStyle(styleObject);
                 labelStyleColorNode.setTextContent(kmlColor);
             } else if (styleObject.getNodeName().equals("StyleMap")) {
-                kmlUtils.getNormalStyleNodeFromStyleMap(styleObject).ifPresent(normalStyleNode -> {
+                kmlUtils.getNormalStyleNode(styleObject).ifPresent(normalStyleNode -> {
                     Node labelStyleColorNode = getLabelStyleColorNodeFromStyle(normalStyleNode);
                     labelStyleColorNode.setTextContent(kmlColor);
                 });
@@ -265,7 +265,7 @@ public class GoogleEarthHandler {
         NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
         for (int i = 0; i < styleMapNodes.getLength(); i++) {
             Node styleMapNode = styleMapNodes.item(i);
-            kmlUtils.getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
+            kmlUtils.getHighlightStyleNode(styleMapNode).ifPresent(highlightStyleNode -> {
                 Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
                 Node scaleNode = xmlDomUtils.getChildNodesFromParent(iconStyleNode, "scale", null, false, true, true).get(0);
                 scaleNode.setTextContent(multipartMainDto.getPointIconSizeScaledDynamic().toString());
@@ -296,7 +296,7 @@ public class GoogleEarthHandler {
         NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
         for (int i = 0; i < styleMapNodes.getLength(); i++) {
             Node styleMapNode = styleMapNodes.item(i);
-            kmlUtils.getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
+            kmlUtils.getHighlightStyleNode(styleMapNode).ifPresent(highlightStyleNode -> {
                 Node iconStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "IconStyle", null, false, true, true).get(0);
                 Node colorNode = xmlDomUtils.getChildNodesFromParent(iconStyleNode, "color", null, false, true, true).get(0);
                 colorNode.setTextContent(opacityColor);
@@ -311,7 +311,7 @@ public class GoogleEarthHandler {
         NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
         for (int i = 0; i < styleMapNodes.getLength(); i++) {
             Node styleMapNode = styleMapNodes.item(i);
-            kmlUtils.getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
+            kmlUtils.getHighlightStyleNode(styleMapNode).ifPresent(highlightStyleNode -> {
                 Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
                 Node scaleNode = xmlDomUtils.getChildNodesFromParent(labelStyleNode, "scale", null, false, true, true).get(0);
                 scaleNode.setTextContent(multipartMainDto.getPointTextSizeScaledDynamic().toString());
@@ -326,7 +326,7 @@ public class GoogleEarthHandler {
         NodeList styleMapNodes = document.getElementsByTagName("StyleMap");
         for (int i = 0; i < styleMapNodes.getLength(); i++) {
             Node styleMapNode = styleMapNodes.item(i);
-            kmlUtils.getHighlightStyleNodeFromStyleMap(styleMapNode).ifPresent(highlightStyleNode -> {
+            kmlUtils.getHighlightStyleNode(styleMapNode).ifPresent(highlightStyleNode -> {
                 Node labelStyleNode = xmlDomUtils.getChildNodesFromParent(highlightStyleNode, "LabelStyle", null, false, true, true).get(0);
                 Node colorNode = xmlDomUtils.getChildNodesFromParent(labelStyleNode, "color", null, false, true, true).get(0);
                 colorNode.setTextContent(kmlColor);

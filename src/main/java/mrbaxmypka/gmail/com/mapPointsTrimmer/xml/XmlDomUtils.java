@@ -149,9 +149,11 @@ public class XmlDomUtils {
      * @param parent         A Parent Node to find child of
      * @param childNodeName  A Child Node tag name to be found
      * @param childNodeValue {@link Nullable} If not null only the Child Node with equal text content will be returned
-     * @param recursively    To look through the children of all the children of every Node
+     * @param recursively    To look through the children of all the children of every Node.
+     *                       Warning! It cannot be used with "createIfAbsent"=true simultaneously!
      * @param createIfAbsent If not a such Child Node within the Parent Node found
      *                       a new one will be created, appended to the Parent and added to the resulting List.
+     *                       Warning! It cannot be used with "recursively"=true option simultaneously!
      * @param asFirstChild   Only in conjunction with "createIfAbsent" parameter.
      *                       If true a new child Node will be inserted as a first child of the parent.
      *                       Otherwise it will be appended at the end.

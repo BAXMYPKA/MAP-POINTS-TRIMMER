@@ -145,9 +145,9 @@ class LocusIconsHandler {
 	 */
 	private Node updateStyle(Node clonedStyle, String pictogramName) {
 		clonedStyle.getAttributes().getNamedItem("id").setTextContent(pictogramName);
-		Node clonedStyleIconHrefNode = kmlUtils.getIconHrefNodeFromStyle(clonedStyle);
+		Node clonedStyleIconHrefNode = kmlUtils.getIconHrefNode(clonedStyle);
 		
-		String originalPathWithFilename = kmlUtils.getIconHrefNodeFromStyle(clonedStyle).getTextContent();
+		String originalPathWithFilename = kmlUtils.getIconHrefNode(clonedStyle).getTextContent();
 		String originalPath = fileService.getPath(originalPathWithFilename);
 		
 		if (originalPath.isBlank()) { //No previous path found
@@ -272,12 +272,12 @@ class LocusIconsHandler {
 	 * @return {@literal The corrected <Style> with a pictogram to be used as a 'normal' on in a <Pair> of a given 'clonedStyleMapNode'}
 	 */
 	private Node updateNormalStyleNode(Node clonedStyleMapNode, String pictogramName) {
-		Node clonedNormalStyleNode = kmlUtils.getNormalStyleNodeFromStyleMap(clonedStyleMapNode)
+		Node clonedNormalStyleNode = kmlUtils.getNormalStyleNode(clonedStyleMapNode)
 				.orElseThrow(() -> new IllegalArgumentException(
 						"A not valid xml (kml) as there is no 'NormalStyle' from 'StyleMap' within a Document!"))
 				.cloneNode(true);
 		clonedNormalStyleNode.getAttributes().getNamedItem("id").setTextContent(pictogramName);
-		Node clonedNormalStyleIconHrefNode = kmlUtils.getIconHrefNodeFromStyle(clonedNormalStyleNode);
+		Node clonedNormalStyleIconHrefNode = kmlUtils.getIconHrefNode(clonedNormalStyleNode);
 		String originalPathWithFilename = clonedNormalStyleIconHrefNode.getTextContent();
 		String originalPath = fileService.getPath(originalPathWithFilename);
 		if (originalPath.isBlank()) { //No previous path found
@@ -294,13 +294,13 @@ class LocusIconsHandler {
 	}
 	
 	private Node updateHighlightStyleNode(Node clonedStyleMapNode, String pictogramName) {
-		Node clonedHighStyleNode = kmlUtils.getHighlightStyleNodeFromStyleMap(clonedStyleMapNode)
+		Node clonedHighStyleNode = kmlUtils.getHighlightStyleNode(clonedStyleMapNode)
 				.orElseThrow(() -> new IllegalArgumentException(
 						"A not valid xml (kml) document! There is no 'HighlightStyle' inside 'StyleMap'!"))
 				.cloneNode(true);
 		clonedHighStyleNode.getAttributes().getNamedItem("id")
 				.setTextContent(kmlUtils.getHIGHLIGHT_STYLE_ID_ATTRIBUTE_PREFIX() + pictogramName);
-		Node clonedHighStyleIconHrefNode = kmlUtils.getIconHrefNodeFromStyle(clonedHighStyleNode);
+		Node clonedHighStyleIconHrefNode = kmlUtils.getIconHrefNode(clonedHighStyleNode);
 		String originalPathWithFilename = clonedHighStyleIconHrefNode.getTextContent();
 		String originalPath = fileService.getPath(originalPathWithFilename);
 		if (originalPath.isBlank()) { //No previous path found
@@ -334,9 +334,9 @@ class LocusIconsHandler {
 	private void deleteStyleObjectsFromDocument(Map<String, Node> styleObjectsWithThumbnails) {
 		styleObjectsWithThumbnails.values().forEach(styleObject -> {
 			if (styleObject.getNodeName().equalsIgnoreCase("StyleMap")) {
-				kmlUtils.getNormalStyleNodeFromStyleMap(styleObject)
+				kmlUtils.getNormalStyleNode(styleObject)
 						.ifPresent(normalStyle -> normalStyle.getParentNode().removeChild(normalStyle));
-				kmlUtils.getHighlightStyleNodeFromStyleMap(styleObject)
+				kmlUtils.getHighlightStyleNode(styleObject)
 						.ifPresent(highlightStyle -> highlightStyle.getParentNode().removeChild(highlightStyle));
 			}
 			styleObject.getParentNode().removeChild(styleObject);
@@ -354,13 +354,13 @@ class LocusIconsHandler {
 		replacedStyleObjects.values()
 				.forEach(styleObject -> {
 					if (styleObject.getNodeName().equals("Style")) { //It's the <Style> Node
-						String href = kmlUtils.getIconHrefNodeFromStyle(styleObject).getTextContent();
+						String href = kmlUtils.getIconHrefNode(styleObject).getTextContent();
 						String fileName = fileService.getFileName(href);
 						multipartMainDto.getFilesToBeExcluded().add(fileName);
 					} else { //It's the <StyleMap> Node
-						Node normalStyle = kmlUtils.getNormalStyleNodeFromStyleMap(styleObject).orElseThrow(
+						Node normalStyle = kmlUtils.getNormalStyleNode(styleObject).orElseThrow(
 								() -> new IllegalArgumentException("StyleMap object has to contain normal Style!"));
-						String href = kmlUtils.getIconHrefNodeFromStyle(normalStyle).getTextContent();
+						String href = kmlUtils.getIconHrefNode(normalStyle).getTextContent();
 						String fileName = fileService.getFileName(href);
 						multipartMainDto.getFilesToBeExcluded().add(fileName);
 					}
@@ -393,7 +393,7 @@ class LocusIconsHandler {
 			return true;
 		} else {
 			Node style = getStyle(styleObject);
-			String href = kmlUtils.getIconHrefNodeFromStyle(style).getTextContent();
+			String href = kmlUtils.getIconHrefNode(style).getTextContent();
 			return isLocusPhotoIconHref(href);
 		}
 	}
@@ -406,7 +406,7 @@ class LocusIconsHandler {
 		if (stylObject.getNodeName().equals("Style")) {
 			return stylObject;
 		} else {
-			return kmlUtils.getNormalStyleNodeFromStyleMap(stylObject).orElseThrow(() -> new IllegalArgumentException(
+			return kmlUtils.getNormalStyleNode(stylObject).orElseThrow(() -> new IllegalArgumentException(
 					"A not valid xml(kml)! A StyleMap has to contain a 'normal' Style!"));
 		}
 	}
