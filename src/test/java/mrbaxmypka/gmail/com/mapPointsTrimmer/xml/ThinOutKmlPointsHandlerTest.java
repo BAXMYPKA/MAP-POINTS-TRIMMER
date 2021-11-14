@@ -4,6 +4,7 @@ import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.MultipartMainDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.entitiesDto.PlacemarkNodeDto;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.services.FileService;
 import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.DistanceUnits;
+import mrbaxmypka.gmail.com.mapPointsTrimmer.utils.ThinOutTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,6 +17,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -268,6 +270,253 @@ class ThinOutKmlPointsHandlerTest {
         assertAll(
                 () -> assertFalse(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Point 2")),
                 () -> assertFalse(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Point 4"))
+        );
+    }
+
+    @Test
+    public void icons_Names_Should_Be_Added() throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        String pointsAsIsoscelesTriangle = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+                "<Document>\n" +
+                "\t<name>Three sequential isosceles triangle Placemarks within 245 meters distance between each</name>\n" +
+
+                "\t<StyleMap id=\"styleMapOf:tourism-forest.png\">\n" +
+                "\t\t<Pair>\n" +
+                "\t\t\t<key>normal</key>\n" +
+                "\t\t\t<styleUrl>#tourism-forest.png</styleUrl>\n" +
+                "\t\t</Pair>\n" +
+                "\t\t<Pair>\n" +
+                "\t\t\t<key>highlight</key>\n" +
+                "\t\t\t<styleUrl>#highlighOf:tourism-forest.png</styleUrl>\n" +
+                "\t\t</Pair>\n" +
+                "\t</StyleMap>\n" +
+
+                "\t<Style id=\"tourism-forest.png\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.472727</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files/tourism-forest.png</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t<Style id=\"highlighOf:tourism-forest.png\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.4</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files///C:folder/tourism-forest.png</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t<Style id=\"retainMe.png\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.472727</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files/retainMe.png</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t<Style id=\"deleteMe.png\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.472727</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files/deleteMe.png</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t\t<Placemark>\n" +
+                "\t\t\t<name>Point to be retained by icon 1</name>\n" +
+                "\t\t\t<description>232 meters from Point 2</description>\n" +
+                "\t\t\t<gx:TimeStamp>\n" +
+                "\t\t\t\t<when></when>\n" +
+                "\t\t\t</gx:TimeStamp>\n" +
+                "\t\t\t<styleUrl>#styleMapOf:tourism-forest.png</styleUrl>\n" +
+                "\t\t\t<Point>\n" +
+                "\t\t\t\t<coordinates>38.34646245907663,56.27537585942488,0</coordinates>\n" +
+                "\t\t\t</Point>\n" +
+                "\t\t</Placemark>\n" +
+
+                "\t\t<Placemark>\n" +
+                "\t\t\t<name>Point to be retained by icon 2</name>\n" +
+                "\t\t\t<description>193 meters from Point 3</description>\n" +
+                "\t\t\t<gx:TimeStamp>\n" +
+                "\t\t\t\t<when></when>\n" +
+                "\t\t\t</gx:TimeStamp>\n" +
+                "\t\t\t<styleUrl>#retainMe.png</styleUrl>\n" +
+                "\t\t\t<Point>\n" +
+                "\t\t\t\t<coordinates>38.3428861954351,56.27522642196566,0</coordinates>\n" +
+                "\t\t\t</Point>\n" +
+                "\t\t</Placemark>\n" +
+
+                "\t\t<Placemark>\n" +
+                "\t\t\t<name>Point that may by deleted 3</name>\n" +
+                "\t\t\t<description>202m from Point 1</description>\n" +
+                "\t\t\t<gx:TimeStamp>\n" +
+                "\t\t\t\t<when></when>\n" +
+                "\t\t\t</gx:TimeStamp>\n" +
+                "\t\t\t<styleUrl>#deleteMe.png</styleUrl>\n" +
+                "\t\t\t<Point>\n" +
+                "\t\t\t\t<coordinates>38.34439565050742,56.27675775851414,0</coordinates>\n" +
+                "\t\t\t</Point>\n" +
+                "\t\t</Placemark>\n" +
+
+                "</Document>\n" +
+                "</kml>\n";
+        kmlDocument = XmlTestUtils.getDocument(pointsAsIsoscelesTriangle);
+        MultipartMainDto multipartMainDto = new MultipartMainDto();
+        multipartMainDto.setDistanceUnit(DistanceUnits.METERS);
+
+        int thinOutDistance = 50; //To thin out Placemarks closer than this
+        multipartMainDto.setThinOutDistance(thinOutDistance);
+        multipartMainDto.setThinOutIconsNames(Arrays.asList("tourism-forest.png", "retainMe.png"));
+        multipartMainDto.setThinOutType(ThinOutTypes.EXCLUSIVE);
+
+        xmlDomUtils = new XmlDomUtils(kmlDocument);
+        kmlUtils = new KmlUtils(kmlDocument, xmlDomUtils);
+        thinOutKmlPointsHandler = new ThinOutKmlPointsHandler(kmlUtils, fileService, htmlHandler);
+
+        //WHEN
+        thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
+        List<PlacemarkNodeDto> placemarkNodeDtoList = thinOutKmlPointsHandler.getPlacemarkNodeDtoList();
+
+        //THEN
+        System.out.println(XmlTestUtils.getAsText(kmlDocument));
+
+        assertAll(
+                () -> assertTrue(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Point to be retained by icon 1")),
+                () -> assertTrue(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Point to be retained by icon 2"))
+        );
+    }
+
+    /**
+     * Every tuple includes the last value as the distance in meters according to the Google Earth ruler.
+     */
+    @ParameterizedTest
+    @CsvSource(value = {"2014-08-03T14:13:40Z,2014-08-03T14:13:50Z,2014-08-03T14:13:45Z",
+            "2014-08-03T14:13:45Z,2014-08-03T14:13:50Z,2014-08-03T14:13:40Z",
+            "2014-08-03T14:13:50Z,2014-08-03T14:13:40Z,2014-08-03T14:13:45Z",
+            "2014-08-03T14:13:50Z,2014-08-03T14:13:45Z,2014-08-03T14:13:40Z"})
+    public void only_Placemarks_With_Inclusive_Icons_Names_Should_Be_Removed_From_Document(
+            String timeStamp1, String timeStamp2, String timeStamp3)
+            throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        //Three isosceles triangle Placemarks within 245 meters distance between each within the "thinOutDistance"
+        String pointsAsIsoscelesTriangle = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+                "<Document>\n" +
+                "\t<name>Three sequential isosceles triangle Placemarks within 245 meters distance between each</name>\n" +
+
+                "\t<StyleMap id=\"styleMapOf:tourism-forest.png\">\n" +
+                "\t\t<Pair>\n" +
+                "\t\t\t<key>normal</key>\n" +
+                "\t\t\t<styleUrl>#tourism-forest.png</styleUrl>\n" +
+                "\t\t</Pair>\n" +
+                "\t\t<Pair>\n" +
+                "\t\t\t<key>highlight</key>\n" +
+                "\t\t\t<styleUrl>#highlighOf:tourism-forest.png</styleUrl>\n" +
+                "\t\t</Pair>\n" +
+                "\t</StyleMap>\n" +
+
+                "\t<Style id=\"tourism-forest.png\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.472727</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files/tourism-forest.png</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t<Style id=\"highlighOf:tourism-forest.png\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.4</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files///C:folder/tourism-forest.png</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t<Style id=\"retainMe.png\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.472727</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files/retainMe.png</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t<Style id=\"deleteMe.png\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.472727</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files/deleteMe.png</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t\t<Placemark>\n" +
+                "\t\t\t<name>Point to be retained by icon 1</name>\n" +
+                "\t\t\t<description>232 meters from Point 2</description>\n" +
+                "\t\t\t<gx:TimeStamp>\n" +
+                "\t\t\t\t<when>" + timeStamp1 + "</when>\n" +
+                "\t\t\t</gx:TimeStamp>\n" +
+                "\t\t\t<styleUrl>#styleMapOf:tourism-forest.png</styleUrl>\n" +
+                "\t\t\t<Point>\n" +
+                "\t\t\t\t<coordinates>38.34646245907663,56.27537585942488,0</coordinates>\n" +
+                "\t\t\t</Point>\n" +
+                "\t\t</Placemark>\n" +
+
+                "\t\t<Placemark>\n" +
+                "\t\t\t<name>Point to be retained by icon 2</name>\n" +
+                "\t\t\t<description>193 meters from Point 3</description>\n" +
+                "\t\t\t<gx:TimeStamp>\n" +
+                "\t\t\t\t<when>" + timeStamp2 + "</when>\n" +
+                "\t\t\t</gx:TimeStamp>\n" +
+                "\t\t\t<styleUrl>#retainMe.png</styleUrl>\n" +
+                "\t\t\t<Point>\n" +
+                "\t\t\t\t<coordinates>38.3428861954351,56.27522642196566,0</coordinates>\n" +
+                "\t\t\t</Point>\n" +
+                "\t\t</Placemark>\n" +
+
+                "\t\t<Placemark>\n" +
+                "\t\t\t<name>Point that may by deleted 3</name>\n" +
+                "\t\t\t<description>202m from Point 1</description>\n" +
+                "\t\t\t<gx:TimeStamp>\n" +
+                "\t\t\t\t<when>" + timeStamp3 + "</when>\n" +
+                "\t\t\t</gx:TimeStamp>\n" +
+                "\t\t\t<styleUrl>#deleteMe.png</styleUrl>\n" +
+                "\t\t\t<Point>\n" +
+                "\t\t\t\t<coordinates>38.34439565050742,56.27675775851414,0</coordinates>\n" +
+                "\t\t\t</Point>\n" +
+                "\t\t</Placemark>\n" +
+
+                "</Document>\n" +
+                "</kml>\n";
+        kmlDocument = XmlTestUtils.getDocument(pointsAsIsoscelesTriangle);
+        MultipartMainDto multipartMainDto = new MultipartMainDto();
+        multipartMainDto.setDistanceUnit(DistanceUnits.METERS);
+
+        int thinOutDistance = 250; //To thin out Placemarks closer than this
+        multipartMainDto.setThinOutDistance(thinOutDistance);
+        multipartMainDto.setThinOutIconsNames(Arrays.asList("tourism-forest.png", "retainMe.png"));
+        multipartMainDto.setThinOutType(ThinOutTypes.EXCLUSIVE);
+
+        xmlDomUtils = new XmlDomUtils(kmlDocument);
+        kmlUtils = new KmlUtils(kmlDocument, xmlDomUtils);
+        thinOutKmlPointsHandler = new ThinOutKmlPointsHandler(kmlUtils, fileService, htmlHandler);
+
+        //WHEN
+        thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
+
+        //THEN
+
+        System.out.println(XmlTestUtils.getAsText(kmlDocument));
+        assertAll(
+                () -> assertTrue(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Point to be retained by icon 1")),
+                () -> assertTrue(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Point to be retained by icon 2"))
         );
     }
 
