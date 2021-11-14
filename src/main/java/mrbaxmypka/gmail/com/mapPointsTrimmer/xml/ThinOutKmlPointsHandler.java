@@ -195,7 +195,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
      * The "coordinates" Node is a required node.
      * {@literal {@literal Either <coordinates>-119.779550,33.829268,0</coordinates>
      * or <coordinates>-122.000,37.002,127.00</coordinates> or <coordinates>-122.000,37.002</coordinates>}
-     * A single tuple consisting of floating point values for longitude, latitude, and altitude (in that order).
+     * A single tuple consisting of floating point values for longitude, latitude, and altitude (IN THAT ORDER!).
      * Longitude and latitude values are in degrees, where
      * longitude ≥ −180 and <= 180
      * latitude ≥ −90 and ≤ 90

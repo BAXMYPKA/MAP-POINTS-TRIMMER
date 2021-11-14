@@ -55,17 +55,17 @@ public abstract class ThinOutPointsHandler {
      * Important in navigation, it is a special case of a more general formula in spherical trigonometry,
      * the law of haversines, that relates the sides and angles of spherical triangles
      *
-     * @param latitude1
      * @param longitude1
-     * @param latitude2
+     * @param latitude1
      * @param longitude2
+     * @param latitude2
      * @param distanceType {@link Nullable} If null, the value will be returned in miles.
      * @return A haversine (by a semi sphere, NOT a straight line!) distance between two points.
      * If a given {@link DistanceUnits} is null the value will be returned in miles.
      * Otherwise it will be returned according to the given units.
      */
-    protected double getHaversineDistance(double latitude1, double longitude1,
-                                          double latitude2, double longitude2,
+    protected double getHaversineDistance(double longitude1, double latitude1,
+                                           double longitude2, double latitude2,
                                           @Nullable DistanceUnits distanceType) {
         if (distanceType == null) {
             distanceType = DistanceUnits.MILES;
@@ -126,10 +126,10 @@ public abstract class ThinOutPointsHandler {
      * По теореме Пифагора:
      * Расстояние=КВАДРАТНЫЙ КОРЕНЬ из (РасстояниеВплоскости В КВАДРАТЕ) ПЛЮС (РазницаВысот В КВАДРАТЕ)
      *
-     * @param latitude1
      * @param longitude1
-     * @param latitude2
+     * @param latitude1
      * @param longitude2
+     * @param latitude2
      * @param distanceType {@link Nullable} If null, the value will be returned in miles.
      * @return A haversine (by a semi sphere, NOT a straight line!) distance between two points
      * including the altitudes difference.
@@ -137,11 +137,10 @@ public abstract class ThinOutPointsHandler {
      * Otherwise it will be returned according to the given units.
      */
     protected double getHaversineDistance(
-            double latitude1, double longitude1,
-            double latitude2, double longitude2,
-            double altitude1, double altitude2,
+            double longitude1, double latitude1, double altitude1,
+            double longitude2, double latitude2, double altitude2,
             @Nullable DistanceUnits distanceType) {
-        double haversineDistance = getHaversineDistance(latitude1, longitude1, latitude2, longitude2, distanceType);
+        double haversineDistance = getHaversineDistance(longitude1, latitude1, longitude2, latitude2, distanceType);
         double altitudeDifference = Math.max(altitude1, altitude2) - Math.min(altitude1, altitude2);
         return Math.sqrt((Math.pow(haversineDistance, 2.0)) + (Math.pow(altitudeDifference, 2)));
     }
