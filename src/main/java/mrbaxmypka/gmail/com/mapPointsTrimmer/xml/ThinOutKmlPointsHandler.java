@@ -30,6 +30,9 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
     private FileService fileService;
     private HtmlHandler htmlHandler;
     private LocusIconsHandler locusIconsHandler;
+    /**
+     * The list is sorted by "when" TimeStamp from the newest to the oldest.
+     */
     private List<PlacemarkNodeDto> placemarkNodeDtoList;
     private DateTimeParser dateTimeParser;
 
@@ -76,7 +79,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
                 clonedPlacemarksDto.remove(placemarkNodeDto);
                 removePlacemarkImagesFromKmz(placemarkNodeDto, multipartMainDto, clonedPlacemarksDto);
                 //Remove from the main Document
-                kmlDocument.removeChild(placemarkNodeDto.getPlacemarkNode());
+                placemarkNodeDto.getPlacemarkNode().getParentNode().removeChild(placemarkNodeDto.getPlacemarkNode());
                 return true;
             } else {
                 return false;
@@ -100,9 +103,9 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         }
 
         return compareList.stream().anyMatch(placemarkToBeCompared -> {
-            double distance = getHaversineDistance(placemarkToBeDeleted.getLatitude(), placemarkToBeDeleted.getLongitude(),
-                    placemarkToBeCompared.getLatitude(), placemarkToBeCompared.getLongitude(),
-                    placemarkToBeDeleted.getAltitude(), placemarkToBeCompared.getAltitude(),
+            double distance = getHaversineDistance(
+                    placemarkToBeDeleted.getLongitude(), placemarkToBeDeleted.getLatitude(), placemarkToBeDeleted.getAltitude(),
+                    placemarkToBeCompared.getLongitude(), placemarkToBeCompared.getLatitude(), placemarkToBeCompared.getAltitude(),
                     multipartMainDto.getDistanceUnit());
             boolean canByDeletedByDistance = distance < multipartMainDto.getThinOutDistance();
             boolean canBeDeletedByDate = canBeDeletedByDate(placemarkToBeDeleted, placemarkToBeCompared);
@@ -145,21 +148,14 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
      * Otherwise false.
      */
     private boolean canBeDeletedByDate(PlacemarkNodeDto placemarkToBeDeleted, PlacemarkNodeDto placemarkToBeCompared) {
-        Node whenToBeDeleted = kmlUtils.getWhenNode(kmlUtils.getGxTimeStampNode(placemarkToBeDeleted.getPlacemarkNode()));
-        LocalDateTime dateTimeToBeDeleted = dateTimeParser.parseWhenLocalDateTime(whenToBeDeleted.getTextContent());
-
-        Node whenToBeCompared = kmlUtils.getWhenNode(kmlUtils.getGxTimeStampNode(placemarkToBeCompared.getPlacemarkNode()));
-        LocalDateTime dateTimeToBeCompared = dateTimeParser.parseWhenLocalDateTime(whenToBeCompared.getTextContent());
-
-        if (dateTimeToBeDeleted.isEqual(LocalDateTime.MIN)) {
+        if (placemarkToBeDeleted.getWhenTimeStamp().isEqual(LocalDateTime.MIN)) {
             //Both Placemarks don't have valid timeStamps. Any of them can be deleted
             return true;
-        } else if (dateTimeToBeCompared.isEqual(LocalDateTime.MIN)) {
+        } else if (placemarkToBeCompared.getWhenTimeStamp().isEqual(LocalDateTime.MIN)) {
             //The only current Placemark to be deleted has the TimeStamp so has to be retained.
             return false;
         }
-
-        return dateTimeToBeDeleted.isBefore(dateTimeToBeCompared);
+        return placemarkToBeDeleted.getWhenTimeStamp().isBefore(placemarkToBeCompared.getWhenTimeStamp());
     }
 
     /**
@@ -207,11 +203,15 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
      */
     private void setCoordinates(PlacemarkNodeDto placemarkNodeDto) {
         Node coordinatesNode = kmlUtils.getCoordinatesNode(placemarkNodeDto.getPlacemarkNode());
-        String[] coordinates = coordinatesNode.getTextContent().split(",");
+        String coordinatesText = coordinatesNode.getTextContent();
+        if (coordinatesText == null || coordinatesText.isBlank()) {
+            coordinatesText = "0,0,0";
+        }
+        String[] coordinates = coordinatesText.split(",");
 
         placemarkNodeDto.setLongitude(Double.parseDouble(coordinates[0]));
         placemarkNodeDto.setLatitude(Double.parseDouble(coordinates[1]));
-        if (coordinates[3] != null) {
+        if (coordinates[2] != null) {
             placemarkNodeDto.setAltitude(Double.parseDouble(coordinates[2]));
         } else {
             placemarkNodeDto.setAltitude(0.0);
@@ -226,12 +226,16 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         Node styleObject = kmlUtils.getStyleObject(styleUrlNode.getTextContent());
         if (styleObject.getNodeName().equals("Style")) {
             String hrefToIcon = kmlUtils.getIconHrefNode(styleObject).getTextContent();
+            if (hrefToIcon == null) hrefToIcon = "";
             placemarkNodeDto.setIconName(fileService.getFileName(hrefToIcon));
         } else if (styleObject.getNodeName().equals("StyleMap")) {
             kmlUtils.getNormalStyleNode(styleObject).ifPresent(normalStyleNode -> {
                 String styleUrl = kmlUtils.getIconHrefNode(normalStyleNode).getTextContent();
+                if (styleUrl == null) styleUrl = "";
                 placemarkNodeDto.getImageNames().add(fileService.getFileName(styleUrl));
             });
+        } else {
+            placemarkNodeDto.setIconName("");
         }
     }
 
@@ -240,6 +244,15 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         htmlHandler.getAllImagesFromDescription(descriptionNode.getTextContent()).forEach(src -> {
             placemarkNodeDto.getImageNames().add(fileService.getFileName(src));
         });
+    }
+
+    /**
+     * If {@link LocalDateTime}} cannot be parsed the {@link LocalDateTime#MIN} will be set
+     */
+    private void setWhenTimeStamp(PlacemarkNodeDto placemarkNodeDto) {
+        Node whenNode = kmlUtils.getWhenNode(kmlUtils.getGxTimeStampNode(placemarkNodeDto.getPlacemarkNode()));
+        LocalDateTime dateTimeStamp = dateTimeParser.parseWhenLocalDateTime(whenNode.getTextContent());
+        placemarkNodeDto.setWhenTimeStamp(dateTimeStamp);
     }
 
     private void setPlacemarkNodeDtoList(Document kmlDocument) {
@@ -252,7 +265,10 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
             setCoordinates(placemarkNodeDto);
             setIconsNames(placemarkNodeDto);
             setImagesNames(placemarkNodeDto);
+            setWhenTimeStamp(placemarkNodeDto);
             placemarkNodeDtoList.add(placemarkNodeDto);
         }
+        //Backward ordering
+        placemarkNodeDtoList.sort((p1, p2) -> p2.getWhenTimeStamp().compareTo(p1.getWhenTimeStamp()));
     }
 }

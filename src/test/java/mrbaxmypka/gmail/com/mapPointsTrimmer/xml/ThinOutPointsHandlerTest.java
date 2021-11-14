@@ -96,7 +96,7 @@ class ThinOutPointsHandlerTest {
     public void distance_Between_Points_In_Meters_With_Altitude_Should_Be_Within_25_Of_Inaccuracy(
             String longitude1, String latitude1, String altitude1,
             String longitude2, String latitude2, String altitude2,
-            String googleEarthDistance) {
+            String googleEarthDistanceByAltitude) {
         //GIVEN
         //The distance on the surface is about 2-3 meters
         double long1 = Double.parseDouble(longitude1);
@@ -106,7 +106,7 @@ class ThinOutPointsHandlerTest {
         double lat2 = Double.parseDouble(latitude2);
         double alt2 = Double.parseDouble(altitude2);
         //The distance by altitude according to Google Earth is from 40 to 100 meters
-        double geDistance = Double.parseDouble(googleEarthDistance);
+        double geAltitudeDistance = Double.parseDouble(googleEarthDistanceByAltitude);
 
         double inaccuracy = 25.0; //meters
 
@@ -119,12 +119,12 @@ class ThinOutPointsHandlerTest {
         System.out.println(haversineAltitudeDistanceMeters);
 
         //THEN
-        boolean inaccuracyCondition = (geDistance - inaccuracy) <= haversineAltitudeDistanceMeters
-                && (geDistance + inaccuracy) >= haversineAltitudeDistanceMeters;
+        boolean inaccuracyCondition = (geAltitudeDistance - inaccuracy) <= haversineAltitudeDistanceMeters
+                && (geAltitudeDistance + inaccuracy) >= haversineAltitudeDistanceMeters;
 
-        if (geDistance == 40.00) {
+        if (geAltitudeDistance == 40.00) {
             assertTrue(inaccuracyCondition);
-        } else if (geDistance == 100.0) {
+        } else if (geAltitudeDistance == 100.0) {
             assertTrue(inaccuracyCondition);
         }
     }

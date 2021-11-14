@@ -399,7 +399,7 @@ class LocusIconsHandler {
 	}
 	
 	boolean isLocusPhotoIconThumbnail(String iconName) {
-		return isLocusPhotoIconThumbnail(iconName);
+		return isLocusPhotoId(iconName) || isLocusPhotoIconHref(iconName);
 	}
 	
 	private Node getStyle(Node stylObject) {

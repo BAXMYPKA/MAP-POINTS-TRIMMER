@@ -15,6 +15,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
@@ -63,6 +64,18 @@ public class XmlTestUtils {
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document document = documentBuilder.parse(multipartMainDto.getMultipartFile().getInputStream());
+        document.normalizeDocument();
+        return document;
+    }
+
+    public static Document getDocument(String documentText) throws ParserConfigurationException, IOException,
+            SAXException {
+        InputStream inputStream = new ByteArrayInputStream(documentText.getBytes(StandardCharsets.UTF_8));
+
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.parse(inputStream);
         document.normalizeDocument();
         return document;
     }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.w3c.dom.Node;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,8 @@ public class PlacemarkNodeDto {
      * or a unique one only for this Placemark.
      */
     private String iconName;
+
+    private LocalDateTime whenTimeStamp;
 
     /**
      * Images names that Placemark could contain in it's Description.

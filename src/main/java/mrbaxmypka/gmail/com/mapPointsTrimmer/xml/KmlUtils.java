@@ -535,19 +535,20 @@ public class KmlUtils {
     }
 
     Node getCoordinatesNode(Node placemark) {
-        return xmlDomUtils.getChildNodesFromParent(placemark, "coordinates", null, true, true, false).get(0);
+        Node point = xmlDomUtils.getChildNodesFromParent(placemark, "Point", null, false, true, false).get(0);
+        return xmlDomUtils.getChildNodesFromParent(point, "coordinates", null, false, true, false).get(0);
     }
 
-    Node getDescriptionNode(Node placemark) {
-        return xmlDomUtils.getChildNodesFromParent(placemark, "descriptin", null, false, true, false).get(0);
+        Node getDescriptionNode(Node point) {
+        return xmlDomUtils.getChildNodesFromParent(point, "description", null, false, true, false).get(0);
     }
 
-    Node getStyleUrlNode(Node placemark) {
-        return xmlDomUtils.getChildNodesFromParent(placemark, "styleUrl", null, false, true, false).get(0);
+    Node getStyleUrlNode(Node point) {
+        return xmlDomUtils.getChildNodesFromParent(point, "styleUrl", null, false, true, false).get(0);
     }
 
-    Node getGxTimeStampNode(Node placemark) {
-        return xmlDomUtils.getChildNodesFromParent(placemark, "gx:TimeStamp", null, false, true, false).get(0);
+    Node getGxTimeStampNode(Node point) {
+        return xmlDomUtils.getChildNodesFromParent(point, "gx:TimeStamp", null, false, true, false).get(0);
     }
 
     Node getWhenNode(Node gxTimeStamp) {
