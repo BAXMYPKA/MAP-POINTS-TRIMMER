@@ -13,7 +13,6 @@ import org.w3c.dom.NodeList;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -225,19 +224,21 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
     private void setIconsNames(PlacemarkNodeDto placemarkNodeDto) {
         Node styleUrlNode = kmlUtils.getStyleUrlNode(placemarkNodeDto.getPlacemarkNode());
         Node styleObject = kmlUtils.getStyleObject(styleUrlNode.getTextContent());
+        String iconName = null;
         if (styleObject.getNodeName().equals("Style")) {
-            String hrefToIcon = kmlUtils.getIconHrefNode(styleObject).getTextContent();
-            if (hrefToIcon == null) hrefToIcon = "";
-            placemarkNodeDto.setIconName(fileService.getFileName(hrefToIcon));
+            iconName = kmlUtils.getIconHrefNode(styleObject).getTextContent();
         } else if (styleObject.getNodeName().equals("StyleMap")) {
             kmlUtils.getNormalStyleNode(styleObject).ifPresent(normalStyleNode -> {
                 String styleUrl = kmlUtils.getIconHrefNode(normalStyleNode).getTextContent();
                 if (styleUrl == null) styleUrl = "";
+                placemarkNodeDto.setIconName(fileService.getFileName(styleUrl));
                 placemarkNodeDto.getImageNames().add(fileService.getFileName(styleUrl));
             });
-        } else {
-            placemarkNodeDto.setIconName("");
         }
+        if (iconName == null) iconName = "";
+        placemarkNodeDto.setIconName(fileService.getFileName(iconName));
+        placemarkNodeDto.getImageNames().add(fileService.getFileName(iconName));
+
     }
 
     private void setImagesNames(PlacemarkNodeDto placemarkNodeDto) {

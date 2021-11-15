@@ -274,8 +274,11 @@ class ThinOutKmlPointsHandlerTest {
     }
 
     @Test
-    public void icons_Names_Should_Be_Added() throws IOException, ParserConfigurationException, SAXException {
+    public void icons_Names_Should_Be_Added_In_PlacemarkNodeDto_IconName() throws IOException, ParserConfigurationException, SAXException {
         //GIVEN
+        String iconName1 = "tourism-forest.png";
+        String iconName2 = "retainMe.png";
+        String iconName3 = "deleteMe.png";
         String pointsAsIsoscelesTriangle = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
                 "<Document>\n" +
@@ -292,9 +295,8 @@ class ThinOutKmlPointsHandlerTest {
                 "\t\t</Pair>\n" +
                 "\t</StyleMap>\n" +
 
-                "\t<Style id=\"tourism-forest.png\">\n" +
+                "\t<Style id=\"" + iconName1 + "\">\n" +
                 "\t\t<IconStyle>\n" +
-                "\t\t\t<scale>0.472727</scale>\n" +
                 "\t\t\t<Icon>\n" +
                 "\t\t\t\t<href>files/tourism-forest.png</href>\n" +
                 "\t\t\t</Icon>\n" +
@@ -303,7 +305,6 @@ class ThinOutKmlPointsHandlerTest {
 
                 "\t<Style id=\"highlighOf:tourism-forest.png\">\n" +
                 "\t\t<IconStyle>\n" +
-                "\t\t\t<scale>0.4</scale>\n" +
                 "\t\t\t<Icon>\n" +
                 "\t\t\t\t<href>files///C:folder/tourism-forest.png</href>\n" +
                 "\t\t\t</Icon>\n" +
@@ -312,25 +313,22 @@ class ThinOutKmlPointsHandlerTest {
 
                 "\t<Style id=\"retainMe.png\">\n" +
                 "\t\t<IconStyle>\n" +
-                "\t\t\t<scale>0.472727</scale>\n" +
                 "\t\t\t<Icon>\n" +
-                "\t\t\t\t<href>files/retainMe.png</href>\n" +
+                "\t\t\t\t<href>files/" + iconName2 + "</href>\n" +
                 "\t\t\t</Icon>\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
 
                 "\t<Style id=\"deleteMe.png\">\n" +
                 "\t\t<IconStyle>\n" +
-                "\t\t\t<scale>0.472727</scale>\n" +
                 "\t\t\t<Icon>\n" +
-                "\t\t\t\t<href>files/deleteMe.png</href>\n" +
+                "\t\t\t\t<href>files/" + iconName3 + "</href>\n" +
                 "\t\t\t</Icon>\n" +
                 "\t\t</IconStyle>\n" +
                 "\t</Style>\n" +
 
                 "\t\t<Placemark>\n" +
                 "\t\t\t<name>Point to be retained by icon 1</name>\n" +
-                "\t\t\t<description>232 meters from Point 2</description>\n" +
                 "\t\t\t<gx:TimeStamp>\n" +
                 "\t\t\t\t<when></when>\n" +
                 "\t\t\t</gx:TimeStamp>\n" +
@@ -342,7 +340,6 @@ class ThinOutKmlPointsHandlerTest {
 
                 "\t\t<Placemark>\n" +
                 "\t\t\t<name>Point to be retained by icon 2</name>\n" +
-                "\t\t\t<description>193 meters from Point 3</description>\n" +
                 "\t\t\t<gx:TimeStamp>\n" +
                 "\t\t\t\t<when></when>\n" +
                 "\t\t\t</gx:TimeStamp>\n" +
@@ -354,7 +351,6 @@ class ThinOutKmlPointsHandlerTest {
 
                 "\t\t<Placemark>\n" +
                 "\t\t\t<name>Point that may by deleted 3</name>\n" +
-                "\t\t\t<description>202m from Point 1</description>\n" +
                 "\t\t\t<gx:TimeStamp>\n" +
                 "\t\t\t\t<when></when>\n" +
                 "\t\t\t</gx:TimeStamp>\n" +
@@ -372,8 +368,6 @@ class ThinOutKmlPointsHandlerTest {
 
         int thinOutDistance = 50; //To thin out Placemarks closer than this
         multipartMainDto.setThinOutDistance(thinOutDistance);
-        multipartMainDto.setThinOutIconsNames(Arrays.asList("tourism-forest.png", "retainMe.png"));
-        multipartMainDto.setThinOutType(ThinOutTypes.EXCLUSIVE);
 
         xmlDomUtils = new XmlDomUtils(kmlDocument);
         kmlUtils = new KmlUtils(kmlDocument, xmlDomUtils);
@@ -384,13 +378,16 @@ class ThinOutKmlPointsHandlerTest {
         List<PlacemarkNodeDto> placemarkNodeDtoList = thinOutKmlPointsHandler.getPlacemarkNodeDtoList();
 
         //THEN
-        System.out.println(XmlTestUtils.getAsText(kmlDocument));
-
-        assertAll(
-                () -> assertTrue(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Point to be retained by icon 1")),
-                () -> assertTrue(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Point to be retained by icon 2"))
+        assertTrue(
+                placemarkNodeDtoList.stream().allMatch(placemarkNodeDto -> {
+                    return placemarkNodeDto.getIconName().equals(iconName1) ||
+                            placemarkNodeDto.getIconName().equals(iconName2) ||
+                            placemarkNodeDto.getIconName().equals(iconName3);
+                })
         );
     }
+
+    //TODO: to add images from Extended lc attachments
 
     /**
      * Every tuple includes the last value as the distance in meters according to the Google Earth ruler.
