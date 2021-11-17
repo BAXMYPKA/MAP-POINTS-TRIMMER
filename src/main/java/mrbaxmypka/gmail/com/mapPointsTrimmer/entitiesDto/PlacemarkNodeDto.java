@@ -62,7 +62,7 @@ public class PlacemarkNodeDto {
     /**
      * Images names that Placemark could contain in it's Description.
      */
-    private List<String> imageNames = new ArrayList<>(1);
+    private List<String> imagesNames = new ArrayList<>(1);
 
     public PlacemarkNodeDto(Node placemarkNode) {
         this.placemarkNode = placemarkNode;

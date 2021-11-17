@@ -509,7 +509,7 @@ class MultipartMainFileServiceTest {
         Mockito.when(fileService.getPath(Mockito.anyString())).thenCallRealMethod();
         Mockito.when(fileService.getFileName(Mockito.anyString())).thenCallRealMethod();
         Mockito.when(fileService.getAllowedImagesExtensions()).thenReturn(Arrays.asList(
-                ".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".gif", ".raw", ".psd", ".xcf", "cdr"));
+                "jpg", "jpeg", "png", "bmp", "tif", "tiff", "gif", "raw", "psd", "xcf", "cdr"));
 
         multipartMainFileService = new MultipartMainFileService(
                 new KmlHandler(new HtmlHandler(fileService), new GoogleIconsService(googleIconsCache), fileService),

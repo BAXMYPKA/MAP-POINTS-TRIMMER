@@ -89,7 +89,7 @@ public class FileService {
         setPictogramsNamesPaths();
         allowedImagesExtensions = new ArrayList<>(5);
         allowedImagesExtensions.addAll(Arrays.asList(
-                ".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".gif", ".raw", ".psd", ".xcf", "cdr"));
+                "jpg", "jpeg", "png", "bmp", "tif", "tiff", "gif", "raw", "psd", "xcf", "cdr"));
         allowedZipExtensions = new ArrayList<>(2);
         allowedZipExtensions.addAll(Arrays.asList("zip", "kmz", "jar", "gz"));
         allowedXmlExtensions = new ArrayList<>(5);
@@ -245,7 +245,7 @@ public class FileService {
 
     /**
      * @param filename The file extension to be derived from.
-     * @return The filename extension in lowercase without a dot (e.g. "image.img" will be returned as "img")
+     * @return The filename extension in lowercase WITHOUT a dot (e.g. "image.png" will be returned as "png")
      * OR an empty String if no extension found.
      */
     public String getExtension(@NonNull String filename) {

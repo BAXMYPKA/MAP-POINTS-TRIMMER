@@ -539,12 +539,16 @@ public class KmlUtils {
         return xmlDomUtils.getChildNodesFromParent(point, "coordinates", null, false, true, false).get(0);
     }
 
-        Node getDescriptionNode(Node point) {
+    Node getDescriptionNode(Node point) {
         return xmlDomUtils.getChildNodesFromParent(point, "description", null, false, true, false).get(0);
     }
 
-    Node getStyleUrlNode(Node point) {
-        return xmlDomUtils.getChildNodesFromParent(point, "styleUrl", null, false, true, false).get(0);
+    Node getPointNode(Node placemark) {
+        return xmlDomUtils.getChildNodesFromParent(placemark, "description", null, false, true, false).get(0);
+    }
+
+    Node getStyleUrlNode(Node placemark) {
+        return xmlDomUtils.getChildNodesFromParent(placemark, "styleUrl", null, false, true, false).get(0);
     }
 
     Node getGxTimeStampNode(Node point) {
@@ -554,4 +558,18 @@ public class KmlUtils {
     Node getWhenNode(Node gxTimeStamp) {
         return xmlDomUtils.getChildNodesFromParent(gxTimeStamp, "when", null, false, true, false).get(0);
     }
+
+    /**
+     * @param placemark
+     * @return A {@link List<Node>} of "lc:attachment" from "ExtendedData" or an {@link Collections#EMPTY_LIST} if nothing found.
+     */
+    List<Node> getLocusAttachmentsNodes(Node placemark) {
+        List<Node> extendedDatas = xmlDomUtils.getChildNodesFromParent(placemark, "ExtendedData", null, false, false, false);
+        if (!extendedDatas.isEmpty()) {
+            return xmlDomUtils.getChildNodesFromParent(extendedDatas.get(0), "lc:attachment", null, false, false, false);
+        } else {
+            return extendedDatas;
+        }
+    }
+
 }

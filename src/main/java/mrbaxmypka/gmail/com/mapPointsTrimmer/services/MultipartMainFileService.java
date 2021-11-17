@@ -117,9 +117,7 @@ public class MultipartMainFileService {
 
     protected void addImageNameFromZip(ZipEntry zipEntry, MultipartDto multipartDto) {
         String filename = fileService.getFileName(zipEntry.getName());
-        if (!filename.contains(".")) return; //The filename doesn't contain an extension
-        String extension = filename.substring(filename.lastIndexOf(".")).toLowerCase();
-        if (fileService.getAllowedImagesExtensions().contains(extension)) {
+        if (fileService.getAllowedImagesExtensions().contains(fileService.getExtension(filename))) {
             multipartDto.getImagesNamesFromZip().add(filename);
         }
     }

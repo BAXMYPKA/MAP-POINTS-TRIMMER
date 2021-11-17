@@ -79,6 +79,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
                 clonedPlacemarksDto.remove(placemarkNodeDto);
                 removePlacemarkImagesFromKmz(placemarkNodeDto, multipartMainDto, clonedPlacemarksDto);
                 //Remove from the main Document
+                removeStyleObjectFromDocument(placemarkNodeDto, clonedPlacemarksDto);
                 placemarkNodeDto.getPlacemarkNode().getParentNode().removeChild(placemarkNodeDto.getPlacemarkNode());
                 return true;
             } else {
@@ -95,14 +96,16 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
      * @param multipartMainDto
      * @return
      */
-    private boolean canBeDeleted(
-            PlacemarkNodeDto placemarkToBeDeleted, List<PlacemarkNodeDto> compareList, MultipartMainDto multipartMainDto) {
-
+    private boolean canBeDeleted(PlacemarkNodeDto placemarkToBeDeleted,
+                                 List<PlacemarkNodeDto> compareList,
+                                 MultipartMainDto multipartMainDto) {
         if (!canBeDeletedByIcon(placemarkToBeDeleted, multipartMainDto)) {
             return false;
         }
-
         return compareList.stream().anyMatch(placemarkToBeCompared -> {
+            if (placemarkToBeDeleted.getPlacemarkNode().isSameNode(placemarkToBeCompared.getPlacemarkNode())) {
+                return false;
+            }
             double distance = getHaversineDistance(
                     placemarkToBeDeleted.getLongitude(), placemarkToBeDeleted.getLatitude(), placemarkToBeDeleted.getAltitude(),
                     placemarkToBeCompared.getLongitude(), placemarkToBeCompared.getLatitude(), placemarkToBeCompared.getAltitude(),
@@ -184,6 +187,38 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         }
     }
 
+    private void removeStyleObjectFromDocument(PlacemarkNodeDto placemarkToBeRemoved,
+                                               List<PlacemarkNodeDto> clonedPlacemarkNodeDtoList) {
+        Node styleUrlToBeRemoved = kmlUtils.getStyleUrlNode(placemarkToBeRemoved.getPlacemarkNode());
+        Node styleObjectToBeRemoved = kmlUtils.getStyleObject(styleUrlToBeRemoved.getTextContent());
+        boolean canBeRemoved = canBeRemovedAsStyleObject(styleObjectToBeRemoved, clonedPlacemarkNodeDtoList);
+
+        if (canBeRemoved && styleObjectToBeRemoved.getNodeName().equals("StyleMap")) {
+            //Remove Normal and Highlight Styles of StyleMap
+            kmlUtils.getNormalStyleNode(styleObjectToBeRemoved).ifPresent(normalStyle ->
+                    normalStyle.getParentNode().removeChild(normalStyle));
+            kmlUtils.getHighlightStyleNode(styleObjectToBeRemoved).ifPresent(highlightStyle ->
+                    highlightStyle.getParentNode().removeChild(highlightStyle));
+        }
+        if (canBeRemoved) {
+            //Remove Style or StyleMap
+            styleObjectToBeRemoved.getParentNode().removeChild(styleObjectToBeRemoved);
+        }
+    }
+
+    private boolean canBeRemovedAsStyleObject(Node styleObjectToBeRemoved, List<PlacemarkNodeDto> clonedPlacemarkNodeDtoList) {
+        //If the Style or StyleMap is used by any other Placemark from the cloned List it cannot be removed
+        return clonedPlacemarkNodeDtoList.stream().noneMatch(placemarkNodeDto -> {
+            Node styleUrl = kmlUtils.getStyleUrlNode(placemarkNodeDto.getPlacemarkNode());
+            Node styleObjectToBeCompared = kmlUtils.getStyleObject(styleUrl.getTextContent());
+            if (styleObjectToBeRemoved.isSameNode(styleObjectToBeCompared)) {
+                return false;
+            } else {
+                return styleObjectToBeRemoved.isSameNode(styleObjectToBeCompared);
+            }
+        });
+    }
+
     /**
      * Sets {@link PlacemarkNodeDto#setAltitude(double)},
      * {@link PlacemarkNodeDto#setLongitude(double)},
@@ -225,26 +260,35 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         Node styleUrlNode = kmlUtils.getStyleUrlNode(placemarkNodeDto.getPlacemarkNode());
         Node styleObject = kmlUtils.getStyleObject(styleUrlNode.getTextContent());
         String iconName = null;
-        if (styleObject.getNodeName().equals("Style")) {
-            iconName = kmlUtils.getIconHrefNode(styleObject).getTextContent();
-        } else if (styleObject.getNodeName().equals("StyleMap")) {
+        if (styleObject.getNodeName().equals("StyleMap")) {
             kmlUtils.getNormalStyleNode(styleObject).ifPresent(normalStyleNode -> {
                 String styleUrl = kmlUtils.getIconHrefNode(normalStyleNode).getTextContent();
                 if (styleUrl == null) styleUrl = "";
                 placemarkNodeDto.setIconName(fileService.getFileName(styleUrl));
-                placemarkNodeDto.getImageNames().add(fileService.getFileName(styleUrl));
+                placemarkNodeDto.getImagesNames().add(fileService.getFileName(styleUrl));
             });
+            return;
+        } else if (styleObject.getNodeName().equals("Style")) {
+            iconName = kmlUtils.getIconHrefNode(styleObject).getTextContent();
         }
         if (iconName == null) iconName = "";
         placemarkNodeDto.setIconName(fileService.getFileName(iconName));
-        placemarkNodeDto.getImageNames().add(fileService.getFileName(iconName));
-
+        placemarkNodeDto.getImagesNames().add(fileService.getFileName(iconName));
     }
 
     private void setImagesNames(PlacemarkNodeDto placemarkNodeDto) {
+        //Images names from <description>
         Node descriptionNode = kmlUtils.getDescriptionNode(placemarkNodeDto.getPlacemarkNode());
         htmlHandler.getAllImagesFromDescription(descriptionNode.getTextContent()).forEach(src -> {
-            placemarkNodeDto.getImageNames().add(fileService.getFileName(src));
+            placemarkNodeDto.getImagesNames().add(fileService.getFileName(src));
+        });
+        //Images names from <lc:attachment>
+        List<Node> locusAttachmentsNodes = kmlUtils.getLocusAttachmentsNodes(placemarkNodeDto.getPlacemarkNode());
+        locusAttachmentsNodes.forEach(lcAttachment -> {
+            String fileName = fileService.getFileName(lcAttachment.getTextContent());
+            if (fileService.getAllowedImagesExtensions().contains(fileService.getExtension(fileName))) {
+                placemarkNodeDto.getImagesNames().add(fileName);
+            }
         });
     }
 
