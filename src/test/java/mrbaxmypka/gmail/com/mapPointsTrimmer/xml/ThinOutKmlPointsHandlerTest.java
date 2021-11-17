@@ -934,15 +934,102 @@ class ThinOutKmlPointsHandlerTest {
         kmlUtils = new KmlUtils(kmlDocument, xmlDomUtils);
         thinOutKmlPointsHandler = new ThinOutKmlPointsHandler(kmlUtils, fileService, htmlHandler);
 
-        //WHEN
+        //WHEN delete two last placemarks
         thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
 
         System.out.println(XmlTestUtils.getAsText(kmlDocument));
 
-        //THEN
-        assertTrue(XmlTestUtils.containsTagWithAttribute(kmlDocument, "Style", "id", iconName1));
+        //THEN only iconName2 should have been deleted
         assertFalse(XmlTestUtils.containsTagWithAttribute(kmlDocument, "Style", "id", iconName2));
     }
+
+    @Test
+    public void style_With_Non_Unique_Icon_Should_Be_Retained_In_Document()
+            throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        String iconName1 = "tourism-forest.png";
+        String iconName2 = "moto.png";
+        //Three isosceles triangle Placemarks within 245 meters distance between each within the "thinOutDistance"
+        String pointsAsIsoscelesTriangle = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+                "<Document>\n" +
+                "\t<name>Three sequential isosceles triangle Placemarks within 245 meters distance between each</name>\n" +
+
+                "\t<Style id=\"" + iconName1 + "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.472727</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files/" + iconName1 + "</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t<Style id=\"" + iconName2 + "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.4</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files///C:folder/" + iconName2 + "</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t\t<Placemark>\n" +
+                "\t\t\t<name>Point has to be retained by date</name>\n" +
+                "\t\t\t<description>232 meters from Point 2</description>\n" +
+                "\t\t\t<gx:TimeStamp>\n" +
+                "\t\t\t\t<when>2014-08-03T14:13:50Z</when>\n" +
+                "\t\t\t</gx:TimeStamp>\n" +
+                "\t\t\t<styleUrl>#" + iconName1 + "</styleUrl>\n" +
+                "\t\t\t<Point>\n" +
+                "\t\t\t\t<coordinates>38.34646245907663,56.27537585942488,0</coordinates>\n" +
+                "\t\t\t</Point>\n" +
+                "\t\t</Placemark>\n" +
+
+                "\t\t<Placemark>\n" +
+                "\t\t\t<name>Point has to be removed by date and distance 1</name>\n" +
+                "\t\t\t<description>193 meters from Point 3</description>\n" +
+                "\t\t\t<gx:TimeStamp>\n" +
+                "\t\t\t\t<when>2014-08-03T14:13:45Z</when>\n" +
+                "\t\t\t</gx:TimeStamp>\n" +
+                "\t\t\t<styleUrl>#" + iconName2 + "</styleUrl>\n" +
+                "\t\t\t<Point>\n" +
+                "\t\t\t\t<coordinates>38.3428861954351,56.27522642196566,0</coordinates>\n" +
+                "\t\t\t</Point>\n" +
+                "\t\t</Placemark>\n" +
+
+                "\t\t<Placemark>\n" +
+                "\t\t\t<name>Point has to be removed by date and distance 2</name>\n" +
+                "\t\t\t<description>202m from Point 1</description>\n" +
+                "\t\t\t<gx:TimeStamp>\n" +
+                "\t\t\t\t<when>2014-08-03T14:13:40Z</when>\n" +
+                "\t\t\t</gx:TimeStamp>\n" +
+                "\t\t\t<styleUrl>#" + iconName1 + "</styleUrl>\n" +
+                "\t\t\t<Point>\n" +
+                "\t\t\t\t<coordinates>38.34439565050742,56.27675775851414,0</coordinates>\n" +
+                "\t\t\t</Point>\n" +
+                "\t\t</Placemark>\n" +
+
+                "</Document>\n" +
+                "</kml>\n";
+        kmlDocument = XmlTestUtils.getDocument(pointsAsIsoscelesTriangle);
+        MultipartMainDto multipartMainDto = new MultipartMainDto();
+        multipartMainDto.setDistanceUnit(DistanceUnits.METERS);
+
+        int thinOutDistance = 300; //To thin out Placemarks closer than this (any from the current Document)
+        multipartMainDto.setThinOutDistance(thinOutDistance);
+        multipartMainDto.setThinOutType(ThinOutTypes.ANY);
+
+        xmlDomUtils = new XmlDomUtils(kmlDocument);
+        kmlUtils = new KmlUtils(kmlDocument, xmlDomUtils);
+        thinOutKmlPointsHandler = new ThinOutKmlPointsHandler(kmlUtils, fileService, htmlHandler);
+
+        //WHEN delete two last Placemarks
+        thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
+
+        //THEN only icon1 should have been retained
+        assertTrue(XmlTestUtils.containsTagWithAttribute(kmlDocument, "Style", "id", iconName1));
+    }
+
 
     //TODO: Styles and StyleMaps also have to be deleted
     //TODO: locus photo thumbnails should be deleted

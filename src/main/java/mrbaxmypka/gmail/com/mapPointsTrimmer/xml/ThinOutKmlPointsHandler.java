@@ -211,11 +211,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         return clonedPlacemarkNodeDtoList.stream().noneMatch(placemarkNodeDto -> {
             Node styleUrl = kmlUtils.getStyleUrlNode(placemarkNodeDto.getPlacemarkNode());
             Node styleObjectToBeCompared = kmlUtils.getStyleObject(styleUrl.getTextContent());
-            if (styleObjectToBeRemoved.isSameNode(styleObjectToBeCompared)) {
-                return false;
-            } else {
-                return styleObjectToBeRemoved.isSameNode(styleObjectToBeCompared);
-            }
+            return styleObjectToBeRemoved.isSameNode(styleObjectToBeCompared);
         });
     }
 
