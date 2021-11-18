@@ -196,12 +196,14 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         if (canBeRemoved && styleObjectToBeRemoved.getNodeName().equals("StyleMap")) {
             //Remove Normal and Highlight Styles of StyleMap
             kmlUtils.getNormalStyleNode(styleObjectToBeRemoved).ifPresent(normalStyle -> {
+                boolean canBeRemovedAsStyle = canBeRemovedAsStyleObject(normalStyle, clonedPlacemarkNodeDtoList);
                 Node parentNode = normalStyle.getParentNode();
-                if (parentNode != null) parentNode.removeChild(normalStyle);
+                if (canBeRemovedAsStyle && parentNode != null) parentNode.removeChild(normalStyle);
             });
             kmlUtils.getHighlightStyleNode(styleObjectToBeRemoved).ifPresent(highlightStyle -> {
+                boolean canBeRemovedAsStyle = canBeRemovedAsStyleObject(highlightStyle, clonedPlacemarkNodeDtoList);
                 Node parentNode = highlightStyle.getParentNode();
-                if (parentNode != null) parentNode.removeChild(highlightStyle);
+                if (canBeRemovedAsStyle && parentNode != null) parentNode.removeChild(highlightStyle);
             });
         }
         if (canBeRemoved) {
