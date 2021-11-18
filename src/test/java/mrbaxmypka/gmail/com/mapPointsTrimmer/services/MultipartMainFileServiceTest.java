@@ -534,6 +534,7 @@ class MultipartMainFileServiceTest {
 
         assertFalse((zipEntriesNames.contains("files/file-sdcardLocuscacheimages1234567.png")));
         assertFalse(zipEntriesNames.contains("files/1234567890.png"));
+        
         assertTrue(zipEntriesNames.contains("doc.kml"));//Just an additional check
         assertTrue(zipEntriesNames.contains("files/Pictogram1.png"));//Just an additional check
     }

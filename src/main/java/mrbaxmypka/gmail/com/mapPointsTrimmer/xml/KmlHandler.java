@@ -128,7 +128,7 @@ public class KmlHandler extends XmlHandler {
                 descriptionNode.setTextContent("");
                 log.trace("Description has been set as blank string");
             } else {
-                LocalDateTime whenTimestamp = null;
+                LocalDateTime whenTimestamp = LocalDateTime.MIN;
                 if (multipartMainDto.isClearOutdatedDescriptions() || multipartMainDto.getPreviewSize() != null) {
                     //Both conditions invokes the clearing outdated description
                     // so trying to get the </gx:TimeStamp></when>yyyy-MM-dd'T'hh:mm:ss'Z'</when> timestamp

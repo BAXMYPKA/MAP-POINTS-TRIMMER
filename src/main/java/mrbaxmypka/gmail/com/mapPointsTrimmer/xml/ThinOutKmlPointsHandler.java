@@ -72,6 +72,8 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
      * @param multipartMainDto
      */
     private void removePlacemarks(Document kmlDocument, MultipartMainDto multipartMainDto) {
+        log.info("Placemarks are being thinned out within the Document by {} distance in {}...",
+              multipartMainDto.getThinOutDistance(), multipartMainDto.getDistanceUnit());
         List<PlacemarkNodeDto> clonedPlacemarksDto = new ArrayList<>(placemarkNodeDtoList);
         placemarkNodeDtoList.removeIf(placemarkNodeDto -> {
             if (canBeDeleted(placemarkNodeDto, clonedPlacemarksDto, multipartMainDto)) {
@@ -86,6 +88,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
                 return false;
             }
         });
+        log.info("Placemarks have been thinned out!");
     }
 
     /**
@@ -305,6 +308,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
     }
 
     private void setPlacemarkNodeDtoList(Document kmlDocument) {
+        log.debug("Setting all the Placemarks list...");
         placemarkNodeDtoList = new ArrayList<>(10);
 
         NodeList placemarkNodes = kmlDocument.getElementsByTagName("Placemark");
@@ -319,5 +323,6 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         }
         //Backward ordering
         placemarkNodeDtoList.sort((p1, p2) -> p2.getWhenTimeStamp().compareTo(p1.getWhenTimeStamp()));
+        log.info("The all Placemarks list has been set and ordered by TimeStamp.");
     }
 }

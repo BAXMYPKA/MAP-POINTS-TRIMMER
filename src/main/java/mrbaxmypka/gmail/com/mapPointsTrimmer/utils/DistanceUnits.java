@@ -13,7 +13,7 @@ public enum DistanceUnits {
     YARDS("yards"),
     NAUTICAL_MILES("nautical_miles");
 
-    private final String unit;
+    public final String unit;
 
     DistanceUnits(String unit) {
         this.unit = unit;

@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import java.util.Arrays;
+
 /**
  * @author BAXMYPKA
  */
@@ -49,7 +51,7 @@ public abstract class AbstractController {
 		if (!model.containsAttribute("zipEncodings"))
 			model.addAttribute("zipEncodings", supportedZipEncodings.split(","));
 		if (!model.containsAttribute("distanceUnits")) {
-			model.addAttribute("distanceUnits", DistanceUnits.values());
+			model.addAttribute("distanceUnits", Arrays.stream(DistanceUnits.values()).map(DistanceUnits::getUnit).toArray());
 		}
 		log.trace("ServerAddress={}, maxFileSizeMb={}, pictograms={} attributes have been added and the 'index' page is being " +
 						"returned.",

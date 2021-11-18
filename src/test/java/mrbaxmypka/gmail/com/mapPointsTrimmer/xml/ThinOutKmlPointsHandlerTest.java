@@ -581,8 +581,7 @@ class ThinOutKmlPointsHandlerTest {
 
         //WHEN
         thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
-
-        System.out.println(XmlTestUtils.getAsText(kmlDocument));
+//        System.out.println(XmlTestUtils.getAsText(kmlDocument));
 
         //THEN
         assertTrue(
@@ -1299,7 +1298,7 @@ class ThinOutKmlPointsHandlerTest {
 
         //WHEN delete two last placemarks
         thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
-
+        
         //THEN only iconName2 should have been deleted
         assertAll(
                 () -> assertTrue(
@@ -1394,7 +1393,7 @@ class ThinOutKmlPointsHandlerTest {
 
         //WHEN
         thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
-
+    
         //THEN
         assertFalse(XmlTestUtils.containsTagWithChild(
                 kmlDocument, "Placemark", "name", "Point has to be removed by date, distance and photoIcon"));
@@ -1480,4 +1479,6 @@ class ThinOutKmlPointsHandlerTest {
         //THEN
         assertTrue(multipartMainDto.getFilesToBeExcluded().contains(photoIconName));
     }
+    
+    //TODO: to test not to thin out tracks!
 }

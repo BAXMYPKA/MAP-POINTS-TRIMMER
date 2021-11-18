@@ -258,16 +258,17 @@
                             ?
                         </div>
                         <br>
-                        <input type="number" value="100" min="1" max="5000" step="10" id="distance"
+                        <input  id="distance" type="number" min="1" max="5000" step="10" pattern="[0-9]"
+                                placeholder="100" value="100"
                                name="thinOutDistance"
                                class="loadForm_previewSizeInput number_input">
 
                         <select id="distanceUnits" name="distanceUnit" th:title="#{html.text.thinOutDistance}">
                             <option value="meters"
                                     th:each="unit:${distanceUnits}"
-                                    th:text="${unit.getUnit()}"
+                                    th:text="${unit}"
                                     th:value="${unit}"
-                                    th:selected="${unit.getUnit().equals('meters')}"
+                                    th:selected="${unit.equals('meters')}"
                                     selected>
                                 meters
                             </option>

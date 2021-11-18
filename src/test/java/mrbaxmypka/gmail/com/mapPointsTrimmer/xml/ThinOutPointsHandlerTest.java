@@ -115,8 +115,7 @@ class ThinOutPointsHandlerTest {
                 long1, lat1, alt1,
                 long2, lat2, alt2,
                 DistanceUnits.METERS);
-
-        System.out.println(haversineAltitudeDistanceMeters);
+//        System.out.println(haversineAltitudeDistanceMeters);
 
         //THEN
         boolean inaccuracyCondition = (geAltitudeDistance - inaccuracy) <= haversineAltitudeDistanceMeters

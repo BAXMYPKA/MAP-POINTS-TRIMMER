@@ -869,8 +869,7 @@ class KmlHandlerTest {
 								"   <td align=\"left\" valign=\"center\"><small><b>Точность</b></small></td> \n" +
 								"   <td align=\"center\" valign=\"center\">4.0 m</td> \n" +
 								"  </tr>")),
-				() -> assertFalse(processedKml.contains("<gx:TimeStamp>")),
-				() -> assertFalse(processedKml.contains("<when>"))
+				() -> assertFalse(processedKml.contains("<when>") && processedKml.contains("</when>"))
 		
 		);
 	}
