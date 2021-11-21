@@ -1298,7 +1298,7 @@ class ThinOutKmlPointsHandlerTest {
 
         //WHEN delete two last placemarks
         thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
-        
+
         //THEN only iconName2 should have been deleted
         assertAll(
                 () -> assertTrue(
@@ -1393,7 +1393,7 @@ class ThinOutKmlPointsHandlerTest {
 
         //WHEN
         thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
-    
+
         //THEN
         assertFalse(XmlTestUtils.containsTagWithChild(
                 kmlDocument, "Placemark", "name", "Point has to be removed by date, distance and photoIcon"));
@@ -1479,6 +1479,100 @@ class ThinOutKmlPointsHandlerTest {
         //THEN
         assertTrue(multipartMainDto.getFilesToBeExcluded().contains(photoIconName));
     }
-    
-    //TODO: to test not to thin out tracks!
+
+    /**
+     * {@literal
+     * <Placemark>
+     * <name>Point has to be retained by date</name>
+     * <gx:TimeStamp>
+     * <when>2014-08-03T14:13:50Z</when>
+     * </gx:TimeStamp>
+     * <styleUrl>#iconName</styleUrl>
+     * DOESN'T HAVE ======> <Point>
+     * <coordinates>38.34646245907663,56.27537585942488,0</coordinates>
+     * =======> </Point>
+     * </Placemark>}
+     *
+     */
+    @Test
+    public void placemarks_Without_Point_With_Coordinates_Tag_Should_Be_Retained_In_Document()
+            throws IOException, ParserConfigurationException, SAXException {
+        //GIVEN
+        String iconName1 = "tourism-forest.png";
+        String iconName2 = "moto.png";
+        String tracksWithoutPointTag = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n" +
+                "<Document>\n" +
+                "\t<name>Three sequential isosceles triangle Placemarks within 245 meters distance between each</name>\n" +
+
+                "\t<Style id=\"" + iconName1 + "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.472727</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files/" + iconName1 + "</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t<Style id=\"" + iconName2 + "\">\n" +
+                "\t\t<IconStyle>\n" +
+                "\t\t\t<scale>0.4</scale>\n" +
+                "\t\t\t<Icon>\n" +
+                "\t\t\t\t<href>files///C:folder/" + iconName2 + "</href>\n" +
+                "\t\t\t</Icon>\n" +
+                "\t\t</IconStyle>\n" +
+                "\t</Style>\n" +
+
+                "\t\t\t\t<Placemark>\n" +
+                "\t\t\t\t\t<name>Track 1</name>\n" +
+                "\t\t\t\t\t<visibility>0</visibility>\n" +
+                "\t\t\t\t\t<description>36km</description>\n" +
+                "\t\t\t\t\t<styleUrl>#" + iconName1 + "</styleUrl>\n" +
+                "\t\t\t\t\t<LineString>\n" +
+                "\t\t\t\t\t\t<tessellate>1</tessellate>\n" +
+                "\t\t\t\t\t\t<coordinates>\n" +
+                "\t\t\t\t\t\t\t37.51634634568093,56.16754610521662,0 37.51490426311888,56.16410274408631,0 37.51454643668808,56.16158212666821,0 \n" +
+                "\t\t\t\t\t\t</coordinates>\n" +
+                "\t\t\t\t\t</LineString>\n" +
+                "\t\t\t\t</Placemark>\n" +
+
+                "\t\t\t\t<Placemark>\n" +
+                "\t\t\t\t\t<name>Track 2</name>\n" +
+                "\t\t\t\t\t<visibility>0</visibility>\n" +
+                "\t\t\t\t\t<open>1</open>\n" +
+                "\t\t\t\t\t<Snippet maxLines=\"0\"></Snippet>\n" +
+                "\t\t\t\t\t<description>100km</description>" +
+                "\t\t\t\t\t<styleUrl>#" + iconName2 + "</styleUrl>\n" +
+                "\t\t\t\t\t<MultiGeometry>\n" +
+                "\t\t\t\t\t\t<LineString>\n" +
+                "\t\t\t\t\t\t\t<extrude>1</extrude>\n" +
+                "\t\t\t\t\t\t\t<tessellate>1</tessellate>\n" +
+                "\t\t\t\t\t\t\t<coordinates>\n" +
+                "\t\t\t\t\t\t\t\t37.5255739,56.2061669,148 37.5367426,56.2058924,153 37.5399398,56.2057014,167 37.5400257,56.2067755,161\n" +
+                "\t\t\t\t\t\t\t</coordinates>\n" +
+                "\t\t\t\t\t\t</LineString>\n" +
+                "\t\t\t\t\t</MultiGeometry>\n" +
+                "\t\t\t\t</Placemark>\n" +
+
+                "</Document>\n" +
+                "</kml>\n";
+        kmlDocument = XmlTestUtils.getDocument(tracksWithoutPointTag);
+        MultipartMainDto multipartMainDto = new MultipartMainDto();
+        multipartMainDto.setDistanceUnit(DistanceUnits.METERS);
+
+        int thinOutDistance = 10; //To thin out Placemarks closer than this (any from the current Document)
+        multipartMainDto.setThinOutDistance(thinOutDistance);
+        multipartMainDto.setThinOutType(ThinOutTypes.ANY);
+
+        xmlDomUtils = new XmlDomUtils(kmlDocument);
+        kmlUtils = new KmlUtils(kmlDocument, xmlDomUtils);
+        thinOutKmlPointsHandler = new ThinOutKmlPointsHandler(kmlUtils, fileService, htmlHandler);
+
+        //WHEN
+        thinOutKmlPointsHandler.thinOutPoints(kmlDocument, multipartMainDto);
+
+        //THEN
+        assertTrue(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Track 1"));
+        assertTrue(XmlTestUtils.containsTagWithChild(kmlDocument, "Placemark", "name", "Track 2"));
+    }
 }

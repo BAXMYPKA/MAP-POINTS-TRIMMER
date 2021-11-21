@@ -88,7 +88,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
                 return false;
             }
         });
-        log.info("Placemarks have been thinned out!");
+        log.info("All the Placemarks have been thinned out! {} Placemarks are left", placemarkNodeDtoList.size());
     }
 
     /**
@@ -109,13 +109,8 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
             if (placemarkToBeDeleted.getPlacemarkNode().isSameNode(placemarkToBeCompared.getPlacemarkNode())) {
                 return false;
             }
-            double distance = getHaversineDistance(
-                    placemarkToBeDeleted.getLongitude(), placemarkToBeDeleted.getLatitude(), placemarkToBeDeleted.getAltitude(),
-                    placemarkToBeCompared.getLongitude(), placemarkToBeCompared.getLatitude(), placemarkToBeCompared.getAltitude(),
-                    multipartMainDto.getDistanceUnit());
-            boolean canByDeletedByDistance = distance < multipartMainDto.getThinOutDistance();
+            boolean canByDeletedByDistance = canBeDeletedByDistance(placemarkToBeDeleted, placemarkToBeCompared, multipartMainDto);
             boolean canBeDeletedByDate = canBeDeletedByDate(placemarkToBeDeleted, placemarkToBeCompared);
-
             if (canBeDeletedByDate && canByDeletedByDistance) {
                 //Has to be deleted or inclusively either any Placemark with any icon name is allowed for deletion
                 return true;
@@ -123,6 +118,21 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
                 return false;
             }
         });
+    }
+
+    private boolean canBeDeletedByDistance(PlacemarkNodeDto placemarkToBeDeleted,
+                                           PlacemarkNodeDto placemarkToBeCompared,
+                                           MultipartMainDto multipartMainDto) {
+        if (placemarkToBeDeleted.getLongitude() == 0.0 || placemarkToBeDeleted.getLatitude() == 0.0 ||
+                placemarkToBeCompared.getLongitude() == 0.0 || placemarkToBeCompared.getLatitude() == 0.0) {
+            //One or both Placemarks have no coordinates
+            return false;
+        }
+        double distance = getHaversineDistance(
+                placemarkToBeDeleted.getLongitude(), placemarkToBeDeleted.getLatitude(), placemarkToBeDeleted.getAltitude(),
+                placemarkToBeCompared.getLongitude(), placemarkToBeCompared.getLatitude(), placemarkToBeCompared.getAltitude(),
+                multipartMainDto.getDistanceUnit());
+        return distance < multipartMainDto.getThinOutDistance();
     }
 
     /**
@@ -323,6 +333,6 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
         }
         //Backward ordering
         placemarkNodeDtoList.sort((p1, p2) -> p2.getWhenTimeStamp().compareTo(p1.getWhenTimeStamp()));
-        log.info("The all Placemarks list has been set and ordered by TimeStamp.");
+        log.info("{} Placemarks list has been set and ordered by TimeStamp.", placemarkNodeDtoList.size());
     }
 }

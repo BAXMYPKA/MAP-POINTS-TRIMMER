@@ -229,7 +229,7 @@
             //Checks if any thinOut type except "ALL" is selected than one or more icons have to be selected
             let isAnyChecked = false;
             if (!document.getElementById("any").checked) {
-                for (const checkBox of document.getElementsByName("thinOutIcons")) {
+                for (const checkBox of document.getElementsByName("thinOutIconsNames")) {
                     if (checkBox.checked) {
                         isAnyChecked = true;
                     }
