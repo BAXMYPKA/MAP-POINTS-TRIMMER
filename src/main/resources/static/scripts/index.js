@@ -272,13 +272,15 @@
         });
 
         document.getElementById("replaceLocusIcons").addEventListener('change', ev => {
-            const pictogramDropdownDiv = document.getElementById("pictogram-dropdown");
+            const pictogramDropdownFieldset = document.getElementById("pictogram-dropdown-fieldset");
             const pictogramValueTrace = document.getElementById("pictogramValueTrace");
             if (ev.target.checked) {
-                pictogramDropdownDiv.style.display = "inline-block"
+                pictogramDropdownFieldset.hidden = false;
+                pictogramDropdownFieldset.disabled = false;
                 pictogramValueTrace.disabled = false;
             } else {
-                pictogramDropdownDiv.style.display = "none"
+                pictogramDropdownFieldset.hidden = true;
+                pictogramDropdownFieldset.disabled = true;
                 pictogramValueTrace.disabled = true;
             }
         });

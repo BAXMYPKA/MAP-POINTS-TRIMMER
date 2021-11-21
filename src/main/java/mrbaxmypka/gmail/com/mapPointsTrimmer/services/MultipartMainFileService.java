@@ -102,7 +102,7 @@ public class MultipartMainFileService {
 // 					zis.readNBytes(buffer, 0, (int) zipEntry.getSize());
 					multipartMainDto.setXmlFilename(zipEntry.getName()); //To store it if .kml has to be returned
 					xmlBuffer.writeBytes(zis.readAllBytes());
-					log.info("File '{}' has been extracted from zip and will be returned as InputStream", multipartMainDto.getXmlFilename());
+					log.info("The '{}' file has been extracted from zip and will be returned as an InputStream", multipartMainDto.getXmlFilename());
 				} else {
 					addImageNameFromZip(zipEntry, multipartMainDto);
 				}

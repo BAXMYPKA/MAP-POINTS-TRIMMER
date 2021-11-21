@@ -7,15 +7,15 @@
     <link rel="shortcut icon" href="../static/img/favicon32x32.png" type="image/x-icon"
           th:href="@{/img/favicon32x32.png}">
     <link rel="stylesheet" href="../static/css/index.css" th:href="@{css/index.css}">
-    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.es6}" defer></script>
-    <script src="../static/scripts/index.js" th:src="@{scripts/index.es6}" type="application/javascript" defer></script>
-    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.es6}" defer></script>
+    <script src="../static/scripts/browserVersionCheck.js" th:src="@{scripts/browserVersionCheck.js}" defer></script>
+    <script src="../static/scripts/index.js" th:src="@{scripts/index.js}" type="application/javascript" defer></script>
+    <script src="../static/scripts/presets.js" th:src="@{scripts/presets.js}" defer></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         const maxFileSizeMb = [[${maxFileSizeMb}]] !== null ? [[${maxFileSizeMb}]] : 4096;
         const serverAddress = [[${serverAddress}]] !== null ? [[${serverAddress}]] : "localhost://";
         let singleUserMode = [[${singleUserMode}]] !== null ? [[${singleUserMode}]] : true;
-        const isShutDown = [[${isShutDown}]] !== null ? [[${isShutDown}]] : false;
+        let isShutDown = [[${isShutDown}]] !== null ? [[${isShutDown}]] : false;
         /*]]>*/
     </script>
     <title>Map Points Trimmer</title>
@@ -258,8 +258,8 @@
                             ?
                         </div>
                         <br>
-                        <input  id="distance" type="number" min="1" max="5000" pattern="[0-9]"
-                                placeholder="100" value="100"
+                        <input id="distance" type="number" min="1" max="5000" pattern="[0-9]"
+                               placeholder="100" value="100"
                                name="thinOutDistance"
                                class="loadForm_previewSizeInput number_input">
 
@@ -366,25 +366,29 @@
                          th:title="#{commonMessages.interrogationAsDescription.replaceLocusIcons}">?
                     </div>
                     <br>
-                    <br>
-                    <div id="pictogram-dropdown">
 
-                        <th:block th:each="pic:${pictogramsMap}">
+                    <fieldset id="pictogram-dropdown-fieldset" class="loadForm loadForm__fieldSet" hidden disabled>
 
-                            <input type="radio" id="pictogram1" th:id="${pic.key}" name="pictogram" checked
-                                   value="sport-cyclingsport.png"
-                                   th:value="${pic.key}"/>
-                            <label for="pictogram1"
-                                   style="background:url('../static/pictograms/sport-cyclingsport.png') no-repeat"
-                                   th:for="${pic.key}" th:style="'background:url(' + @{${pic.value}} + ')'"></label>
+                        <div id="pictogram-dropdown">
 
-                        </th:block>
+                            <th:block th:each="pic:${pictogramsMap}">
 
-                        <input type="text" value="" id="pictogramValueTrace" name="pictogramName" hidden disabled/>
+                                <input type="radio" id="pictogram1" th:id="${pic.key}" name="pictogram" checked
+                                       value="sport-cyclingsport.png"
+                                       th:value="${pic.key}"/>
+                                <label for="pictogram1"
+                                       style="background:url('../static/pictograms/sport-cyclingsport.png') no-repeat"
+                                       th:for="${pic.key}" th:style="'background:url(' + @{${pic.value}} + ')'"></label>
 
-                        <br>
+                            </th:block>
 
-                    </div>
+                            <input type="text" value="" id="pictogramValueTrace" name="pictogramName" hidden disabled/>
+
+                            <br>
+
+                        </div>
+
+                    </fieldset>
 
                 </details>
 

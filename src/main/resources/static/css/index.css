@@ -440,7 +440,7 @@ input[type=radio] {
 #pictogram-dropdown {
     /*style the "box" in its minimzed state*/
     /*display: inline-block;*/
-    display: none;
+    /*display: none;*/
     border: 1px solid black;
     width: 37px;
     height: 39px;
@@ -508,31 +508,32 @@ input[type=radio] {
 /*var i = setInterval(function(){$("#trace").val($("input[name=line-style]:checked").val());},100);*/
 
 #pictogram-dropdown-thinOut {
-    /*style the "box" in its minimzed state*/
+    /*style the "box" in its minimized state*/
     /*display: inline-block;*/
     /*display: none;*/
     border: 1px solid black;
-    width: 54px;
-    height: 280px;
-    overflow-y: scroll;
+    width: 37px;
+    height: 60px;
+    overflow-y: hidden;
     overflow-x: hidden;
     /*animate collapsing the dropdown from open to closed state (v. fast)*/
     -moz-transition: height 0.1s;
     -webkit-transition: height 0.1s;
     -o-transition: height 0.1s;
-    transition: 0.1s;
+    transition: height.1s;
 }
 
 #pictogram-dropdown-thinOut:hover {
     /*when expanded, the dropdown will get native means of scrolling*/
-    /*height: 200px;*/
-    /*width: 54px;*/
-    /*overflow-y: scroll;*/
+    height: 280px;
+    width: 54px;
+    overflow-y: scroll;
+    overflow-x: hidden;
     /*nice and smooth expand - speed this up at your preference or remove animation altogether*/
     /*-moz-transition: height 0.5s;*/
     /*-webkit-transition: height 0.5s;*/
     /*-o-transition: height 0.5s;*/
-    /*transition: 0.5s;*/
+    transition: 0.3s;
 }
 
 #pictogram-dropdown-thinOut input {

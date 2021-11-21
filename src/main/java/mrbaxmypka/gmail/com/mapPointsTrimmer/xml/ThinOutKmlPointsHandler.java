@@ -35,6 +35,8 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
      */
     private List<PlacemarkNodeDto> placemarkNodeDtoList;
     private DateTimeParser dateTimeParser;
+    private int pointsFromStart;
+    private int pointsDeleted = 0;
 
     public ThinOutKmlPointsHandler(KmlUtils kmlUtils, FileService fileService, HtmlHandler htmlHandler) {
         this.kmlUtils = kmlUtils;
@@ -88,7 +90,8 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
                 return false;
             }
         });
-        log.info("All the Placemarks have been thinned out! {} Placemarks are left", placemarkNodeDtoList.size());
+        log.info("All the Placemarks have been thinned out! {} Placemarks are left. ({} placemarks have been removed)",
+                placemarkNodeDtoList.size(), (pointsFromStart - placemarkNodeDtoList.size()));
     }
 
     /**
@@ -331,6 +334,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
             setWhenTimeStamp(placemarkNodeDto);
             placemarkNodeDtoList.add(placemarkNodeDto);
         }
+        pointsFromStart = placemarkNodeDtoList.size();
         //Backward ordering
         placemarkNodeDtoList.sort((p1, p2) -> p2.getWhenTimeStamp().compareTo(p1.getWhenTimeStamp()));
         log.info("{} Placemarks list has been set and ordered by TimeStamp.", placemarkNodeDtoList.size());
