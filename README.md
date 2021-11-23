@@ -6,7 +6,7 @@
 
 **The application allows you:**
 
-* Transfer all your POI with included geo tagged photos from one map application to another (e.g. from Locus Map to Google Earth Pro). The main benefit for using with Locus Map is to get those photos right in the description body and\or make them available in "Attachments" tab. And if you have too many photos from various sources it allows keeping them in one optional place with custom path within any device.
+* Transfer all your POI with included geo tagged photos from one map application to another in KML or KMZ format (e.g. from Locus Map to Google Earth Pro). The main benefit for using with Locus Map is to get those photos right in the description body and\or make them available in "Attachments" tab. And if you have too many photos from various sources it allows keeping them in one optional place with custom path within any device.
 
 * Show the photos in a desired size on any device according to a screen resolution. Photos can have any preview size depending on used application and platform. Also they will have the ability to be magnified by click.
 

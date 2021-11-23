@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>mrbaxmypka.gmail.com</groupId>
 	<artifactId>Map-Points-Trimmer</artifactId>
-	<version>5.0</version>
+	<version>5.5</version>
 	<name>Map Points Trimmer</name>
 	<description>The trimmer for Locus Map and Google Earth Pro photo points as the client-server application based on Spring Boot</description>
 	<developers>
