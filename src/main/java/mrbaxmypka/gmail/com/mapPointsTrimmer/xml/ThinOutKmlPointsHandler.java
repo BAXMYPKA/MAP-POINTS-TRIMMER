@@ -265,7 +265,7 @@ public class ThinOutKmlPointsHandler extends ThinOutPointsHandler {
 
         placemarkNodeDto.setLongitude(Double.parseDouble(coordinates[0]));
         placemarkNodeDto.setLatitude(Double.parseDouble(coordinates[1]));
-        if (coordinates[2] != null) {
+        if (coordinates.length == 3) {
             placemarkNodeDto.setAltitude(Double.parseDouble(coordinates[2]));
         } else {
             placemarkNodeDto.setAltitude(0.0);
