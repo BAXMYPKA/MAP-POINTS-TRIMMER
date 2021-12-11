@@ -1,8 +1,8 @@
-[RUSSIAN](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/README_ru.md)
+[ОПИСАНИЕ ПО-РУССКИ](https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/README_ru.md)
 
 # MAP POINTS TRIMMER
 
-**The convenient handler for your map points with photos**
+**The convenient handler for your map points with photos in KML, KMZ or ZIP formats**
 
 **The application allows you:**
 
@@ -20,7 +20,7 @@ The examples of map points displaying for **Locus Map Pro** and **Google Earth P
 
 ## User interface
 
-<img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/interfaceScreenshot_en.jpg" width="950px" alt="User interface" title="User interface">
+<img src="https://github.com/BAXMYPKA/MAP-POINTS-TRIMMER/blob/master/src/main/resources/static/img/InterfaceENG.png" width="950px" alt="User interface" title="User interface">
 
 ## How to use it
 
